@@ -1,0 +1,82 @@
+name: Content fix
+description: Something on a unit page is wrong, unclear, or reads badly.
+title: '[content] '
+labels: ['content']
+body:
+  - type: markdown
+    attributes:
+      value: |
+        **If you can already phrase the fix, send the fix instead of this form.**
+
+        Prose lives in `src/content/units/<slug>.mdx` and nowhere else. Open that
+        file on GitHub, press the pencil, edit it, and GitHub makes the fork and
+        the pull request for you — no clone, no install, no local setup. That is
+        Track A in
+        [CONTRIBUTING.md](https://github.com/bhavinvirani/how-ai-works/blob/main/CONTRIBUTING.md),
+        and it is faster for both of us than a round trip through here.
+
+        File this when you know something is off but not what should replace it.
+        That is a real contribution: a reader who stumbled is evidence, and the
+        person who wrote the sentence has long since stopped being able to see it.
+
+  - type: input
+    id: unit
+    attributes:
+      label: Which unit
+      description: >-
+        The slug — the last segment of the page URL. For
+        `https://bhavinvirani.github.io/how-ai-works/units/attention/` it is
+        `attention`. There are sixty of them, which is why this is a box and not
+        a menu. The full list is at
+        https://bhavinvirani.github.io/how-ai-works/map/
+      placeholder: attention
+    validations:
+      required: true
+
+  - type: textarea
+    id: passage
+    attributes:
+      label: The passage as it stands
+      description: >-
+        Paste the sentence or paragraph. A quote is faster to locate than a
+        description of where the problem is, and it removes any doubt about which
+        sentence we are both looking at.
+    validations:
+      required: true
+
+  - type: dropdown
+    id: kind
+    attributes:
+      label: What kind of problem
+      description: >-
+        A diagram problem is still a content problem — it gets the `diagram`
+        label and is fixed in `src/components/diagrams/`, which is Track B.
+      options:
+        - It is factually wrong
+        - It is correct, but I could not follow it
+        - The analogy breaks down
+        - It contradicts something another unit says
+        - The diagram is wrong, or teaches the wrong thing
+        - Typo, grammar, or formatting
+    validations:
+      required: true
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: What a reader comes away believing
+      description: >-
+        Say what the passage made you think, and what it should have made you
+        think. "Confusing" tells us there is a problem; "I assumed the model was
+        looking the word up in a list" tells us where it is.
+    validations:
+      required: true
+
+  - type: textarea
+    id: suggestion
+    attributes:
+      label: Suggested wording
+      description: >-
+        Optional. If you fill this in you have already done the work, and the
+        pull request would take you less time than this issue took. Either way,
+        we would much rather have it than not.

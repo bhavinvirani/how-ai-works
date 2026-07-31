@@ -1,0 +1,145 @@
+name: Interactive proposal
+description: A new instrument for a unit. A working Claude artifact is required.
+title: '[instrument] '
+labels: ['interactive', 'proposal']
+body:
+  - type: markdown
+    attributes:
+      value: |
+        **The rule: an instrument has to teach something the prose and the
+        diagram cannot.** Sixty units carry thirty-five instruments between them,
+        and that ratio is deliberate. An instrument costs a reader a download, a
+        hydration, and a decision about what to fiddle with — a static SVG costs
+        none of those and arrives before the page has finished loading.
+
+        So most good proposals are diagrams wearing the wrong hat. If a
+        well-labelled picture would land the same point, say so and file it as a
+        [content fix](https://github.com/bhavinvirani/how-ai-works/issues/new?template=content-fix.yml)
+        instead; that is Track B, and it ships in a fraction of the time. Saying
+        it here saves us both a round trip.
+
+        **Nothing gets built until this issue is approved.** The maintainer
+        reviews the idea and applies `approved-to-build` before any conversion
+        work starts. That gate is cheap on purpose: rejecting an idea costs you
+        an afternoon of thinking, rejecting a finished island costs you a
+        weekend.
+
+  - type: input
+    id: unit
+    attributes:
+      label: Target unit
+      description: >-
+        The slug — the last segment of the page URL. An instrument belongs to one
+        unit; if it seems to belong to three, it is probably teaching something
+        too general to be surprising anywhere.
+      placeholder: temperature
+    validations:
+      required: true
+
+  - type: input
+    id: lesson
+    attributes:
+      label: The one thing a learner should understand afterwards
+      description: >-
+        One sentence. If it takes two, you have either two instruments or a
+        diagram. This sentence is also the test the finished island ships with —
+        every instrument here carries a `describe('the lesson the instrument
+        exists to deliver')` block that pins the claim as arithmetic, so a later
+        edit cannot quietly falsify the prose.
+      placeholder: Raising temperature does not make the model smarter, it makes it less predictable.
+    validations:
+      required: true
+
+  - type: textarea
+    id: interaction
+    attributes:
+      label: What the reader does, and what surprises them
+      description: >-
+        Which controls, and what visibly changes. Fiddling has to produce a
+        surprise, or confirm something the prose has just claimed. If every
+        setting looks broadly the same, the thing is decoration and will be
+        turned down on those grounds.
+    validations:
+      required: true
+
+  - type: textarea
+    id: why-not-a-diagram
+    attributes:
+      label: Why a diagram cannot do this
+      description: >-
+        The whole gate, in one box. Usually the honest answer is that the lesson
+        lives in the *relationship* between a control and an outcome, and a
+        reader only believes it once their own hand moved the control. If the
+        answer is "a diagram could, but this is nicer", that is a diagram.
+    validations:
+      required: true
+
+  - type: input
+    id: artifact
+    attributes:
+      label: Claude artifact link
+      description: >-
+        Required, and it has to open without a sign-in — a private link is the
+        same as no link. The prototype does not need our design tokens, our
+        primitives, or good code; converting it is a later step with its own
+        checklist in CONTRIBUTING.md. It needs to work, so the idea can be judged
+        by using it rather than by reading a description of it.
+      placeholder: https://claude.ai/public/artifacts/...
+    validations:
+      required: true
+
+  - type: textarea
+    id: libraries
+    attributes:
+      label: Every library the prototype imports
+      description: >-
+        List them, or write "none" if it is plain React. The dependency
+        allowlist is short and it stays short, and its "Not happening" table
+        already rules out chart libraries, Mermaid and three.js with reasons —
+        read
+        [docs/DEPENDENCIES.md](https://github.com/bhavinvirani/how-ai-works/blob/main/docs/DEPENDENCIES.md)
+        before answering. A prototype built on a charting library is not
+        disqualified; it just has to be rebuildable on hand-authored SVG, and it
+        is better to find that out now.
+    validations:
+      required: true
+
+  - type: dropdown
+    id: author
+    attributes:
+      label: Do you want to build it yourself
+      description: >-
+        Either answer is fine. An approved idea nobody has time to implement
+        still sits in the backlog as a decision already made.
+      options:
+        - Yes — I will open the pull request once it is approved
+        - Yes, but I would like help converting it to the tokens and primitives
+        - 'No: I am handing over the idea and the prototype'
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: acknowledgements
+    attributes:
+      label: Before you file this
+      options:
+        - label: >-
+            I understand that nothing gets built until a maintainer applies
+            `approved-to-build`, and that a pull request opened before then may
+            be closed unreviewed.
+          required: true
+        - label: >-
+            The prototype is mine to give — I wrote or directed it, and I can
+            sign it off under the DCO when the pull request lands.
+          required: true
+
+  - type: markdown
+    attributes:
+      value: |
+        Approval means the idea is worth building. What the pull request is then
+        reviewed against is the interactive contract — zero required props, no
+        network, deterministic, keyboard operable, within its size budget,
+        instant under `prefers-reduced-motion`, logic in a tested `logic.ts`.
+        It is rule 3 in
+        [CLAUDE.md](https://github.com/bhavinvirani/how-ai-works/blob/main/CLAUDE.md),
+        and it is worth reading before you start converting rather than after.

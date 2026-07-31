@@ -1,0 +1,20 @@
+# Additional ignores for `pnpm format:check` ONLY. `pnpm format` does not read
+# this file, so everything below is still formatted by `pnpm format` — it just
+# cannot fail CI.
+#
+# WHY THIS EXISTS. Track A is "edit the .mdx in GitHub's web UI, zero local
+# setup" (PLAN §5.1), and it is the contribution path we most want to work. A
+# contributor on that path has no way to run Prettier. With lesson content in
+# the `format:check` scope, their first pull request goes red for a rewrapped
+# line — through no fault of their own, on the one track designed to need no
+# tooling. That is the likeliest reason a stranger's first contribution fails,
+# and it fails for a reason that teaches them nothing.
+#
+# What is given up: line wrapping in lesson prose is no longer enforced. That is
+# cosmetic, `pnpm format` still fixes it, and the maintainer runs it before
+# pushing anyway. Every rule that carries meaning — tokens, types, budgets,
+# accessibility, links, the content schema — is still enforced on this path.
+#
+# Scope is deliberately only the lesson content. Components, scripts, tests and
+# config are all still checked, because anyone touching those has a checkout.
+src/content/

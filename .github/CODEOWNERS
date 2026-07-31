@@ -1,0 +1,24 @@
+# Code owners.
+#
+# Everything, one owner, for now. This file's job today is to auto-request a
+# review on every pull request; it sits otherwise inert.
+#
+# DO NOT ENABLE "Require review from Code Owners" WHILE THERE IS ONE OWNER.
+#
+# GitHub forbids approving your own pull request. With `* @bhavinvirani` and a
+# Code Owners review requirement, every PR Bhavin opens becomes unmergeable by
+# the only person allowed to merge it — a deadlock on the maintainer's own work,
+# on day one, with no way out except turning the setting back off.
+#
+# Dependabot PRs are unaffected either way: he is not the author, so he can
+# approve those.
+#
+# Flip it on the day a second person gets the Write role, alongside
+# "require 1 approving review". That is a settings change, not a rework.
+# See MAINTAINERS.md and PLAN.md §5.5.
+
+* @bhavinvirani
+
+# When a real content maintainer appears, path-scoped ownership goes here —
+# e.g. `src/content/** @some-writer`. Documented now so the scaling path is
+# written down before it is needed rather than improvised under pressure.

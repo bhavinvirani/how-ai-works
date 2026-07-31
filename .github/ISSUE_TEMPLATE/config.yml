@@ -1,0 +1,26 @@
+# Blank issues are off on purpose. Not to make anyone jump through hoops — the
+# forms exist because four questions asked up front save a week of back and
+# forth, and because "which unit?" is the first reply to almost every blank
+# issue ever filed here.
+blank_issues_enabled: false
+
+contact_links:
+  - name: Read the site
+    url: https://bhavinvirani.github.io/how-ai-works/
+    about: >-
+      Sixty units, sixteen Parts, thirty-five instruments. If you are not sure
+      whether something is missing or you have not reached it yet, the map and
+      the search box will tell you faster than an issue will.
+
+  - name: How to contribute
+    url: https://github.com/bhavinvirani/how-ai-works/blob/main/CONTRIBUTING.md
+    about: >-
+      Three tracks — improve the words, improve a diagram, build an instrument.
+      Track A needs no clone, no install, and no local setup at all.
+
+  - name: Report a security problem
+    url: https://github.com/bhavinvirani/how-ai-works/blob/main/SECURITY.md
+    about: >-
+      Not here. The site is static with no backend and no accounts, so the
+      surface is small — but if you have found something, report it privately
+      first.

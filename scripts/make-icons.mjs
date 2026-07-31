@@ -19,7 +19,7 @@
  * Every path it writes is listed in OUTPUTS below, and nothing else is touched.
  */
 
-import { readFile, writeFile } from 'node:fs/promises';
+import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { argv, exit } from 'node:process';
 import { fileURLToPath } from 'node:url';
@@ -33,7 +33,8 @@ import { chromium } from '@playwright/test';
  */
 /* global document */
 
-import { PARTS } from '../src/lib/units/parts.ts';
+import { UNIT_CARD_DIR } from '../src/lib/seo/cards.ts';
+import { PART_LABELS, PARTS } from '../src/lib/units/parts.ts';
 import { site } from '../src/seo/site.ts';
 import {
   cardHtml,
@@ -41,6 +42,7 @@ import {
   markSvg,
   readColorTokens,
   robotsTxt,
+  unitCardHtml,
   webmanifest,
 } from './brand.mjs';
 
@@ -150,23 +152,56 @@ async function fontData(relativePath) {
 }
 
 /**
- * How many units are actually published — the number the card claims.
+ * Every published unit, with the two fields its card needs.
  *
- * Counted rather than hardcoded, so the social card cannot end up advertising
- * a curriculum size that stopped being true two phases ago.
+ * Read with a regex rather than a YAML parser for the same reason
+ * `scripts/sitemap.mjs` does: the alternative is a dependency (hard rule 2) for
+ * three fields in a file whose shape the Zod schema in `src/content.config.ts`
+ * already guarantees. Drafts are skipped — they are not built, so a card for
+ * one would be an orphan.
  *
- * @returns {Promise<number>}
+ * @returns {Promise<{ id: string, title: string, part: string }[]>}
  */
-async function countPublishedUnits() {
+async function readPublishedUnits() {
   const { glob } = await import('node:fs/promises');
 
-  let published = 0;
+  /** @type {{ id: string, title: string, part: string }[]} */
+  const units = [];
+
   for await (const entry of glob('src/content/units/*.mdx', { cwd: ROOT })) {
     const source = await readFile(path.join(ROOT, entry), 'utf8');
-    if (/^status:\s*published\s*$/m.test(source)) published += 1;
+    if (!/^status:\s*published\s*$/m.test(source)) continue;
+
+    const title = /^title:\s*(.+)$/m.exec(source)?.[1]?.trim();
+    const part = /^part:\s*(.+)$/m.exec(source)?.[1]?.trim();
+    if (!title || !part) continue;
+
+    units.push({
+      id: path.basename(entry, '.mdx'),
+      // YAML quotes a scalar only when it has to (a colon, a leading quote).
+      // None of the sixty currently do; stripping is cheap insurance for the
+      // first one that does.
+      title: title.replace(/^['"]|['"]$/g, ''),
+      part: part.replace(/^['"]|['"]$/g, ''),
+    });
   }
-  return published;
+
+  return units.sort((a, b) => a.id.localeCompare(b.id));
 }
+
+/**
+ * `PART_LABELS` is keyed by the Part union, so indexing it with a string read
+ * out of a file will not type-check — the same argument `new-unit.mjs` makes
+ * about `PARTS`. Widening is what lets an arbitrary string be *looked up*
+ * rather than assumed.
+ *
+ * The `??` fallback below is unreachable in a built site (Zod rejects an unknown
+ * `part` at `astro build`), but this script runs on its own, so a card falling
+ * back to the raw slug beats one reading "undefined".
+ *
+ * @type {Record<string, string>}
+ */
+const partLabels = PART_LABELS;
 
 async function main() {
   const tokens = await readColorTokens();
@@ -252,36 +287,79 @@ async function main() {
     ),
   ]);
 
-  const lessons = await countPublishedUnits();
-  const card = cardHtml({
-    tokens,
-    display,
-    body,
-    mono,
-    eyebrow: `${String(lessons)} lessons · ${String(PARTS.length)} parts · open source`,
-    width: site.ogImage.width,
-    height: site.ogImage.height,
-  });
+  const units = await readPublishedUnits();
+
+  /**
+   * Shoot one 1200×630 card. Reuses a single page across all sixty-one renders
+   * — a fresh page per card re-parses ~400 KB of inlined webfont each time,
+   * which turns twenty seconds into three minutes.
+   *
+   * @param {string} html
+   * @param {string} destination absolute path
+   */
+  async function shootCard(html, destination) {
+    await cardPage.setContent(html);
+    // Webfonts load asynchronously even from a data: URI. Shooting before they
+    // settle produces a card set in the fallback face, which looks close enough
+    // to correct in a thumbnail that it survives review.
+    await cardPage.evaluate(() => document.fonts.ready);
+    await cardPage.screenshot({ path: destination });
+  }
 
   const cardPage = await context.newPage();
   await cardPage.setViewportSize({
     width: site.ogImage.width,
     height: site.ogImage.height,
   });
-  await cardPage.setContent(card);
-  // Webfonts load asynchronously even from a data: URI. Shooting before they
-  // settle produces a card set in the fallback face, which looks close enough
-  // to correct in a thumbnail that it survives review.
-  await cardPage.evaluate(() => document.fonts.ready);
-  await cardPage.screenshot({
-    path: path.join(PUBLIC_DIR, path.basename(site.ogImage.path)),
-  });
-  await cardPage.close();
+
+  await shootCard(
+    cardHtml({
+      tokens,
+      display,
+      body,
+      mono,
+      eyebrow: `${String(units.length)} lessons · ${String(PARTS.length)} parts · open source`,
+      width: site.ogImage.width,
+      height: site.ogImage.height,
+    }),
+    path.join(PUBLIC_DIR, path.basename(site.ogImage.path)),
+  );
   written.push(
     `${path.basename(site.ogImage.path)} (${String(site.ogImage.width)}×${String(site.ogImage.height)})`,
   );
 
-  // 6. Throwaway renders at tab size. The glyph has to survive 16px, and the
+  // 6. One card per lesson.
+  //
+  // Sixty links that all unfurl into the same picture tell a reader nothing
+  // about which one they were handed. These lead with the lesson's own title.
+  //
+  // They are generated here and committed rather than built in CI, for the same
+  // reason as the icons: `pnpm build` must not depend on a browser download.
+  // Regenerating produces byte-identical files when nothing changed, so git
+  // stores no new objects — a title edit costs one blob, not sixty.
+  const cardDir = path.join(ROOT, UNIT_CARD_DIR);
+  await mkdir(cardDir, { recursive: true });
+
+  for (const unit of units) {
+    await shootCard(
+      unitCardHtml({
+        tokens,
+        display,
+        body,
+        mono,
+        title: unit.title,
+        part: partLabels[unit.part] ?? unit.part,
+        width: site.ogImage.width,
+        height: site.ogImage.height,
+      }),
+      path.join(cardDir, `${unit.id}.png`),
+    );
+  }
+  written.push(`${UNIT_CARD_DIR}/*.png (${String(units.length)} lessons)`);
+
+  await cardPage.close();
+
+  // 7. Throwaway renders at tab size. The glyph has to survive 16px, and the
   // only way to know it does is to look at it, so `--preview` leaves the
   // evidence somewhere it can be opened.
   if (argv.includes('--preview')) {

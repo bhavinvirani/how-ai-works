@@ -381,7 +381,9 @@ CONTRIBUTING.md (three tracks + artifact-conversion checklist + the inbound-lice
 **Accept when:** a stranger can go from "found the repo" to "opened a correct Track A PR" using only the docs, and that PR gets both CI and a working preview URL; an interactive-proposal issue can walk the whole §5.3 pipeline.
 
 ### Phase 4 — Future (documented in FUTURE.md, not built now)
-Remaining Python/other language tabs; new units beyond the artifact; 3D exceptions (lazy three.js); mobile-optimized interactives; i18n; optional Gist progress sync (+ token-exchange worker); OG image generation; visual regression tooling if needed.
+Remaining Python/other language tabs; new units beyond the artifact; 3D exceptions (lazy three.js); mobile-optimized interactives; i18n; optional Gist progress sync (+ token-exchange worker); visual regression tooling if needed.
+
+**Built ahead of schedule:** discovery metadata, the generated icon set, and OG image generation — one shared card plus one per lesson. See `docs/SEO.md`; the FUTURE.md entry records why its own deferral trigger was wrong.
 
 ---
 

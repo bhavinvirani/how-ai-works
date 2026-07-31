@@ -25,8 +25,30 @@ nothing and why they are here anyway.
 
 Generated into `public/` and committed: `favicon.svg`, `favicon.ico`,
 `apple-touch-icon.png`, `icon-192.png`, `icon-512.png`,
-`icon-maskable-512.png`, `og.png`, `site.webmanifest`, `robots.txt`.
+`icon-maskable-512.png`, `og.png`, `site.webmanifest`, `robots.txt`, and
+`og/units/<id>.png` — one card per lesson.
 **Do not hand-edit any of them** — run `pnpm icons`.
+
+## Social cards
+
+The home page and the utility pages use the shared `og.png`. Every lesson uses
+its own card, carrying that lesson's title and the Part it belongs to — sixty
+links that all unfurl into the same picture tell a reader nothing about which
+one they were handed.
+
+Adding a unit therefore means running `pnpm icons` and committing the new PNG.
+Forgetting is the realistic mistake and nothing else catches it: `astro build`
+does not resolve `public/` paths, and `og:image` is only ever fetched by
+somebody else's server, so a missing card is invisible from inside the site.
+`src/lib/seo/cards.test.ts` fails the build in both directions — a published
+unit with no card, and a card left behind by a unit that was deleted or
+unpublished.
+
+Cards are ~45 KB each, ~2.6 MB for the set. Regenerating produces
+byte-identical files when nothing changed, so git stores no new objects: a
+title edit costs one blob, not sixty. A Playwright upgrade that changes text
+rendering would rewrite all sixty at once — that is the one change worth
+noticing in a diff.
 
 ---
 
@@ -124,7 +146,9 @@ ENABLE_ANALYTICS=1 pnpm exec astro build && grep -c goatcounter dist/index.html
 ```
 
 `tests/e2e/seo.spec.ts` asserts the script is **absent** from a normal build,
-which is the half that can be automated.
+which keeps CI off `gc.zgo.at`. The other half now runs in `deploy.yml`: a step
+after publishing greps `dist/index.html` for the tag and fails the deploy if it
+is missing. Between them, both ways of getting this wrong are caught.
 
 Because the site counts visits, `/progress` and the README say so. If analytics
 is ever removed, `ui.progress.page.privacyAnalytics` and the README's

@@ -58,3 +58,22 @@ jobs:
           user_name: github-actions[bot]
           user_email: github-actions[bot]@users.noreply.github.com
           commit_message: 'deploy: ${{ github.sha }}'
+
+      # The half of the analytics switch no test can reach.
+      #
+      # `seo.spec.ts` asserts the counter is ABSENT from an ordinary build, which
+      # is the property that keeps CI off gc.zgo.at. Nothing can assert it is
+      # PRESENT, because the only build where it should be is this one — so
+      # losing the `env:` block above would disable the visit count silently and
+      # permanently, and every gate would stay green (HANDOFF trap 24).
+      #
+      # Checked against dist/ rather than the live URL: Pages takes a minute or
+      # so to serve a new commit, and polling for it would trade a real check for
+      # a flaky one. This proves what we published, which is the part we control.
+      - name: Assert the visit counter shipped
+        run: |
+          if ! grep -q 'data-goatcounter' dist/index.html; then
+            echo "::error::Built site has no GoatCounter tag. Check the ENABLE_ANALYTICS env on the build step above — see docs/SEO.md."
+            exit 1
+          fi
+          echo "Visit counter present in dist/index.html."

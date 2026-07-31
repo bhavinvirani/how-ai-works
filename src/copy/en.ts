@@ -56,6 +56,20 @@ export const ui = {
     languages: 'Language',
   },
 
+  unit: {
+    /** Heading above the generated connections footer (§2.2 step 5). */
+    whereItFits: 'Where it fits',
+    /** Heading above the prerequisite list. */
+    readFirst: 'Read this first',
+    /** Heading above a checkpoint question. */
+    checkpoint: 'Checkpoint',
+  },
+
+  figure: {
+    /** Prefix announced before a figure's plain-English description. */
+    describes: 'What this shows',
+  },
+
   progress: {
     markComplete: 'Mark as complete',
     markIncomplete: 'Mark as not complete',

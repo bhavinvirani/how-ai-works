@@ -1,0 +1,76 @@
+---
+import { getCollection, render } from 'astro:content';
+import type { CollectionEntry } from 'astro:content';
+
+import ConnectionsFooter from '../../components/blocks/ConnectionsFooter.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { assertAcyclic } from '../../lib/units/graph';
+import {
+  resolveConnections,
+  resolvePrerequisites,
+} from '../../lib/units/resolve';
+
+/**
+ * Every unit page.
+ *
+ * This is also where the prerequisite graph is checked. Zod validates that each
+ * reference points at a unit that exists; it cannot see the shape of the
+ * resulting graph, and both the reading order and `/map` assume a DAG. Running
+ * the check here means a cycle fails `astro build` rather than surfacing later
+ * as a nonsensical reading order.
+ */
+export async function getStaticPaths() {
+  const units = await getCollection('units');
+
+  assertAcyclic(
+    units.map((unit) => ({
+      id: unit.id,
+      prerequisites: unit.data.prerequisites.map((reference) => reference.id),
+      part: unit.data.part,
+      order: unit.data.order,
+    })),
+  );
+
+  // Drafts are visible while writing, never in a deployed build.
+  const visible = units.filter(
+    (unit) => unit.data.status === 'published' || import.meta.env.DEV,
+  );
+
+  return visible.map((unit) => ({
+    params: { slug: unit.id },
+    props: { unit, units },
+  }));
+}
+
+interface Props {
+  unit: CollectionEntry<'units'>;
+  units: CollectionEntry<'units'>[];
+}
+
+const { unit, units } = Astro.props;
+const { Content } = await render(unit);
+
+const byId = new Map(units.map((entry) => [entry.id, entry]));
+const base = import.meta.env.BASE_URL;
+
+const prerequisites = resolvePrerequisites(
+  unit.data.prerequisites,
+  (id) => {
+    const entry = byId.get(id);
+    return entry && { title: entry.data.title, summary: entry.data.summary };
+  },
+  base,
+);
+
+const connections = resolveConnections(
+  unit.data.connections,
+  (id) => byId.get(id)?.data.title,
+  base,
+);
+---
+
+<BaseLayout title={unit.data.title} description={unit.data.summary}>
+  <h1>{unit.data.title}</h1>
+  <Content />
+  <ConnectionsFooter prerequisites={prerequisites} connections={connections} />
+</BaseLayout>

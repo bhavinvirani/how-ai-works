@@ -1,0 +1,75 @@
+---
+import { ui } from '../../copy/en';
+
+/**
+ * "Where it fits" — the generated answer to *what does this connect to*
+ * (§2.2 step 5).
+ *
+ * Every link comes from unit frontmatter, so the web of connections is data
+ * rather than a set of hand-maintained cross-links that rot silently. The
+ * per-link `why` is hand-written and required: "see also: embeddings" teaches
+ * nothing, whereas "tokenization feeds embeddings because the model needs a
+ * fixed vocabulary before it can look anything up" is the actual lesson.
+ *
+ * Takes already-resolved items rather than raw references so it stays a pure
+ * presentational component — the unit page owns collection lookups.
+ */
+
+export interface ConnectionItem {
+  href: string;
+  title: string;
+  why: string;
+}
+
+interface Props {
+  connections?: ConnectionItem[];
+  prerequisites?: ConnectionItem[];
+}
+
+const { connections = [], prerequisites = [] } = Astro.props;
+const hasAnything = connections.length > 0 || prerequisites.length > 0;
+---
+
+{
+  hasAnything && (
+    <footer class="mt-12 flex flex-col gap-6 border-t border-rule pt-6">
+      {prerequisites.length > 0 && (
+        // Named with aria-label rather than aria-labelledby: an id here would
+        // be a fixed string, and two footers on one page would collide.
+        <nav aria-label={ui.unit.readFirst}>
+          <h2 class="font-display text-lg font-semibold text-ink">
+            {ui.unit.readFirst}
+          </h2>
+          <ul class="mt-2 flex flex-col gap-2">
+            {prerequisites.map((item) => (
+              <li>
+                <a href={item.href} class="font-medium">
+                  {item.title}
+                </a>
+                <span class="text-ink-muted"> — {item.why}</span>
+              </li>
+            ))}
+          </ul>
+        </nav>
+      )}
+
+      {connections.length > 0 && (
+        <nav aria-label={ui.unit.whereItFits}>
+          <h2 class="font-display text-lg font-semibold text-ink">
+            {ui.unit.whereItFits}
+          </h2>
+          <ul class="mt-2 flex flex-col gap-2">
+            {connections.map((item) => (
+              <li>
+                <a href={item.href} class="font-medium">
+                  {item.title}
+                </a>
+                <span class="text-ink-muted"> — {item.why}</span>
+              </li>
+            ))}
+          </ul>
+        </nav>
+      )}
+    </footer>
+  )
+}

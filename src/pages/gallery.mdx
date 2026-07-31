@@ -4,6 +4,10 @@ title: Gallery — How AI Actually Works
 description: Every control and instrument on this site, live, with its knobs — the working style guide.
 ---
 
+import Aside from '../components/blocks/Aside.astro';
+import Checkpoint from '../components/blocks/Checkpoint.astro';
+import ConnectionsFooter from '../components/blocks/ConnectionsFooter.astro';
+import Figure from '../components/blocks/Figure.astro';
 import {
   InstrumentPanelDemo,
   RevealButtonDemo,
@@ -123,4 +127,93 @@ Narrow this window past the breakpoint to see it change.
   lead="Hover a word to see what the model looked at."
   caption="Each word is scored against every other word; the brightest cells are the pairs the model leaned on most."
   interactiveLabel="Layer"
+/>
+
+## Content blocks
+
+These go straight into a lesson. None of them ships any JavaScript — a page of
+prose should not need React to hide a paragraph.
+
+### Figure
+
+Wraps every diagram. The description is a required prop, because a diagram
+nobody explains is the easiest thing on a visual site to get wrong, and no
+automated check can catch it.
+
+<Figure
+  title="A word split into three tokens"
+  description="Rare words get broken into familiar fragments, so the model can spell out something it has never seen before."
+>
+  <svg viewBox="0 0 320 60" class="w-full max-w-md" aria-hidden="true">
+    <g fill="none" stroke="currentColor" stroke-width="1.5">
+      <rect x="4" y="16" width="86" height="28" rx="4" />
+      <rect x="100" y="16" width="70" height="28" rx="4" />
+      <rect x="180" y="16" width="90" height="28" rx="4" />
+    </g>
+    <g fill="currentColor" font-family="monospace" font-size="13">
+      <text x="20" y="35">
+        token
+      </text>
+      <text x="116" y="35">
+        isa
+      </text>
+      <text x="196" y="35">
+        tion
+      </text>
+    </g>
+  </svg>
+</Figure>
+
+### Aside
+
+A short detour: a caveat, a bit of history, a misconception worth naming. Tone
+changes the edge colour and the title together, never colour on its own.
+
+<Aside title="This is not how it worked originally">
+  Early systems split on spaces and punctuation. That falls apart on languages
+  that do not put spaces between words, which is a large share of them.
+</Aside>
+
+<Aside tone="caution" title="Easy to get backwards">
+  More tokens does not mean more meaning. A long word split into six pieces
+  carries the same idea it always did — it just costs more to process.
+</Aside>
+
+### Checkpoint
+
+Closes each unit. The question comes first, the answer stays folded until the
+reader has had a go.
+
+<Checkpoint question="Why would a model split an unfamiliar word into pieces rather than treat it as one new word?">
+  Because its vocabulary is fixed and finite. A word it has never seen has no
+  entry to look up — but the pieces do, so it can build a meaning out of parts
+  it already knows.
+</Checkpoint>
+
+### Connections footer
+
+Generated from unit frontmatter, so the web of links is data rather than
+hand-maintained cross-references that quietly rot. Each link carries a written
+reason, because "see also" teaches nothing.
+
+<ConnectionsFooter
+  prerequisites={[
+    {
+      href: '#',
+      title: 'What a model actually is',
+      why: 'Tokens only make sense once you know what is consuming them.',
+    },
+  ]}
+  connections={[
+    {
+      href: '#',
+      title: 'Embeddings',
+      why: 'Tokens are the units that embeddings turn into positions in space.',
+    },
+    {
+      href: '#',
+      title: 'Context windows',
+      why: 'A context limit is counted in tokens, not words — which is why the two keep getting confused.',
+    },
+  ]}
 />

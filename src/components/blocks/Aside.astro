@@ -1,0 +1,32 @@
+---
+/**
+ * A short detour from the main thread of a lesson — a caveat, a bit of history,
+ * a common misconception worth naming.
+ *
+ * Deliberately plain. An aside that shouts competes with the lesson it is
+ * attached to; this one is a tinted panel with a coloured edge and nothing else.
+ * Tone changes the edge colour AND the label, never colour alone — meaning is
+ * never carried by colour (hard rule 9).
+ */
+
+interface Props {
+  /** What this aside is about. Doubles as the visible heading. */
+  title: string;
+  /** Changes the accent. `caution` is for genuine traps, not emphasis. */
+  tone?: 'note' | 'caution';
+}
+
+const { title, tone = 'note' } = Astro.props;
+
+const TONES = {
+  note: 'border-l-accent-2 bg-accent-2-soft',
+  caution: 'border-l-warning bg-warning-soft',
+} as const;
+---
+
+<aside class:list={['my-6 rounded-r-md border-l-4 px-4 py-3', TONES[tone]]}>
+  <p class="mb-1 text-sm font-semibold text-ink">{title}</p>
+  <div class="flex flex-col gap-2 text-sm text-ink-muted [&>*+*]:mt-2">
+    <slot />
+  </div>
+</aside>

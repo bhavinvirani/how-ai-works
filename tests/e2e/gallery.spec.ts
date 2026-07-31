@@ -82,3 +82,32 @@ test('the reveal keeps its answer out of the page until asked', async ({
 
   await expect(page.getByText(answer)).toBeVisible();
 });
+
+test('a figure names its diagram and says what it teaches', async ({
+  page,
+}) => {
+  await expect(
+    page.getByRole('img', { name: 'A word split into three tokens' }),
+  ).toBeVisible();
+
+  // The description is for everyone, not hidden for screen readers.
+  await expect(
+    page.getByText(/Rare words get broken into familiar fragments/),
+  ).toBeVisible();
+});
+
+test('connections are two named lists, each link giving a reason', async ({
+  page,
+}) => {
+  await expect(
+    page.getByRole('navigation', { name: 'Read this first' }),
+  ).toBeVisible();
+  await expect(
+    page.getByRole('navigation', { name: 'Where it fits' }),
+  ).toBeVisible();
+
+  await expect(page.getByRole('link', { name: 'Embeddings' })).toBeVisible();
+  await expect(
+    page.getByText(/Tokens are the units that embeddings turn into/),
+  ).toBeVisible();
+});

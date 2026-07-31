@@ -1,0 +1,303 @@
+---
+title: Nobody asks you to spell Smith
+part: language-problem
+order: 2
+summary: Text is cut into chunks from a fixed list of about a hundred thousand before a model sees any of it — not letters and not words — which is why the bill is counted in chunks, why a machine that writes essays cannot count the letters in a word, and why the same sentence costs several times more in some languages than in English.
+prerequisites:
+  - embeddings
+connections:
+  - to: recurrent-networks
+    why: The machines on that page read one piece at a time, so what gets cut up here is exactly what they queue through — and the length that overwhelmed their memory was always counted in pieces, never in words.
+interactives:
+  - TokenSplitter
+status: published
+updated: 2026-07-31
+---
+
+import Aside from '../../components/blocks/Aside.astro';
+import Checkpoint from '../../components/blocks/Checkpoint.astro';
+import DevAside from '../../components/blocks/DevAside.astro';
+import Figure from '../../components/blocks/Figure.astro';
+import ThreeWaysToCut from '../../components/diagrams/ThreeWaysToCut.astro';
+import { TokenSplitter } from '../../components/interactives/TokenSplitter';
+
+The man behind the desk has half your booking typed before you have finished
+saying good morning. Surname?
+
+"Kowalczyk."
+
+He stops. You start again — K, O, W — and you are down to one letter a second
+while the couple behind you shift their bags from hand to hand.
+
+Nobody in that queue has ever been asked to spell _Smith_.
+
+Both names are built out of the same twenty-six letters, and he knows all
+twenty-six. Difficulty was never what separated them. One of those names was
+something he could take in whole; the other had to be assembled out of parts.
+
+## The promise from two topics ago
+
+The unit on the map of meanings said _word_ on nearly every line, and then owned
+up in a box at the side that _word_ was standing in for something it would name
+later — something that would change what gets a position on the map.
+
+This is that. A language model does not read words. It does not read letters
+either. It reads chunks from a list that was settled before the model was
+trained: some of them whole words, most of them fragments of longer ones, and a
+fair few that are a piece of punctuation and nothing else.
+
+The chunks have a name, and you have been paying for them for years. They are
+called **tokens**, and the thing that does the cutting is a **tokenizer**.
+
+Nothing in the previous unit breaks. Each token gets a position, distance
+between positions still means similarity, and everything a model does is still
+arithmetic on that map. The only correction is about what is standing at each
+place on it.
+
+## The two obvious answers, and what is wrong with each
+
+The machine needs a finite list of things it can hold positions for. Only two
+lists suggest themselves, and both have been tried properly.
+
+**One entry per word.** Sentences come out pleasantly short, and each entry
+carries a decent amount of meaning on its own. The trouble is that the list has
+to end somewhere and language does not. A typo, a surname, a new brand, a
+hashtag, a chemical, a word coined last Tuesday — every one of those is not
+merely awkward for a word-list, it is a hole. There is no entry, so there is no
+position, so there is nothing for the arithmetic to work on. The machine does
+not do badly with the word; it receives no word at all.
+
+**One entry per letter.** Now nothing can ever be unknown, because everything
+anyone types is made of letters that are already on the list. But a sentence
+becomes four or five times longer as a sequence, and length is the expensive
+dimension — the machinery that reads a sequence pays for every extra step in it,
+sometimes steeply. There is a second cost too: a lone letter means almost
+nothing, so the machine has to rebuild every word from its letters every single
+time it meets one.
+
+So: a list that ends, which cannot cope with the new, or a list that never ends,
+which cannot cope with the long.
+
+The way out is to stop insisting that the pieces be either. Let the list hold
+chunks — whole words where a word is common enough to deserve one, fragments
+otherwise — and both problems shrink at once. Sequences stay short, because
+common text is mostly common chunks. And nothing is ever unknown, because
+anything unfamiliar simply comes apart into smaller pieces, and at the very
+bottom the pieces are single characters, which are all on the list.
+
+The unfamiliar thing does not fail. It just costs more.
+
+<Figure
+  title="The same two words, cut three ways"
+  description="Cutting into letters never fails but makes everything long; cutting into words is short but has no entry at all for a name it has not met, so it produces a blank; cutting into chunks does neither — the long familiar word collapses into three fragments the machine has seen a million times, and the short unfamiliar one spreads out into eight, which is a price rather than a failure."
+>
+  <ThreeWaysToCut />
+</Figure>
+
+## Nobody wrote the list
+
+The obvious guess is that a team of linguists sat down and decided which chunks
+were worth having. Nothing of the sort happens. The list is built by counting,
+by a procedure short enough to describe in one paragraph.
+
+Start with a list holding nothing but single characters. Read a mountain of
+text, and find which two neighbouring pieces turn up side by side more often
+than any other pair. Glue that pair together into one new piece, and add it to
+the list. Then do it again, with the new piece now available to be glued to
+something else. And again, and again, about a hundred thousand times.
+
+Watch what that produces. `t` and `h` go together first, because English cannot
+get through a line without them. Some rounds later `th` and `e` are glued, and
+now _the_ is a single piece. Endings like `ing` and `tion` earn their own
+entries, because they turn up on the end of thousands of different words that
+have nothing else in common. By the time the counting stops, a common word is a
+single piece and an uncommon one is still in fragments — and nobody decided
+which was which. Frequency decided, and frequency is a fact about the text that
+happened to be fed in.
+
+Two consequences worth carrying.
+
+The list is finished **before** training starts, and it never changes
+afterwards. A model released three years ago is still cutting up today's words
+with a list built from text that predates them.
+
+And the list is a claim about which language matters. Not an opinion anybody
+held — a by-product of what was in the pile.
+
+## Cut some text up yourself
+
+The panel below is a real tokenizer, just an extremely small one. Its list was
+built by the procedure above, run forty-eight times instead of a hundred
+thousand. That is the honest difference between it and the real thing, and it is
+worth knowing before you draw conclusions: with only forty-eight glues, ordinary
+English words come apart more than they would in practice.
+
+Start with the phrase it opens on: _the letter was not for you_. Twenty-six
+characters, six words — and nine pieces.
+
+Now click through to the name. _a letter for Kowalczyk_ is **shorter** than the
+first phrase and has **fewer** words in it, and it costs fourteen pieces. Eight
+of those fourteen are the surname, arriving very nearly one letter at a time,
+exactly as it did at the desk.
+
+<TokenSplitter client:visible />
+
+Then do the thing the panel is really for, which is to type your own name into
+it and watch what happens.
+
+Two more to try before moving on. The number preset is sixteen characters and
+twelve pieces, because digits never glue to anything — `4417290385` is ten
+separate pieces, one per digit. Real tokenizers usually manage two or three
+digits to a piece, which is not much of a rescue: a spreadsheet costs a great
+deal more to hand over than it looks like it should.
+
+The last preset puts English and a Hindi greeting side by side: _hello_ is
+five characters and four pieces, and _नमस्ते_ is six characters and eighteen.
+Not eighteen letters. Eighteen boxes with no letters in them at all, which is
+the last of the three things below and the one with consequences.
+
+## Three things this explains
+
+### Why the bill is in tokens
+
+Every commercial model charges by the token, both for what you send and for what
+comes back, and every model has a ceiling on how many tokens it can hold in mind
+at once. Neither number is in words, and this is why: the token is the unit of
+work. The machine does one pass of its arithmetic per token, so the token is
+what actually costs something to produce.
+
+It also means the same idea has different prices depending on how you phrase it.
+Ordinary English runs at about four characters to the token, which makes a
+hundred words somewhere near a hundred and thirty tokens. Code, long
+identifiers, tables of figures and unusual names all run denser than that, so a
+document full of them costs more than its word count suggests.
+
+### Why it cannot count the letters in a word
+
+Ask a model how many r's are in _embarrassment_ and it will often get it wrong,
+which is startling in something that has just written you a competent paragraph
+about the word's etymology.
+
+It is not a reasoning failure. It is that the letters were never delivered. Cut
+that word up in the panel and thirteen letters arrive as eight pieces, and the
+two r's end up in different ones — one of them fused to the `a` in front of it.
+The machine is not being asked to count letters it can see. It is being asked to
+count letters inside chunks it has only ever met whole.
+
+Reading has the same blind spot in it. You are not currently seeing the
+individual letters of these words; you are seeing shapes you recognise, which is
+why proofreading your own writing is so hard and why a missing letter in a
+familiar word slides straight past. Ask someone to say how many _s_ sounds are
+in a word they have just read fluently and they slow right down. Same problem,
+same cause.
+
+This is also why a model can be brilliant at spelling in one breath and hopeless
+at it in the next. Spelling that it has read about — spelling written out in the
+text it learned from — it knows. Spelling it would have to work out by
+inspecting its own input, it cannot do, because the input has no letters in it.
+
+### Why some languages cost several times more
+
+Here is the one that matters most, and it follows directly from where the list
+came from.
+
+The pile of text used to build the list was mostly English, along with a handful
+of other languages that have a lot of material on the internet. So the glueing
+loop spent its hundred thousand rounds where the text was: on English fragments,
+English endings, English whole words. Languages that were thinly represented got
+few glues, or none.
+
+A language with no glues does not get an error. It falls all the way to the
+bottom of the list — to the raw numbers a computer uses to store characters,
+two, three or four of them per character. That is what the boxes of `E0` and
+`A4` in the panel are. Not letters. Not even parts of letters. The plumbing
+underneath the letters.
+
+The result is that the same sentence, saying the same thing, costs several times
+more in some languages than in English. Not because the sentence is longer or
+the language is more complicated, but because of what happened to be in a pile
+of text before anyone typed anything.
+
+<Aside title="What that costs, and who pays it" tone="caution">
+  Three consequences, and none of them is hypothetical.
+
+You pay more. Where billing is per token, the same conversation in Hindi, Tamil,
+Burmese or Amharic can cost a multiple of what it costs in English — for
+identical content, from the same customer, on the same day.
+
+You get less. Every model has a ceiling on how many tokens it can hold at once.
+A language that costs four tokens where English costs one has, in effect, a
+context window four times smaller: shorter documents, fewer turns of
+conversation, earlier truncation.
+
+And it is likely to work less well. Every token is a step of arithmetic, so a
+language shattered into fragments gives the machine longer, thinner, more
+fragmentary sequences to learn from — on top of having had less text in the
+first place.
+
+None of this was aimed at anyone. It is the arithmetic consequence of building a
+list by counting, using whatever text was to hand. It is also fixable: newer
+vocabularies are noticeably fairer than older ones, because people measured the
+gap first and then went and closed some of it. That is usually what it takes.
+
+</Aside>
+
+## Where it sits in the machine
+
+Tokenization is the first thing that happens to your text and the last thing
+that happens to the model's, and both directions are invisible to you.
+
+Your sentence is cut into tokens. Each token is looked up in the list to get its
+row number, and that row number fetches its position — the embedding from the
+previous unit. From there on, nothing in the machine is text; it is all
+arithmetic on positions. At the far end the model produces one token at a time,
+each one looked up and glued back into characters, which is why a response
+appears in little bursts rather than word by word.
+
+That is the whole of the interface between language and machinery. Everything
+else in this Part happens on the far side of it.
+
+<DevAside>
+  <Fragment slot="java">
+    ```java
+    int cost = tokenizer.encode(prompt).size();   // not prompt.length()
+    ```
+
+    Whatever you were about to count instead is wrong. Characters are wrong,
+    `split(" ")` is wrong, and a fixed divisor is wrong for anything that is
+    not ordinary prose. There is also no general answer: the count depends on
+    which vocabulary this model was built with, so the tokenizer you call has
+    to be that model's own.
+
+  </Fragment>
+  <Fragment slot="python">
+    ```python
+    cost = len(tokenizer.encode(prompt))
+    ```
+
+    Worth calling before you send, not after you are billed. The same call is
+    what tells you whether a document fits in the context window, and it is the
+    only honest way to budget a prompt template that users will fill with text
+    you have not seen.
+
+  </Fragment>
+</DevAside>
+
+<Checkpoint question="A support tool sends the same 200-word message to a model, once in English and once in Hindi. The Hindi version costs four times as much and gets cut off before the end. Nobody changed the message, the model or the code. Where did the difference come from — and why can the team not fix it by writing shorter Hindi?">
+  From the list, which was built long before either message existed. The glueing
+  procedure spent its rounds wherever the text it was fed had the most material,
+  and that text was mostly English. Hindi got few chunks or none, so its
+  characters fall to the bottom of the list and arrive as several raw numbers
+  each. Four times the tokens, for the same meaning.
+
+Shortening the Hindi helps in exact proportion and does not close the gap,
+because the gap is not in the message. It is a property of the vocabulary, which
+was fixed before training and cannot be changed without training a new model.
+The team's real options are to budget differently for that language, or to
+choose a model whose vocabulary was built with it in mind.
+
+Worth holding on to as a shape. When a system treats two groups differently and
+nobody wrote a rule that does, the cause is usually something that was counted
+much earlier, by a procedure that was only ever asked what was most common.
+
+</Checkpoint>

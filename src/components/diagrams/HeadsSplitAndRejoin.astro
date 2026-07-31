@@ -1,0 +1,220 @@
+---
+/**
+ * One attention layer seen side-on: a word's meaning is cut into strips, one
+ * strip per head, the heads run at the same moment, and the four answers are
+ * laid end to end and mixed back into one word.
+ *
+ * WHY THIS AND NOT FOUR ARCS OVER A SENTENCE. The instrument below it already
+ * shows four heads disagreeing about one sentence, and a diagram that restates
+ * the paragraph next to it should go (QUALITY_BAR). What no amount of watching
+ * the instrument reveals is the *shape*: that the four heads are one layer
+ * rather than four models, that a reader never picks between them, and that
+ * they are affordable because the width is divided rather than multiplied. A
+ * reader who misses that leaves thinking heads are alternatives.
+ *
+ * THE DASHED BOXES ARE THE HONEST PART. Two of the four carry a description a
+ * person could write; two carry the sentence saying no description fits. That
+ * is the proportion in a real trained model, not a hedge — and it is drawn with
+ * a dashed outline as well as said in words, so nothing here rests on colour
+ * (hard rule 9).
+ *
+ * Positions are arithmetic from one column definition, so the arrows, the strip
+ * boundaries and the head boxes cannot drift apart when a number is edited.
+ *
+ * Decorative on its own, so `aria-hidden`: `Figure` carries the accessible name
+ * and the plain-English description.
+ */
+
+/** The stack of bars and boxes all share this column. */
+const COLUMN = { left: 160, right: 624 };
+const STRIP = (COLUMN.right - COLUMN.left) / 4;
+
+const LANES = [0, 1, 2, 3];
+const centreOf = (lane: number): number => COLUMN.left + STRIP * (lane + 0.5);
+
+/** The three cuts between the four strips. */
+const CUTS = [1, 2, 3].map((cut) => COLUMN.left + STRIP * cut);
+
+interface HeadPanel {
+  readonly lane: number;
+  /** Whether a person could say what this head ended up doing. */
+  readonly described: boolean;
+  readonly lines: readonly string[];
+}
+
+const HEADS: readonly HeadPanel[] = [
+  { lane: 0, described: true, lines: ['what a pronoun', 'points back to'] },
+  { lane: 1, described: true, lines: ['which noun a verb', 'belongs to'] },
+  {
+    lane: 2,
+    described: false,
+    lines: ['no description', 'in English fits', 'this one'],
+  },
+  {
+    lane: 3,
+    described: false,
+    lines: ['no description', 'in English fits', 'this one'],
+  },
+];
+
+const BOX = { top: 92, height: 88, width: 104 };
+
+/** A stalk with a chevron on the end. */
+const arrow = (x: number, from: number, to: number): string =>
+  `M${x.toFixed(1)} ${String(from)} L${x.toFixed(1)} ${String(to)} ` +
+  `M${(x - 4).toFixed(1)} ${String(to - 5)} L${x.toFixed(1)} ${String(to)} ` +
+  `L${(x + 4).toFixed(1)} ${String(to - 5)}`;
+---
+
+<svg viewBox="0 0 640 330" class="w-full" aria-hidden="true">
+  <!-- What arrives: one word's meaning, cut into four strips -->
+  <rect
+    x={COLUMN.left}
+    y="40"
+    width={COLUMN.right - COLUMN.left}
+    height="24"
+    rx="4"
+    class="fill-paper-sunken stroke-rule-strong"
+    stroke-width="1.25"></rect>
+
+  <g class="stroke-rule-strong" stroke-width="1.25">
+    {CUTS.map((cut) => <line x1={cut} y1="40" x2={cut} y2="64" />)}
+  </g>
+
+  <g class="fill-ink-muted font-mono" font-size="10" text-anchor="middle">
+    {
+      LANES.map((lane) => (
+        <text x={centreOf(lane)} y="57">
+          {lane + 1}
+        </text>
+      ))
+    }
+  </g>
+
+  <g class="fill-ink-muted" font-size="10" text-anchor="end">
+    <text x="146" y="48">one word&apos;s meaning</text>
+    <text x="146" y="61">arrives, cut in four</text>
+
+    <text x="146" y="123">four heads, all</text>
+    <text x="146" y="136">reading at the</text>
+    <text x="146" y="149">same moment</text>
+
+    <text x="146" y="214">four answers, laid</text>
+    <text x="146" y="227">end to end</text>
+
+    <text x="146" y="264">and mixed back</text>
+    <text x="146" y="277">into one word</text>
+  </g>
+
+  <!-- Strip to head -->
+  <g class="fill-none stroke-ink-muted" stroke-width="1.25">
+    {LANES.map((lane) => <path d={arrow(centreOf(lane), 68, 86)} />)}
+    {LANES.map((lane) => <path d={arrow(centreOf(lane), 184, 202)} />)}
+    <path d={arrow((COLUMN.left + COLUMN.right) / 2, 234, 252)}></path>
+  </g>
+
+  <!-- The four heads. Solid outline where a person could describe the job,
+       dashed where nobody could — and the words inside say which is which. -->
+  {
+    HEADS.map((head) => (
+      <Fragment>
+        <rect
+          x={centreOf(head.lane) - BOX.width / 2}
+          y={BOX.top}
+          width={BOX.width}
+          height={BOX.height}
+          rx="6"
+          class={
+            head.described
+              ? 'fill-paper stroke-accent-2'
+              : 'fill-paper stroke-ink-muted'
+          }
+          stroke-width="1.25"
+          stroke-dasharray={head.described ? 'none' : '4 3'}
+        />
+        <text
+          x={centreOf(head.lane)}
+          y="112"
+          text-anchor="middle"
+          class="fill-ink font-mono"
+          font-size="10"
+          font-weight="700"
+        >
+          Head {head.lane + 1}
+        </text>
+        <line
+          x1={centreOf(head.lane) - 34}
+          y1="120"
+          x2={centreOf(head.lane) + 34}
+          y2="120"
+          class="stroke-rule"
+          stroke-width="1"
+        />
+        {head.lines.map((line, row) => (
+          <text
+            x={centreOf(head.lane)}
+            y={138 + row * 13}
+            text-anchor="middle"
+            class="fill-ink-muted"
+            font-size="9"
+          >
+            {line}
+          </text>
+        ))}
+      </Fragment>
+    ))
+  }
+
+  <!-- The four answers, still in four pieces -->
+  <rect
+    x={COLUMN.left}
+    y="206"
+    width={COLUMN.right - COLUMN.left}
+    height="24"
+    rx="4"
+    class="fill-paper-sunken stroke-rule-strong"
+    stroke-width="1.25"></rect>
+
+  <g class="stroke-rule-strong" stroke-width="1.25">
+    {CUTS.map((cut) => <line x1={cut} y1="206" x2={cut} y2="230" />)}
+  </g>
+
+  <g class="fill-ink-muted font-mono" font-size="10" text-anchor="middle">
+    {
+      LANES.map((lane) => (
+        <text x={centreOf(lane)} y="223">
+          {lane + 1}
+        </text>
+      ))
+    }
+  </g>
+
+  <!-- And one word out, carrying all four readings -->
+  <rect
+    x={COLUMN.left}
+    y="256"
+    width={COLUMN.right - COLUMN.left}
+    height="24"
+    rx="4"
+    class="fill-accent-2-soft stroke-accent-2"
+    stroke-width="1.5"></rect>
+
+  <text
+    x={(COLUMN.left + COLUMN.right) / 2}
+    y="272"
+    text-anchor="middle"
+    class="fill-ink"
+    font-size="10">the same word, now carrying all four readings</text
+  >
+
+  <g class="fill-ink-faint" font-size="10">
+    <text x="16" y="302"
+      >The width is shared out, not multiplied — four narrow heads cost about
+      what one wide one would.</text
+    >
+    <text x="16" y="318"
+      >Nobody chose these jobs. In a trained model most heads are like the two
+      dashed ones — useful, and fitting no description.</text
+    >
+  </g>
+</svg>

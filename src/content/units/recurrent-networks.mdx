@@ -1,0 +1,254 @@
+---
+title: One word at a time, and the beginning is gone
+part: language-problem
+order: 3
+summary: Machines used to read a sentence one word at a time into a memory that never got any bigger, which loses the start of anything long and, worse, leaves almost every processor you own with nothing to do.
+prerequisites:
+  - why-language-is-hard
+connections:
+  - to: attention
+    why: Attention exists because of both complaints on this page — it lets every word consult every other word directly, so nothing has to survive a chain of updates and no word has to wait its turn.
+interactives: []
+status: published
+updated: 2026-07-31
+---
+
+import Aside from '../../components/blocks/Aside.astro';
+import Checkpoint from '../../components/blocks/Checkpoint.astro';
+import DevAside from '../../components/blocks/DevAside.astro';
+import Figure from '../../components/blocks/Figure.astro';
+import SqueezedMemory from '../../components/diagrams/SqueezedMemory.astro';
+import StuckInLine from '../../components/diagrams/StuckInLine.astro';
+
+Your flatmate rings from the letting agent's office and reads out the reply to
+your complaint. It arrives as one long sentence, and they are not going to stop
+in the middle of it so you can catch up.
+
+You are not writing any of it down. What you have, while they read, is a single
+running impression of the message — updated on every word, and never any bigger
+than it was a word ago.
+
+They finish. You have the end of it, which was something about the boiler, and a
+general sense of whether this is good news. The name of the street, which was the
+third thing they said, has gone. You did not mishear it. It was written over by
+everything that came after.
+
+For most of the time anyone has been teaching machines to read, that was the
+method. Not a rough approximation of the method — the method, the best there
+was, and it worked.
+
+## The machine that reads out loud
+
+A machine has a fixed shape. So many inputs, so many dials, all decided before it
+has seen a single example. A sentence refuses to co-operate with that: this one
+is nine words long and the next one is sixty.
+
+The obvious way out is the way you would do it yourself. Do not try to take the
+sentence in all at once. Take it one piece at a time, and keep a running sense of
+what you have read so far.
+
+That is exactly the design. The machine is handed one piece of text — a word, or
+a fragment of one — along with its own summary of everything before it, and it
+produces an updated summary. Then the next piece. The same machinery does every
+step, so nothing is added for a longer sentence; it just goes round more times.
+
+The loop is where the name comes from. A **recurrent neural network** is a
+network that feeds its own output back into itself, so what it worked out at word
+four is part of what it is looking at during word five. Almost everybody shortens
+it to RNN.
+
+The running summary has a name too, and it is worth knowing because it is where
+all the trouble lives. The **hidden state** is a fixed-length list of numbers —
+five hundred of them, say — holding everything the machine still knows about
+everything it has read. Not a transcript. A compression, rewritten from scratch
+at every word.
+
+Fixed-length means what it says. Five hundred numbers for a four-word sentence.
+The same five hundred for a four-hundred-word one.
+
+## The beginning is the first thing to go
+
+Folding a new word into that summary is not free. The result has to come out the
+same size it went in, so making room for the newest word means giving something
+up, and what gets given up is whatever has already survived the most foldings.
+
+Nothing dramatic happens at any particular moment. A word simply accounts for a
+little less of the memory after every step, and a little less again, until what
+is left of it is too faint to act on.
+
+Here is the shape of the damage. Take the sentence:
+
+_The keys to the cabinet in the hall by the back door **were** missing._
+
+One word in there decides whether the second-to-last word is "was" or "were", and
+it is **keys** — the second word. By the time the machine reaches the point where
+it has to choose, that evidence is eleven steps back. Worse, every noun since has
+been singular: cabinet, hall, door. A reader working mainly off the last thing it
+saw will write "was", confidently, and be wrong.
+
+The information is not gone. It is in there, thinned out and blended with eleven
+other things — which is a different problem from being gone, and in practice not
+much of an improvement on it.
+
+<Figure
+  title="The same memory, holding a short sentence and a long one"
+  description="The box is drawn at exactly the same width in both rows, because a longer sentence buys no extra room — it only cuts the same room into thinner shares, and the width the first word had to itself in a four-word sentence takes the first six words to fill in a fourteen-word one."
+>
+  <SqueezedMemory />
+</Figure>
+
+That picture is a rough one — the memory is not really sliced into per-word
+strips, and no two sentences fade at the same rate. What is exactly right about
+it is the shape: same box, more claimants, and the oldest claimant loses.
+
+This was diagnosed early and nobody left it alone. In 1997 the **long short-term
+memory** network — LSTM, and you will still meet the acronym — added a set of
+small learned switches at every step. One decides how much of the incoming word
+is worth writing down, one decides what of the existing memory to keep, one
+decides what to pass on. Once a machine can choose to hold on to something, that
+thing stops fading by default.
+
+It worked, and it is worth being clear about how well. LSTMs ran machine
+translation, speech recognition and phone keyboards for the better part of two
+decades. They were not a stopgap that everybody was embarrassed by. For a long
+stretch they were simply the best that anything could do with a sentence.
+
+What a switch cannot do is make the box bigger. It changes what gets thrown away.
+It does not change that something has to be. Hand an LSTM a paragraph instead of
+a sentence and you are back in the same arithmetic, conducted with better
+manners.
+
+<Aside title="The same problem, seen from the training side">
+  Training runs backwards. The machine makes a mistake at the end of the
+  sentence, and the blame for it is handed back down the chain, one step at a
+  time, to everything that contributed. Each handover multiplies that blame by a
+  number. Multiply by something under one, eleven times over, and what reaches
+  the second word is not a correction — it is a rounding error. So a long-range
+  connection is not only hard to use at reading time. It is hard to *learn* in
+  the first place, because the lesson never arrives intact.
+</Aside>
+
+## The half that decided it
+
+The forgetting is the famous complaint. The other one is the reason none of this
+is what your phone is running today.
+
+Look at the loop again. Word five cannot start until word four has finished,
+because word four's output is part of word five's input. That is not a slow
+implementation waiting for somebody clever. It is what the method is. Take the
+ordering away and there is no method left.
+
+Now look at what the hardware became. The chips that made modern AI affordable
+are not one very fast processor. They are thousands of small ones on a single
+card, and they only repay their price if you can hand them thousands of
+independent jobs at the same instant. That is the bargain on offer: enormous
+throughput, on condition that nothing waits for anything.
+
+A sentence read one word at a time takes that bargain and turns it down. However
+many processors are standing by, the words go through one behind the other.
+
+<Figure
+  title="Eight words, taken in order and taken all at once"
+  description="Because each step needs the summary from the step before it, seven boxes sit idle while one works and the sentence costs eight rounds instead of one — so buying more processors shortens nothing, which is the part that made the method too expensive to keep scaling."
+>
+  <StuckInLine />
+</Figure>
+
+There is a partial answer, and people used it constantly: read many different
+sentences side by side. That does keep the card busy, and it is the reason these
+models could be trained at all.
+
+What it never does is finish one sentence sooner. The number of steps in a
+training run is the number of words in the text, taken in order, and that number
+does not fall when you buy more hardware.
+
+Sit with what that meant for a field where nearly all the progress was coming
+from making things bigger. Every other part of the work got faster when the chips
+got faster. This part did not — and the long inputs, which were the ones people
+most wanted to handle, were the ones that waited longest.
+
+So the ceiling was never really about accuracy. It was about cost. You could not
+push enough text through one of these, fast enough, to find out what a very large
+one would have been like, and by the middle of the 2010s that had become the only
+question anybody wanted answered.
+
+## Where you would still meet one
+
+None of this makes recurrence a bad idea, and it did not retire when it stopped
+being the headline.
+
+Where input arrives one piece at a time and never stops — a sensor on a factory
+machine, the chip in a speaker listening on a battery for its own name, a reading
+you have to answer before the next one lands — a small memory that updates once
+per step is exactly the right shape. It costs the same on the millionth reading
+as on the tenth, and it never has to hold the whole history at once. That is the
+one thing the method which replaced it cannot say for itself.
+
+The trade is live enough that recurrence has been coming back, in newer designs
+that keep the running memory but make each step far cheaper, and can be
+rearranged into something parallel for training. The idea was never the problem.
+The shape of it was.
+
+## Both complaints, one cause
+
+Everything the machine knows about word three reaches word forty by being passed
+through thirty-seven intermediate summaries. The passing is what costs. It is
+what thins the information out, and it is what forces the queue.
+
+Which invites a question that took a surprisingly long time for anyone to take
+seriously. Why is word forty only allowed to look at the summary? Why can it not
+look at word three?
+
+<DevAside>
+  <Fragment slot="java">
+    ```java
+    double[] state = new double[512];      // the whole memory, sized once
+
+    for (String token : sentence) {
+      state = cell.step(state, token);     // same weights on every pass
+    }
+
+    Answer answer = readout.apply(state);
+    ```
+
+    Three facts are visible in six lines. The array is sized at its declaration
+    and nothing about a longer `sentence` enlarges it. `cell` is the same object
+    every time round, so a longer sentence buys more passes rather than more
+    machine. And the loop body reads `state` and writes `state` — which is why
+    there is no version of this that becomes a `parallelStream()`. It is not a
+    tuning decision somebody got wrong; there is genuinely nothing to hand to a
+    second thread.
+
+  </Fragment>
+  <Fragment slot="python">
+    ```python
+    state = zeros(512)              # the whole memory, sized once
+
+    for token in sentence:
+        state = cell(state, token)  # same weights on every pass
+
+    answer = readout(state)
+    ```
+
+    The `for` is not a convenience here. It is the architecture. Anything you
+    would normally reach for to make a loop like this go faster — vectorising it,
+    handing slices to a pool — needs the iterations to be independent, and these
+    are the opposite of independent by construction.
+
+  </Fragment>
+</DevAside>
+
+<Checkpoint question="Two teams have the same budget and buy the same thousand processors, and both train on the same pile of text. One team's model reads a sentence one word at a time; the other's can look at all the words at once. Why does only one of them get most of what it paid for?">
+  Because the first team's method has a chain of dependencies inside every
+  sentence. Step five cannot begin until step four has produced its summary, so
+  those steps cannot happen at the same moment however many processors are
+  standing idle. The extra hardware can only be spent on reading more sentences
+  side by side — never on finishing one sooner. The second team's work has no
+  such chain, so every processor goes straight into the same job.
+
+The general shape is worth keeping. When a method stops improving it is often not
+because the idea was wrong, but because the shape of the idea does not fit the
+machine it has to run on. The version that wins is very often the one that can be
+cut into pieces.
+
+</Checkpoint>

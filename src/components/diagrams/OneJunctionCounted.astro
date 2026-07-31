@@ -1,0 +1,158 @@
+---
+/**
+ * The same junction between two layers, counted at two scales.
+ *
+ * Left: four neurons feeding three, drawn in full — twelve cells, each holding
+ * one adjustable number. Right: a thousand feeding a thousand, at an eighth of
+ * the scale, and even then only a corner of it fits on the page.
+ *
+ * `LayerStackDiagram` draws the network; it deliberately cannot draw this,
+ * because the point here is the count rather than the wiring. The teaching load
+ * is carried by the arithmetic printed under each panel, by the marked box
+ * showing the whole left-hand grid at right-hand scale, and by the dashed edges
+ * saying the rectangle continues past the page. Nothing depends on hue
+ * (hard rule 9).
+ *
+ * Decorative on its own, so `aria-hidden`; `Figure` carries the name and the
+ * description.
+ */
+
+const CELL = 32;
+const GRID = { x: 140, y: 80 };
+
+/** Plausible weights, one per connection. Negative ones are the teaching part. */
+const WEIGHTS: string[][] = [
+  ['0.4', '-1.1', '0.1'],
+  ['-0.4', '0.9', '0.0'],
+  ['1.2', '-0.5', '-0.9'],
+  ['0.1', '0.3', '-1.5'],
+];
+
+const cells = WEIGHTS.flatMap((row, rowIndex) =>
+  row.map((value, columnIndex) => ({
+    x: GRID.x + columnIndex * CELL,
+    y: GRID.y + rowIndex * CELL,
+    value,
+  })),
+);
+
+/**
+ * The mesh on the right, at a quarter-scale cell. 65 columns by 32 rows are
+ * visible — about one five-hundredth of a thousand-by-thousand rectangle, which
+ * is the number printed under it.
+ */
+const MESH = { x: 356, y: 80, width: 260, height: 128, cell: 4 };
+
+const meshColumns = Array.from(
+  { length: MESH.width / MESH.cell + 1 },
+  (_, index) => MESH.x + index * MESH.cell,
+);
+
+const meshRows = Array.from(
+  { length: MESH.height / MESH.cell + 1 },
+  (_, index) => MESH.y + index * MESH.cell,
+);
+---
+
+<svg viewBox="0 0 640 300" class="w-full" aria-hidden="true">
+  <g class="fill-none stroke-rule-strong" stroke-width="1.25">
+    <rect x="8" y="8" width="296" height="244" rx="8"></rect>
+    <rect x="336" y="8" width="296" height="244" rx="8"></rect>
+  </g>
+
+  <g class="fill-ink font-display" font-size="14" font-weight="700">
+    <text x="28" y="36">One junction, in full</text>
+    <text x="356" y="36">One junction, in a real model</text>
+  </g>
+
+  <g class="fill-ink-faint font-mono" font-size="10">
+    <text x="28" y="52">4 neurons feeding 3</text>
+    <text x="356" y="52">1,000 neurons feeding 1,000</text>
+  </g>
+
+  <!-- Left: which side of the junction each direction of the grid is. -->
+  <g class="fill-ink-muted font-mono" font-size="10" text-anchor="middle">
+    <text x="188" y="70">to each of the 3 ahead</text>
+  </g>
+
+  <g class="fill-ink-muted font-mono" font-size="10" text-anchor="end">
+    <text x="132" y="138">from each of</text>
+    <text x="132" y="150">the 4 here</text>
+  </g>
+
+  <!-- Left: twelve cells, one per connection. -->
+  <g class="fill-paper stroke-rule" stroke-width="1">
+    {
+      cells.map((cell) => (
+        <rect x={cell.x} y={cell.y} width={CELL} height={CELL} />
+      ))
+    }
+  </g>
+
+  <g class="fill-ink font-mono" font-size="9" text-anchor="middle">
+    {
+      cells.map((cell) => (
+        <text x={cell.x + CELL / 2} y={cell.y + CELL / 2 + 3}>
+          {cell.value}
+        </text>
+      ))
+    }
+  </g>
+
+  <!-- Right: the same rectangle, too small to letter and too big to finish. -->
+  <g class="fill-paper">
+    <rect x="356" y="80" width="260" height="128"></rect>
+  </g>
+
+  <g class="stroke-rule" stroke-width="0.4">
+    {meshColumns.map((x) => <line x1={x} y1="80" x2={x} y2="208" />)}
+    {meshRows.map((y) => <line x1="356" y1={y} x2="616" y2={y} />)}
+  </g>
+
+  <g class="fill-none stroke-rule-strong" stroke-width="1.25">
+    <path d="M356 208 V80 H616"></path>
+  </g>
+
+  <!-- Dashed on the two edges where the rectangle runs off the page. -->
+  <g
+    class="fill-none stroke-rule-strong"
+    stroke-width="1.25"
+    stroke-dasharray="4 4"
+  >
+    <path d="M616 80 V208 H356"></path>
+  </g>
+
+  <!-- The whole left-hand grid, drawn at right-hand scale. -->
+  <g class="fill-none stroke-accent" stroke-width="1.5">
+    <rect x="372" y="96" width="12" height="16"></rect>
+  </g>
+
+  <g class="stroke-ink-muted" stroke-width="1">
+    <line x1="400" y1="67" x2="384" y2="94"></line>
+  </g>
+
+  <g class="fill-ink-muted font-mono" font-size="10">
+    <text x="404" y="70">the grid on the left, to scale</text>
+  </g>
+
+  <!-- The arithmetic, which is the whole diagram. -->
+  <g class="fill-ink font-display" font-size="13" font-weight="700">
+    <text x="28" y="230">4 &times; 3 = 12</text>
+    <text x="356" y="230">1,000 &times; 1,000 = 1,000,000</text>
+  </g>
+
+  <g class="fill-ink-faint font-mono" font-size="10">
+    <text x="28" y="244">twelve numbers to store and train</text>
+    <text x="356" y="244">about one five-hundredth of it fits here</text>
+  </g>
+
+  <g
+    class="fill-accent font-display"
+    font-size="13"
+    font-weight="700"
+    text-anchor="middle"
+  >
+    <text x="320" y="276">ten times wider on each side</text>
+    <text x="320" y="292">is a hundred times the count</text>
+  </g>
+</svg>

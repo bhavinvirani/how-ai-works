@@ -1,0 +1,203 @@
+---
+title: The jobs nobody handed out
+part: the-transformer
+order: 2
+summary: One round of attention can only follow one kind of relationship, so a model runs many of them at the same moment — and what each one ends up watching is settled by training rather than by anyone's decision.
+prerequisites:
+  - attention
+connections:
+  - to: transformers
+    why: A transformer block never runs attention once — it runs a row of these heads side by side and stitches their answers back into one word, then does the whole thing again on the layer above.
+interactives:
+  - MultiHeadLanes
+status: published
+updated: 2026-07-31
+---
+
+import Checkpoint from '../../components/blocks/Checkpoint.astro';
+import DevAside from '../../components/blocks/DevAside.astro';
+import Figure from '../../components/blocks/Figure.astro';
+import HeadsSplitAndRejoin from '../../components/diagrams/HeadsSplitAndRejoin.astro';
+import { MultiHeadLanes } from '../../components/interactives/MultiHeadLanes';
+
+A copy-editor reads the same page four times.
+
+Once for spelling. Once for the places where the tense slips. Once for names
+and dates that have to match something outside the page. Once for the sentences
+that say the same thing twice.
+
+That is not slowness, and no amount of experience folds it into a single pass.
+Hold two of those questions at once and you find fewer of both. The eyes are
+the same eyes. What changes between passes is the question being held, and you
+only get to hold one.
+
+Attention has that same limit, for a reason you can put your finger on.
+
+## One question at a time
+
+In the last unit every word turned itself into three things — a question, a
+label and its contents — and the weights came out of comparing every question
+against every label. There is exactly one way of building that question and one
+way of building that label. One recipe, applied to every word in the sentence.
+
+Change the recipe and every weight in the sentence changes with it. So a round
+of attention is not a reader you can ask things of. It is one question, put to
+every pair of words at once, and what comes back is one blend per word.
+
+Ask it who did this and it cannot also ask what a pronoun stands for. The
+machinery that would have to ask the second question is already busy being the
+first.
+
+That is what breaks if you stop here. A sentence is held together by several
+kinds of relationship at the same time, and a machine with one round of
+attention gets to follow exactly one of them.
+
+## Several at once, and then joined back up
+
+Where the machine beats the copy-editor is that it does not have to take turns.
+Nothing in one round depends on the round beside it, so several can run in the
+same instant on the same sentence, each with its own recipe for questions and
+labels, each producing its own blend for every word.
+
+One such round is a **head**. Running a row of them side by side and joining
+what they produce is **multi-head attention**, and it is what a transformer —
+the design nearly every large language model is built on — actually contains.
+The single round of the last unit does not appear on its own anywhere.
+
+Joining is not choosing. The blends are laid end to end and mixed back down
+into one, so every word leaves the layer carrying all of the readings at once
+and nothing further along ever picks a favourite.
+
+It is also cheaper than it sounds. The width of the layer is shared out among
+the heads rather than handed to each of them, so twelve heads in a layer 768
+numbers wide get 64 numbers each. Twelve narrow readings for about the price of
+one wide one.
+
+Which answers the obvious objection. Why not one enormous head instead? Because
+width was never the constraint. However many numbers a single head is given, it
+still has one recipe and still produces one set of weights per word. A second
+opinion needs a second recipe, and a second recipe is what a head is.
+
+How many heads there are is not something the model works out either. It is
+typed into a configuration file before training starts, the same way the step
+size is.
+
+<Figure
+  title="One word in, four heads, one word out"
+  description="Heads are one layer rather than four separate models — the width of a word's meaning is cut into strips, each head reads with its own question at the same moment, and the answers are laid end to end and mixed back into a single word, so nothing further along ever chooses between them."
+>
+  <HeadsSplitAndRejoin />
+</Figure>
+
+## Point it at a word
+
+Below is the sentence from the last unit, read by four heads at the same
+moment. Pick a word and you get four rows — where each head thinks that word
+ought to be looking.
+
+<MultiHeadLanes client:visible />
+
+It opens on _carried_. One row does something: the head asking who did this
+puts 40% of its attention on _student_. The other three lie flat at 11% on
+every word, which you have seen before and means the same thing here — a head
+with nothing to ask about this word spreads its attention evenly instead of
+picking.
+
+Now move to _she_. A different row wakes up — the head asking what a word
+stands for, 43% on _student_ — and the row that had the answer about _carried_
+falls silent. Same sentence, same instant, same machine.
+
+Those two are not disagreeing about who is right. They are answering different
+questions, and only one of the questions was about _she_.
+
+That word is also the answer to the hunt in the panel. Between the two
+furthest-apart rows, 37% of the attention sits somewhere different, and nothing
+else in the sentence comes near it — _carried_ is second at 31%.
+
+Then pick _strong_. Or _because_, or _was_. Nothing happens anywhere. Not one
+of the four has anything to ask about those words, so all four spread 11%
+evenly and hand back four identical readings, which between them are worth
+exactly one reading.
+
+Five of these nine words are like that, and that is the honest size of the
+problem. Four heads is not many. A real layer runs twelve or sixteen, and a
+real model stacks that layer dozens deep.
+
+One row never wakes at all, whichever word you choose. The fourth head is
+asking what came immediately before it, and nothing in attention knows where a
+word sits — which is the next unit's business, not this one's.
+
+## Nobody hands out the jobs
+
+Here is the part that is easy to get wrong, and the reason those heads are
+numbered rather than named.
+
+The four were written by hand, and the questions printed under them are labels
+attached afterwards so that you could read what was happening. The last unit
+was blunt about which parts of this machinery are the real thing and which are
+staged to be legible on nine words; this is the staged part.
+
+A real head is handed no question. It starts random, like every other setting
+in the model, and for the whole of training the only pressure on it is the one
+pressure there is — make the wrongness score smaller.
+
+Nothing in that pressure says "specialise". What it says is narrower than that.
+A head duplicating the head beside it earns nothing, because the score is
+already getting that reading. A head noticing something no other head noticed
+makes the score better.
+
+So they drift apart, and they do it because staying alike is worthless, not
+because the work was divided up.
+
+So the labels arrive afterwards, and they arrive from people. Researchers have
+gone through trained models looking at what each head attends to, and a few are
+strikingly legible — one following a verb back to its subject, another tracking
+pronouns. Most are not. They are plainly doing something the model needs, since
+removing one makes it worse, and no description in English fits what it is.
+
+There is no head labelled "grammar" inside a language model. There is a head
+that, when somebody looked, happened to be doing something a person chose to
+call grammar, in that model, at that layer, after that training run. Train the
+same design again from a different random start and the jobs land somewhere
+else.
+
+<DevAside>
+  <Fragment slot="python">
+    ```python
+    n_embd = 768
+    n_head = 12          # so 64 numbers of width per head
+
+    # and this is the whole of "multi-head", twice
+    q = q.view(batch, tokens, n_head, n_embd // n_head).transpose(1, 2)
+    # ... attention runs here, with a head axis it never looks along ...
+    y = y.transpose(1, 2).contiguous().view(batch, tokens, n_embd)
+    ```
+
+    The heads are not twelve objects. They are one array with an extra axis,
+    so "in parallel" is not a scheduling claim — it is a single matrix
+    multiply that happens to have a spare dimension. The last line is the
+    joining: the axis is folded back in and the strips become one word again.
+
+    Worth noticing what is absent. `n_head` is a number somebody typed, and
+    nowhere in the file — or anywhere else in the repository — is there a line
+    saying what any particular head is for.
+
+  </Fragment>
+</DevAside>
+
+<Checkpoint question="A talk includes a diagram of a language model with twelve boxes in a row, labelled grammar, tone, pronouns, topic and so on. What is wrong with it, and what would an honest version look like?">
+  Nobody labelled those boxes. Every head starts random, and the only thing
+  training rewards is a smaller wrongness score — heads end up different
+  because a head that copies its neighbour adds nothing to that score, not
+  because anyone divided the work between them. The words in that diagram are
+  descriptions somebody wrote afterwards, by looking inside one trained model.
+
+An honest version numbers the boxes and leaves most of them blank, with a note
+on one or two saying what a person found when they went and looked at this
+particular model, at this particular layer.
+
+Worth keeping, because the mistake generalises past attention. A great deal of
+what looks like design inside a trained model is description after the fact.
+The parts are real. The names on them are ours.
+
+</Checkpoint>

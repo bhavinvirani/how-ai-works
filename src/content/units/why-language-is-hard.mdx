@@ -1,0 +1,266 @@
+---
+title: The word that has not arrived yet
+part: language-problem
+order: 1
+summary: Machines had photographs solved years before they had sentences, because what a word means can depend on where it sits, on a word a long way off, and sometimes on a word that has not been read yet.
+prerequisites:
+  - embeddings
+connections:
+  - to: tokenization
+    why: None of the problems named here can be attacked until text is inside the machine at all, and being cut into pieces from a fixed list is the first thing that happens to a sentence.
+  - to: attention
+    why: Attention is the answer to this unit, and it is worth reading as one — it lets any word consult any other word, at any distance, in either direction.
+interactives:
+  - PronounFlip
+status: published
+updated: 2026-07-31
+---
+
+import Aside from '../../components/blocks/Aside.astro';
+import Checkpoint from '../../components/blocks/Checkpoint.astro';
+import DevAside from '../../components/blocks/DevAside.astro';
+import Figure from '../../components/blocks/Figure.astro';
+import ThreeWaysMeaningMoves from '../../components/diagrams/ThreeWaysMeaningMoves.astro';
+import { PronounFlip } from '../../components/interactives/PronounFlip';
+
+Long before any machine could hold a conversation, one could look at a
+photograph of an empty beach at dusk and tell you it was a beach at dusk. It
+could pick a single face out of a crowd of two hundred. It could find a tumour
+that a tired radiologist had walked past at four in the morning.
+
+Show software from those same years a two-line hotel review, and it would
+report a happy guest, because the review contained the word _lovely_.
+
+The review said: _Lovely, if you enjoy being woken at four._
+
+That photograph of the beach is several million numbers. The review is eight
+words. Whatever beat the machine here, it was not the size of the thing.
+
+## A photograph holds its shape
+
+Nothing you have read so far stops working here. The training loop is the same
+loop, the dials are the same dials, and the wrongness score still comes out as
+one number. What changes is the material.
+
+Pictures turn out to be unusually kind material, in three ways that are easy to
+miss because they never once cause trouble.
+
+Every pixel is in one place, and being in that place is most of what it does. A
+pixel does not mean something different depending on which pixels came before
+it.
+
+Pixels that sit next to each other almost always belong to the same thing — the
+same eyebrow, the same railing, the same patch of sky. So a machine that only
+ever looks at small neighbourhoods, and builds up from there, is not missing
+much.
+
+And any photograph can be squashed to a standard size before the machine sees
+it. A phone snap and a poster both arrive as the same rectangle of numbers, so
+the machinery gets built once, for one shape.
+
+Sentences give you none of that. They run from two words to two thousand, and
+whatever reads them has to cope with all of it. Words that belong together are
+routinely nowhere near each other. And a word's position is not merely where it
+happens to be — it is part of what the word is saying.
+
+Three things go wrong. The third is the one that stopped everybody.
+
+## Move the words and the fact moves
+
+_Ravi owes Priya._
+
+_Priya owes Ravi._
+
+Three words each, and the same three words. One of those sentences is going to
+annoy somebody.
+
+The simplest way to hand a sentence to a machine is to count which words are in
+it and throw the order away. That has a name — **bag of words** — because a bag
+is something you take items out of, not something you read a sequence from.
+
+It is not a strawman. Bag-of-words systems scored reviews and sorted spam in
+production for years, and some are still running. They cannot tell those two
+sentences apart, because the two bags are identical.
+
+That is not a subtle failure either. Word order is not decoration laid over the
+meaning; in English it is most of how a sentence says who did what to whom.
+
+And here is the part that makes language different rather than merely harder.
+Cut a photograph into a thousand squares and shuffle them, and you get confetti
+— something no longer an image of anything, and obviously broken. Shuffle the
+words of a sentence and you can get another sentence. A perfectly grammatical
+one, about somebody else, which no amount of inspecting the pieces will reveal
+as the wrong answer.
+
+## The word that settles it is nowhere near
+
+_Don't, if the parcel arrives while I'm out, leave it by the bins._
+
+The instruction is _don't leave it by the bins_. Those two words are seven words
+apart, and the first one reverses the second.
+
+The obvious way to keep a machine's job small is to let it read a fixed number
+of words at a time — a **window**, five or six words wide, sliding along the
+sentence. It is a reasonable idea. It is how a lot of early language software
+worked, and it fails here in a specific way: every window that contains _leave
+it by the bins_ contains no _don't_. The machine does not receive a difficult
+instruction. It receives the opposite instruction, and it receives it with total
+confidence.
+
+You can widen the window, and people did. It costs — a machine looking at
+fifteen words at a time has far more to weigh up than one looking at five — and,
+worse, no width is ever safe. English puts no limit on how far apart two words
+that decide each other can sit. A _not_ can be three sentences back. A name
+introduced in the first paragraph of an email can be what the _they_ in the last
+paragraph is pointing at.
+
+## The word that settles it has not been read yet
+
+Read this at normal speed:
+
+_She tipped the pan into the bowl until it was empty._
+
+You know what was empty. You did not work it out, and it did not feel like work.
+
+Now change the last word, and nothing else:
+
+_She tipped the pan into the bowl until it was full._
+
+Now it is the bowl. Same eleven words in the same order except one, and the word
+that changed is the last word in the sentence — a couple of words _after_ the
+word it rewrites.
+
+Notice what a machine reading left to right has in front of it at the moment
+_it_ arrives. It has `She tipped the pan into the bowl until it`, and so did the
+other version, because up to that point the two sentences are the same string of
+characters. Whatever it decides there, it decides on evidence that is identical
+in both cases and points at both answers equally.
+
+This is worth being precise about, because it is easy to hear as "the machine
+needs to be cleverer". It is not that. The information that settles the question
+is not present yet. No amount of skill extracts a fact from evidence that does
+not contain the fact.
+
+Grammar cannot rescue it either. Any rule you could write — attach a pronoun to
+the nearest earlier noun, or to the subject, or to whichever one is more likely
+to be talked about — gives the same answer for both sentences, because
+grammatically they _are_ the same sentence. The only thing that separates them
+is knowing that tipping empties one container and fills the other. That is a
+fact about the world, not a fact about English.
+
+<Aside title="The name for this trick">
+  A pair of sentences that differ by one word, where that word flips what a
+  pronoun refers to, is called a **Winograd schema**, after the researcher who
+  started collecting them in the 1970s. They were designed to be a test that
+  grammar alone cannot pass — you can only answer one by knowing something about
+  pans and bowls, or tow ropes, or why people win at chess.
+
+For decades they were a quiet embarrassment: easy for any child, close to a coin
+toss for the best software available. They are still used as a test today, and
+modern systems get most of them right, which is the whole point of the Part you
+have just started.
+
+</Aside>
+
+It goes much further than pronouns. _Bank_ means nothing on its own, and the
+word that decides whether it is a river or a building can arrive several words
+later. So can the word that tells you whether _light_ is a weight or a lamp. A
+machine that must fix each word's meaning as it reads, and move on, is wrong
+about all of these forever — not occasionally, but by construction.
+
+That is what killed the obvious designs. They read left to right and commit as
+they go. What this problem demands instead is one of two awkward things: wait
+until the sentence is finished before deciding anything, or be able to go back
+and revise a decision already made. Both are demands about the _shape_ of the
+machine, not about its accuracy, and neither is what anybody had built.
+
+<Figure
+  title="Three ways a sentence refuses to be read a few words at a time"
+  description="Reordering three words leaves the same bag of words and the opposite fact; a machine holding only the last five words of an instruction receives the exact reverse of it; and in the last panel the arrow runs backwards, because the final word is what decides who an earlier pronoun was talking about."
+>
+  <ThreeWaysMeaningMoves />
+</Figure>
+
+## Flip the last word yourself
+
+Below are three of these pairs. Change the ending and watch what the pronoun
+turns out to mean.
+
+One thing has to be said plainly first, because the panel would be worthless if
+it were quietly untrue. **Nothing here is a model's answer.** No machine runs in
+that box. Each reading is written down by hand — what the sentence means to a
+person who reads it — and you can check every one of them yourself, which is
+exactly why it works as a demonstration. This unit is about the problem. Nothing
+on this page solves it.
+
+<PronounFlip client:visible />
+
+Try all three pairs first. In each one exactly one word changes, that word is
+the last word of the sentence, and it lands after the pronoun it rewrites.
+
+Then turn on **Stop reading at the pronoun**, and flip the ending again. Nothing
+on the line moves. Not one word, in any of the three pairs — because everything
+before the pronoun is identical in both versions, and the only difference lives
+in a word the reader has not reached.
+
+That is the whole problem in one control. The machine is not looking in the
+wrong place. There is nothing in the right place to look at yet.
+
+## Why any of this matters to you
+
+Because you use the fixed version daily, and it is invisible when it works.
+
+You ask an assistant about a document, then type _and what about the second
+one?_ — no nouns at all, and it answers correctly. A translation system has to
+pick a gendered word in French for an English sentence that never marked gender,
+and finds the clue several words away. A search box treats _book a table_ and
+_table a motion_ as different requests. Every one of those is this unit's
+problem, handled well enough that nobody notices.
+
+The rest of this Part is how that happened. Tokenization gets text into the
+machine at all, by cutting it into standard pieces. Attention is the idea that
+finally addresses the distance problem head-on, by letting any word consult any
+other word directly — including ones that come after it. The transformer is what
+you get when you build a machine out of nothing else.
+
+<DevAside>
+  <Fragment slot="java">
+    ```java
+    String[] words = review.split(" ");
+    boolean happy = Arrays.asList(words).contains("lovely");
+    ```
+
+    This is the hotel review at the top of the page, and it is not a strawman
+    — real ones had a few hundred words in the list and a threshold, and
+    nothing else. Its defining property is in the second line: shuffle `words`
+    into any order at all and the answer does not change. That is not a bug you
+    can find by testing, because it is exactly what the code was asked to do.
+
+  </Fragment>
+  <Fragment slot="python">
+    ```python
+    words = review.split()
+    happy = "lovely" in words
+    ```
+
+    Same two lines. `set(words)` is what "bag of words" means literally, and
+    the trap is that this passes review, passes its tests, and reports a
+    respectable accuracy on any collection of reviews where people who write
+    "lovely" are usually pleased.
+
+  </Fragment>
+</DevAside>
+
+<Checkpoint question="A system reads a sentence one word at a time and decides what each word means as it arrives, never going back. Which of this unit's three problems will it handle worst — and why is 'make it more accurate' not a fix for that one?">
+  The third one: a word whose meaning is settled by a word that has not been
+  read yet. At the moment the machine has to decide, the evidence in front of it
+  is identical to the evidence it would have had if the answer were the other
+  one. Accuracy is about doing better with what you have; here the thing that
+  decides is not in what you have.
+
+So the fix cannot be a better reader. It has to change the shape of the
+reading — either wait until the whole sentence has arrived before committing to
+anything, or keep the ability to go back and revise. That is a structural
+demand, and meeting it is what the rest of this Part is about.
+
+</Checkpoint>

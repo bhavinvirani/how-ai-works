@@ -1,0 +1,389 @@
+---
+/**
+ * Why attention cannot see word order, and where the repair goes in.
+ *
+ * Three panels, and the argument only works if they are read in order: the
+ * problem, the one addition that fixes it, and the same problem again with the
+ * fix applied. Panels 1 and 3 are deliberately the same drawing with one thing
+ * changed — two arrows meeting at a single outcome, then two arrows arriving at
+ * two — so the difference is carried by where the arrows land rather than by
+ * anything a reader has to be told.
+ *
+ * The word "box" is marked in every panel. It is the same word all the way
+ * through, sitting in a different slot each time, which is the only fact the
+ * whole diagram is about. The mark is a pointer, not a meaning: everything it
+ * highlights is also named in the notes underneath, so nothing here is carried
+ * by colour (hard rule 9).
+ *
+ * The tiles are laid out arithmetically rather than hand-positioned. JetBrains
+ * Mono advances 0.6em per character, so a tile's width is calculable, and that
+ * is what lets an arrow start exactly where a row of words ends without
+ * anything being measured in a browser.
+ *
+ * Every run of text is interpolated from a constant rather than written across
+ * several lines of markup. SVG 1.1 *removes* newlines inside text content
+ * rather than collapsing them to spaces, so a label wrapped by a formatter is
+ * one strict renderer away from losing the space at its line break.
+ *
+ * Decorative on its own, so `aria-hidden`: `Figure` carries the accessible name
+ * and the plain-English description.
+ */
+
+type Role = 'plain' | 'mark';
+
+interface Word {
+  readonly text: string;
+  readonly role?: Role;
+}
+
+interface Tile {
+  readonly text: string;
+  readonly role: Role;
+  readonly x: number;
+  readonly y: number;
+  readonly w: number;
+  readonly h: number;
+  readonly font: number;
+  readonly mid: number;
+  readonly baseline: number;
+}
+
+function row(
+  words: readonly Word[],
+  left: number,
+  top: number,
+  font: number,
+  pad: number,
+  gap: number,
+): Tile[] {
+  const height = font + 10;
+  const tiles: Tile[] = [];
+  let x = left;
+
+  for (const word of words) {
+    const w = word.text.length * font * 0.6 + pad * 2;
+
+    tiles.push({
+      text: word.text,
+      role: word.role ?? 'plain',
+      x,
+      y: top,
+      w,
+      h: height,
+      font,
+      mid: x + w / 2,
+      baseline: top + height / 2 + font * 0.35,
+    });
+
+    x += w + gap;
+  }
+
+  return tiles;
+}
+
+/** Fails the build loudly rather than drawing an arrow from nowhere. */
+function tileAt(tiles: readonly Tile[], index: number): Tile {
+  const tile = tiles[index];
+  if (!tile) throw new Error(`no tile at position ${String(index)}`);
+  return tile;
+}
+
+const endOf = (tiles: readonly Tile[]): number => {
+  const last = tileAt(tiles, tiles.length - 1);
+  return last.x + last.w;
+};
+
+const midOf = (tiles: readonly Tile[]): number => {
+  const first = tileAt(tiles, 0);
+  return first.y + first.h / 2;
+};
+
+/** A short arrow pointing right, plus its head. */
+const arrow = (fromX: number, fromY: number, toX: number, toY: number) => ({
+  shaft: `M${fromX.toFixed(1)} ${fromY.toFixed(1)} L${toX.toFixed(1)} ${toY.toFixed(1)}`,
+  head: `M${(toX - 7).toFixed(1)} ${(toY - 4).toFixed(1)} L${toX.toFixed(1)} ${toY.toFixed(1)} L${(toX - 7).toFixed(1)} ${(toY + 4).toFixed(1)}`,
+});
+
+// Panel 1 — the same four words, two ways round.
+const plainA = row(
+  [
+    { text: 'student' },
+    { text: 'carried' },
+    { text: 'the' },
+    { text: 'box', role: 'mark' },
+  ],
+  24,
+  46,
+  10,
+  5,
+  4,
+);
+const plainB = row(
+  [
+    { text: 'box', role: 'mark' },
+    { text: 'carried' },
+    { text: 'the' },
+    { text: 'student' },
+  ],
+  24,
+  78,
+  10,
+  5,
+  4,
+);
+
+const BAG = { x: 244, y: 44, w: 212, h: 56 };
+const intoBagA = arrow(endOf(plainA) + 6, midOf(plainA), BAG.x - 4, 62);
+const intoBagB = arrow(endOf(plainB) + 6, midOf(plainB), BAG.x - 4, 82);
+
+/** The four dots and all six lines between them: every pair, no order. */
+const DOTS = [
+  { cx: 268, cy: 60 },
+  { cx: 304, cy: 60 },
+  { cx: 268, cy: 84 },
+  { cx: 304, cy: 84 },
+];
+const EDGES = [
+  [0, 1],
+  [2, 3],
+  [0, 2],
+  [1, 3],
+  [0, 3],
+  [1, 2],
+] as const;
+
+const dotAt = (index: number) => {
+  const dot = DOTS[index];
+  if (!dot) throw new Error(`no dot at position ${String(index)}`);
+  return dot;
+};
+
+// Panel 3 — the same two rows, each word now carrying its slot.
+const stampedA = row(
+  [
+    { text: '1 student' },
+    { text: '2 carried' },
+    { text: '3 the' },
+    { text: '4 box', role: 'mark' },
+  ],
+  24,
+  372,
+  9,
+  4,
+  3.5,
+);
+const stampedB = row(
+  [
+    { text: '1 box', role: 'mark' },
+    { text: '2 carried' },
+    { text: '3 the' },
+    { text: '4 student' },
+  ],
+  24,
+  404,
+  9,
+  4,
+  3.5,
+);
+
+const OUT = { x: 254, w: 202, h: 24 };
+const intoOutA = arrow(endOf(stampedA) + 6, midOf(stampedA), OUT.x - 4, 382);
+const intoOutB = arrow(endOf(stampedB) + 6, midOf(stampedB), OUT.x - 4, 414);
+
+const tiles = [...plainA, ...plainB, ...stampedA, ...stampedB];
+
+/**
+ * Every run of prose in the drawing, kept here so no `<text>` element has to
+ * wrap across lines of markup. See the header.
+ */
+const SAYS = {
+  headingSet: '1 — Two orders, one pile of comparisons',
+  headingFix: '2 — The fix is one addition, and it comes first',
+  headingAfter: '3 — Stamped, the two orders are two questions',
+
+  bagA: 'every word scored',
+  bagB: 'against every word',
+
+  setNote1:
+    'Every score is worked out from what two words mean, and nothing else.',
+  setNote2: 'So both rows above hand attention the same pile of comparisons,',
+  setNote3:
+    'and the answers coming out are identical, to the last decimal place.',
+
+  labelMeaning: 'what “box” means',
+  labelStamp: 'the stamp for slot 4',
+  labelSum: 'what attention compares',
+
+  numbersMeaning: '0.00 0.00 1.00 0.00',
+  numbersStamp: '0.31 0.05 0.14 0.99',
+  numbersSum: '0.31 0.05 1.14 0.99',
+
+  plus: '+',
+  equals: '=',
+
+  fixNote1:
+    'Slot 4 gets that same stamp in every sentence there has ever been.',
+  fixNote2:
+    'Move a word and it arrives as different numbers, so every comparison changes.',
+
+  outA: 'one answer',
+  outB: 'a different answer',
+
+  afterNote1:
+    '“box” is slot 4 in the top row and slot 1 in the bottom one, so it arrives',
+  afterNote2:
+    'as two different sets of numbers, and every comparison it joins differs.',
+  afterNote3:
+    'Same words, same machine — and now the order changes the answer.',
+} as const;
+---
+
+<svg viewBox="0 0 480 522" class="w-full" aria-hidden="true">
+  <!-- Panel frames -->
+  <g class="fill-none stroke-rule-strong" stroke-width="1.25">
+    <rect x="10" y="8" width="460" height="176" rx="8"></rect>
+    <rect x="10" y="196" width="460" height="124" rx="8"></rect>
+    <rect x="10" y="332" width="460" height="180" rx="8"></rect>
+  </g>
+
+  <g class="fill-ink font-display" font-size="12" font-weight="700">
+    <text x="24" y="30">{SAYS.headingSet}</text>
+    <text x="24" y="218">{SAYS.headingFix}</text>
+    <text x="24" y="354">{SAYS.headingAfter}</text>
+  </g>
+
+  <!-- Panel 1: both orders arrive at one bag of pairwise scores -->
+  <g class="fill-none stroke-accent-2" stroke-width="1.5">
+    <path d={intoBagA.shaft}></path>
+    <path d={intoBagA.head}></path>
+    <path d={intoBagB.shaft}></path>
+    <path d={intoBagB.head}></path>
+  </g>
+
+  <rect
+    x={BAG.x}
+    y={BAG.y}
+    width={BAG.w}
+    height={BAG.h}
+    rx="8"
+    class="fill-paper stroke-rule-strong"
+    stroke-width="1.25"></rect>
+
+  <g class="stroke-rule-strong" stroke-width="1">
+    {
+      EDGES.map(([from, to]) => (
+        <line
+          x1={dotAt(from).cx}
+          y1={dotAt(from).cy}
+          x2={dotAt(to).cx}
+          y2={dotAt(to).cy}
+        />
+      ))
+    }
+  </g>
+  <g class="fill-ink-muted">
+    {DOTS.map((dot) => <circle cx={dot.cx} cy={dot.cy} r="3.5" />)}
+  </g>
+
+  <g class="fill-ink-muted" font-size="8.5">
+    <text x="322" y="66">{SAYS.bagA}</text>
+    <text x="322" y="80">{SAYS.bagB}</text>
+  </g>
+
+  <g class="fill-ink-faint" font-size="9">
+    <text x="24" y="126">{SAYS.setNote1}</text>
+    <text x="24" y="142">{SAYS.setNote2}</text>
+    <text x="24" y="158">{SAYS.setNote3}</text>
+  </g>
+
+  <!-- Panel 2: the addition itself -->
+  <g class="fill-ink-faint" font-size="8">
+    <text x="24" y="240">{SAYS.labelMeaning}</text>
+    <text x="164" y="240">{SAYS.labelStamp}</text>
+    <text x="314" y="240">{SAYS.labelSum}</text>
+  </g>
+
+  <g class="fill-paper-sunken stroke-rule" stroke-width="1.25">
+    <rect x="24" y="246" width="120" height="24" rx="4"></rect>
+    <rect x="164" y="246" width="130" height="24" rx="4"></rect>
+  </g>
+  <rect
+    x="314"
+    y="246"
+    width="142"
+    height="24"
+    rx="4"
+    class="fill-accent-2-soft stroke-accent-2"
+    stroke-width="1.25"></rect>
+
+  <g class="fill-ink font-mono" font-size="8.5" text-anchor="middle">
+    <text x="84" y="261">{SAYS.numbersMeaning}</text>
+    <text x="229" y="261">{SAYS.numbersStamp}</text>
+    <text x="385" y="261">{SAYS.numbersSum}</text>
+  </g>
+
+  <g class="fill-ink" font-size="12" font-weight="700" text-anchor="middle">
+    <text x="154" y="262">{SAYS.plus}</text>
+    <text x="304" y="262">{SAYS.equals}</text>
+  </g>
+
+  <g class="fill-ink-faint" font-size="9">
+    <text x="24" y="292">{SAYS.fixNote1}</text>
+    <text x="24" y="308">{SAYS.fixNote2}</text>
+  </g>
+
+  <!-- Panel 3: the same two orders now land in two different places -->
+  <g class="fill-none stroke-accent-2" stroke-width="1.5">
+    <path d={intoOutA.shaft}></path>
+    <path d={intoOutA.head}></path>
+    <path d={intoOutB.shaft}></path>
+    <path d={intoOutB.head}></path>
+  </g>
+
+  <g class="fill-paper stroke-rule-strong" stroke-width="1.25">
+    <rect x={OUT.x} y="370" width={OUT.w} height={OUT.h} rx="6"></rect>
+    <rect x={OUT.x} y="402" width={OUT.w} height={OUT.h} rx="6"></rect>
+  </g>
+
+  <g class="fill-ink" font-size="9.5">
+    <text x="266" y="386">{SAYS.outA}</text>
+    <text x="266" y="418">{SAYS.outB}</text>
+  </g>
+
+  <g class="fill-ink-faint" font-size="9">
+    <text x="24" y="452">{SAYS.afterNote1}</text>
+    <text x="24" y="468">{SAYS.afterNote2}</text>
+    <text x="24" y="492">{SAYS.afterNote3}</text>
+  </g>
+
+  <!-- Every word tile on the page, laid out above -->
+  {
+    tiles.map((tile) => (
+      <g>
+        <rect
+          x={tile.x}
+          y={tile.y}
+          width={tile.w}
+          height={tile.h}
+          rx="4"
+          class={
+            tile.role === 'mark'
+              ? 'fill-accent-soft stroke-accent'
+              : 'fill-paper-sunken stroke-rule'
+          }
+          stroke-width="1.25"
+        />
+        <text
+          x={tile.mid}
+          y={tile.baseline}
+          text-anchor="middle"
+          class={`${tile.role === 'mark' ? 'fill-ink' : 'fill-ink-muted'} font-mono`}
+          font-size={tile.font}
+          font-weight={tile.role === 'mark' ? '700' : '400'}
+        >
+          {tile.text}
+        </text>
+      </g>
+    ))
+  }
+</svg>

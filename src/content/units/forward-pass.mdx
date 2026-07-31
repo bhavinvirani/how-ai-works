@@ -1,0 +1,245 @@
+---
+title: The machine that cannot try harder
+part: inside-the-machine
+order: 3
+summary: A finished model answers by running the numbers through its layers once, in order — identical arithmetic whether the question is trivial or baffling, and no route back to think again.
+prerequisites:
+  - layers
+connections:
+  - to: backpropagation
+    why: Training runs this exact sweep first and then sends the mistake back down the very same wires, which is why one journey backwards costs about what one journey forwards costs.
+  - to: feature-hierarchy
+    why: A forward pass describes the route the numbers take through the stack and says nothing about what they come to mean at each stop, which is a separate discovery — and one nobody designed.
+interactives: []
+status: published
+updated: 2026-07-31
+---
+
+import Aside from '../../components/blocks/Aside.astro';
+import Checkpoint from '../../components/blocks/Checkpoint.astro';
+import DevAside from '../../components/blocks/DevAside.astro';
+import Figure from '../../components/blocks/Figure.astro';
+import ForwardSweep from '../../components/diagrams/ForwardSweep.astro';
+import SameBillEitherWay from '../../components/diagrams/SameBillEitherWay.astro';
+
+The car wash on the ring road takes four minutes. You know that because you have
+timed it, twice.
+
+The first time, your car had spent a fortnight parked beside a building site and
+was more grey than blue. The second time it was already nearly clean and you
+were only there because a voucher was about to expire. Four minutes, both times.
+
+Nothing in that building was capable of noticing the difference. The brushes
+turn the same number of turns. The rinse arch opens for the same eleven seconds.
+The blowers run until the belt reaches the end, and the belt has no opinion
+about what is on it.
+
+That is not a complaint about the car wash. It is a description of the kind of
+machine it is — one that does a fixed set of things, in a fixed order, at a
+fixed cost, and produces different results only because different things went
+in.
+
+A trained model answers a question the same way. Not loosely. Structurally.
+
+## Numbers in at one end, an answer out of the other
+
+You have all the parts already: an input layer, hidden layers in the middle, an
+output layer at the top, and one adjustable dial on every wire between them.
+What has been missing is the verb. What actually happens, mechanically, when
+somebody uses the finished thing?
+
+Something arrives at the bottom as a list of numbers — the pixels of a photo,
+the words of a question, turned into figures a machine can multiply.
+
+The first layer takes that list. Each of its neurons multiplies every incoming
+number by its own dial, adds the results together, puts the total through the
+small bend that stops a stack of layers collapsing into a single layer, and
+sends one number onward. A thousand neurons doing that at once produce a fresh
+list of a thousand numbers.
+
+That fresh list is what the second layer receives, and it does precisely the
+same thing to it, and hands on a list of its own. Then the third layer. Then the
+fourth. Each one only ever sees what the layer below it made.
+
+At the top, the last layer turns whatever it has been handed into the answer — a
+score for each possible category, or a number, or a word. Then it stops. That
+entire journey is one **forward pass**.
+
+It is worth being precise about what does not happen along the way. Nothing is
+consulted. No option is drafted and thrown out. No layer pauses to hear how a
+later one is getting on, because no layer will ever hear from a later one — the
+wires pointing that way do not exist. There is no moment in the sweep at which
+anything is decided about how to proceed, because nothing about the procedure
+was ever left open.
+
+<Figure
+  title="A single sweep through the stack"
+  description="One route is drawn solid so the direction is visible, but every faint line is carrying numbers on the same pass — nothing here queues, nothing is skipped, and no layer is visited a second time."
+>
+  <ForwardSweep />
+</Figure>
+
+## The bill comes to the same either way
+
+Here is the part people find hardest to accept, so it is worth doing in real
+numbers rather than in adjectives.
+
+Take a small but entirely genuine machine, one that reads handwritten digits. A
+photo arrives as 784 numbers, one for the brightness of each pixel in a 28-by-28
+square. Those numbers feed a layer of 512 neurons, which feeds another layer of
+the same size, which feeds an output layer of ten — one slot for each digit from
+zero to nine.
+
+Now count the multiplications. Every neuron in the first hidden layer multiplies
+all 784 incoming numbers by 784 dials of its own, so that junction alone — a
+junction being one gap between two layers, with every wire that crosses it —
+costs 784 × 512, or 401,408 multiplications. The next junction costs 512 × 512,
+which is 262,144. The last costs 512 × 10, which is 5,120. One sweep, end to
+end, is 668,672 multiplications.
+
+Hand that machine a 7 written so plainly that you read it before noticing you
+had started. 668,672 multiplications. Hand it a 5 so smudged that three people
+in the room read it three different ways. 668,672 multiplications.
+
+Not roughly the same. The same.
+
+<Figure
+  title="Two questions, one price"
+  description="Both bills itemise the same three junctions and reach the same total, because the only thing that differs between them is the question printed at the top — and the question is the one thing the count cannot depend on."
+>
+  <SameBillEitherWay />
+</Figure>
+
+$$
+\text{multiplications in one sweep} =
+\sum_{\text{junctions}} (\text{neurons before}) \times (\text{neurons after})
+$$
+
+In words: walk the stack junction by junction, multiply the neurons on one side
+by the neurons on the other, and add up what you get. The useful part of that
+line is what is missing from it. There is no term for the question, none for how
+hard the question is, and nowhere such a term could be fitted. The amount of
+work is a fact about the wiring, and the wiring was settled long before anybody
+asked anything.
+
+## It cannot slow down, and it cannot double back
+
+When you meet a question you cannot answer straight away, you do something about
+it. You read it again. You try an approach, notice it is going nowhere, and back
+out of it. The reading again and the backing out are most of the work.
+
+A model has neither move available to it. It cannot spend longer, because there
+is nothing longer to spend — the stack has a set number of stops and it visits
+each of them once. And it cannot back out, because the wires run one way only.
+Once numbers have left a layer, that layer has finished with them for good and
+will not be asked a second time.
+
+So a machine cannot reach the top, sense that something went astray near the
+bottom, and send for a second look. There is no mechanism for the sensing and no
+route for the second look. Whatever the layers produced is what the answer gets
+made of.
+
+You have almost certainly watched a chatbot appear to do the very thing I have
+just called impossible — begin a sentence, catch itself, and change course. That
+is real, and it is not an exception.
+
+A language model produces one word per forward pass. Writing a twenty-word
+sentence means twenty separate sweeps, and every one of them is handed the whole
+conversation so far, including the words the model itself wrote a second ago. It
+can therefore respond to its own output, because by the time the next sweep
+begins that output is simply more input. Inside any single sweep, nothing is
+ever revised.
+
+<Aside title="Where extra thinking has to come from">
+  Nobody has found a way to make one sweep work harder; the wiring forbids it.
+  The models sold as reasoning models get around that by spending more sweeps —
+  they are trained to write their working out first, sometimes for thousands of
+  words, before committing to an answer. Every one of those words is a full pass
+  through the stack, and every pass gets to read all the words before it. In
+  this business, thinking for longer means writing more. There is no other
+  currency.
+</Aside>
+
+## Trained once, used forever
+
+The forward pass is not only what happens when somebody uses a model. It is also
+the first half of every step of training, because the machine has to produce an
+answer before anyone can measure how wrong it was. What training adds is a
+second journey afterwards, back down the same wires.
+
+That gives the field its two words for the two situations, and you will meet
+both constantly.
+
+**Training** is the phase in which the dials are still moving. It is done a
+single time, over weeks, on a great deal of rented hardware, and at the end of
+it the numbers are frozen.
+
+**Inference** is every use after that. One forward pass, dials untouched,
+nothing learned. The model is not altered by your question and does not remember
+it.
+
+Their bills are shaped completely differently. A serious training run can cost
+more than a building, and that is paid once. One inference costs a fraction of a
+penny, and it is paid again every time anybody anywhere asks anything — which is
+why the small number, not the enormous one, decides whether a product can exist
+at all.
+
+This is where the fixed cost stops being a limitation and becomes the only
+reason any of it can be planned. Because every question costs the same, a team
+can measure one answer, multiply by a forecast of how many people will ask, and
+know its running costs months before it has a single user. A machine that
+thought harder about harder questions would be a machine nobody could budget
+for.
+
+<DevAside>
+  <Fragment slot="java">
+    ```java
+    double[] signal = input;
+
+    for (Layer layer : layers) {                 // the whole of "using it"
+      signal = layer.bend(layer.weighAndSum(signal));
+    }
+
+    return signal;
+    ```
+
+    Read it for what is absent. No `if` on the input, no `while`, no early
+    `return` — nothing that could make the loop run a different number of times
+    for a different argument. This is not a teaching simplification either: a
+    production inference path is this loop with the arithmetic moved onto a GPU.
+
+  </Fragment>
+  <Fragment slot="python">
+    ```python
+    signal = inputs
+
+    for layer in layers:
+        signal = layer.bend(layer.weigh_and_sum(signal))
+
+    return signal
+    ```
+
+    Same loop, same absence of branches. Which has a pleasant consequence when
+    you profile it: if one call comes back slower than another, you have learned
+    something about your hardware, your batch size or your memory, and nothing
+    at all about the difficulty of the question.
+
+  </Fragment>
+</DevAside>
+
+<Checkpoint question="An image model identifies a crisp photo correctly and a blurred, ambiguous one wrongly. A colleague concludes that it 'rushed' the difficult one. What is wrong with that conclusion?">
+  It did not rush anything — it did exactly the same amount of arithmetic on
+  both photos, because that amount is set by how the machine is wired and not by
+  what it is looking at. "Rushed" implies there was a slower, more careful
+  option available, and a forward pass has no such option to take.
+
+What actually happened is that the ambiguous photo produced numbers which landed
+on the wrong output. The machine had no way to notice that, and no way to spend
+more effort on it even if it had.
+
+Worth keeping, because the reflex is a strong one. Almost every phrase we have
+for a mistake made in haste — rushed, careless, should have checked — assumes
+there was a more careful version available. In a forward pass there is exactly
+one version, and it is the one you got.
+
+</Checkpoint>

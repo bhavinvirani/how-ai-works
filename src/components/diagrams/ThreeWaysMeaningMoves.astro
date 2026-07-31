@@ -1,0 +1,342 @@
+---
+/**
+ * The three ways a sentence refuses to be read a few words at a time, stacked
+ * so a reader meets them as one problem rather than three.
+ *
+ * The teaching load is carried by position and by shape, not by tint. Panel 1
+ * puts identical tiles in two orders and writes the resulting fact beside each.
+ * Panel 2 draws an arc between two words that settle each other and a dashed
+ * box around the only part a short memory would still be holding — and the
+ * caption says "dashed box" in words, so the box is findable without seeing
+ * colour. Panel 3 draws its arrow backwards, from the last word to the pronoun
+ * it rewrites, which is the one direction the whole Part is about.
+ *
+ * The tiles are laid out here rather than hand-positioned. JetBrains Mono
+ * advances exactly 0.6em per character, so a tile's width is arithmetic; that
+ * is what lets an arc land on the middle of "leave" and a dashed box hug the
+ * last five words without anything being measured in a browser, and it means
+ * editing a sentence moves every mark that points at it.
+ *
+ * Every run of text is interpolated from a constant rather than written across
+ * several lines of markup. SVG 1.1 says newlines inside text content are
+ * *removed* rather than collapsed to a space, so a label wrapped by a formatter
+ * is one strict renderer away from losing the spaces at its line breaks. Keeping
+ * each string on one line in the frontmatter puts that out of reach.
+ *
+ * The sentence in panel 3 is the same one `PronounFlip` opens on, deliberately:
+ * the reader should meet one sentence twice, not two sentences once.
+ *
+ * Decorative on its own, so `aria-hidden`: `Figure` carries the accessible name
+ * and the plain-English description.
+ */
+
+type Role = 'plain' | 'mark' | 'swap' | 'pick';
+
+interface Word {
+  readonly text: string;
+  readonly role?: Role;
+}
+
+interface Tile {
+  readonly text: string;
+  readonly role: Role;
+  readonly x: number;
+  readonly y: number;
+  readonly w: number;
+  readonly h: number;
+  readonly font: number;
+  /** Horizontal centre, which is where arcs and arrows aim. */
+  readonly mid: number;
+  readonly baseline: number;
+}
+
+function row(
+  words: readonly Word[],
+  left: number,
+  top: number,
+  font: number,
+  pad: number,
+  gap: number,
+): Tile[] {
+  const height = font + 10;
+  const tiles: Tile[] = [];
+  let x = left;
+
+  for (const word of words) {
+    const w = word.text.length * font * 0.6 + pad * 2;
+
+    tiles.push({
+      text: word.text,
+      role: word.role ?? 'plain',
+      x,
+      y: top,
+      w,
+      h: height,
+      font,
+      mid: x + w / 2,
+      baseline: top + height / 2 + font * 0.35,
+    });
+
+    x += w + gap;
+  }
+
+  return tiles;
+}
+
+/** Fails the build loudly rather than drawing an arrow to nowhere. */
+function tileAt(tiles: readonly Tile[], index: number): Tile {
+  const tile = tiles[index];
+  if (!tile) throw new Error(`no tile at position ${String(index)}`);
+  return tile;
+}
+
+const endOf = (tiles: readonly Tile[]): number => {
+  const last = tileAt(tiles, tiles.length - 1);
+  return last.x + last.w;
+};
+
+/**
+ * Four jobs, four shapes: a plain well, a solid accented box, a dashed box, and
+ * a second solid box in the other accent. Every one of them is also named in
+ * the panel text or the caption, so nothing here is carried by colour alone
+ * (hard rule 9).
+ */
+const SURFACE: Record<Role, string> = {
+  plain: 'fill-paper-sunken stroke-rule',
+  mark: 'fill-accent-soft stroke-accent',
+  swap: 'fill-paper stroke-ink-muted',
+  pick: 'fill-accent-2-soft stroke-accent-2',
+};
+
+const DASH: Record<Role, string> = {
+  plain: 'none',
+  mark: 'none',
+  swap: '3 2',
+  pick: 'none',
+};
+
+const INK: Record<Role, string> = {
+  plain: 'fill-ink-muted',
+  mark: 'fill-ink',
+  swap: 'fill-ink',
+  pick: 'fill-ink',
+};
+
+const WEIGHT: Record<Role, string> = {
+  plain: '400',
+  mark: '700',
+  swap: '700',
+  pick: '700',
+};
+
+// Panel 1 — order.
+const owedA = row(
+  [{ text: 'Ravi' }, { text: 'owes' }, { text: 'Priya' }],
+  24,
+  42,
+  11,
+  5,
+  4,
+);
+const owedB = row(
+  [{ text: 'Priya' }, { text: 'owes' }, { text: 'Ravi' }],
+  24,
+  76,
+  11,
+  5,
+  4,
+);
+const owedLabelX = Math.max(endOf(owedA), endOf(owedB)) + 14;
+
+// Panel 2 — distance.
+const parcel = row(
+  [
+    { text: "Don't,", role: 'mark' },
+    { text: 'if' },
+    { text: 'the' },
+    { text: 'parcel' },
+    { text: 'arrives' },
+    { text: 'while' },
+    { text: "I'm" },
+    { text: 'out,' },
+    { text: 'leave', role: 'pick' },
+    { text: 'it' },
+    { text: 'by' },
+    { text: 'the' },
+    { text: 'bins.' },
+  ],
+  24,
+  226,
+  9.5,
+  3,
+  3.5,
+);
+const forbidding = tileAt(parcel, 0);
+const forbidden = tileAt(parcel, 8);
+const arcMid = (forbidding.mid + forbidden.mid) / 2;
+const windowX = forbidden.x - 3;
+const windowW = endOf(parcel) + 3 - windowX;
+
+const arcPath = `M${forbidding.mid.toFixed(1)} 226 Q${arcMid.toFixed(1)} 202 ${forbidden.mid.toFixed(1)} 226`;
+const arcHead = `M${(forbidden.mid - 5).toFixed(1)} 219 L${forbidden.mid.toFixed(1)} 226 L${(forbidden.mid + 4).toFixed(1)} 218`;
+
+// Panel 3 — a word that has not been read yet.
+const tipping = (ending: string, chosen: 'pan' | 'bowl'): Word[] => [
+  { text: 'She' },
+  { text: 'tipped' },
+  { text: 'the' },
+  { text: 'pan', role: chosen === 'pan' ? 'pick' : 'plain' },
+  { text: 'into' },
+  { text: 'the' },
+  { text: 'bowl', role: chosen === 'bowl' ? 'pick' : 'plain' },
+  { text: 'until' },
+  { text: 'it', role: 'mark' },
+  { text: 'was' },
+  { text: ending, role: 'swap' },
+];
+
+const emptied = row(tipping('empty.', 'pan'), 24, 358, 10, 5, 4);
+const filled = row(tipping('full.', 'bowl'), 24, 424, 10, 5, 4);
+
+/** The backwards arrow: from the deciding word to the pronoun it rewrites. */
+const decides = (line: readonly Tile[]): string => {
+  const from = tileAt(line, 10);
+  const to = tileAt(line, 8);
+  const foot = from.y + from.h + 4;
+  const bend = (from.mid + to.mid) / 2;
+
+  return `M${from.mid.toFixed(1)} ${foot.toFixed(1)} Q${bend.toFixed(1)} ${(foot + 16).toFixed(1)} ${to.mid.toFixed(1)} ${(foot + 1).toFixed(1)}`;
+};
+
+const arrowHead = (line: readonly Tile[]): string => {
+  const to = tileAt(line, 8);
+  const foot = to.y + to.h + 5;
+
+  return `M${(to.mid - 4).toFixed(1)} ${(foot + 5).toFixed(1)} L${to.mid.toFixed(1)} ${foot.toFixed(1)} L${(to.mid + 5).toFixed(1)} ${(foot + 4).toFixed(1)}`;
+};
+
+const tiles = [...owedA, ...owedB, ...parcel, ...emptied, ...filled];
+
+/**
+ * Every run of prose in the drawing, kept here so no `<text>` element has to
+ * wrap across lines of markup. See the header.
+ */
+const SAYS = {
+  headingOrder: '1 — Move the words and the fact moves',
+  headingDistance: '2 — The word that cancels it is seven words back',
+  headingLater: '3 — The word that decides has not been read yet',
+
+  owesA: '→ Priya is owed the money.',
+  owesB: '→ Ravi is owed the money.',
+  orderNote:
+    'Same three words. Only the order changed — and the debt changed hands.',
+  orderNote2:
+    'Shuffle a photograph’s pixels like that and you get confetti, not another photograph.',
+
+  arcLabel: 'seven words apart, and the first one cancels the second',
+  windowNote:
+    'The dashed box is everything a machine that keeps only the last five words has.',
+  windowNote2:
+    'It reads as an instruction to do exactly what it was told not to do.',
+
+  meansPan: '→ “it” means the pan — the thing that was tipped out.',
+  meansBowl: '→ “it” means the bowl — the thing that was tipped into.',
+} as const;
+---
+
+<svg viewBox="0 0 480 512" class="w-full" aria-hidden="true">
+  <!-- Panel frames -->
+  <g class="fill-none stroke-rule-strong" stroke-width="1.25">
+    <rect x="10" y="8" width="460" height="150" rx="8"></rect>
+    <rect x="10" y="170" width="460" height="142" rx="8"></rect>
+    <rect x="10" y="324" width="460" height="176" rx="8"></rect>
+  </g>
+
+  <g class="fill-ink font-display" font-size="12" font-weight="700">
+    <text x="24" y="30">{SAYS.headingOrder}</text>
+    <text x="24" y="192">{SAYS.headingDistance}</text>
+    <text x="24" y="346">{SAYS.headingLater}</text>
+  </g>
+
+  <!-- Panel 1: what each order actually claims -->
+  <g class="fill-ink" font-size="10">
+    <text x={owedLabelX} y={tileAt(owedA, 0).baseline}>{SAYS.owesA}</text>
+    <text x={owedLabelX} y={tileAt(owedB, 0).baseline}>{SAYS.owesB}</text>
+  </g>
+
+  <g class="fill-ink-faint" font-size="9">
+    <text x="24" y="126">{SAYS.orderNote}</text>
+    <text x="24" y="142">{SAYS.orderNote2}</text>
+  </g>
+
+  <!-- Panel 2: the arc between two words that settle each other -->
+  <text
+    x={arcMid}
+    y="208"
+    text-anchor="middle"
+    class="fill-ink-muted"
+    font-size="9">{SAYS.arcLabel}</text
+  >
+
+  <g class="fill-none stroke-accent" stroke-width="1.5">
+    <path d={arcPath}></path>
+    <path d={arcHead}></path>
+  </g>
+
+  <!-- Everything a five-word memory would still be holding -->
+  <rect
+    x={windowX}
+    y="222"
+    width={windowW}
+    height="26.5"
+    rx="4"
+    class="fill-none stroke-ink-muted"
+    stroke-width="1.25"
+    stroke-dasharray="4 3"></rect>
+
+  <g class="fill-ink-faint" font-size="9">
+    <text x="24" y="272">{SAYS.windowNote}</text>
+    <text x="24" y="288">{SAYS.windowNote2}</text>
+  </g>
+
+  <!-- Panel 3: the arrow runs backwards, from the last word to the pronoun -->
+  <g class="fill-none stroke-accent-2" stroke-width="1.5">
+    <path d={decides(emptied)}></path>
+    <path d={arrowHead(emptied)}></path>
+    <path d={decides(filled)}></path>
+    <path d={arrowHead(filled)}></path>
+  </g>
+
+  <g class="fill-ink" font-size="10">
+    <text x="24" y="412">{SAYS.meansPan}</text>
+    <text x="24" y="478">{SAYS.meansBowl}</text>
+  </g>
+
+  <!-- Every word tile on the page, laid out above -->
+  {
+    tiles.map((tile) => (
+      <g>
+        <rect
+          x={tile.x}
+          y={tile.y}
+          width={tile.w}
+          height={tile.h}
+          rx="4"
+          class={SURFACE[tile.role]}
+          stroke-width="1.25"
+          stroke-dasharray={DASH[tile.role]}
+        />
+        <text
+          x={tile.mid}
+          y={tile.baseline}
+          text-anchor="middle"
+          class={`${INK[tile.role]} font-mono`}
+          font-size={tile.font}
+          font-weight={WEIGHT[tile.role]}
+        >
+          {tile.text}
+        </text>
+      </g>
+    ))
+  }
+</svg>

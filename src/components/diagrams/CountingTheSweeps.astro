@@ -1,0 +1,106 @@
+---
+/**
+ * What it costs to find out what every dial should do, plotted two ways.
+ *
+ * The teaching load is carried by the two slopes and by the sentences attached
+ * to them, not by the two colours: one line is solid and climbs, the other is
+ * dashed and stays flat, and each says in words what it is. Strip the colour
+ * out and both survive (hard rule 9). The marks on the six-dial machine are a
+ * circle and a square for the same reason.
+ *
+ * The three counts along the bottom are the ones `BlameFlow/logic.ts` computes
+ * and `logic.test.ts` pins, so this diagram cannot drift away from the machine
+ * the reader is about to use.
+ *
+ * Decorative by itself, so `aria-hidden`: `Figure` supplies the accessible name
+ * and the description.
+ */
+---
+
+<svg viewBox="0 0 640 344" class="w-full" aria-hidden="true">
+  <!-- Axes. Neither carries numbers: the shape of the two lines is the point,
+       and a scale that reaches seventy billion has no honest tick marks. -->
+  <g class="stroke-rule-strong" stroke-width="1.25">
+    <line x1="100" y1="250" x2="580" y2="250"></line>
+    <line x1="100" y1="55" x2="100" y2="250"></line>
+    <line x1="170" y1="250" x2="170" y2="257"></line>
+  </g>
+
+  <!-- One extra run of the whole machine for every dial in it. -->
+  <line
+    x1="100"
+    y1="244"
+    x2="545"
+    y2="62"
+    class="stroke-accent"
+    stroke-width="2"></line>
+
+  <g transform="rotate(-22.2 322.5 153)">
+    <text x="322.5" y="138" text-anchor="middle" class="fill-ink" font-size="10"
+      >nudge one dial, run the whole machine again —</text
+    >
+    <text x="322.5" y="150" text-anchor="middle" class="fill-ink" font-size="10"
+      >once more for every dial there is</text
+    >
+  </g>
+
+  <!-- One forward run and one sweep back, whatever the machine is. -->
+  <line
+    x1="100"
+    y1="244"
+    x2="580"
+    y2="244"
+    class="stroke-accent-2"
+    stroke-width="2"
+    stroke-dasharray="6 4"></line>
+
+  <g class="fill-ink" font-size="10">
+    <text x="572" y="216" text-anchor="end"
+      >one forward run and one sweep back —</text
+    >
+    <text x="572" y="229" text-anchor="end"
+      >the same two runs however many dials there are</text
+    >
+  </g>
+
+  <!-- Where the machine in the instrument below sits on each line. Circle and
+       square, so the two are told apart without colour. -->
+  <circle cx="170" cy="215" r="4.5" class="fill-ink"></circle>
+  <rect x="166" y="240" width="8" height="8" class="fill-ink"></rect>
+
+  <text
+    x="170"
+    y="272"
+    text-anchor="middle"
+    class="fill-ink-muted"
+    font-size="10">the six-dial machine below</text
+  >
+
+  <text
+    x="340"
+    y="292"
+    text-anchor="middle"
+    class="fill-ink-faint"
+    font-size="10">how many dials the machine has →</text
+  >
+
+  <text
+    x="34"
+    y="152"
+    text-anchor="middle"
+    transform="rotate(-90 34 152)"
+    class="fill-ink-faint"
+    font-size="10">full runs of the machine needed</text
+  >
+
+  <g class="fill-ink-muted" font-size="11">
+    <text x="8" y="318"
+      >That six-dial machine takes 6 multiplications to run forwards and 8 to
+      sweep the blame back.</text
+    >
+    <text x="8" y="334"
+      >Getting the same six numbers by nudging each dial takes 42, and that gap
+      widens with every dial added.</text
+    >
+  </g>
+</svg>

@@ -1,0 +1,252 @@
+---
+title: Same words, any order, same answer
+part: the-transformer
+order: 3
+summary: Attention compares every word with every other and never once asks which came first, so the order has to be stamped into the words themselves before any comparing starts.
+prerequisites:
+  - attention
+connections:
+  - to: transformers
+    why: Every transformer stamps position into the words once, right at the bottom of the stack, before the first attention layer sees anything — it is one of the small pieces of plumbing that make an attention block usable on real language.
+interactives:
+  - OrderBlindness
+status: published
+updated: 2026-07-31
+---
+
+import Aside from '../../components/blocks/Aside.astro';
+import Checkpoint from '../../components/blocks/Checkpoint.astro';
+import DevAside from '../../components/blocks/DevAside.astro';
+import Figure from '../../components/blocks/Figure.astro';
+import PositionStampedIn from '../../components/diagrams/PositionStampedIn.astro';
+import { OrderBlindness } from '../../components/interactives/OrderBlindness';
+
+Write a shopping list, cut it into strips, and drop them on the floor.
+
+Nothing has happened. Eggs, bread, coffee, milk — gather the strips in whatever
+arrangement you like and it is the same shopping. That list was never in an
+order. It only looked like it was, because paper has a top.
+
+Now do it to the directions somebody gave you to their house. Second left, past
+the church, right at the bridge. Shuffle those and you do not arrive late. You
+arrive somewhere else entirely.
+
+A sentence is directions. The machinery that reads it treats it as shopping.
+
+## Look through the mechanism for the word "before"
+
+Here is the whole of attention again, in one breath. Each word makes a question,
+a label and its contents. Every question is compared against every label, the
+scores each word produces are squashed until its shares add up to one, and the
+word then rebuilds itself out of the mixture of everybody's contents.
+
+Read that again and look for anything about order. It is not there. A score is
+worked out from what two words mean — two words, not two places — and a heap of
+scores between pairs is a heap, with no first and no last in it.
+
+So these two arrive as the same thing:
+
+_The student carried the box because she was strong_
+
+_she box The strong carried student was the because_
+
+To you, one of those is a sentence and the other is what happens when you drop
+it. To attention they are indistinguishable, and not in a woolly way. Every word
+in the scramble works out exactly the meaning it worked out in the sentence: the
+same numbers, to the last decimal place, with nothing left over anywhere.
+
+That is worse than it sounds, because order is not a decorative feature of
+language. A great deal of the meaning lives in it. Who did what to whom is
+order. Whether a _not_ reaches the end of a clause is order. A ticket from
+London to Paris is a different ticket from one from Paris to London, and the
+words printed on the two of them are identical.
+
+This is also not an oversight that slipped past somebody. It is the bill for the
+thing that made attention worth having. The machines before it read strictly
+left to right and got order for nothing, precisely because they could only ever
+be in one place at a time — which is the same reason they were slow and the same
+reason they forgot the beginnings of long sentences. Attention looks everywhere
+at once. It bought speed and reach by giving up the one thing that reading in
+order had been carrying for free.
+
+<Figure
+  title="Two orders in, and what has to change for two answers to come out"
+  description="Every score is worked out from what two words mean, so both orders hand attention the same heap of comparisons and the same answer falls out of it; adding a fixed set of numbers for slot 4 to whichever word is sitting in slot 4 — before any comparing happens — is what turns the two orders back into two different questions."
+>
+  <PositionStampedIn />
+</Figure>
+
+## The repair is an addition, and it goes in first
+
+Whatever a word looks like on the page, inside the model it is a row of numbers
+and nothing else. That row is the only thing attention ever gets to see.
+
+Which means there is nowhere else to put the order. No second channel, no
+sidecar, no small tag pinned to each word saying "this one was fifth". If
+position is going to reach the comparisons, it has to travel inside the numbers,
+because the numbers are all there is.
+
+So that is what happens. Before any comparing starts, each word's row has a
+second row added to it — a stamp that depends on nothing whatsoever except which
+slot the word is sitting in. Slot one gets one stamp, slot two gets another, and
+slot five gets the same stamp in every sentence anybody ever feeds the model.
+That is **positional encoding**, and with the name taken off it is one addition.
+
+The consequence is the whole point. _Box_ sitting fifth and _box_ sitting second
+are no longer the same input. They are two different rows of numbers, so every
+score either of them takes part in comes out different, and the heap of
+comparisons is no longer the same heap.
+
+Notice where in the order of events it happens. Before, not after. A note about
+word order handed to the model at the end would be worthless, because by then
+every comparison has already been made and the answers are already mixed. The
+stamp goes on first exactly so that it can get into all of them.
+
+Two things make a stamp a good one, and neither is obvious.
+
+**Nearby slots should get similar stamps.** If slot eight and slot nine were
+unrelated codes, then "two words apart" would be something a model could only
+learn by memorising every pair of slots separately. Making neighbouring stamps
+resemble each other turns the gap between two words into something a score can
+feel directly.
+
+**It should keep working past the lengths the model was trained on.** A model
+trained on paragraphs gets handed whole documents by real users. A scheme that
+simply runs out — nothing sensible for slot nine thousand, because it never met
+one — fails at the point people care about most.
+
+## Shuffle it yourself
+
+Below is that nine-word sentence, twice. The top row is the sentence. The bottom
+row is whatever arrangement you have asked for, run through the same machinery,
+and the table underneath shows what the word you are watching comes out meaning
+in each.
+
+<OrderBlindness client:visible />
+
+It opens on _she_, under the reading that hunts for what a word stands in for,
+spending forty-three per cent of everything it has on _student_ — the number you
+already met, and the reason any of this is worth building.
+
+Now switch **Shuffle the words** on and watch that forty-three. It does not
+vanish and it does not shrink. It slides along the row and lands back on
+_student_, wherever the shuffle happened to throw it, and every other share
+travels the same way, glued to its own word.
+
+Then read the table. Four numbers in the left column, four in the right: 0.0576,
+0.4321, 0.2943, 0.0576, in both. Not close. Identical, digit for digit, because
+there was never anything in the arithmetic for the shuffle to disturb.
+
+Switch **Stamp each word with the slot it sits in** on and the two columns come
+apart. The row counting how much of a person _she_ is now carrying reads 0.3457
+in the sentence and 0.3679 in the shuffle. Same words, same reading, same
+machine. The only thing that changed is that every word now arrives knowing
+where it is.
+
+The fourth reading is where this stops being arguable. Switch the stamp back off
+and choose **the word just before**. It is dead. Whichever word you pick spreads
+its attention evenly over all nine — eleven per cent each, in both rows, every
+time. That is not a broken head, and this time it is not an empty word either:
+it is a question the machinery physically cannot answer, because nothing about
+what two words mean can tell you which of them came first.
+
+Now put the stamp back on and choose _box_. The row snaps into focus. _Box_
+gives ninety-one per cent to _the_, the word immediately in front of it in the
+sentence — and in the shuffle, where _box_ is sitting second, it gives
+ninety-two per cent to _she_, the word immediately in front of it there. Same
+reading, same word, a different neighbour, because it is now a different
+arrangement.
+
+A whole way of reading the sentence exists only because the stamp is there. That
+is the clearest evidence available that position is load-bearing rather than
+decorative.
+
+One reminder, briefly, since it applies to every panel in this Part. The
+arithmetic is the real mechanism. What is staged is where the scores come from:
+a real model learns them, and what any one of its heads ends up following is
+nobody's decision and mostly nobody's guess. These four are hand-written so that
+nine words are enough to see a pattern.
+
+<Aside title="Sine waves, and what most models do now">
+  The 2017 design built its stamps out of sine and cosine waves running at many
+  different speeds — a slow one that barely changes between neighbouring slots,
+  a fast one that separates them cleanly, and every rate in between. It was
+  chosen for exactly the two properties above, and it is where the sine and
+  cosine you may have seen attached to this topic come from.
+
+Most current large models have moved on. They arrange for the _score_ to depend
+on the gap between two words rather than on the two slot numbers themselves, so
+a model that has learned what "four words apart" feels like carries that to slot
+nine thousand unchanged. The switch in the panel is this second kind, because it
+is easier to watch. Both land before the comparison is finished, and that is the
+part that never varies.
+
+</Aside>
+
+## Where it actually sits
+
+In a working model this is one step, run once, right at the bottom. The words
+become rows of numbers, the position stamps are added, and everything above —
+every attention layer, all the dozens of them stacked up — inherits the result.
+It is never repeated and never re-derived.
+
+It is also one of the things people compare between models. When a new model
+reads several times as much text at once as the one before it, the position
+scheme is usually part of what changed, alongside the arithmetic that makes long
+inputs expensive in the first place. It is the piece that decides whether slot
+nine thousand means anything at all.
+
+<DevAside>
+  <Fragment slot="java">
+    ```java
+    float[] x = embedding(tokenIds[i]);   // what the word means
+    float[] p = positionStamp(i);         // where it sits, and only that
+
+    for (int d = 0; d < x.length; d++) {
+      x[d] += p[d];                       // the whole of it
+    }
+    ```
+
+    Two things worth noticing. `positionStamp` takes `i` and nothing else — not
+    the word, not the sentence — which is why slot five is the same stamp
+    forever. And it is a plain element-wise add into the array the meaning is
+    already in, rather than a second array passed alongside, because there is no
+    second array for attention to look at.
+
+  </Fragment>
+  <Fragment slot="python">
+    ```python
+    x = embedding(token_ids)                 # (positions, width)
+    x = x + position_stamp(len(token_ids))   # same shape, added on
+    ```
+
+    Two lines, and the shapes are the tell: the stamp is built out of the
+    sequence length alone and added straight onto the meanings. Delete the second
+    line and nothing crashes. Training runs, the loss comes down, and you get
+    fluent sentences that are unreliable about which noun did the verb — which
+    can look like a general quality problem for weeks.
+
+  </Fragment>
+</DevAside>
+
+<Checkpoint question="A model that translates well has its position stamps disabled by accident. It carries on training without a single error, and still produces fluent, grammatical-looking output. Why does nothing break — and what kind of mistakes would you expect to start seeing?">
+  Nothing breaks because nothing was ever checking. Attention scores pairs of
+  words by what they mean, and that calculation is perfectly well defined
+  whatever order the words arrived in. Position was something the model was
+  handed, not something the arithmetic required.
+
+What survives is everything that does not depend on order: which words belong to
+the same subject, which ones keep company, roughly what a passage is about. So
+the output goes on looking like language, because most of what makes text look
+like language is exactly that.
+
+What goes is everything order was carrying. Who did what to whom. Which noun a
+_not_ applies to. Directions, dates and comparisons — "London to Paris" and
+"Paris to London" collapse into the same sentence, and so do "before" and
+"after".
+
+That is the shape of the failure worth remembering, because it is the expensive
+kind. A crash is found the same afternoon. Output that reads perfectly and
+quietly reverses one sentence in fifty is found by a customer.
+
+</Checkpoint>

@@ -6,6 +6,8 @@ summary: Take the answer column away and a machine can still find structure — 
 prerequisites:
   - training-data
 connections:
+  - to: embeddings
+    why: Finding structure nobody labelled is exactly what produces a map of word meanings — the positions come out of which words keep similar company, and no human ever wrote down what any of them mean.
   - to: loss-function
     why: A machine can only improve against a single number, so when there is no answer column to compare with, something else has to be scored — here it is how tightly the machine's own groups hold together.
   - to: model-as-dials

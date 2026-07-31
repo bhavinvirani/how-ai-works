@@ -1,0 +1,155 @@
+---
+/**
+ * Why writing a word gets faster when the dials get shorter — and where that
+ * stops being true.
+ *
+ * Two bars per row: how long it takes to carry the dials in from memory, and
+ * how long the sums themselves take. The lower bar is identical in all three
+ * rows on purpose, because rounding a number does not make multiplying it any
+ * quicker. One word takes the longer of the two, which the bracket underneath
+ * measures — and that bracket ends at the carrying twice and at the sums once.
+ * The third row is the whole point of the diagram.
+ *
+ * The two bars are told apart by their fixed vertical positions and by the
+ * words attached to every one of them, not by colour (hard rule 9).
+ *
+ * Decorative by itself, so `aria-hidden`: `Figure` supplies the accessible name
+ * and the description.
+ */
+
+/** One unit of time is one digit's worth of carrying. */
+const UNIT = 25;
+
+/** The sums take the same time whatever the dials are written in. */
+const SUMS = 3;
+
+const X0 = 8;
+const BAR_HEIGHT = 14;
+
+const carryWidth = (digits: number): number => digits * UNIT;
+const sumsWidth = SUMS * UNIT;
+const waitEndsAt = (digits: number): number =>
+  X0 + Math.max(carryWidth(digits), sumsWidth);
+
+const ROWS = [
+  {
+    label: 'sixteen digits per dial',
+    digits: 16,
+    caption:
+      'One word takes as long as the carrying. The sums finished early and waited.',
+    labelY: 18,
+    carryY: 24,
+    carryTextY: 34,
+    sumsY: 42,
+    sumsTextY: 52,
+    bracketY: 65,
+    captionY: 82,
+  },
+  {
+    label: 'four digits per dial',
+    digits: 4,
+    caption:
+      'A quarter as much to carry, so a word arrives about four times sooner.',
+    labelY: 106,
+    carryY: 112,
+    carryTextY: 122,
+    sumsY: 130,
+    sumsTextY: 140,
+    bracketY: 153,
+    captionY: 170,
+  },
+  {
+    label: 'two digits per dial',
+    digits: 2,
+    caption:
+      'Now it is the sums being waited on, and shaving the numbers buys nothing.',
+    labelY: 194,
+    carryY: 200,
+    carryTextY: 210,
+    sumsY: 218,
+    sumsTextY: 228,
+    bracketY: 241,
+    captionY: 258,
+  },
+];
+---
+
+<svg viewBox="0 0 520 312" class="w-full" aria-hidden="true">
+  {
+    ROWS.map((row) => (
+      <g>
+        <text x={X0} y={row.labelY} class="fill-ink" font-size="11">
+          {row.label}
+        </text>
+
+        <rect
+          x={X0}
+          y={row.carryY}
+          width={carryWidth(row.digits)}
+          height={BAR_HEIGHT}
+          rx="2"
+          class="fill-paper-sunken stroke-rule-strong"
+          stroke-width="1.25"
+        />
+        <text
+          x={
+            carryWidth(row.digits) > 200
+              ? X0 + carryWidth(row.digits) - 6
+              : X0 + carryWidth(row.digits) + 6
+          }
+          y={row.carryTextY}
+          text-anchor={carryWidth(row.digits) > 200 ? 'end' : 'start'}
+          class="fill-ink"
+          font-size="10"
+        >
+          carrying the dials in from memory
+        </text>
+
+        <rect
+          x={X0}
+          y={row.sumsY}
+          width={sumsWidth}
+          height={BAR_HEIGHT}
+          rx="2"
+          class="fill-accent-2-soft stroke-accent-2"
+          stroke-width="1.25"
+        />
+        <text
+          x={X0 + sumsWidth + 6}
+          y={row.sumsTextY}
+          class="fill-ink"
+          font-size="10"
+        >
+          doing the sums with them
+        </text>
+
+        <path
+          d={`M${String(X0)} ${String(row.bracketY - 4)} L${String(X0)} ${String(row.bracketY)} L${String(waitEndsAt(row.digits))} ${String(row.bracketY)} L${String(waitEndsAt(row.digits))} ${String(row.bracketY - 4)}`}
+          class="fill-none stroke-ink-muted"
+          stroke-width="1.25"
+        />
+        <text
+          x={waitEndsAt(row.digits) + 6}
+          y={row.bracketY + 3}
+          class="fill-ink-muted font-mono"
+          font-size="10"
+        >
+          one word
+        </text>
+
+        <text x={X0} y={row.captionY} class="fill-ink-muted" font-size="11">
+          {row.caption}
+        </text>
+      </g>
+    ))
+  }
+
+  <text x="8" y="284" class="fill-ink-faint" font-size="10"
+    >The lower bar is the same in all three rows: rounding a number does not
+    make multiplying it quicker.</text
+  >
+  <text x="8" y="300" class="fill-ink-faint" font-size="10"
+    >The shape is what to take from this, not the lengths — those vary with the
+    machine and the load.</text
+  >
+</svg>

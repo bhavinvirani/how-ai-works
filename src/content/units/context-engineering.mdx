@@ -1,0 +1,377 @@
+---
+title: The skill is what you leave out
+part: your-own-documents
+order: 4
+summary: The standing instructions, the tool descriptions, the conversation, the fetched passages and the room for the answer are all spending from one fixed window, so the real work is allocation — and a bigger window moves the moment you run out rather than removing it.
+prerequisites:
+  - context-window
+  - rag
+connections:
+  - to: agents
+    why: An agent takes many turns without you, and every turn adds a tool description, a tool result and its own working-out to the same fixed window, so the allocation described here stops being something a person tunes once and becomes something the system has to do to itself, repeatedly, unwatched.
+interactives:
+  - ContextBudget
+status: published
+updated: 2026-07-31
+---
+
+import Aside from '../../components/blocks/Aside.astro';
+import Checkpoint from '../../components/blocks/Checkpoint.astro';
+import DevAside from '../../components/blocks/DevAside.astro';
+import Figure from '../../components/blocks/Figure.astro';
+import EndsAndTheMiddle from '../../components/diagrams/EndsAndTheMiddle.astro';
+import { ContextBudget } from '../../components/interactives/ContextBudget';
+
+Somebody is covering your desk for a fortnight, and the handover is one side of
+A4. Nobody imposed that. It is simply how much you have time to write on the
+Friday and how much they have time to read on the Monday.
+
+You sit down to fill it and discover, within about a minute, that you are not
+writing. You are choosing.
+
+The standing things have to go on: who to ring about what, the two promises
+nobody may make to a customer. Then the live cases. Then the awkward one that
+lands on Thursday, which needs half the page to itself if it needs anything at
+all. And the bottom third has to stay blank, because they will be writing on
+this sheet too.
+
+Notice what the difficulty is not. It is not that you cannot write small enough.
+Hand yourself a second sheet and the same argument restarts one page later,
+because the number of things that could go on the page was never the limit. The
+job — the whole job — is deciding what does not go on it.
+
+## The sheet is shared, and most of it is not yours
+
+A model's context window is that sheet, and you have met the limit itself
+already: everything the model can see at the moment it answers has to fit inside
+a fixed number of tokens — the chunks text is cut into before a model sees any of
+it, a little under a word apiece — and its reply is written into the same space.
+
+What that unit did not do is open the sheet up and look at who is on it.
+
+**The standing instructions.** The application's own briefing — who the model is
+here, what it must not say, how to lay an answer out. You did not write it and
+you cannot shorten it. In a real product it runs to hundreds or thousands of
+tokens, and it is sent again ahead of every single message.
+
+**The tool descriptions.** If the assistant can search the web, send an email or
+query a database, each of those abilities reaches the model as a written
+description: a name, a sentence about when to use it, and a list of what it
+takes. One is nothing. Forty is an essay the model reads before it reads a word
+of yours, on every call, including the calls where none of them is relevant.
+
+**The conversation so far.** Nothing is remembered between messages, so all of it
+is sent again every turn, and it only ever grows.
+
+**Whatever was fetched.** In a system that answers from your own documents, a
+search runs before the model does, and its results are pasted in on your behalf.
+This is the biggest and the most variable of the five. Five passages at a
+thousand tokens each outweigh everything else on this list put together.
+
+**Room for the answer.** Set aside before anything is let in, because the reply
+is written into the same window the question arrived in.
+
+Five claimants, one pot, and exactly one of them is the sentence you typed.
+
+Deciding how that pot gets divided, on each call, is a real job with a real name:
+**context engineering**. It is the work of assembling everything the model will
+see, inside a limit that does not move.
+
+## Prompting is one message. This is the whole page.
+
+Prompting is about a single message — what to ask for, how to phrase it, which
+examples to put in. It quietly assumes that the message is the thing you control.
+
+In any system worth the name, it is not. Most of what the model reads on a given
+call was assembled by software before your sentence arrived: a standing
+instruction somebody wrote in March, a history that has already been trimmed
+twice, five passages a search chose, a tool list that grew by three last week.
+Your sentence is a small part of what is on the page, and often not the part
+causing the trouble.
+
+Which is why this has a separate name from prompting. Different unit of work.
+Prompting edits one message; context engineering decides what accompanies it.
+
+The failure it exists to prevent is specific, and it looks nothing like a model
+problem. An assistant that answered beautifully in testing starts giving thinner,
+vaguer answers in production. Nobody changed the model. Nobody changed the
+prompt. What changed is that conversations got longer, three more tools were
+added, and somebody tuned the search to return eight passages instead of three.
+Everything got a little more crowded, so everything got a little worse, and there
+is no line anywhere in the code where that happened.
+
+## Three places the room actually goes
+
+The moves that work are unglamorous, and all three are subtraction.
+
+### Summarise the old rather than carrying it
+
+A conversation's early turns are the cheapest thing to compress and the most
+expensive thing to keep, because you are paying full price for them on every
+remaining turn. Replacing the first twenty exchanges with a short standing
+summary — what was agreed, what the constraints are, what has been ruled out —
+buys back most of that room for a fraction of the length.
+
+It is not free, and the unfree part is easy to miss. A summary keeps whatever the
+summariser thought was worth keeping, and nobody asked you which parts those
+were. What you are trading is detail you cannot name in advance for room you can
+measure exactly, which is an uncomfortable trade and still usually the right one.
+
+### Fetch fewer, and better
+
+This is the one that surprises people, because the obvious move is the wrong one.
+
+Retrieval is usually judged on whether the right passage came back at all, and
+that number goes up when you return more passages. So teams raise it — three
+becomes ten — and the measured retrieval quality improves while the answers get
+worse.
+
+The reason is that the seven extra passages did not arrive as neutral filler.
+They arrived as near-misses: pages that matched the same words, on the same
+subject, saying something else. Now the model is holding one page that answers
+the question and seven that look like it, with nothing anywhere marking which is
+which, and attention spent on one is attention taken from another.
+
+Fewer and better means putting a second, sharper step after the search — one that
+reorders the candidates and cuts the list — and it costs real work. It is still
+the highest-value thing most document systems are missing.
+
+### Keep the standing instructions short, because you pay for them every time
+
+Everything else on the sheet is paid for once per occurrence. The standing
+instructions are paid for on every call, in every conversation, for as long as
+the product runs.
+
+So a hundred tokens trimmed from a system prompt is a hundred tokens saved on the
+first message, and on the fortieth, and on the four million after that. There is
+nothing else in one of these systems with that shape of leverage — and the
+standing instruction is almost always written once, in a hurry, by whoever set
+the thing up, and never read again.
+
+The same argument applies to tool descriptions, and harder, because they are
+longer. Most steps of most jobs could only ever need two or three of the
+available tools. Describing all forty of them anyway is a cost paid on every
+request, to no end.
+
+## The middle of the page
+
+There is one more finding here, and it is the one people find hardest to believe,
+because it says that where you put something matters.
+
+A model does not use a long window evenly. Material at the very beginning and at
+the very end is picked up most reliably. Material buried in the middle of a long
+context is the easiest thing to skate over — present, paid for, read, and still
+less likely to make it into the answer.
+
+So a passage can be in the window and effectively unused, which breaks the
+comfortable assumption underneath most of this work: that getting the right thing
+in is the same as getting it used.
+
+<Figure
+  title="The same eight pages in two orders, against how reliably each position gets used"
+  description="A model uses the start and the end of a long window most reliably and the middle least, so the one page that answers the question can be present, paid for and still skated over — and moving it from the middle to the end changes nothing about the cost, the tokens or the pages themselves."
+>
+  <EndsAndTheMiddle />
+</Figure>
+
+That makes reordering the cheapest improvement available anywhere in this
+subject. It costs nothing, drops nothing, and nothing new has to be built.
+
+The recipe is short. Put the instruction that has to hold at the very top or the
+very bottom. Put the strongest passage nearest the question. Let the weakest ones
+take the middle, where they were going to be half-read anyway.
+
+## One window, five documents, and one page that answers
+
+The panel below is the same board the window unit used. Not a similar one — the
+same instrument, the same arithmetic, with different things loaded into it.
+
+That is not a shortcut. It is most of what this unit has to say. A window has no
+idea what kind of thing it is holding. An instruction somebody wrote in March, a
+sentence you typed, an answer it wrote itself, a page a search fetched two
+hundred milliseconds ago: all of it is tokens, all of it competes on identical
+terms, and nothing in there is marked important. Only the claimants changed.
+
+This window holds two thousand tokens. Two hundred and twenty are gone on the
+standing instruction before anything happens, and five hundred are held back for
+the reply. That leaves one thousand two hundred and eighty — so more than a third
+of the window is spoken for before a single message or document arrives.
+
+<ContextBudget
+  client:visible
+  preset="retrieval"
+  title="Spend one window on one question"
+  lead="Load the pieces in one at a time. Watch for the moment the fifth fetched page pushes out the one page that answers the question — and then try each of the three rules, and find the one that saves it."
+/>
+
+It opens at five pieces: two messages of earlier conversation, the question being
+answered now, and the first two pages the search returned. Everything fits, with
+four hundred and forty-five tokens to spare, and the returns policy — the page
+that actually answers the question — is in there.
+
+Read the last line of the readout before you touch anything. You have typed
+eighty-five tokens. It has read two thousand nine hundred and fifty-five. Almost
+nothing the model is reading came from you, which is most of the reason this is
+somebody's job rather than a phrasing tip.
+
+Step to six. A third page arrives and it still fits, with ninety-five tokens
+spare. Step to seven and it does not.
+
+Now try all three rules on that seventh piece, because this is the reassuring
+part. Dropping the oldest throws out the two earlier messages. Dropping the
+biggest throws out last year's returns policy, withdrawn in March, which is
+exactly the page you would have wanted gone. Summarising the oldest squeezes
+those two earlier messages into a twenty-four-token stand-in. Three rules, three
+different casualties, and every one of them keeps the page that answers the
+question.
+
+Then step to eight. One more fetched page — a support thread that happens to use
+all the same words — and every rule breaks.
+
+**The oldest first** reaches past the history and takes the returns policy
+itself, because it arrived before the four pages that followed it.
+
+**The biggest first** takes the withdrawn policy and then the current one,
+because the page that answers a question is usually a substantial page. The rule
+that saved you at seven pieces is the rule that costs you at eight.
+
+**Summarising the oldest** crushes four pieces — seven hundred and ninety tokens
+of them — into ninety-nine, the returns policy among them. It survives at an
+eighth of its length, and whether the clause that mattered made it in is not
+something anybody checked.
+
+Nothing was retrieved wrongly. The right page came back, and it came back first.
+It is the fifth one — a support thread that nobody needed and no rule knew to
+prefer — that pushed it out.
+
+<Aside title="Worse than an empty window" tone="caution">
+  A window with no returns policy in it is not neutral. It is four pages that use
+  all the same words and answer something else.
+
+Asked with nothing in front of it, a model has some chance of saying it does not
+know. Asked with four near-misses in front of it, it has a page about shipping,
+a page about warranties, a withdrawn policy from last year and a support thread —
+all plausible, all relevant-looking, none of them the answer. The most reasonable
+next sentence is an answer built out of those.
+
+Retrieval that fetches the wrong thing is not a smaller version of retrieval that
+fetches nothing. It is a different and worse failure, and it is the one that
+crowding produces.
+
+</Aside>
+
+## A bigger window moves the moment; it does not remove it
+
+The instinct at this point is to buy more room, and more room is genuinely
+available — windows have grown by orders of magnitude in a few years, and they
+will grow again.
+
+It does not fix the allocation problem. It postpones it, and it postpones it into
+worse conditions.
+
+Doubling the window doubles what fits and roughly quadruples the work of
+attending to it, because every piece of the text is compared against every other
+piece. The bill and the wait go up faster than the capacity does.
+
+It also makes the middle longer. The stretch of context that gets skated over
+grows with the window, so a system that fills the new space with marginal
+material has bought itself more places to bury the thing that mattered.
+
+And the practical effect is the one nobody plans for. A tight window forces the
+trimming to happen. A generous one means nobody trims anything until the day it
+overflows — by which point the standing instruction has been added to eleven
+times, forty tools are described on every call, and the conversation nobody
+summarised is nine months old.
+
+<Aside title="Empty is not wasted">
+  A window is quoted as a number, and a number invites you to fill it. Every
+  habit you have about capacity says that unused space is space you failed to
+  use.
+
+Not here. The empty part of a window is not a failure to fill it; it is the
+attention the model has left for the things you did put in. The measure of a
+well-assembled context is not how much of the window it occupies. It is how
+little.
+
+</Aside>
+
+<DevAside>
+  <Fragment slot="java">
+    ```java
+    int budget = MODEL_WINDOW
+               - REPLY_RESERVE           // taken out first, always
+               - count(systemPrompt)
+               - count(toolSchemas);     // the line people forget
+
+    List<Passage> chosen = new ArrayList<>();
+    for (Passage p : reranked) {         // best first, not search order
+        if (count(p) > budget) break;
+        chosen.add(p);
+        budget -= count(p);
+    }
+    ```
+
+    Two lines are doing the arguing. `count(toolSchemas)` is the one that gets
+    left out, because tool definitions are written as JSON and JSON is verbose:
+    a dozen tools with described arguments is routinely longer than the system
+    prompt sitting above them, and it is charged on every request whether or not
+    the model uses one.
+
+    `reranked` is the other. Iterating the search results in the order the
+    search returned them fills the budget with whatever scored well on a keyword
+    match. Iterating a reordered list fills the same budget with the best
+    candidates, at the same price. Same loop, same tokens, different answers.
+
+  </Fragment>
+  <Fragment slot="python">
+    ```python
+    passages = rerank(question, retrieved)[:k]
+    prompt   = system + tools + summary(old) + recent + passages + question
+    ```
+
+    `k` is a budget decision dressed as a quality decision, and it is almost
+    always set once and forgotten. Raising it makes your retrieval metric go up
+    and your answers go down, and the two are measured by different people.
+
+    The concatenation order on the second line is a decision as well, not a
+    formatting habit. The question is last on purpose, because the end of the
+    window is where material gets used most reliably — and if one instruction
+    absolutely has to hold, it belongs at one of the two ends, not in the middle
+    with the passages.
+
+    Worth adding early: log the split per call — instructions, tools, history,
+    passages, reserve. Almost nobody does, and it is the only way anyone notices
+    the week retrieval quietly started returning eight passages instead of three.
+
+  </Fragment>
+</DevAside>
+
+<Checkpoint question="A team's document assistant works well. In one release they do three sensible things: they move to a model with a window four times larger, they raise the number of retrieved passages from three to ten, and they add six new tools. Nothing else changes — same documents, same instructions, same model family. Answers get noticeably worse and the bill roughly triples. Explain why the larger window did not save them, and say which change you would undo first.">
+  The window was never the constraint on quality. It was the constraint on
+  capacity, and those are different failures: running out is loud, and crowding
+  is silent. Making the window bigger removed the loud one and left more room for
+  the quiet one.
+
+The ten passages are the change that hurt the answers. Seven of them are
+near-misses — same subject, same words, different content — and nothing in the
+window marks which of the ten is the one that answers the question. Attention
+spread across ten is attention taken from the one. It is also now far more likely
+to be sitting somewhere in the middle, which is where material gets used least
+reliably.
+
+The bill comes from both, and the tools are the half that hides. Seven extra
+passages are at least attached to a request somebody made. Six tool descriptions
+are sent on every single call, in every conversation, whether or not that request
+could ever have used one of them — a standing charge nobody asked for and nobody
+sees on any particular answer.
+
+Undo the passages first. It is the change that touched the material answers are
+built from, reversing it is free, and the improvement shows up on the next
+request. Then cut the tool list down to what a given step could plausibly need.
+The larger window can stay — it is not doing harm, it is simply not doing the
+work they hoped it would.
+
+Worth carrying beyond this unit. When a system gets worse after a release that
+added room, stop looking at the room and look at what filled it.
+
+</Checkpoint>

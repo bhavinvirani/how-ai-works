@@ -1,0 +1,124 @@
+---
+/**
+ * What an eval set actually looks like, drawn as three rows of a file.
+ *
+ * The unit's hardest job is deflation. Readers hear "evaluation" and picture a
+ * platform, a dashboard, a team — and then conclude they cannot afford one and
+ * go by feel instead. Showing three rows of a plain file is the fastest way to
+ * take that away: a case is an input, a known-good answer, and a note saying
+ * how it gets checked, and there is nothing else in it.
+ *
+ * The third row is the reason the drawing has three rows rather than two. Two
+ * rows of exact matching would leave a reader believing a set only works for
+ * questions with one right answer, which is the belief that stops most people
+ * writing one. The third row carries an open-text case whose known-good answer
+ * is a pair of conditions and whose check is a person or a model — different in
+ * kind, same file, same row shape.
+ *
+ * The two footer lines carry what the table cannot: how long the file really
+ * is, and which column costs the most. Neither is inferable from three rows.
+ *
+ * Every run of text is interpolated from a constant so that no `<text>` element
+ * wraps across lines of markup: SVG strips newlines inside text content rather
+ * than collapsing them to spaces, so a wrapped label silently loses its spaces.
+ *
+ * Decorative on its own, so `aria-hidden` — `Figure` carries the accessible
+ * name and the plain-English description.
+ */
+
+const SAYS = {
+  headIn: 'what goes in',
+  headGood: 'what a good answer is',
+  headCheck: 'how it gets checked',
+
+  in1: '"Where is order 4471? It says delivered."',
+  good1: 'queue = delivery',
+  check1: 'exact match',
+
+  in2: '"Mug arrived smashed — money back please."',
+  good2: 'queue = refund',
+  check2: 'exact match',
+
+  in3: '"Can I leave the lamp outside all year?"',
+  good3a: 'says it is rated IP54',
+  good3b: 'never says waterproof',
+  check3a: 'a person reads it',
+  check3b: 'or a model does',
+
+  note1:
+    'Twenty-seven more rows underneath. Every one of them something a customer actually sent.',
+  note2:
+    'The middle column is the expensive one. Filling it in is where somebody has to decide what right means.',
+} as const;
+---
+
+<svg viewBox="0 0 600 244" class="w-full" aria-hidden="true">
+  <!-- ── Column headings ──────────────────────────────────────── -->
+
+  <g class="fill-ink-faint" font-size="8.5">
+    <text x="26" y="22">{SAYS.headIn}</text>
+    <text x="258" y="22">{SAYS.headGood}</text>
+    <text x="458" y="22">{SAYS.headCheck}</text>
+  </g>
+
+  <!-- ── The file ─────────────────────────────────────────────── -->
+
+  <rect x="16" y="30" width="568" height="52" class="fill-paper-sunken"></rect>
+  <rect x="16" y="134" width="568" height="52" class="fill-paper-sunken"></rect>
+
+  <rect
+    x="16"
+    y="30"
+    width="568"
+    height="156"
+    class="fill-none stroke-rule-strong"
+    stroke-width="1.25"></rect>
+
+  <g class="stroke-rule" stroke-width="1">
+    <line x1="16" y1="82" x2="584" y2="82"></line>
+    <line x1="16" y1="134" x2="584" y2="134"></line>
+    <line x1="248" y1="30" x2="248" y2="186"></line>
+    <line x1="448" y1="30" x2="448" y2="186"></line>
+  </g>
+
+  <!-- Row 1: a question with exactly one right answer. -->
+  <text x="26" y="60" class="fill-ink" font-size="9.5">{SAYS.in1}</text>
+  <text x="258" y="60" class="fill-ink font-mono" font-size="9"
+    >{SAYS.good1}</text
+  >
+  <text x="458" y="60" class="fill-ink-muted" font-size="9.5"
+    >{SAYS.check1}</text
+  >
+
+  <!-- Row 2: the same shape, a different queue. -->
+  <text x="26" y="112" class="fill-ink" font-size="9.5">{SAYS.in2}</text>
+  <text x="258" y="112" class="fill-ink font-mono" font-size="9"
+    >{SAYS.good2}</text
+  >
+  <text x="458" y="112" class="fill-ink-muted" font-size="9.5"
+    >{SAYS.check2}</text
+  >
+
+  <!-- Row 3: no single right answer, and still a row. -->
+  <text x="26" y="164" class="fill-ink" font-size="9.5">{SAYS.in3}</text>
+  <text x="258" y="158" class="fill-ink font-mono" font-size="9"
+    >{SAYS.good3a}</text
+  >
+  <text x="258" y="172" class="fill-ink font-mono" font-size="9"
+    >{SAYS.good3b}</text
+  >
+  <text x="458" y="158" class="fill-ink-muted" font-size="9.5"
+    >{SAYS.check3a}</text
+  >
+  <text x="458" y="172" class="fill-ink-muted" font-size="9.5"
+    >{SAYS.check3b}</text
+  >
+
+  <!-- ── What three rows cannot show ──────────────────────────── -->
+
+  <text x="16" y="210" class="fill-ink" font-size="9.5" font-weight="700"
+    >{SAYS.note1}</text
+  >
+  <text x="16" y="228" class="fill-ink-muted" font-size="9.5">{SAYS.note2}</text
+  >
+</svg>

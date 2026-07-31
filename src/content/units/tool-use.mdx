@@ -1,0 +1,329 @@
+---
+title: Nothing it writes ever runs itself
+part: letting-it-act
+order: 1
+summary: A model cannot run anything — it can only produce text asking for a function to be called, and every decision about whether to run it, with what arguments and with whose credentials, is made by the code that receives the request.
+prerequisites:
+  - hallucination
+connections:
+  - to: mcp
+    why: Every function here has to be described by hand and wired into your own dispatch by hand, which is fine for two of them and unmanageable for forty — the next unit is the agreement that lets a tool be written once and understood by any application, without changing anything about who runs it.
+  - to: agents
+    why: Nothing in this unit happens without your code choosing to act on each request, and an agent is what you get when that choice is made automatically, in a loop, with the result of one call deciding the next — which is where the permissions here stop being paperwork and become the only real limit.
+interactives: []
+status: published
+updated: 2026-07-31
+---
+
+import Aside from '../../components/blocks/Aside.astro';
+import Checkpoint from '../../components/blocks/Checkpoint.astro';
+import DevAside from '../../components/blocks/DevAside.astro';
+import Figure from '../../components/blocks/Figure.astro';
+import AskingIsNotDoing from '../../components/diagrams/AskingIsNotDoing.astro';
+
+A withdrawal slip goes across the counter with a figure written on it and an
+account number underneath.
+
+Nothing has moved. A slip is not money, and it is not permission either — it is
+a sentence in a box, and it will lie on that counter doing nothing whatsoever
+until somebody on the other side picks it up, decides it is in order, and opens
+the drawer.
+
+The person who wrote it has no drawer. Not because a rule forbids them one.
+There is no drawer on their side of the counter, there never was, and no amount
+of writing on slips is going to produce one.
+
+Hold on to that arrangement, because it is what happens — exactly, not roughly —
+when a language model "uses a tool". The thing almost everyone gets wrong is
+which side of the counter the model is standing on.
+
+## What actually leaves the model
+
+You will have read sentences like these. The model can search the web. It can
+run code, query your database, send the email, book the meeting.
+
+Every one of them is shorthand, and every one of them puts the model on the
+wrong side of the counter.
+
+Underneath, this is what there is. Before your question goes in, your code
+writes a short description of some functions into the conversation: a name for
+each one, a sentence saying what it does, and a note of what it needs to be
+told. That is text. It goes into the same place your question goes, and the
+model reads it the way it reads everything.
+
+Then the model does the only thing it does. It reads what is in front of it,
+scores every chunk in its vocabulary, writes one, and goes round again. Nothing
+was installed. No new faculty was switched on.
+
+What comes out — when the conversation has arrived somewhere one of those
+descriptions covers — is not an answer. It is a short run of text in a shape
+your code recognises: a function name, and some arguments. `lookup_order`, order
+number 4471.
+
+And that run of text does nothing.
+
+It is worth being blunt here, because it is the whole unit. Those characters have
+precisely as much power to reach your database as the word _hello_ does. They are
+not a command. Nothing anywhere is listening for them. They are the model's next
+few pieces, produced by the arithmetic that produced every other piece, and then
+the model stops — because stopping is what it does at the end of every turn, and
+there is nothing else available to it.
+
+Your code reads them, and decides.
+
+The arrangement has two names, used interchangeably. **Tool use** is the one you
+will meet in writing about the field; **function calling** is the one you will
+meet in the documentation. A _tool_ is one of your own functions that you have
+described to the model in words.
+
+Providers tidy the last part up for you. The call arrives in your program as a
+neat object with a name field and an arguments field, and the tidiness makes it
+feel like a different kind of output from the prose. It is not. It is the same
+pieces out of the same column of scores, put through a parser that lives on your
+side of the line.
+
+## What the loop is for
+
+Nobody built this because it was elegant. It exists because three things the
+mechanism cannot do turn out to be three things people want constantly.
+
+**It stopped learning on a date.** The dials were set during training and have
+not moved since. Ask about anything that happened afterwards and there is
+nothing in there to be right with — but the machine will answer anyway, because
+answering is the only thing in the loop.
+
+**It does not calculate.** Multiply two seven-digit numbers and what comes back
+has the right number of digits, plausible leading figures and a shape you would
+sign off at a glance. Producing the shape of a calculation is not the same job as
+doing one, and only the first job is available.
+
+**It cannot look anything up.** That was the previous unit, and it is the flat
+version: no step anywhere consults anything. An answer about your order status is
+produced by the same operation that produces everything else, whether or not the
+order exists.
+
+A tool is how each of those gets handed to something that can actually do it. A
+search index for the first, a calculator or an interpreter for the second, your
+own records for the third.
+
+Now notice what the fix is _not_. Nothing inside the model has been repaired.
+There is still no step in there that checks anything, no faculty for arithmetic,
+no knowledge of today. What changed is the text in front of it when it writes.
+
+That distinction survives the rest of this Part, so it is worth fixing now. A
+tool does not make the model more capable. It puts a capable thing beside the
+model and moves text between the two.
+
+## The round trip
+
+<Figure
+  title="One tool call, and the line it never crosses"
+  description="The model appears twice and does the same thing both times — reads the conversation, writes text. Step 2 is a run of text naming a function, which on its own does nothing at all; every step that decides, executes or touches the world is on the right of the line, in code holding credentials the model has never held. The result comes back not as a return value but as more conversation, and the empty stretch of the left lane is the model not running."
+>
+  <AskingIsNotDoing />
+</Figure>
+
+Six steps. Two of them are the model, and both are the same act — read what is
+in front of you, write some text. The other four are yours, and they are the
+only ones in which anything happens to anything.
+
+Step one is your code sending the conversation, with the function descriptions
+in it. Step two is the model producing a request. Step three is your code
+deciding — is this a function I offered, are these arguments sane, is this the
+kind of thing a person ought to sign off. Step four is your code running the
+function, or refusing to, which is just as much a decision.
+
+Step five is the one worth slowing down for. The result does not go _into_ the
+model. There is nowhere in a model for a result to go. It gets written onto the
+end of the conversation, as text, in the same way your question was written onto
+it. Then step six is an ordinary pass: the model reads the whole thing again from
+the top, and this time the answer is sitting in front of it.
+
+Two consequences fall straight out of that, and both matter later.
+
+The model has no memory of having asked. It is not waiting for a reply, because
+between step two and step six it was not running at all. On the sixth step it
+reads a conversation that happens to contain a request and a result, in the same
+way it reads a conversation that happens to contain your question.
+
+And nothing marks that result as trustworthy. From the model's side it is text
+that arrived. Anything that can put words into a tool's output has put words into
+the conversation — a problem large enough that it gets a unit of its own later in
+this Part.
+
+## A sentence that cannot be true
+
+Here is a line you will hear in a planning meeting, and it repays taking apart
+word by word.
+
+_We gave the model access to the customer database._
+
+Access to a database is a hostname, a credential, an open socket and a library
+that knows how to speak to it. Now hold each of those next to what a model is: a
+very large table of numbers, and an operation that turns text into scores over
+text. There is no field in it for a password. There is nothing in it that opens a
+connection — not because opening connections is forbidden, but because there is
+no machinery in there for doing it, in the same way there is no machinery in
+there for boiling a kettle.
+
+So the sentence has no true reading. What is true is duller and far more useful.
+
+_Your code_ has access to the customer database. Your code holds the credential.
+Your code received a piece of text asking for a query, and your code ran one.
+
+Which means there is also no such thing as the model deleting a record. Your
+program deleted the record, having been asked to, in a function you wrote,
+running as a user you configured.
+
+None of this is a technicality that lets anybody off. It is the exact opposite,
+and it is why this unit opens a Part rather than closing one. If your handler
+runs whatever it is asked to run, holding a credential that can drop tables, then
+your system can drop tables — and nobody handed that power to a model. You
+granted it, in a line you can point at, and can still change tomorrow.
+
+There is a small translation that does most of the work here. Whenever somebody
+asks "can the model do X?", replace it with "does my code do X when it is asked
+to?". The second question always has an answer, and the answer is always in a
+file that somebody wrote.
+
+## Which function, and with what
+
+There is a question still hanging over all of that. How good is the model at
+choosing?
+
+Good, mostly. It is worth being precise about what kind of "mostly" that is,
+because it is not the kind you can engineer against.
+
+The choice of which function to ask for, and what to put in its arguments, comes
+out of exactly the column of scores that produced everything else. There is no
+second, more careful component that wakes up for tool calls. A well-formed call
+is one of the most learnable shapes in the material — in the same way a citation
+is, and with the same consequence. Being well-formed says nothing about being
+right.
+
+So you will get `refund_order` with an order number that does not exist,
+formatted perfectly. You will get the right function carrying an argument lifted
+from three messages ago. And you will get the failure people find hardest to plan
+for: no call at all, because answering from nothing scored a little higher than
+asking, and the answer arrives with the usual composure.
+
+For a function that only reads, none of that costs much. A lookup that fetches
+the wrong record buys you a round trip and a moment of confusion.
+
+For a function that _does_ something, it is a different category. Sending,
+paying, publishing, deleting, merging, closing a ticket, mailing four thousand
+customers — these differ in kind rather than degree, because they cannot be
+un-run. And note where the difference lives. Not in the model, which produced the
+same sort of text either way. In the function, which is yours.
+
+Three habits follow, none of them clever.
+
+**Give each function the narrowest credential that does the job.** A tool that
+answers questions about orders connects as a read-only user. Then a deletion is
+not forbidden, it is unreachable, and unreachable is the only guarantee on offer.
+
+**Check the arguments in the handler, against something you already know.** Whose
+order this is comes from the signed-in session, not from the request. The moment
+the identity travels in the arguments, whoever can influence the text can choose
+whose records get read.
+
+**Put a person in front of anything you cannot undo.** Not a confirmation the
+model produces — a confirmation a human gives, outside the loop, looking at what
+is about to happen.
+
+None of that makes the model reliable; nothing does. What it does is make the
+worst available outcome something you chose, at a moment when you were calm, in a
+file with your name on the commit.
+
+<Aside title="The description is the only instruction it gets">
+  The sentence you write in a function's description is not documentation. It is
+  the entire basis on which the model decides whether to ask for that function,
+  and it sits in the conversation being read on every pass, exactly like your
+  prompt.
+
+A description reading _gets order information_ will be called for things that are
+not orders and skipped for things that are. Replace it with _look up the status
+and delivery date of a single order, given its order number; not for refunds, not
+for returns, not for anything about payment_ and most of that stops happening.
+Same model, same code, different text.
+
+It is the cheapest improvement available in a tool-using system, and it is
+routinely the last thing anybody edits.
+
+</Aside>
+
+<DevAside>
+  <Fragment slot="java">
+    ```java
+    ToolCall call = model.next(conversation);   // text, parsed into an object
+
+    Result result = switch (call.name()) {
+      case "lookup_order" -> orders.findFor(session.userId(), call.arg("id"));
+      case "refund_order" -> throw new NeedsApproval(call);
+      default             -> throw new UnknownTool(call.name());
+    };
+    ```
+
+    The permission model of this system is those four lines. Not the prompt, not
+    the tool descriptions, not anything the model was asked to promise.
+
+    `session.userId()` is doing the load-bearing work. Whose orders may be read
+    comes from your own signed-in session; the model only supplied the order id.
+    Move that argument into the call — `call.arg("userId")` — and whoever can
+    influence the conversation now chooses whose records come back.
+
+    The `default` branch looks like tidiness and is not. A model will ask for
+    functions you never described, cheerfully and in the right format. A
+    dispatch that falls through to something permissive — a reflective lookup by
+    name, a generic HTTP client, a shell — is the short route from "a tool
+    boundary" to "run anything".
+
+  </Fragment>
+  <Fragment slot="python">
+    ```python
+    result = TOOLS[call.name](**call.args)   # the only line here that does anything
+    conversation.append({"role": "tool", "content": result})
+    ```
+
+    Two lines, and between them they are the whole unit. The first is the entire
+    enforcement surface: whatever this process can reach, this call can reach,
+    and no wording anywhere else changes that.
+
+    `TOOLS[call.name]` raises `KeyError` on a name that was never offered, which
+    is the correct outcome. The tempting one-liner `getattr(module, call.name)`
+    does not, and that substitution is how a tool boundary quietly becomes
+    arbitrary code execution.
+
+    The second line is what "the model gets the answer" actually means — a
+    string appended to a list. Notice what is missing around it. No verification
+    step, and nothing marking that string as any more trustworthy than the user
+    message sitting directly above it.
+
+  </Fragment>
+</DevAside>
+
+<Checkpoint question="A team gives their assistant a tool that runs a SQL query against the production database, so customers can ask questions in plain English. To keep it safe they add a line to the instructions: only ever run SELECT statements, never UPDATE or DELETE. It behaves perfectly in testing. Say what they have actually built, and where the fix belongs.">
+  They have built a system that can run any SQL statement, and asked it nicely
+  not to. The instruction is text added to text. It genuinely shifts which
+  continuations score well, so most of the time the model will ask for a
+  `SELECT` — that is a real effect and it is why testing looked fine. What it is
+  not is a restriction, because there is nothing in the model that enforces
+  anything. The model was never the thing that ran the query.
+
+What runs the query is their handler, holding a database credential. If that
+credential can `UPDATE` and `DELETE`, then their system can update and delete,
+and the only thing standing between them and a dropped table is which characters
+happened to score well in one column of numbers.
+
+So the fix belongs on the credential, not in the prompt. Connect as a read-only
+user and a deletion stops being forbidden and starts being impossible — there is
+no route to it to take. And even then the job is half done: a read-only query can
+still read another customer's rows, so which rows this caller may see has to be
+decided in the handler, from the session, rather than from anything the model
+wrote.
+
+Worth carrying past this unit. Any sentence beginning "we told the model not
+to" describes a preference. Any sentence beginning "our code cannot" describes a
+boundary. Only the second one still holds on the day the text goes strange.
+
+</Checkpoint>

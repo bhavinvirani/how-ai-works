@@ -1,0 +1,320 @@
+---
+/**
+ * One request laid out against a clock, and then the same request with each of
+ * its two halves made ten times bigger.
+ *
+ * The teaching load is carried by BAR LENGTH and by POSITION ON A SHARED TIME
+ * AXIS, never by colour. Panel one: the reading block is a single short bar,
+ * because the whole prompt goes through in one sweep; the writing block is a
+ * long bar ruled into ticks, one tick per ten pieces, because every piece is
+ * its own pass and no two passes can overlap. The two moments a person actually
+ * feels — first word, last word — are named underneath at the x positions where
+ * they happen, with dashed guides running up to the block edges that produce
+ * them.
+ *
+ * Panel two answers the question panel one provokes. Three bars on one scale,
+ * showing that ten times the question adds 1.8 seconds and ten times the answer
+ * adds 90. On that scale the reading part of a bar is a hairline, which is not
+ * a drawing problem — it is the finding, so it is said in words underneath.
+ *
+ * The two rates are declared once and every figure on the drawing is derived
+ * from them, so the prose's 0.2 s, 10.0 s, 10.2 s, 12.0 s and 100.2 s cannot
+ * drift away from the picture without someone editing a constant.
+ *
+ * Decorative on its own, so `aria-hidden`: `Figure` carries the accessible name
+ * and the description.
+ */
+
+/** Pieces per second. Illustrative round figures for a hosted model: reading is
+ *  one parallel sweep over the whole prompt, writing is one full pass per piece
+ *  and the passes are strictly in order. */
+const READ_RATE = 10000;
+const WRITE_RATE = 50;
+
+const readSeconds = (pieces: number): number => pieces / READ_RATE;
+const writeSeconds = (pieces: number): number => pieces / WRITE_RATE;
+
+const pieceLabel = (pieces: number): string =>
+  `${pieces.toLocaleString('en-GB')} pieces`;
+
+/* ---------- panel 1: one ordinary request, against a ten-second clock ------ */
+
+const P1_IN = 2000;
+const P1_OUT = 500;
+
+const P1_LEFT = 118;
+const P1_SPAN = 470;
+const P1_MAX = 10.6;
+
+const p1x = (seconds: number): number => P1_LEFT + (seconds / P1_MAX) * P1_SPAN;
+
+const p1FirstWord = readSeconds(P1_IN);
+const p1LastWord = p1FirstWord + writeSeconds(P1_OUT);
+
+const p1ReadEndX = p1x(p1FirstWord);
+const p1WriteEndX = p1x(p1LastWord);
+
+/** One tick per ten pieces written, so the bar reads as a run of separate
+ *  passes rather than one long stretch of work. Fifty ticks, five hundred
+ *  pieces. */
+const P1_TICK_PIECES = 10;
+
+const p1Ticks = Array.from({ length: P1_OUT / P1_TICK_PIECES }, (_, index) =>
+  p1x(p1FirstWord + writeSeconds((index + 1) * P1_TICK_PIECES)),
+);
+
+const p1Axis = [0, 2, 4, 6, 8, 10].map((seconds) => ({
+  x: p1x(seconds),
+  label: `${seconds} s`,
+}));
+
+const p1ReadLabel = pieceLabel(P1_IN);
+const p1WriteLabel = pieceLabel(P1_OUT);
+const p1ReadNote = `one pass over all of it — ${p1FirstWord.toFixed(1)} s`;
+const p1WriteNote = `${P1_OUT} passes, one after another — ${writeSeconds(P1_OUT).toFixed(1)} s`;
+const p1FirstNote = `the first word appears here, ${p1FirstWord.toFixed(1)} s in`;
+
+/* ---------- panel 2: each half made ten times bigger, one scale ------------ */
+
+const P2_LEFT = 168;
+const P2_SPAN = 393;
+const P2_MAX = 100.2;
+
+const p2x = (seconds: number): number => P2_LEFT + (seconds / P2_MAX) * P2_SPAN;
+
+const P2_TOP = 238;
+const P2_STEP = 34;
+const P2_HEIGHT = 22;
+
+const p2Axis = [0, 20, 40, 60, 80, 100].map((seconds) => ({
+  x: p2x(seconds),
+  label: `${seconds} s`,
+}));
+
+const p2Rows = [
+  { name: 'as above', pieces: [2000, 500] },
+  { name: 'ten times the question', pieces: [20000, 500] },
+  { name: 'ten times the answer', pieces: [2000, 5000] },
+].map((row, index) => {
+  const read = readSeconds(row.pieces[0]);
+  const write = writeSeconds(row.pieces[1]);
+
+  const readX = p2x(0);
+  // Floored at a pixel, or the reading half would not render at all on a scale
+  // this compressed. The caption says so rather than pretending otherwise.
+  const readWidth = Math.max(1, p2x(read) - readX);
+  const writeX = readX + readWidth;
+  const endX = p2x(read + write);
+
+  return {
+    name: row.name,
+    shape: `${row.pieces[0].toLocaleString('en-GB')} in / ${row.pieces[1].toLocaleString('en-GB')} out`,
+    top: P2_TOP + index * P2_STEP,
+    readX,
+    readWidth,
+    writeX,
+    writeWidth: endX - writeX,
+    endX,
+    total: `${(read + write).toFixed(1)} s`,
+  };
+});
+---
+
+<svg viewBox="0 0 640 402" class="w-full" aria-hidden="true">
+  <g class="fill-ink font-display" font-size="12" font-weight="700">
+    <text x="8" y="18">One answer, against the clock</text>
+  </g>
+
+  <g class="fill-ink-faint font-mono" font-size="8.5">
+    <text x="8" y="32"
+      >a three-page question and a four-hundred-word answer, both halves drawn
+      on the same second</text
+    >
+  </g>
+
+  <!-- the reading half: one block, however long the prompt is -->
+  <g class="fill-ink font-display" font-size="10" font-weight="700">
+    <text x="8" y="58">reading</text>
+  </g>
+  <g class="fill-ink-faint font-mono" font-size="8.5">
+    <text x="8" y="69">{p1ReadLabel}</text>
+  </g>
+
+  <rect
+    x={p1x(0)}
+    y="48"
+    width={p1ReadEndX - p1x(0)}
+    height="24"
+    rx="3"
+    class="fill-accent-2-soft stroke-accent-2"
+    stroke-width="1.5"></rect>
+
+  <g class="fill-ink font-mono" font-size="9">
+    <text x={p1ReadEndX + 8} y="64">{p1ReadNote}</text>
+  </g>
+
+  <!-- the writing half: one pass per piece, laid end to end -->
+  <g class="fill-ink font-display" font-size="10" font-weight="700">
+    <text x="8" y="92">writing</text>
+  </g>
+  <g class="fill-ink-faint font-mono" font-size="8.5">
+    <text x="8" y="103">{p1WriteLabel}</text>
+  </g>
+
+  <rect
+    x={p1ReadEndX}
+    y="82"
+    width={p1WriteEndX - p1ReadEndX}
+    height="24"
+    rx="3"
+    class="fill-accent-soft stroke-accent"
+    stroke-width="1.5"></rect>
+
+  <g class="fill-none stroke-accent" stroke-width="0.75">
+    {p1Ticks.map((x) => <line x1={x} y1="82" x2={x} y2="89" />)}
+  </g>
+
+  <g class="fill-ink-muted font-mono" font-size="8">
+    <text x={p1ReadEndX + 8} y="99">each tick is ten pieces</text>
+  </g>
+  <g class="fill-ink font-mono" font-size="9" text-anchor="end">
+    <text x={p1WriteEndX - 8} y="99">{p1WriteNote}</text>
+  </g>
+
+  <!-- guides down to the two moments a person actually feels -->
+  <g class="stroke-rule-strong" stroke-width="1" stroke-dasharray="3 3">
+    <line x1={p1ReadEndX} y1="48" x2={p1ReadEndX} y2="112"></line>
+    <line x1={p1WriteEndX} y1="82" x2={p1WriteEndX} y2="112"></line>
+  </g>
+
+  <line
+    x1={p1x(0)}
+    y1="118"
+    x2={p1x(P1_MAX)}
+    y2="118"
+    class="stroke-rule-strong"
+    stroke-width="1"></line>
+
+  <g class="stroke-rule-strong" stroke-width="1">
+    {p1Axis.map((t) => <line x1={t.x} y1="118" x2={t.x} y2="123" />)}
+  </g>
+  <g class="fill-ink-faint font-mono" font-size="8" text-anchor="middle">
+    {
+      p1Axis.map((t) => (
+        <text x={t.x} y="135">
+          {t.label}
+        </text>
+      ))
+    }
+  </g>
+
+  <g class="fill-ink font-mono" font-size="9">
+    <text x={p1ReadEndX + 6} y="154">{p1FirstNote}</text>
+  </g>
+  <g class="fill-ink font-mono" font-size="9" text-anchor="end">
+    <text x={p1WriteEndX - 6} y="172"
+      >the last word, ten seconds after that</text
+    >
+  </g>
+
+  <line x1="8" y1="190" x2="632" y2="190" class="stroke-rule" stroke-width="1"
+  ></line>
+
+  <!-- panel 2: the same request with each half made ten times bigger -->
+  <g class="fill-ink font-display" font-size="12" font-weight="700">
+    <text x="8" y="212">Now make each half ten times bigger</text>
+  </g>
+
+  <g class="fill-ink-faint font-mono" font-size="8.5">
+    <text x="8" y="226"
+      >a different scale from the panel above &mdash; this axis runs to a
+      hundred seconds</text
+    >
+  </g>
+
+  {
+    p2Rows.map((row) => (
+      <g>
+        <text
+          x="8"
+          y={row.top + 10}
+          class="fill-ink font-display"
+          font-size="9.5"
+          font-weight="700"
+        >
+          {row.name}
+        </text>
+        <text
+          x="8"
+          y={row.top + 20}
+          class="fill-ink-faint font-mono"
+          font-size="8"
+        >
+          {row.shape}
+        </text>
+
+        <rect
+          x={row.readX}
+          y={row.top}
+          width={row.readWidth}
+          height={P2_HEIGHT}
+          class="fill-accent-2-soft stroke-accent-2"
+          stroke-width="1"
+        />
+        <rect
+          x={row.writeX}
+          y={row.top}
+          width={row.writeWidth}
+          height={P2_HEIGHT}
+          class="fill-accent-soft stroke-accent"
+          stroke-width="1"
+        />
+
+        <text
+          x={row.endX + 6}
+          y={row.top + 15}
+          class="fill-ink font-mono"
+          font-size="9"
+        >
+          {row.total}
+        </text>
+      </g>
+    ))
+  }
+
+  <line
+    x1={p2x(0)}
+    y1="344"
+    x2={p2x(P2_MAX)}
+    y2="344"
+    class="stroke-rule-strong"
+    stroke-width="1"></line>
+
+  <g class="stroke-rule-strong" stroke-width="1">
+    {p2Axis.map((t) => <line x1={t.x} y1="344" x2={t.x} y2="349" />)}
+  </g>
+  <g class="fill-ink-faint font-mono" font-size="8" text-anchor="middle">
+    {
+      p2Axis.map((t) => (
+        <text x={t.x} y="360">
+          {t.label}
+        </text>
+      ))
+    }
+  </g>
+
+  <g class="fill-ink-muted font-mono" font-size="8.5">
+    <text x="8" y="378"
+      >The reading half is the sliver at the left-hand end of every bar. At this
+      scale it is a hairline &mdash; which is the finding, not a drawing
+      problem.</text
+    >
+  </g>
+
+  <g class="fill-ink font-display" font-size="11" font-weight="700">
+    <text x="8" y="394"
+      >Ten times the question costs under two seconds. Ten times the answer
+      costs ninety.</text
+    >
+  </g>
+</svg>

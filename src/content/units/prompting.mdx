@@ -8,6 +8,8 @@ prerequisites:
 connections:
   - to: few-shot-prompting
     why: Describing the document you want is one way to narrow what could plausibly follow it, and putting two finished ones on the page in front of the model is a far blunter one — same mechanism, applied with a pattern instead of a description of a pattern.
+  - to: context-engineering
+    why: A prompt written once is a sentence; a prompt resent on every call, competing with history and fetched documents for one fixed window, is a budgeting problem — and that is what it becomes in any real system.
 interactives:
   - PromptLeverBoard
 status: published

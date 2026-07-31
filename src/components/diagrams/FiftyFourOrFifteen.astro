@@ -1,0 +1,423 @@
+---
+/**
+ * The multiplication drawn once and the addition drawn underneath it, with the
+ * same six applications and the same nine systems in both.
+ *
+ * The whole argument of the unit is an arithmetic one, and arithmetic stated in
+ * a paragraph is agreed with and forgotten. Here the lines ARE the pieces of
+ * work: the mesh in the top panel has exactly 6 × 9 = 54 of them and the lower
+ * panel has exactly 6 + 9 = 15, so a reader who does not trust the printed
+ * totals can count. That is why the mesh is deliberately left as a hairball
+ * rather than tidied — the density is the finding, not a drawing problem.
+ *
+ * MESH is generated from the two label lists rather than hand-placed, so the
+ * count on the page cannot drift from the count in the picture: change either
+ * list and both the lines and (via the plate below) the arithmetic move
+ * together. The plate prints `6 × 9` and `54` from the same two lengths.
+ *
+ * Nothing is carried by colour (hard rule 9). The two halves are told apart by
+ * their headings, by the totals printed inside each, by the presence or absence
+ * of the bar down the middle, and by the shape of the wiring — crossing versus
+ * flat. Render it in greyscale and not one word of the lesson is lost.
+ *
+ * Decorative on its own, so `aria-hidden`: `Figure` carries the accessible name
+ * and the plain-English description.
+ */
+
+const APPS = [
+  'note-taking app',
+  'spreadsheet add-in',
+  'terminal tool',
+  'support inbox',
+  'onboarding bot',
+  'research notebook',
+] as const;
+
+const SYSTEMS = [
+  'calendar',
+  'wiki',
+  'warehouse stock',
+  'expense claims',
+  'source repository',
+  'HR records',
+  'email archive',
+  'sales ledger',
+  'maps',
+] as const;
+
+const SAYS = {
+  topHead: 'Without an agreed shape',
+  topSub: 'every application does the whole job again, for every system',
+
+  bottomHead: 'With one agreed shape',
+  bottomSub:
+    'the system end describes itself once, and the application end learns the standard once',
+
+  appsLabel: 'SIX APPLICATIONS',
+  systemsLabel: 'NINE SYSTEMS',
+
+  barName: 'the protocol',
+  barLine1: 'one agreed way',
+  barLine2: 'to describe a tool',
+  barLine3: 'and to call it',
+  pieces: 'pieces',
+
+  topNote:
+    'One line, one piece of work — written by hand, and maintained by hand, on its own.',
+  bottomNote:
+    'One line, one piece of work — and every one of these is written exactly once.',
+
+  footer1:
+    'A tenth system joins. Above, that is six more lines. Below, it is one.',
+  footer2:
+    'Nobody builds the whole top picture — so the connection you want is the one nobody got round to.',
+} as const;
+
+/** Geometry. Panel B is panel A shifted down by exactly this. */
+const PANEL_DROP = 296;
+
+const APP_X = 24;
+const APP_W = 134;
+const APP_H = 18;
+const SYS_X = 482;
+const SYS_W = 134;
+const SYS_H = 16;
+
+const A_APP_Y = APPS.map((_, i) => 84 + i * 30);
+const A_SYS_Y = SYSTEMS.map((_, i) => 80 + i * 20);
+
+const B_APP_Y = A_APP_Y.map((y) => y + PANEL_DROP);
+const B_SYS_Y = A_SYS_Y.map((y) => y + PANEL_DROP);
+
+/** 6 × 9 lines. The count printed on the plate is read off these two lengths. */
+const MESH = A_APP_Y.flatMap((appY) =>
+  A_SYS_Y.map((sysY) => ({ y1: appY + APP_H / 2, y2: sysY + SYS_H / 2 })),
+);
+
+const TIMES = `${APPS.length} × ${SYSTEMS.length}`;
+const PLUS = `${APPS.length} + ${SYSTEMS.length}`;
+const PRODUCT = APPS.length * SYSTEMS.length;
+const SUM = APPS.length + SYSTEMS.length;
+
+const BAR_X = 268;
+const BAR_W = 104;
+---
+
+<svg viewBox="0 0 640 636" class="w-full" aria-hidden="true">
+  <!-- ── The multiplication ───────────────────────────────────── -->
+
+  <rect
+    x="8"
+    y="8"
+    width="624"
+    height="280"
+    rx="8"
+    class="fill-none stroke-rule-strong"
+    stroke-width="1.25"></rect>
+
+  <text
+    x="24"
+    y="32"
+    class="fill-ink font-display"
+    font-size="14"
+    font-weight="700">{SAYS.topHead}</text
+  >
+  <text x="24" y="48" class="fill-ink-faint font-mono" font-size="9"
+    >{SAYS.topSub}</text
+  >
+
+  <text x="24" y="70" class="fill-ink-faint font-mono" font-size="8"
+    >{SAYS.appsLabel}</text
+  >
+  <text
+    x="616"
+    y="70"
+    text-anchor="end"
+    class="fill-ink-faint font-mono"
+    font-size="8">{SAYS.systemsLabel}</text
+  >
+
+  {
+    MESH.map((strand) => (
+      <line
+        x1={APP_X + APP_W}
+        y1={strand.y1}
+        x2={SYS_X}
+        y2={strand.y2}
+        class="stroke-rule-strong"
+        stroke-width="0.75"
+        stroke-opacity="0.55"
+      />
+    ))
+  }
+
+  {
+    APPS.map((app, index) => (
+      <g>
+        <rect
+          x={APP_X}
+          y={A_APP_Y[index]}
+          width={APP_W}
+          height={APP_H}
+          rx="4"
+          class="fill-paper-raised stroke-rule-strong"
+          stroke-width="1"
+        />
+        <text
+          x={APP_X + 10}
+          y={A_APP_Y[index] + 12.5}
+          class="fill-ink"
+          font-size="9"
+        >
+          {app}
+        </text>
+      </g>
+    ))
+  }
+
+  {
+    SYSTEMS.map((system, index) => (
+      <g>
+        <rect
+          x={SYS_X}
+          y={A_SYS_Y[index]}
+          width={SYS_W}
+          height={SYS_H}
+          rx="4"
+          class="fill-paper-raised stroke-rule-strong"
+          stroke-width="1"
+        />
+        <text
+          x={SYS_X + 10}
+          y={A_SYS_Y[index] + 11.5}
+          class="fill-ink"
+          font-size="9"
+        >
+          {system}
+        </text>
+      </g>
+    ))
+  }
+
+  <rect
+    x="258"
+    y="140"
+    width="124"
+    height="56"
+    rx="8"
+    class="fill-paper-raised stroke-rule-strong"
+    stroke-width="1.25"></rect>
+  <text
+    x="320"
+    y="162"
+    text-anchor="middle"
+    class="fill-ink-muted font-mono"
+    font-size="11">{TIMES}</text
+  >
+  <text
+    x="320"
+    y="188"
+    text-anchor="middle"
+    class="fill-ink font-display"
+    font-size="24"
+    font-weight="700">{PRODUCT}</text
+  >
+
+  <text x="24" y="274" class="fill-ink-muted font-mono" font-size="9"
+    >{SAYS.topNote}</text
+  >
+
+  <!-- ── The addition ─────────────────────────────────────────── -->
+
+  <rect
+    x="8"
+    y="304"
+    width="624"
+    height="280"
+    rx="8"
+    class="fill-none stroke-rule-strong"
+    stroke-width="1.25"></rect>
+
+  <text
+    x="24"
+    y="328"
+    class="fill-ink font-display"
+    font-size="14"
+    font-weight="700">{SAYS.bottomHead}</text
+  >
+  <text x="24" y="344" class="fill-ink-faint font-mono" font-size="9"
+    >{SAYS.bottomSub}</text
+  >
+
+  <text x="24" y="366" class="fill-ink-faint font-mono" font-size="8"
+    >{SAYS.appsLabel}</text
+  >
+  <text
+    x="616"
+    y="366"
+    text-anchor="end"
+    class="fill-ink-faint font-mono"
+    font-size="8">{SAYS.systemsLabel}</text
+  >
+
+  {
+    B_APP_Y.map((y) => (
+      <line
+        x1={APP_X + APP_W}
+        y1={y + APP_H / 2}
+        x2={BAR_X}
+        y2={y + APP_H / 2}
+        class="stroke-accent-2"
+        stroke-width="1.5"
+      />
+    ))
+  }
+
+  {
+    B_SYS_Y.map((y) => (
+      <line
+        x1={BAR_X + BAR_W}
+        y1={y + SYS_H / 2}
+        x2={SYS_X}
+        y2={y + SYS_H / 2}
+        class="stroke-accent-2"
+        stroke-width="1.5"
+      />
+    ))
+  }
+
+  <rect
+    x={BAR_X}
+    y="376"
+    width={BAR_W}
+    height="176"
+    rx="10"
+    class="fill-accent-2-soft stroke-accent-2"
+    stroke-width="1.25"></rect>
+
+  <text
+    x="320"
+    y="404"
+    text-anchor="middle"
+    class="fill-ink"
+    font-size="11"
+    font-weight="600">{SAYS.barName}</text
+  >
+  <text
+    x="320"
+    y="422"
+    text-anchor="middle"
+    class="fill-ink-muted"
+    font-size="8">{SAYS.barLine1}</text
+  >
+  <text
+    x="320"
+    y="433"
+    text-anchor="middle"
+    class="fill-ink-muted"
+    font-size="8">{SAYS.barLine2}</text
+  >
+  <text
+    x="320"
+    y="444"
+    text-anchor="middle"
+    class="fill-ink-muted"
+    font-size="8">{SAYS.barLine3}</text
+  >
+
+  <line
+    x1="286"
+    y1="458"
+    x2="354"
+    y2="458"
+    class="stroke-accent-2"
+    stroke-width="1"></line>
+
+  <text
+    x="320"
+    y="480"
+    text-anchor="middle"
+    class="fill-ink-muted font-mono"
+    font-size="11">{PLUS}</text
+  >
+  <text
+    x="320"
+    y="510"
+    text-anchor="middle"
+    class="fill-ink font-display"
+    font-size="24"
+    font-weight="700">{SUM}</text
+  >
+  <text
+    x="320"
+    y="528"
+    text-anchor="middle"
+    class="fill-ink-muted"
+    font-size="9">{SAYS.pieces}</text
+  >
+
+  {
+    APPS.map((app, index) => (
+      <g>
+        <rect
+          x={APP_X}
+          y={B_APP_Y[index]}
+          width={APP_W}
+          height={APP_H}
+          rx="4"
+          class="fill-paper-raised stroke-rule-strong"
+          stroke-width="1"
+        />
+        <text
+          x={APP_X + 10}
+          y={B_APP_Y[index] + 12.5}
+          class="fill-ink"
+          font-size="9"
+        >
+          {app}
+        </text>
+      </g>
+    ))
+  }
+
+  {
+    SYSTEMS.map((system, index) => (
+      <g>
+        <rect
+          x={SYS_X}
+          y={B_SYS_Y[index]}
+          width={SYS_W}
+          height={SYS_H}
+          rx="4"
+          class="fill-paper-raised stroke-rule-strong"
+          stroke-width="1"
+        />
+        <text
+          x={SYS_X + 10}
+          y={B_SYS_Y[index] + 11.5}
+          class="fill-ink"
+          font-size="9"
+        >
+          {system}
+        </text>
+      </g>
+    ))
+  }
+
+  <text x="24" y="570" class="fill-ink-muted font-mono" font-size="9"
+    >{SAYS.bottomNote}</text
+  >
+
+  <!-- ── What the two halves say to each other ────────────────── -->
+
+  <text
+    x="24"
+    y="606"
+    class="fill-ink font-display"
+    font-size="12"
+    font-weight="700">{SAYS.footer1}</text
+  >
+  <text x="24" y="624" class="fill-ink-muted" font-size="10"
+    >{SAYS.footer2}</text
+  >
+</svg>

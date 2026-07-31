@@ -1,0 +1,349 @@
+---
+title: One right answer teaches almost nothing
+part: small-fast-cheap
+order: 2
+summary: A big model's answer is really a whole ranked row of scores, and training a small model on the entire row — near misses included — teaches it something a single correct label never could.
+prerequisites:
+  - small-models
+  - reasoning-models
+connections:
+  - to: quantization
+    why: Both exist to get a model somewhere it would not otherwise fit, and they are not alternatives — this one ends with a different, smaller machine trained to behave like the big one, while that one keeps the machine exactly as it was and writes each of its numbers in less detail. Almost anything running on a phone has had both done to it.
+interactives: []
+status: published
+updated: 2026-07-31
+---
+
+import Aside from '../../components/blocks/Aside.astro';
+import Checkpoint from '../../components/blocks/Checkpoint.astro';
+import DevAside from '../../components/blocks/DevAside.astro';
+import Figure from '../../components/blocks/Figure.astro';
+import TheWholeRankedRow from '../../components/diagrams/TheWholeRankedRow.astro';
+
+Two hundred photographs of dogs, and by the end of the afternoon you are
+supposed to know the breeds.
+
+In the first version of the afternoon, somebody has written the answer on the
+back of each photograph. Husky. Malamute. Samoyed. You look, you turn it over,
+you read the word, you go on to the next one.
+
+In the second version somebody who knows dogs sits beside you and says them out
+loud. _Husky. Mind you, that could pass for a malamute — I would not have
+argued. Nothing like a dachshund._
+
+Same two hundred photographs. Same two hundred correct answers. The second
+afternoon will teach you far more, and it is worth being exact about why,
+because the reason is not that the second version is friendlier.
+
+The extra material is not about the dog in the photograph. It is about all the
+dogs that are not in it.
+
+## The trouble with being told the answer
+
+Say the list of breeds runs to a thousand. A word on the back of a photograph
+says yes to one of them and no to the other nine hundred and ninety-nine, and
+every one of those noes is the same no. Malamute gets the same no as dachshund,
+which gets the same no as bicycle.
+
+You did not need most of that. You already knew it was not a bicycle.
+
+What you did not know is where a husky stops — and the edge of a category is
+exactly where the near misses live. The one thing a correct answer refuses to
+tell you is the thing you were sitting there to find out.
+
+The person talking beside you gives it away without being asked, in the shape of
+a hesitation. _Could pass for a malamute._ That is a statement about how close
+two breeds sit to each other, and no stack of correct answers contains it, at
+any length.
+
+## The row was there all along
+
+Now the part that turns this from a remark about teaching into a technique.
+
+A trained model does not produce an answer. You have met this already: what
+comes out of a model is a row of numbers, one for every entry in its vocabulary,
+saying how well each one fits. The answer is only whichever entry happens to be
+sitting at the top of that row. The row is not a summary of the answer. The row
+is the output, and the answer is something done to it afterwards.
+
+So the expert with an opinion about every breed on the list is not a flattering
+picture of a large model. It is a literal description of one. The hesitation —
+malamute maybe, dachshund not really, bicycle certainly not — is already there,
+worked out, in numbers, every single time the thing is run.
+
+And ordinary training throws nearly all of it away.
+
+Training means comparing what the model produced against what it should have
+produced and turning the difference into one number to be made smaller. What it
+produced is the row. What it should have produced, in ordinary training, is a
+row with a single 1 in it and a zero in every other position — because that is
+what a correct label looks like once you write it as a row.
+
+So every hesitation is scored against zero. The 22% it gave malamute is an error
+to be driven out. So is the 0.002% it gave bicycle. Nothing anywhere in the
+arithmetic tells those two apart except size, and both are pushed towards
+nothing with the same conviction. The model's sense of what is nearly right is
+not merely ignored. It is actively trained away.
+
+That is survivable when the model is enormous and you have most of the internet
+to train it on — capacity and examples enough that it works the structure out
+anyway, the long way round, from sheer volume. A small model has neither. It has
+to be told, and a stack of correct answers is not telling it.
+
+## Handing over the row instead
+
+Here is the move, and it fits in one line.
+
+Take a large model that already works. Run it over your examples, and keep not
+its answers but its rows. Then train a small model to reproduce those rows.
+
+The small model is the **student** and the large one is the **teacher**, and the
+procedure is **distillation** — a chemistry borrowing that does not quite fit,
+since nothing here is purified and nothing is boiled off. What actually happens
+is a transfer: the teacher's behaviour, including the parts of it nobody ever
+wrote down, moved into a smaller vessel.
+
+The student is not a copy of the teacher. It has fewer dials, arranged
+differently, and it was never a squeezed version of anything. It is a different
+machine trained to answer the way the teacher answers — including the way the
+teacher hesitates.
+
+## The same photograph, marked two ways
+
+<Figure
+  title="What the label says, what the teacher says, and what is hiding in the tail"
+  description="A single right answer records every wrong answer as the same number, so a malamute and a bicycle come out exactly level. The teacher's row keeps them apart — and the part that matters is the tail the chart is too small to draw, where dachshund sits two hundred times above bicycle, which is the model saying one of them is a dog."
+>
+  <TheWholeRankedRow />
+</Figure>
+
+Read the top panel first, and read it for what is level rather than for what is
+tall. Five of the six bars are on the floor. Not close to one another — the
+same, to the last digit, because wrong has only one value available to it.
+
+Now the middle panel, drawn at the same scale so the two can be compared
+honestly. The teacher gives husky 71%, which is the answer, and the number
+nobody needed. Everything of interest is to the right of it.
+
+Malamute at 22% is the teacher admitting it nearly went the other way. Samoyed
+at 4% and collie at 2% are two more dogs, further off, in the right order. And
+then the tail, where the panel stops being able to draw anything at all.
+
+Which is what the bottom panel is for. Dachshund holds 0.4% of the row and
+bicycle holds 0.002%, and in the middle panel both were drawn at their true
+height, which is why neither is there. Magnified past a thousand times, they are
+two hundred apart.
+
+Two hundred, between two answers the top panel writes down as the same number.
+
+Then notice what that factor of two hundred is actually saying, because it is
+not trivia about one photograph. It says a dachshund is a dog and a bicycle is
+not. Nobody told the teacher that. There is no field anywhere inside it marked
+_is a dog_. It worked the relationship out from looking at an enormous number of
+pictures, and the relationship now sits in the ratio between two numbers that a
+correct label rounds away to zero.
+
+That is what the student is being handed. Not the answer — the answer was never
+the hard part. A thousand-way opinion about how the world is arranged, worked
+out by something far larger than itself, for every single example it sees.
+
+## Why the quiet part has to be made loud
+
+There is a practical wrinkle here, and it is worth having, because it explains a
+setting that would otherwise look mad.
+
+The interesting part of the row is the tail, and the tail is numerically
+minute. Next to 71, the numbers 0.4 and 0.002 are almost nothing. Train the
+student to match the row as it stands and it will spend nearly all its effort on
+getting 71 right, because that is where nearly all of the error is. The signal
+you came for arrives as a rounding error.
+
+So both rows are flattened before they are compared — the teacher's and the
+student's, by the same amount. Divide every score by some number larger than one
+before turning the row into shares, and the tall bar comes down while the short
+ones come up. The order is untouched. A row of 71, 22, 4, 2, 0.4, 0.002 turns
+into something much more like a gentle slope.
+
+You have met that dial. It is temperature, the setting that decides whether a
+model says the same thing every time or surprises you — and here it is doing the
+opposite of its usual job. Normally you turn it up to make output less
+predictable. Here you turn it up so that the quiet end of the row is loud enough
+to learn from, and then you put it back to one before the student goes to work.
+
+<Aside title="The name somebody gave the good part">
+  When this was first written down properly, for image classifiers about a
+  decade ago, the authors needed a phrase for the thing being transferred: the
+  information sitting in the wrong answers, which until then nobody had thought
+  worth keeping.
+
+They called it **dark knowledge**. Most of what the model knows, invisible in
+every measurement anyone was taking.
+
+It is a better name than distillation, and it never quite stuck, and both of
+those are facts about how names work rather than about the idea.
+
+</Aside>
+
+## The version nearly everybody actually runs
+
+Everything above needs the teacher's row, and the row lives inside the teacher.
+
+If you are renting a large model over the internet, you do not get it. You send
+some text and a piece of text comes back. What you have received is one draw
+from the row — the interface hands you a sample and never the thing it was
+sampled from.
+
+So the form of this that most teams actually run is coarser, and it works
+anyway. Assemble a large pile of prompts, ask the teacher all of them, keep
+whatever comes back, and train the student on that pile as though it were
+ordinary writing. The result is usually called **synthetic data**, which makes
+it sound like a shortcut. It is a teacher's answers, written down.
+
+And there is a trick inside it that does most of the work and is easy to miss.
+Ask each prompt once and you are back where you started, with one right answer
+per example. Ask each prompt several times, with the randomness turned up, and
+the _frequencies_ in your pile begin to trace the shape of the row. Prompts the
+teacher was sure about come back the same way every time. Prompts it was torn
+about come back different ways, in roughly the proportions it was torn in.
+
+You never see the row. You see it through a keyhole, by counting. It is a worse
+copy of the method than the real thing, and it needs nothing but an API key,
+which is why it is the version you will meet.
+
+## What this is actually for
+
+Nearly every small model you can download and run has had some version of this
+done to it, and several of the well-known ones say so in their own technical
+reports. It is not an exotic research trick. It is the ordinary way a small
+model gets made, and it is most of the reason a three-billion-dial model on your
+laptop is so much better than a three-billion-dial model trained the way the
+enormous ones were.
+
+The most recent turn is the one that surprised people. A reasoning model's whole
+value is the working it writes out before answering, and working-out is text,
+and text is exactly what the keyhole method collects. Harvest a few hundred
+thousand worked solutions from a large reasoning model, train a small model on
+them, and the small one starts writing out its working too — not because anybody
+built a reasoning mechanism into it, but because it is imitating something that
+had one. Step-by-step behaviour appeared in models small enough to run on a
+laptop within months of the first reasoning models existing, and nobody had to
+repeat the expensive part to get it.
+
+## Two things it costs you
+
+**The student inherits everything.** It is not being trained to be right. It is
+being trained to answer the way the teacher answers, and those two come apart
+wherever the teacher is wrong. Where the teacher is confidently mistaken, the
+row is confidently mistaken, and the student picks that up with exactly the
+enthusiasm it picks up everything else — the biases, the habits, the tics. At no
+point in any of this is anything compared against the world.
+
+There is a quieter version of the same problem. The student is fitted to the
+teacher's answers on the prompts somebody thought to ask. On those it can look
+startlingly close to the real thing. Walk it a little way outside them and it
+falls off faster than the teacher does, because what it learned was a set of
+answers rather than whatever the teacher had that produced them.
+
+**You need a teacher.** Which sounds obvious, and is the whole difficulty. This
+does not make good models cheap. It makes copies of good models cheap, and
+somebody still had to pay for the original.
+
+That leads somewhere uncomfortable, and it is better to meet it here than in a
+meeting. Nearly every commercial provider's terms of use forbid using their
+model's output to train a competing model. The clause is there, in the contract
+you accepted. Whether it is enforceable, and whether the output of a model is
+the sort of thing anyone can own in the first place, is genuinely unsettled —
+there are live disputes, public accusations between large labs, and no ruling
+you can point at. So this is not a rule to look up. It is an open question with
+a great deal of money on it, and the dull practical advice is to read the terms
+of the model you intend to harvest, and to notice that "everyone does it" is a
+description of what people do rather than a defence.
+
+<Aside title="Not the same as squeezing it">
+  The unit after this one is easy to confuse with this one, and the difference
+  is worth holding onto.
+
+Distillation ends with a different machine. Fewer dials, laid out differently,
+trained until it behaves like the big one. Nothing of the teacher survives into
+it except its behaviour.
+
+Compression ends with the same machine. Every dial where it always was, doing
+the job it always did, with each number simply written down in less detail.
+
+They are not rivals and you do not choose between them. Almost anything running
+on a phone has had both done to it, in that order.
+
+</Aside>
+
+<DevAside>
+  <Fragment slot="java">
+    ```java
+    for (String prompt : prompts) {
+      for (int i = 0; i < SAMPLES_PER_PROMPT; i++) {
+        corpus.add(new Example(prompt, teacher.complete(prompt, TEMPERATURE)));
+      }
+    }
+    ```
+
+    Those two constants are the entire design, and they are the two things
+    people set without thinking. `SAMPLES_PER_PROMPT` at 1 gives you a corpus of
+    single right answers, which is the thing this technique exists to improve
+    on. `TEMPERATURE` at 0 makes every sample from a prompt identical, so
+    raising the first constant then buys you nothing whatsoever.
+
+    Worth noticing what the return type is not. `teacher.complete` hands back a
+    `String`. There is no method on that interface returning the row, because
+    the row is not something a hosted service exposes — and the moment you find
+    yourself wanting one is the moment you have found this method's ceiling.
+
+  </Fragment>
+  <Fragment slot="python">
+    ```python
+    T = 4.0
+    teacher = softmax(teacher_logits / T)
+    student = log_softmax(student_logits / T)
+
+    loss = kl_div(student, teacher, reduction='batchmean') * (T * T)
+    ```
+
+    Read `/ T` first. It is the flattening, applied to both rows by the same
+    amount, and without it the tail contributes almost nothing to the gradient.
+    `kl_div` measures how far one row sits from another, and that is the whole
+    objective — there is no correct label anywhere in these four lines.
+
+    The `* (T * T)` is the detail that catches people out. Flattening the rows
+    shrinks the gradients by roughly the square of `T`, so multiplying it back
+    means you can change `T` without silently changing your learning rate at the
+    same time.
+
+    And `teacher_logits` is the honest constraint in the file. Those are the raw
+    scores, before they are turned into shares, which means you need the
+    teacher's weights on hardware you control. No hosted interface hands them
+    out.
+
+  </Fragment>
+</DevAside>
+
+<Checkpoint question="A team wants a small model that summarises support tickets the way their large one does. They run the large model over two hundred thousand tickets — at temperature zero, so the outputs are reproducible and the run can be repeated exactly — and train the small model on the result. It comes out barely better than the small model they started with. Their plan is to go and collect another two hundred thousand tickets. Say why more tickets will not help much, and name the one setting to change first.">
+  Temperature zero means the large model takes the top of its row every time. So
+  each ticket produced exactly one summary, and that summary carries nothing
+  about the rest of the row — no sense of which other summaries were nearly as
+  good, no sense of which were nowhere near. What the team collected is two
+  hundred thousand correct answers, which is precisely the kind of training
+  material this technique exists to improve on. Another two hundred thousand is
+  more of the same.
+
+The setting to change is the temperature. Put it above zero, and ask each ticket
+several times rather than once. Two hundred thousand tickets sampled five times
+each is a smaller collecting job than four hundred thousand sampled once, and it
+is worth far more, because the variation across the five samples for one ticket
+is the teacher's hesitation showing through. Where it was sure, the five come
+back alike. Where it was torn, they do not — in roughly the proportions it was
+torn in.
+
+Worth being honest about the ceiling as well. Even done properly, that is still
+the row seen through a keyhole. If the team can run the large model on their own
+hardware they can read its rows directly and stop guessing at them; if they
+cannot, no amount of sampling gets them all the way there.
+
+</Checkpoint>

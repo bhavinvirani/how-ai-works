@@ -6,10 +6,14 @@ summary: When the answer you are hunting for is rare, a machine that says no to 
 prerequisites:
   - loss-function
 connections:
+  - to: neuron
+    why: Where the bar gets set is one number at the very end of the machine, and the next part opens the machine up to show what all the numbers before it are doing.
   - to: training-data
     why: How rare the interesting answer is was settled when somebody built the table of examples, and that rarity — not the machine — is what makes a single accuracy number so easy to fool.
   - to: why-rules-fail
     why: 'The junk filter had these same two mistakes from its first afternoon: a real invoice thrown away, and a junk message let through. Nobody minded them equally.'
+  - to: evaluation
+    why: Scoring an assistant runs into this same trap — one headline number across a mixed pile of cases hides which kind of case got worse, which is exactly the thing a change needs to be judged on.
 interactives:
   - ThresholdMatrix
 status: published

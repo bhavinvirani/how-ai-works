@@ -4,12 +4,15 @@ part: when-scores-lie
 order: 2
 summary: A machine can only be judged on examples it has never seen, so a slice of the data is hidden before anything starts — and a third slice exists because you, not the machine, are what spoils the second.
 prerequisites:
+  - overfitting
   - training-data
 connections:
   - to: why-rules-fail
     why: The five rules that scored perfectly on this week's inbox and fell apart next week were failing exactly this test, and this is the procedure that shows it before anything ships.
   - to: loss-function
     why: A wrongness score is always worked out over some particular pile of rows, so which pile it was worked out on decides whether the number is worth reading at all.
+  - to: evaluation
+    why: The same discipline, one level up. A pile of cases kept back and scored on every change is what makes a prompt or a whole pipeline improvable rather than merely edited.
 interactives:
   - LeakageSplitter
 status: published

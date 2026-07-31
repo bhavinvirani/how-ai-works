@@ -5,7 +5,11 @@ order: 4
 summary: A model keeps nothing between messages, so the whole conversation is sent again from the top every turn — and all of it, plus room for the reply, has to fit inside one window whose size never changes.
 prerequisites:
   - attention
-connections: []
+connections:
+  - to: context-engineering
+    why: Once the window is understood as fixed, the interesting question stops being how large it is and becomes how it gets shared out — and spending it well turns out to beat having more of it.
+  - to: rag
+    why: If everything the model knows about your documents has to arrive inside this window, then something has to choose which few passages get in, and that choosing is a whole architecture of its own.
 interactives:
   - ContextBudget
 status: published

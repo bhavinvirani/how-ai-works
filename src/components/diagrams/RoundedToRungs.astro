@@ -1,0 +1,194 @@
+---
+/**
+ * What "storing a dial in fewer digits" does to the dial.
+ *
+ * Three rows, one group of four dials, three ladders of different coarseness.
+ * The teaching is carried by position and by the printed value, not by colour:
+ * a hollow circle is where the dial actually sits, a filled dot is the rung it
+ * lands on, and the connector between them is vertical when nothing moved and
+ * slanted when something did. Strip the colour out and all three survive
+ * (hard rule 9).
+ *
+ * The bottom row is the whole reason the diagram exists. At four rungs, two
+ * dials that were different numbers become the same number — which is the one
+ * thing rounding does that cannot be described as "a small error".
+ *
+ * The landing positions are computed rather than typed, so the printed values
+ * cannot drift away from the dots above them.
+ *
+ * Decorative by itself, so `aria-hidden`: `Figure` supplies the accessible name
+ * and the description.
+ */
+
+const X0 = 60;
+const X1 = 480;
+const at = (share: number): number => X0 + (X1 - X0) * share;
+
+/** Four dials from one small group, as shares of the group's spread. */
+const DIALS = [
+  { name: 'a', sits: 0.19 },
+  { name: 'b', sits: 0.31 },
+  { name: 'c', sits: 0.58 },
+  { name: 'd', sits: 0.92 },
+];
+
+const rungs = (count: number): number[] =>
+  Array.from({ length: count }, (_, index) => index / (count - 1));
+
+const landsOn = (sits: number, count: number): number =>
+  Math.round(sits * (count - 1)) / (count - 1);
+
+/** Groups the dials by the rung they end up sharing, if any. */
+const landings = (count: number) => {
+  const grouped = new Map<number, string[]>();
+
+  for (const dial of DIALS) {
+    const rung = count === 0 ? dial.sits : landsOn(dial.sits, count);
+    grouped.set(rung, [...(grouped.get(rung) ?? []), dial.name]);
+  }
+
+  return [...grouped.entries()].map(([rung, names]) => ({ rung, names }));
+};
+
+const ROWS = [
+  {
+    heading:
+      'sixteen digits — 65,536 rungs, closer together than this line is thick',
+    count: 0,
+    headingY: 40,
+    letterY: 60,
+    circleY: 70,
+    baseY: 92,
+    valueY: 106,
+  },
+  {
+    heading: 'four digits — 16 rungs, and every dial moves a little',
+    count: 16,
+    headingY: 124,
+    letterY: 144,
+    circleY: 154,
+    baseY: 176,
+    valueY: 190,
+  },
+  {
+    heading: 'two digits — 4 rungs, and a and b become the same number',
+    count: 4,
+    headingY: 214,
+    letterY: 234,
+    circleY: 244,
+    baseY: 266,
+    valueY: 280,
+  },
+];
+---
+
+<svg viewBox="0 0 520 356" class="w-full" aria-hidden="true">
+  <!-- Legend. The two marks mean different things everywhere below. -->
+  <circle
+    cx="66"
+    cy="14"
+    r="4"
+    class="fill-paper stroke-rule-strong"
+    stroke-width="1.5"></circle>
+  <text x="76" y="18" class="fill-ink-faint" font-size="10"
+    >where the dial actually sits</text
+  >
+  <circle cx="266" cy="14" r="4" class="fill-ink"></circle>
+  <text x="276" y="18" class="fill-ink-faint" font-size="10"
+    >the rung it gets stored on</text
+  >
+
+  {
+    ROWS.map((row) => (
+      <g>
+        <text x="8" y={row.headingY} class="fill-ink" font-size="11">
+          {row.heading}
+        </text>
+
+        <line
+          x1={X0}
+          y1={row.baseY}
+          x2={X1}
+          y2={row.baseY}
+          class="stroke-rule-strong"
+          stroke-width={row.count === 0 ? 2.5 : 1.25}
+        />
+
+        {row.count > 0 &&
+          rungs(row.count).map((rung) => (
+            <line
+              x1={at(rung)}
+              y1={row.baseY - 5}
+              x2={at(rung)}
+              y2={row.baseY + 5}
+              class="stroke-rule-strong"
+              stroke-width="1.25"
+            />
+          ))}
+
+        {DIALS.map((dial) => (
+          <g>
+            <text
+              x={at(dial.sits)}
+              y={row.letterY}
+              text-anchor="middle"
+              class="fill-ink-muted font-mono"
+              font-size="10"
+            >
+              {dial.name}
+            </text>
+            <circle
+              cx={at(dial.sits)}
+              cy={row.circleY}
+              r="4"
+              class="fill-paper stroke-rule-strong"
+              stroke-width="1.5"
+            />
+            <line
+              x1={at(dial.sits)}
+              y1={row.circleY + 5}
+              x2={at(
+                row.count === 0 ? dial.sits : landsOn(dial.sits, row.count),
+              )}
+              y2={row.baseY - 6}
+              class="stroke-ink-muted"
+              stroke-width="1"
+            />
+          </g>
+        ))}
+
+        {landings(row.count).map((landing) => (
+          <g>
+            <circle
+              cx={at(landing.rung)}
+              cy={row.baseY}
+              r="4"
+              class="fill-ink"
+            />
+            <text
+              x={at(landing.rung)}
+              y={row.valueY}
+              text-anchor="middle"
+              class="fill-ink font-mono"
+              font-size="10"
+            >
+              {landing.names.join(' ')} {landing.rung.toFixed(2)}
+            </text>
+          </g>
+        ))}
+      </g>
+    ))
+  }
+
+  <text x="8" y="304" class="fill-ink-muted" font-size="11"
+    >Same four dials in all three rows. Nothing has been removed: every dial is
+    still</text
+  >
+  <text x="8" y="320" class="fill-ink-muted" font-size="11"
+    >there, doing its job, just written down on a coarser ladder. Take enough
+    away</text
+  >
+  <text x="8" y="336" class="fill-ink-muted" font-size="11"
+    >and dials that used to differ stop differing — which no care puts back.</text
+  >
+</svg>

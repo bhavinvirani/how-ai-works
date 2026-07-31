@@ -8,6 +8,8 @@ prerequisites:
 connections:
   - to: rlhf
     why: Fine-tuning can only install a habit that somebody managed to write down as an example, and the qualities that matter most in an answer are precisely the ones nobody can write down — which is what the next stage exists to reach, by asking people to compare rather than to compose.
+  - to: rag
+    why: This is the rule about facts belonging in the prompt, built into an architecture — look the answer up and hand it over, so it can be cited, checked, and changed by editing a file rather than by retraining.
 interactives:
   - FineTuneOrPromptSorter
 status: published

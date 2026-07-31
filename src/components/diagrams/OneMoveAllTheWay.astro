@@ -1,0 +1,335 @@
+---
+/**
+ * The spine of the whole site, drawn as one repetition and one removal.
+ *
+ * The closing unit's thesis is that nothing about the operation ever changed —
+ * only what got built around it — and a diagram is the only honest way to make
+ * that visible, because prose has to name each stage in turn and naming things
+ * in turn is exactly what makes a synthesis read like a table of contents.
+ *
+ * So the middle column is drawn IDENTICALLY five times: same two boxes, same
+ * arrow, same return, same words. The eye gets the argument before the reader
+ * finishes the first row. The left column is what got added at each stage and
+ * the right is what that addition bought, which keeps the rows an argument
+ * rather than a list — every row answers "and what did that get us".
+ *
+ * Then the band below the rule does the work the unit turns on. The same first
+ * box, and where the second one was there is a dashed outline containing the
+ * word "nothing", with no return arrow beneath it. The absence is drawn as a
+ * shape with a hole in it rather than stated, because an absence stated in
+ * words invites the reader to assume the missing part is hiding somewhere they
+ * have not been shown.
+ *
+ * Nothing is carried by colour. The repeated operation is identified by being
+ * the same shapes in the same place; the missing box is identified by a dashed
+ * outline, by the word inside it, and by having no arrow returning from it.
+ *
+ * Every run of text is interpolated from a constant so that no `<text>` element
+ * wraps across lines of markup: SVG strips newlines inside text content rather
+ * than collapsing them to spaces, so a wrapped label silently loses its spaces.
+ *
+ * Decorative on its own, so `aria-hidden` — `Figure` carries the accessible
+ * name and the plain-English description.
+ */
+
+const SAYS = {
+  title: 'The same two boxes, five times',
+  sub: 'what changed across sixty units was never the move, only what was built around it',
+
+  colStage: 'what got built',
+  colMove: 'the operation, every time',
+  colBought: 'what it bought',
+
+  guess: 'a guess',
+  correction: 'how wrong it was',
+  again: 'nudge, and again',
+
+  bandStage: ['Then training stops, and', 'the machine goes to work.'],
+  bandBought: ['the same guess, with', 'nothing standing next to it'],
+  nothing: 'nothing',
+
+  footer:
+    'The last third of this site is that second box, put back by hand, from outside the machine.',
+} as const;
+
+interface Stage {
+  /** What got added at this stage, in the reader's own words. */
+  readonly stage: readonly string[];
+  /** What that addition bought — never a restatement of the stage. */
+  readonly bought: readonly string[];
+}
+
+const stages: readonly Stage[] = [
+  {
+    stage: [
+      'Stop writing the rule. Correct a',
+      'machine against examples instead.',
+    ],
+    bought: ['a machine that can do a job', 'nobody was able to describe'],
+  },
+  {
+    stage: ['Stack it deep, and let the middle', 'sort itself into a ladder.'],
+    bought: [
+      'nobody hands out the jobs — the',
+      'layers settle what to look for',
+    ],
+  },
+  {
+    stage: ['Aim the guess at the next piece', 'of writing.'],
+    bought: [
+      'the answer was already in the',
+      'text, so the exercise book is',
+      'everything ever written',
+    ],
+  },
+  {
+    stage: [
+      'Let every piece consult every',
+      'other, and make the whole thing',
+      'enormous.',
+    ],
+    bought: ['meaning survives across a page,', 'and quality rose with size'],
+  },
+  {
+    stage: ['Show it two answers and tune it', 'towards the preferred one.'],
+    bought: [
+      'something worth talking to,',
+      'rather than something that',
+      'only continues',
+    ],
+  },
+];
+
+const ROW_TOP = 70;
+const ROW_HEIGHT = 56;
+const BAND_TOP = 376;
+
+/** The glyph is drawn from these numbers everywhere, so it cannot drift. */
+const GUESS_X = 214;
+const GUESS_W = 78;
+const HIT_X = 306;
+const HIT_W = 88;
+const BOX_H = 26;
+
+const guessMid = GUESS_X + GUESS_W / 2;
+const hitMid = HIT_X + HIT_W / 2;
+---
+
+<svg viewBox="0 0 600 464" class="w-full" aria-hidden="true">
+  <defs>
+    <marker
+      id="spine-arrow"
+      viewBox="0 0 10 10"
+      refX="9"
+      refY="5"
+      markerWidth="5"
+      markerHeight="5"
+      orient="auto"
+    >
+      <path d="M0,0 L10,5 L0,10 z" class="fill-ink-muted"></path>
+    </marker>
+  </defs>
+
+  <text
+    x="16"
+    y="22"
+    class="fill-ink font-display"
+    font-size="14"
+    font-weight="700">{SAYS.title}</text
+  >
+  <text x="16" y="37" class="fill-ink-faint font-mono" font-size="9"
+    >{SAYS.sub}</text
+  >
+
+  <g class="fill-ink-faint font-mono" font-size="8">
+    <text x="16" y="58">{SAYS.colStage}</text>
+    <text x={guessMid} text-anchor="middle" y="58">{SAYS.colMove}</text>
+    <text x="410" y="58">{SAYS.colBought}</text>
+  </g>
+
+  <line x1="12" y1="64" x2="588" y2="64" class="stroke-rule" stroke-width="1"
+  ></line>
+
+  {
+    stages.map((row, i) => {
+      const top = ROW_TOP + i * ROW_HEIGHT;
+
+      return (
+        <g>
+          {row.stage.map((line, n) => (
+            <text
+              x="16"
+              y={top + 14 + n * 12}
+              class="fill-ink"
+              font-size="9.5"
+              font-weight="600"
+            >
+              {line}
+            </text>
+          ))}
+
+          {/* The identical middle. Five times, to the pixel. */}
+          <rect
+            x={GUESS_X}
+            y={top + 12}
+            width={GUESS_W}
+            height={BOX_H}
+            rx="6"
+            class="fill-paper-sunken stroke-rule-strong"
+            stroke-width="1.25"
+          />
+          <text
+            x={guessMid}
+            y={top + 29}
+            text-anchor="middle"
+            class="fill-ink"
+            font-size="8.5"
+          >
+            {SAYS.guess}
+          </text>
+
+          <line
+            x1={GUESS_X + GUESS_W}
+            y1={top + 25}
+            x2={HIT_X - 2}
+            y2={top + 25}
+            class="stroke-ink-muted"
+            stroke-width="1.25"
+            marker-end="url(#spine-arrow)"
+          />
+
+          <rect
+            x={HIT_X}
+            y={top + 12}
+            width={HIT_W}
+            height={BOX_H}
+            rx="6"
+            class="fill-accent-soft stroke-accent"
+            stroke-width="1.25"
+          />
+          <text
+            x={hitMid}
+            y={top + 29}
+            text-anchor="middle"
+            class="fill-ink"
+            font-size="8.5"
+          >
+            {SAYS.correction}
+          </text>
+
+          <path
+            d={`M${hitMid},${top + 38} V${top + 46} H${guessMid} V${top + 42}`}
+            class="fill-none stroke-ink-muted"
+            stroke-width="1.25"
+            marker-end="url(#spine-arrow)"
+          />
+          <text
+            x={(guessMid + hitMid) / 2}
+            y={top + 54}
+            text-anchor="middle"
+            class="fill-ink-faint font-mono"
+            font-size="7.5"
+          >
+            {SAYS.again}
+          </text>
+
+          {row.bought.map((line, n) => (
+            <text
+              x="410"
+              y={top + 17 + n * 12}
+              class="fill-ink-muted"
+              font-size="9"
+            >
+              {line}
+            </text>
+          ))}
+        </g>
+      );
+    })
+  }
+
+  <line x1="12" y1="362" x2="588" y2="362" class="stroke-rule" stroke-width="1"
+  ></line>
+
+  <!-- ── The removal ──────────────────────────────────────────── -->
+
+  {
+    SAYS.bandStage.map((line, n) => (
+      <text
+        x="16"
+        y={BAND_TOP + 14 + n * 12}
+        class="fill-ink"
+        font-size="9.5"
+        font-weight="700"
+      >
+        {line}
+      </text>
+    ))
+  }
+
+  <rect
+    x={GUESS_X}
+    y={BAND_TOP + 12}
+    width={GUESS_W}
+    height={BOX_H}
+    rx="6"
+    class="fill-paper-sunken stroke-rule-strong"
+    stroke-width="1.25"></rect>
+  <text
+    x={guessMid}
+    y={BAND_TOP + 29}
+    text-anchor="middle"
+    class="fill-ink"
+    font-size="8.5">{SAYS.guess}</text
+  >
+
+  <line
+    x1={GUESS_X + GUESS_W}
+    y1={BAND_TOP + 25}
+    x2={HIT_X - 2}
+    y2={BAND_TOP + 25}
+    class="stroke-ink-muted"
+    stroke-width="1.25"
+    marker-end="url(#spine-arrow)"></line>
+
+  <!-- Dashed, empty, and nothing comes back out of it. -->
+  <rect
+    x={HIT_X}
+    y={BAND_TOP + 12}
+    width={HIT_W}
+    height={BOX_H}
+    rx="6"
+    class="fill-paper stroke-rule-strong"
+    stroke-width="1.25"
+    stroke-dasharray="4 4"></rect>
+  <text
+    x={hitMid}
+    y={BAND_TOP + 29}
+    text-anchor="middle"
+    class="fill-ink-faint font-mono"
+    font-size="8.5">{SAYS.nothing}</text
+  >
+
+  {
+    SAYS.bandBought.map((line, n) => (
+      <text
+        x="410"
+        y={BAND_TOP + 17 + n * 12}
+        class="fill-ink-muted"
+        font-size="9"
+      >
+        {line}
+      </text>
+    ))
+  }
+
+  <line x1="12" y1="430" x2="588" y2="430" class="stroke-rule" stroke-width="1"
+  ></line>
+  <text
+    x="16"
+    y="450"
+    class="fill-ink font-display"
+    font-size="11"
+    font-weight="700">{SAYS.footer}</text
+  >
+</svg>

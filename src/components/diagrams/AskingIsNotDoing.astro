@@ -1,0 +1,277 @@
+---
+/**
+ * One tool call, drawn as a round trip across a hard vertical line.
+ *
+ * The unit's claim is about WHERE things happen, so the drawing has to be a
+ * map before it is a sequence. Two lanes, one divider, and six numbered steps
+ * running down the page — and only two of them sit on the model's side, doing
+ * the same thing as each other. A reader who takes nothing else from the figure
+ * should still be able to see that the model's whole contribution is text, and
+ * that every box which touches anything is on the other side of the line.
+ *
+ * The decision step is a hexagon because it is the only step that is a choice,
+ * and a choice needs to be identifiable without reading the label or seeing
+ * the colour (hard rule 9). The execution step is the only box drawn in the
+ * warning tokens AND the only one whose text begins "runs it" — colour is
+ * never the sole signal. Lane membership is carried by horizontal position,
+ * by the heading standing above each lane, and by the footer.
+ *
+ * Step 5 is deliberately drawn in the LEFT lane even though your code produced
+ * it. That is the point of the step: a tool result is not handed to the model,
+ * it is appended to the conversation, and from that moment it is simply more
+ * text the model reads from the top like everything else.
+ *
+ * The empty stretch of the model's lane between steps 2 and 6 is load-bearing
+ * rather than leftover, so it is labelled. Readers picture the model sitting
+ * there holding a question open; it is not running at all, and the gap is the
+ * only place that can be shown rather than asserted.
+ *
+ * Text styling lives on the wrapping `<g>` rather than on each `<text>`, so
+ * that fill and font-size inherit and the individual elements stay short. Every
+ * run of text is interpolated from a constant so that no `<text>` element wraps
+ * across lines of markup: SVG strips newlines inside text content rather than
+ * collapsing them to spaces, so a wrapped label silently loses its spaces.
+ *
+ * Decorative on its own, so `aria-hidden` — `Figure` carries the accessible
+ * name and the plain-English description.
+ */
+
+const SAYS = {
+  leftHead: 'the model',
+  leftSub: 'produces text. that is the whole list.',
+  rightHead: 'your code',
+  rightSub: 'holds every key. makes every decision.',
+
+  clock1: 'time runs down the page',
+  clock2: 'and nothing crosses the line but text',
+
+  s1a: 'your question, plus a written description',
+  s1b: 'of every function you are willing to run',
+
+  s2a: 'one run of text, in a shape you can parse',
+  s2b: 'lookup_order(4471)',
+  s2c: 'nothing has run. these are characters.',
+
+  s3a: 'decides — did I offer this one?',
+  s3b: 'are the arguments sane?',
+  s3c: 'does a person need to sign it off?',
+
+  idle1: 'nothing is happening here.',
+  idle2: 'the model is not waiting for a reply —',
+  idle3: 'between step 2 and step 6 it is not running.',
+
+  s4a: 'runs it — your function, your process,',
+  s4b: 'your credentials, your reach into the world',
+  s4c: 'or declines, which is equally a decision',
+
+  s5a: 'the result, appended to the conversation',
+  s5b: 'as more text, marked no differently',
+
+  s6a: 'reads all of it again, from the top,',
+  s6b: 'and writes the answer',
+
+  foot1:
+    'The model appears twice, and both times it reads text and writes text.',
+  foot2:
+    'Everything that touched anything happened right of the line, in code that chose to act.',
+} as const;
+---
+
+<svg viewBox="0 0 600 466" class="w-full" aria-hidden="true">
+  <defs>
+    <marker
+      id="asking-arrow"
+      viewBox="0 0 10 10"
+      refX="9"
+      refY="5"
+      markerWidth="5"
+      markerHeight="5"
+      orient="auto"
+    >
+      <path d="M0,0 L10,5 L0,10 z" class="fill-ink-muted"></path>
+    </marker>
+  </defs>
+
+  <!-- ── The two sides ────────────────────────────────────────── -->
+
+  <g class="fill-ink font-display" font-size="12" font-weight="700">
+    <text x="16" y="20">{SAYS.leftHead}</text>
+    <text x="318" y="20">{SAYS.rightHead}</text>
+  </g>
+
+  <g class="fill-ink-muted" font-size="9">
+    <text x="16" y="34">{SAYS.leftSub}</text>
+    <text x="318" y="34">{SAYS.rightSub}</text>
+  </g>
+
+  <g class="fill-ink-faint font-mono" font-size="9">
+    <text x="16" y="64">{SAYS.clock1}</text>
+    <text x="16" y="78">{SAYS.clock2}</text>
+  </g>
+
+  <line
+    x1="308"
+    y1="8"
+    x2="308"
+    y2="416"
+    class="stroke-rule-strong"
+    stroke-width="2.5"></line>
+
+  <!-- ── 1 · what your code sends ─────────────────────────────── -->
+
+  <rect
+    x="318"
+    y="46"
+    width="274"
+    height="42"
+    rx="6"
+    class="fill-paper-sunken stroke-rule-strong"
+    stroke-width="1.25"></rect>
+
+  <g class="fill-ink" font-size="10">
+    <circle cx="334" cy="67" r="10" class="fill-paper stroke-rule-strong"
+    ></circle>
+    <text x="334" y="70" text-anchor="middle" class="font-mono">1</text>
+    <text x="352" y="63">{SAYS.s1a}</text>
+    <text x="352" y="77">{SAYS.s1b}</text>
+  </g>
+
+  <path
+    d="M330,88 V96 H158 V102"
+    class="fill-none stroke-ink-muted"
+    stroke-width="1.25"
+    marker-end="url(#asking-arrow)"></path>
+
+  <!-- ── 2 · the request, which is text and only text ─────────── -->
+
+  <rect
+    x="16"
+    y="106"
+    width="284"
+    height="50"
+    rx="6"
+    class="fill-accent-soft stroke-accent"
+    stroke-width="1.75"></rect>
+
+  <g class="fill-ink" font-size="10">
+    <circle cx="32" cy="131" r="10" class="fill-paper stroke-accent"></circle>
+    <text x="32" y="134" text-anchor="middle" class="font-mono">2</text>
+    <text x="50" y="123">{SAYS.s2a}</text>
+    <text x="50" y="139" class="font-mono">{SAYS.s2b}</text>
+    <text x="50" y="151" class="fill-ink-faint" font-size="9">{SAYS.s2c}</text>
+  </g>
+
+  <path
+    d="M158,156 V164 H452 V168"
+    class="fill-none stroke-ink-muted"
+    stroke-width="1.25"
+    marker-end="url(#asking-arrow)"></path>
+
+  <!-- ── 3 · the decision — the only shape that is not a box ──── -->
+
+  <polygon
+    points="338,172 572,172 592,200 572,228 338,228 318,200"
+    class="fill-paper-sunken stroke-rule-strong"
+    stroke-width="1.5"></polygon>
+
+  <g class="fill-ink" font-size="10">
+    <circle cx="348" cy="200" r="10" class="fill-paper stroke-rule-strong"
+    ></circle>
+    <text x="348" y="203" text-anchor="middle" class="font-mono">3</text>
+    <text x="366" y="187">{SAYS.s3a}</text>
+    <text x="366" y="201">{SAYS.s3b}</text>
+    <text x="366" y="215">{SAYS.s3c}</text>
+  </g>
+
+  <path
+    d="M455,228 V238"
+    class="fill-none stroke-ink-muted"
+    stroke-width="1.25"
+    marker-end="url(#asking-arrow)"></path>
+
+  <!-- ── the model's side of the page, while all that happens ── -->
+
+  <g class="fill-ink-faint font-mono" font-size="9">
+    <text x="16" y="250">{SAYS.idle1}</text>
+    <text x="16" y="264">{SAYS.idle2}</text>
+    <text x="16" y="278">{SAYS.idle3}</text>
+  </g>
+
+  <!-- ── 4 · the only place anything is executed ──────────────── -->
+
+  <rect
+    x="318"
+    y="242"
+    width="274"
+    height="48"
+    rx="6"
+    class="fill-warning-soft stroke-warning"
+    stroke-width="1.75"></rect>
+
+  <g class="fill-ink" font-size="10">
+    <circle cx="334" cy="266" r="10" class="fill-paper stroke-warning"></circle>
+    <text x="334" y="269" text-anchor="middle" class="font-mono">4</text>
+    <text x="352" y="259">{SAYS.s4a}</text>
+    <text x="352" y="273">{SAYS.s4b}</text>
+    <text x="352" y="285" class="fill-ink-faint" font-size="9">{SAYS.s4c}</text>
+  </g>
+
+  <path
+    d="M330,290 V298 H158 V308"
+    class="fill-none stroke-ink-muted"
+    stroke-width="1.25"
+    marker-end="url(#asking-arrow)"></path>
+
+  <!-- ── 5 · the result becomes conversation, not a return value ─ -->
+
+  <rect
+    x="16"
+    y="312"
+    width="284"
+    height="42"
+    rx="6"
+    class="fill-accent-2-soft stroke-accent-2"
+    stroke-width="1.25"></rect>
+
+  <g class="fill-ink" font-size="10">
+    <circle cx="32" cy="333" r="10" class="fill-paper stroke-accent-2"></circle>
+    <text x="32" y="336" text-anchor="middle" class="font-mono">5</text>
+    <text x="50" y="329">{SAYS.s5a}</text>
+    <text x="50" y="343">{SAYS.s5b}</text>
+  </g>
+
+  <path
+    d="M158,354 V366"
+    class="fill-none stroke-ink-muted"
+    stroke-width="1.25"
+    marker-end="url(#asking-arrow)"></path>
+
+  <!-- ── 6 · the model carries on, having remembered nothing ──── -->
+
+  <rect
+    x="16"
+    y="370"
+    width="284"
+    height="40"
+    rx="6"
+    class="fill-accent-soft stroke-accent"
+    stroke-width="1.75"></rect>
+
+  <g class="fill-ink" font-size="10">
+    <circle cx="32" cy="390" r="10" class="fill-paper stroke-accent"></circle>
+    <text x="32" y="393" text-anchor="middle" class="font-mono">6</text>
+    <text x="50" y="387">{SAYS.s6a}</text>
+    <text x="50" y="400">{SAYS.s6b}</text>
+  </g>
+
+  <!-- ── What the line is for ─────────────────────────────────── -->
+
+  <line x1="8" y1="426" x2="592" y2="426" class="stroke-rule" stroke-width="1"
+  ></line>
+
+  <text x="16" y="442" class="fill-ink" font-size="10" font-weight="700"
+    >{SAYS.foot1}</text
+  >
+  <text x="16" y="456" class="fill-ink-muted" font-size="9.5">{SAYS.foot2}</text
+  >
+</svg>

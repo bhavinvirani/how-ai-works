@@ -1,0 +1,230 @@
+---
+/**
+ * Three jobs of very different difficulty, each drawn as the room a job leaves
+ * between a small model and the largest hosted one.
+ *
+ * The whole teaching load is the width of that gap, and the point is that it
+ * belongs to the JOB rather than to either machine. On the sorting job the bar
+ * has already run to the far end of the track, so the marker for a machine a
+ * hundred times the size lands almost on top of it — there is nothing left to
+ * win. On the contract job the bar stops a third of the way along and the
+ * marker sits half a track away, which is where the scaling curves were always
+ * pointing.
+ *
+ * The figures are illustrative and the SVG says so on its face — they are
+ * shaped, not measured, and the prose in the unit repeats the caveat. Every
+ * arithmetic relationship the unit quotes is here and nowhere else: 93 − 91 = 2,
+ * 92 − 86 = 6, 71 − 34 = 37.
+ *
+ * Nothing is carried by colour: the small model is a filled bar and the large
+ * one is a triangle on a rule (two different shapes), both values are printed,
+ * the gap is written out in points, and each row carries a verdict in words.
+ * Decorative on its own, so `aria-hidden`: `Figure` supplies the accessible
+ * name and the description.
+ */
+
+const TRACK_LEFT = 16;
+const TRACK_RIGHT = 470;
+const TRACK_WIDTH = TRACK_RIGHT - TRACK_LEFT;
+
+const atPercent = (value: number): number =>
+  TRACK_LEFT + (value / 100) * TRACK_WIDTH;
+
+interface Job {
+  /** The job, phrased as the question somebody actually asks. */
+  readonly title: string;
+  /** What kind of work it is, in plain words. */
+  readonly kind: string;
+  /** Per cent handled correctly by a small model you run yourself. */
+  readonly small: number;
+  /** Per cent handled correctly by the largest hosted model. */
+  readonly large: number;
+  /** What the gap is worth, said in words rather than left to the eye. */
+  readonly verdict: string;
+  /** Baseline for this row's title; the track sits 20 below it. */
+  readonly y: number;
+}
+
+const jobs: readonly Job[] = [
+  {
+    title: 'Which of six boxes does this email belong in?',
+    kind: 'sorting — six choices, one short line of text',
+    small: 91,
+    large: 93,
+    verdict: 'nothing left to win',
+    y: 78,
+  },
+  {
+    title: 'Pull the date and the total out of this invoice.',
+    kind: 'extraction — a fixed set of fields, stated in advance',
+    small: 86,
+    large: 92,
+    verdict: 'a real choice',
+    y: 146,
+  },
+  {
+    title: 'Which clauses in this 40-page contract conflict?',
+    kind: 'reasoning — many steps, all of them held together',
+    small: 34,
+    large: 71,
+    verdict: 'the giant earns it',
+    y: 214,
+  },
+];
+---
+
+<svg viewBox="0 0 640 328" class="w-full" aria-hidden="true">
+  <text
+    x="16"
+    y="22"
+    class="fill-ink font-display"
+    font-size="14"
+    font-weight="700">How much room a job leaves</text
+  >
+  <text x="16" y="36" class="fill-ink-faint font-mono" font-size="9"
+    >the same two machines, put to three jobs of very different difficulty</text
+  >
+
+  <!-- Legend: bar against triangle, so the two are told apart by shape. -->
+  <rect
+    x="16"
+    y="48"
+    width="18"
+    height="12"
+    rx="3"
+    class="fill-accent-2-soft stroke-accent-2"
+    stroke-width="1.25"></rect>
+  <text x="40" y="58" class="fill-ink-muted font-mono" font-size="8"
+    >a small model you run yourself</text
+  >
+
+  <path d="M204 50 L216 50 L210 60 Z" class="fill-accent"></path>
+  <text x="222" y="58" class="fill-ink-muted font-mono" font-size="8"
+    >the largest hosted model</text
+  >
+
+  {
+    jobs.map((job) => {
+      const trackY = job.y + 20;
+      const smallX = atPercent(job.small);
+      const largeX = atPercent(job.large);
+
+      return (
+        <g>
+          <text
+            x="16"
+            y={job.y}
+            class="fill-ink font-display"
+            font-size="11"
+            font-weight="700"
+          >
+            {job.title}
+          </text>
+          <text
+            x="16"
+            y={job.y + 13}
+            class="fill-ink-faint font-mono"
+            font-size="8"
+          >
+            {job.kind}
+          </text>
+
+          {/* The whole track is the job done perfectly. */}
+          <rect
+            x={TRACK_LEFT}
+            y={trackY}
+            width={TRACK_WIDTH}
+            height="20"
+            rx="4"
+            class="fill-paper-sunken stroke-rule"
+            stroke-width="1"
+          />
+
+          {/* How far the small model gets. */}
+          <rect
+            x={TRACK_LEFT}
+            y={trackY}
+            width={smallX - TRACK_LEFT}
+            height="20"
+            rx="4"
+            class="fill-accent-2-soft stroke-accent-2"
+            stroke-width="1.25"
+          />
+          <text
+            x={smallX - 6}
+            y={trackY + 14}
+            text-anchor="end"
+            class="fill-ink font-mono"
+            font-size="9"
+          >
+            {job.small}
+          </text>
+
+          {/* How far the largest hosted model gets. */}
+          <line
+            x1={largeX}
+            y1={trackY - 6}
+            x2={largeX}
+            y2={trackY + 26}
+            class="stroke-accent"
+            stroke-width="2"
+          />
+          <path
+            d={`M${largeX - 5} ${trackY - 16} L${largeX + 5} ${trackY - 16} L${largeX} ${trackY - 6} Z`}
+            class="fill-accent"
+          />
+          <text
+            x={largeX}
+            y={trackY - 20}
+            text-anchor="middle"
+            class="fill-ink font-mono"
+            font-size="9"
+          >
+            {job.large}
+          </text>
+
+          {/* The gap, stated rather than left to the eye. */}
+          <text x="486" y={trackY + 8} class="fill-ink font-mono" font-size="9">
+            {job.large - job.small} points of room
+          </text>
+          <text
+            x="486"
+            y={trackY + 20}
+            class="fill-ink-muted font-mono"
+            font-size="8"
+          >
+            {job.verdict}
+          </text>
+        </g>
+      );
+    })
+  }
+
+  <!-- Scale, under the last track. -->
+  <g class="stroke-rule" stroke-width="1">
+    <line x1="16" y1="256" x2="16" y2="261"></line>
+    <line x1="243" y1="256" x2="243" y2="261"></line>
+    <line x1="470" y1="256" x2="470" y2="261"></line>
+  </g>
+  <g class="fill-ink-faint font-mono" font-size="8" text-anchor="middle">
+    <text x="16" y="271">0%</text>
+    <text x="243" y="271">50%</text>
+    <text x="470" y="271">100%</text>
+  </g>
+  <text x="16" y="285" class="fill-ink-faint font-mono" font-size="9"
+    >per cent of cases handled correctly — illustrative figures, shaped rather
+    than measured</text
+  >
+
+  <text
+    x="16"
+    y="308"
+    class="fill-ink font-display"
+    font-size="12"
+    font-weight="700">The gap belongs to the job, not to the machine.</text
+  >
+  <text x="16" y="322" class="fill-ink-muted font-mono" font-size="9"
+    >Where a small model already reaches the end of the track, extra capability
+    has nowhere to land.</text
+  >
+</svg>

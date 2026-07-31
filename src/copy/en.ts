@@ -210,6 +210,26 @@ export const ui = {
       title: 'Build the example set',
       lead: 'Add examples one at a time and watch the format lock. Then add the awkward one, and see what it rescues.',
     },
+    ChunkCutter: {
+      title: 'Cut the document up',
+      lead: 'Cut it into big pieces and search. Then cut smaller. Then find the passage that cannot be found however you cut it.',
+    },
+    MeaningVsKeywordSearch: {
+      title: 'Search the same shelf two ways',
+      lead: 'Ask using none of the document’s own words. Then search for an exact product code, and watch the two methods swap places.',
+    },
+    AgentTraceExplorer: {
+      title: 'Let it choose its own next step',
+      lead: 'Step through once and find where the decision is actually made. Then change one result and watch the whole plan go elsewhere.',
+    },
+    EvalScoreboard: {
+      title: 'Fix one case, then check the rest',
+      lead: 'Change the instruction until the failing case passes. Then read the other nine before you decide it worked.',
+    },
+    PrecisionDial: {
+      title: 'Spend fewer digits on each dial',
+      lead: 'Drop the precision and watch the model shrink. Find where it is still the same model — and the step just after that.',
+    },
     // new:interactive inserts above this line — do not remove.
   } as Record<string, { title: string; lead: string }>,
 

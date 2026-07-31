@@ -1,0 +1,365 @@
+---
+title: Reading is one sweep, writing is one piece at a time
+part: small-fast-cheap
+order: 4
+summary: Everything you send is read in a single pass however long it is, and everything that comes back is produced one piece at a time with a full pass behind each one — which is why the answer is nearly all of the wait, why asking for brevity is a real saving, and why the same standing instructions are charged again on every call unless you arrange otherwise.
+prerequisites:
+  - text-generation
+  - context-engineering
+connections:
+  - to: small-models
+    why: Everything here is priced by the pass, and a smaller machine makes every pass quicker and cheaper — so where this unit's advice trims how many passes you buy, changing the model changes the price of all of them at once.
+interactives: []
+status: published
+updated: 2026-07-31
+---
+
+import Aside from '../../components/blocks/Aside.astro';
+import Checkpoint from '../../components/blocks/Checkpoint.astro';
+import DevAside from '../../components/blocks/DevAside.astro';
+import Figure from '../../components/blocks/Figure.astro';
+import OneSweepThenTheQueue from '../../components/diagrams/OneSweepThenTheQueue.astro';
+
+Two requests to the same model, on the same afternoon, at the same published
+prices.
+
+The first hands over a thirty-page contract and asks whether clause 12
+contradicts clause 4. The answer is two sentences long and it is on the screen
+in under three seconds.
+
+The second is one line — _write the opening chapter of a novel about a
+lighthouse keeper_ — and the reply runs to three and a half thousand words. It
+arrives a few words at a time and takes a minute and a half.
+
+Thirty pages in, three seconds. One line in, ninety.
+
+Nothing was throttled and nothing went wrong. The machine did not find the
+contract easy and the novel hard; it has no way to find anything hard, which is
+a claim you have met more than once. What differs is which half of the job each
+request was mostly made of — and the two halves are built so unalike that it is
+slightly odd they appear on the same invoice.
+
+## The half that happens all at once
+
+You already know what happens when one of these machines reads, though it was
+taught for a different reason.
+
+Attention compares every word against every other word in the same instant.
+There are no turns to take. The machine does not work along a sentence, it lands
+on the whole of it together, which is exactly why the work could be spread
+across thousands of processors and why it beat everything that came before.
+
+Run that forward to a thirty-page contract. Thirty pages is not thirty readings.
+It is one reading of something thirty pages long: one sweep, all of it at the
+same moment, out the other side.
+
+That sweep is not free, and it is worth being exact about what grows and what
+does not. More text means more arithmetic inside the sweep — twice the pages is
+at least twice the multiplying, and since every piece is compared against every
+other piece, the comparing grows faster still. What does not grow is the number
+of steps you have to sit through. It is one sweep whatever its size. The work
+piles up sideways, into machinery that is running anyway, rather than lengthways
+into time.
+
+So a long question does cost more than a short question. It costs it in the one
+shape a computer is extremely good at absorbing.
+
+## The half that has to queue
+
+Now the other side, which you also already have.
+
+Writing is one piece at a time. Every piece is a complete pass through the whole
+machine, and what that pass reads is everything written so far — including the
+piece the pass before it produced.
+
+Read that last clause again, because the entire cost structure of this industry
+is inside it. Pass 401 cannot begin until pass 400 has finished, because the
+thing pass 401 has to read does not exist until pass 400 makes it. Not "should
+not begin". Cannot.
+
+Which means no quantity of machinery shortens it. You met this argument the
+other way round when a network that read one word at a time took eight rounds
+over eight words and a thousand processors did not help. Attention took the
+queue out of reading. It could not take the queue out of writing, and nothing
+since has, because that queue is not an engineering compromise anybody agreed
+to. It is what "one piece at a time" means.
+
+Five hundred pieces is five hundred passes, in order, each waiting on the last.
+
+## Where the ten seconds go
+
+Notice that nothing in this unit is new machinery. Both halves were built in
+earlier Parts, for reasons that had nothing to do with money, and neither one
+was designed with a price in mind. Every figure below is what happens when you
+set the two of them side by side on a clock.
+
+So put them there, and the shape of every bill and every wait falls out of the
+picture.
+
+<Figure
+  title="Where the time actually goes in one answer"
+  description="Reading a question happens in a single pass however long the question is, so it is a sliver of the clock; writing the answer is one pass per piece laid end to end, so it is nearly the whole wait — which is why making the question ten times longer adds under two seconds and making the answer ten times longer adds ninety."
+>
+  <OneSweepThenTheQueue />
+</Figure>
+
+The rates behind that drawing — ten thousand pieces a second going in, fifty
+coming out — are illustrative round numbers, and the exact figures move with the
+model and the hardware. The gap between them does not. Reading is hundreds of
+times quicker per piece than writing, everywhere, and for one reason: a sweep
+swallows the whole prompt, and a pass yields exactly one piece.
+
+The lower half of the drawing is the part worth carrying around. Make the
+question ten times longer — three pages becomes thirty, which is the contract
+from the top of this unit — and you wait under two seconds more. Make the answer
+ten times longer and you wait ninety seconds more.
+
+Which is the reverse of almost everyone's instinct. Asked to make one of these
+systems faster, the first move people reach for is to send less. That is the
+wrong half.
+
+## "Slow" is two numbers
+
+Users say _slow_ and mean one of two things, and the two have no fix in common.
+
+**The wait before the first word** is the sweep plus a single pass. It has
+almost nothing to do with how long the answer turns out to be — at the instant
+the first piece appears, nothing about the length has been settled, because
+there is nothing that settles it.
+
+**The wait until the last word** is that, plus one more pass for every remaining
+piece. It is almost entirely a fact about the answer's length.
+
+They are quoted separately, usually as time to first token and total time —
+_token_ being the trade's word for the pieces this unit has been counting. And
+they go wrong for different reasons. A first word that arrives late means the
+reading half is labouring: an enormous prompt, or a queue of other people's
+requests in front of yours. A last word that arrives late behind a first word
+that was punctual means only that the answer is long. From the user's chair
+those two produce exactly the same complaint.
+
+This is also the whole explanation of something you have watched a thousand
+times without asking about. Answers appear a few words at a time because a few
+words at a time is genuinely all there is. Piece one exists a fifth of a second
+in; piece five hundred does not exist for another ten seconds. A system that
+shows you nothing until the end is not working harder. It is holding finished
+text back.
+
+So sending each piece as it is made is the cheapest improvement in this unit. It
+does not change the total by a millisecond. It changes when the waiting stops
+from the reader's side, and a page that starts moving in a fifth of a second is
+a different product from one that sits blank for ten.
+
+## Now the bill, which has two rates
+
+Every price list for these models quotes two figures rather than one: so much
+per million pieces sent, and so much per million pieces produced. The second is
+the larger, usually by somewhere between three and five times.
+
+That ratio surprises people who expect it to be enormous, and it surprises
+people who expect it to be one. Both halves do roughly the same arithmetic per
+piece — a piece of prompt and a piece of answer each cost a trip through the
+same set of dials. The difference is not how much work. It is how well the work
+packs.
+
+Reading two thousand pieces at once keeps every part of the machine busy for the
+whole sweep. Producing one piece means hauling that entire pile of dials into
+position to manufacture a single chunk, and then doing it again for the next
+one. Same arithmetic, and the machine spends most of the writing half waiting on
+itself. What the higher rate is really charging you for is how idle the hardware
+is while your answer is being made.
+
+### Which half your bill is actually made of
+
+Here the obvious reading of that price list is usually wrong.
+
+"Output costs five times as much" invites the conclusion that output is where
+the money goes. It is a rate, not a total, and in most real systems the totals
+lean hard the other way. A question that arrives with standing instructions,
+forty tool descriptions, the conversation so far and five fetched pages in front
+of it — which is what a request in a working product looks like — might run to
+ten thousand pieces and be answered in three hundred.
+
+Do the multiplication. Ten thousand at one, three hundred at five: ten thousand
+against fifteen hundred. Roughly seven pounds in every eight of that bill is the
+_cheap_ half, charged at the low rate, on a number nobody typed.
+
+### The same paragraph, sent for the ten-thousandth time
+
+The biggest single line in that ten thousand is the part that never changes. The
+standing instructions and the tool descriptions are identical on every call, and
+nothing in the machine remembers them between calls, so they are sent again and
+read again, from the top, for as long as the product runs.
+
+Providers sell the obvious fix. Mark the fixed opening of a prompt as cacheable
+and the work of sweeping over it is kept for a while; a later call that begins
+with exactly the same text skips it. You pay a fraction of the usual rate for
+the part that was reused — often around a tenth — and the first word arrives
+sooner as well, because reading is the half you just skipped.
+
+Two conditions do all the work, and both are easy to break by accident.
+
+**It has to be a prefix.** What is reused is the sweep over the opening of the
+prompt, so everything shared must sit at the front, ahead of anything that
+varies from call to call.
+
+**It has to be identical, character for character.** One timestamp, one
+customer's name, one tool list that gets rebuilt in a different order, and the
+match ends at that character. A cache-hit figure stuck at zero is nearly always
+this and nothing more exotic.
+
+And it is worth naming what this is not. It is not memory. Nothing about the
+conversation is retained, nothing is being recalled, and the answer is identical
+either way. It is a re-read being skipped on text that is being sent again
+anyway — the same trick you met inside a single answer, where the machinery
+keeps its working from one pass to the next, stretched to work across separate
+calls.
+
+<Aside title="The discount for not being in a hurry">
+  Providers run many people's requests through the same machinery at the same
+  time, because packing them together is the only thing that makes the writing
+  half use the hardware decently at all.
+
+Which means your insistence on an answer _now_ is part of what you are paying
+for. Most providers will sell you the other option: hand over a pile of work
+with no deadline, accept the results within hours rather than seconds, and pay
+about half. Nothing about the model changes.
+
+It is the right lane for anything with nobody sitting in front of it —
+overnight classification, backfills, an evaluation run over a few thousand cases
+— and the wrong one for anything a person is waiting on.
+
+</Aside>
+
+<Aside title="Cheap is not the same as harmless" tone="caution">
+  This unit says a long question is the cheap half. The unit on assembling a
+  context says a crowded window makes answers worse. Both are true, and they are
+  counting in different currencies.
+
+Sending a whole document rather than a summary of it costs very little time and
+a low rate per piece. What it can cost is accuracy: near-miss passages compete
+with the one that answers the question, and the middle of a long context is
+where material gets skated over.
+
+So "reading is the cheap half" is a fact about the clock and the bill, and it is
+never on its own a reason to send more. The reason to trim a question is
+quality. The reason to trim an answer is speed.
+
+</Aside>
+
+## Four things that actually move these numbers
+
+**Ask for less.** A limit on the length of the answer is a limit on the only
+half that matters for speed and the dearer half of the bill, and it costs one
+sentence of prompt. _Two sentences, no preamble_ is not a stylistic preference
+here; it is the cheapest optimisation available anywhere in this subject.
+
+The same arithmetic explains why a model that works through its reasoning before
+answering costs what it does. That working is written one piece at a time like
+everything else, at the output rate and at output speed, whether or not anybody
+shows it to you.
+
+**Do not be frightened of a long question.** Sending the actual document rather
+than a summary of it is usually right, and the reason is on the drawing above.
+The caution above still stands, though: cheap is a fact about the bill, and it
+is not permission to send everything you have.
+
+**Keep the fixed part fixed, and keep it at the front.** Standing instructions
+and tool descriptions are the one thing you pay for on every single call
+forever. Getting them cached is the difference between paying for them once an
+hour and paying for them a million times.
+
+**Stream anything a person is waiting on.** Free, in the strict sense that the
+total time does not change at all, and it converts a ten-second blank page into
+a ten-second read.
+
+This Part has been about making the same job cost less: a smaller machine, one
+taught by a larger one, one squeezed to fit on your own hardware. This unit is
+where the reason for all of it sits. And it is also why the first thing to try
+is not technical at all — the biggest single lever on the list above is a
+sentence you type.
+
+<DevAside>
+  <Fragment slot="java">
+    ```java
+    var res = client.send(request);
+    var use = res.usage();
+
+    log.info("in={} cached={} out={} cost={}",
+             use.inputTokens(),
+             use.cachedInputTokens(),
+             use.outputTokens(),
+             use.inputTokens()  * IN_RATE
+           + use.outputTokens() * OUT_RATE);
+    ```
+
+    Three counters and one multiplication, logged per call, is most of cost
+    observability. The first surprise is usually `inputTokens`, because it is a
+    number nobody typed — the gap between it and the length of the user's
+    message is everything your own code put in front of the model.
+
+    `cachedInputTokens` is the one worth alerting on. On a system with a fixed
+    system prompt it should be close to `inputTokens` minus the conversation,
+    and if it sits at zero then nothing is being reused. The cause is almost
+    always something near the top of the prompt that varies per request: a
+    timestamp, a session id, a tool list assembled from a `HashSet` and
+    therefore serialised in a different order each time.
+
+  </Fragment>
+  <Fragment slot="python">
+    ```python
+    t0, first = time.perf_counter(), None
+
+    with client.stream(**request) as stream:
+        for piece in stream.text_stream:
+            if first is None:
+                first = time.perf_counter() - t0
+            render(piece)
+
+    total = time.perf_counter() - t0
+    ```
+
+    Two clocks, and most services record only the second one. They move for
+    different reasons: `first` tracks how much you sent and whether the front of
+    it was cached, and `total - first` tracks how much came back. A p95 on
+    `total` alone cannot tell you which half regressed, and the two have no fix
+    in common.
+
+    `(total - first)` divided by the number of output pieces is the only figure
+    here that is a property of the model and the hardware rather than of your
+    own prompt, which makes it the one worth comparing across providers.
+
+  </Fragment>
+</DevAside>
+
+<Checkpoint question="A support assistant sends the same thirty-page policy pack with every question and writes back a full page of prose each time. Users say it is slow. The team's plan is to cut the pack down to five pages so there is less for the model to read. Say what that change would do, what it would not do, and what you would do instead.">
+  It would help the bill and barely touch the complaint. Thirty pages is around
+  twenty thousand pieces, and the machine reads all of them in one sweep — about
+  two seconds. Cutting to five pages saves most of that: call it a second and a
+  half.
+
+Now look at what the users are waiting for. A full page of prose is roughly seven
+hundred pieces, and every one of those is a separate pass that cannot start until
+the pass before it has finished. That is around fourteen seconds, and cutting the
+policy pack by five-sixths leaves every bit of it in place. They would take a
+sixteen-second wait down to fourteen and a half, and nobody in front of the
+screen would notice.
+
+The change that moves the number they are complaining about is on the other side:
+cap the answer. Two or three sentences, with the detail available on request.
+That is the only half where length and time are the same thing. Then send the
+pieces as they are produced, so the first sentence is on the screen almost
+immediately — which does not make anything faster and does make the waiting stop
+sooner.
+
+And they may not need to trim the pack at all. It is identical on every single
+call, which is the exact case prompt caching exists for: put it at the front,
+keep it byte-for-byte the same, and stop paying to re-read it. If they want to
+cut it down anyway, the honest reason is that a crowded window produces worse
+answers — a quality argument, not a speed one, and worth making on its own terms.
+
+Worth carrying beyond this unit. When someone says a system is slow, ask which
+word they are waiting for. Trimming what you send moves the first one; trimming
+what comes back moves the last one, and the last one is nearly all of it.
+
+</Checkpoint>

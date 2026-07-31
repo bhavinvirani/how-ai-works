@@ -17,6 +17,7 @@ import '@fontsource-variable/jetbrains-mono';
 import 'katex/dist/katex.min.css';
 import '../styles/global.css';
 
+import SiteHeader from '../components/nav/SiteHeader.astro';
 import { withBase } from '../lib/paths';
 
 interface PageMeta {
@@ -73,6 +74,17 @@ const hasNav = Astro.slots.has('nav');
     <meta name="generator" content={Astro.generator} />
   </head>
   <body class="min-h-dvh">
+    {
+      /*
+      Outside `<main>` on purpose, and outside both branches below, so it is on
+      every page exactly once. It must not go inside `<main class="content">`:
+      that element's rules in global.css use direct child combinators
+      (`.content > *`), so anything added there shifts the prose spacing on all
+      sixty lesson pages.
+    */
+    }
+    <SiteHeader pathname={Astro.url.pathname} />
+
     {
       hasNav ? (
         <div class="mx-auto flex max-w-6xl gap-12 px-6">

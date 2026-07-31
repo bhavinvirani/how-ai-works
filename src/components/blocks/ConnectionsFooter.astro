@@ -1,5 +1,6 @@
 ---
 import { ui } from '../../copy/en';
+import { ConnectionLinks } from './ConnectionLinks';
 
 /**
  * "Where it fits" — the generated answer to *what does this connect to*
@@ -13,9 +14,16 @@ import { ui } from '../../copy/en';
  *
  * Takes already-resolved items rather than raw references so it stays a pure
  * presentational component — the unit page owns collection lookups.
+ *
+ * The lists themselves are an island (`ConnectionLinks`) so they can show which
+ * linked units the reader has already finished; the headings and landmarks stay
+ * server-rendered here. See that file for why. With scripting off the lists
+ * still render in full — the completion markers are the only thing lost.
  */
 
 export interface ConnectionItem {
+  /** The unit's id, so progress can be looked up. */
+  id: string;
   href: string;
   title: string;
   why: string;
@@ -40,16 +48,12 @@ const hasAnything = connections.length > 0 || prerequisites.length > 0;
           <h2 class="font-display text-lg font-semibold text-ink">
             {ui.unit.readFirst}
           </h2>
-          <ul class="mt-2 flex flex-col gap-2">
-            {prerequisites.map((item) => (
-              <li>
-                <a href={item.href} class="font-medium">
-                  {item.title}
-                </a>
-                <span class="text-ink-muted"> — {item.why}</span>
-              </li>
-            ))}
-          </ul>
+          {/*
+            `client:visible` matches every other island on a lesson page. This
+            one is below the fold by definition — it is the footer — so nothing
+            is paid for until the reader gets there.
+          */}
+          <ConnectionLinks client:visible items={prerequisites} summarise />
         </nav>
       )}
 
@@ -58,16 +62,7 @@ const hasAnything = connections.length > 0 || prerequisites.length > 0;
           <h2 class="font-display text-lg font-semibold text-ink">
             {ui.unit.whereItFits}
           </h2>
-          <ul class="mt-2 flex flex-col gap-2">
-            {connections.map((item) => (
-              <li>
-                <a href={item.href} class="font-medium">
-                  {item.title}
-                </a>
-                <span class="text-ink-muted"> — {item.why}</span>
-              </li>
-            ))}
-          </ul>
+          <ConnectionLinks client:visible items={connections} />
         </nav>
       )}
     </footer>

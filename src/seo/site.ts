@@ -118,7 +118,7 @@ export const site = {
    */
   verification: {
     /** Google Search Console → Add property → URL prefix → HTML tag. */
-    google: '',
+    google: 'K2SPGK_y74tI9bBM2IaqBhWhfmYdSspXfWMwXm2NaBQ',
     /** Bing Webmaster Tools. */
     bing: '',
   },

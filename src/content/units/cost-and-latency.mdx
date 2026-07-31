@@ -2,13 +2,13 @@
 title: Reading is one sweep, writing is one piece at a time
 part: small-fast-cheap
 order: 4
-summary: Everything you send is read in a single pass however long it is, and everything that comes back is produced one piece at a time with a full pass behind each one — which is why the answer is nearly all of the wait, why asking for brevity is a real saving, and why the same standing instructions are charged again on every call unless you arrange otherwise.
+summary: Everything you send is read in a single pass however long it is, and everything that comes back is produced one piece at a time with a full pass behind each one, which is why the answer is nearly all of the wait, why asking for brevity is a real saving, and why the same standing instructions are charged again on every call unless you arrange otherwise.
 prerequisites:
   - text-generation
   - context-engineering
 connections:
   - to: small-models
-    why: Everything here is priced by the pass, and a smaller machine makes every pass quicker and cheaper — so where this unit's advice trims how many passes you buy, changing the model changes the price of all of them at once.
+    why: Everything here is priced by the pass, and a smaller machine makes every pass quicker and cheaper, so where this unit's advice trims how many passes you buy, changing the model changes the price of all of them at once.
 interactives: []
 status: published
 updated: 2026-07-31
@@ -27,8 +27,8 @@ The first hands over a thirty-page contract and asks whether clause 12
 contradicts clause 4. The answer is two sentences long and it is on the screen
 in under three seconds.
 
-The second is one line — _write the opening chapter of a novel about a
-lighthouse keeper_ — and the reply runs to three and a half thousand words. It
+The second is one line, _write the opening chapter of a novel about a
+lighthouse keeper_, and the reply runs to three and a half thousand words. It
 arrives a few words at a time and takes a minute and a half.
 
 Thirty pages in, three seconds. One line in, ninety.
@@ -36,7 +36,7 @@ Thirty pages in, three seconds. One line in, ninety.
 Nothing was throttled and nothing went wrong. The machine did not find the
 contract easy and the novel hard; it has no way to find anything hard, which is
 a claim you have met more than once. What differs is which half of the job each
-request was mostly made of — and the two halves are built so unalike that it is
+request was mostly made of, and the two halves are built so unalike that it is
 slightly odd they appear on the same invoice.
 
 ## The half that happens all at once
@@ -98,7 +98,7 @@ picture.
 
 <Figure
   title="Where the time actually goes in one answer"
-  description="Reading a question happens in a single pass however long the question is, so it is a sliver of the clock; writing the answer is one pass per piece laid end to end, so it is nearly the whole wait — which is why making the question ten times longer adds under two seconds and making the answer ten times longer adds ninety."
+  description="Reading a question happens in a single pass however long the question is, so it is a sliver of the clock; writing the answer is one pass per piece laid end to end, so it is nearly the whole wait, which is why making the question ten times longer adds under two seconds and making the answer ten times longer adds ninety."
 >
   <OneSweepThenTheQueue />
 </Figure>
@@ -177,7 +177,7 @@ Here the obvious reading of that price list is usually wrong.
 the money goes. It is a rate, not a total, and in most real systems the totals
 lean hard the other way. A question that arrives with standing instructions,
 forty tool descriptions, the conversation so far and five fetched pages in front
-of it — which is what a request in a working product looks like — might run to
+of it, which is what a request in a working product looks like, might run to
 ten thousand pieces and be answered in three hundred.
 
 Do the multiplication. Ten thousand at one, three hundred at five: ten thousand
@@ -194,7 +194,7 @@ read again, from the top, for as long as the product runs.
 Providers sell the obvious fix. Mark the fixed opening of a prompt as cacheable
 and the work of sweeping over it is kept for a while; a later call that begins
 with exactly the same text skips it. You pay a fraction of the usual rate for
-the part that was reused — often around a tenth — and the first word arrives
+the part that was reused, often around a tenth, and the first word arrives
 sooner as well, because reading is the half you just skipped.
 
 Two conditions do all the work, and both are easy to break by accident.
@@ -349,7 +349,7 @@ The change that moves the number they are complaining about is on the other side
 cap the answer. Two or three sentences, with the detail available on request.
 That is the only half where length and time are the same thing. Then send the
 pieces as they are produced, so the first sentence is on the screen almost
-immediately — which does not make anything faster and does make the waiting stop
+immediately, which does not make anything faster and does make the waiting stop
 sooner.
 
 And they may not need to trim the pack at all. It is identical on every single

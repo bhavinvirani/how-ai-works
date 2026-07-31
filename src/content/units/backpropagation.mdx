@@ -26,7 +26,7 @@ import { BlameFlow } from '../../components/interactives/BlameFlow';
 The machine has just said _dog_, and the photograph was of a cat.
 
 Inside it are seventy billion adjustable numbers. Somewhere among them is the
-reason it said that, and the repair is to move some of them — but which ones,
+reason it said that, and the repair is to move some of them, but which ones,
 which way, and how far each? A wrong answer says none of that. It is one word.
 
 There is an obvious way to find out, and it genuinely works. Take the first of
@@ -37,7 +37,7 @@ tells you how hard to push. Put it back. Start on the second number.
 
 That is seventy billion complete runs of the machine to learn what to do about
 one photograph. Then the next photograph. It is not a job you set going and
-come back to after lunch — it is a job nobody alive would see finish.
+come back to after lunch. It is a job nobody alive would see finish.
 
 ## Everything downstream decides how much you matter
 
@@ -58,8 +58,8 @@ what the move does where it sits, multiplied by everything standing between it
 and the sound.
 
 A machine built out of layers has exactly that shape, with rather more controls
-and rather more stages. Each dial does one small local thing — it multiplies
-one number on its way into the next layer — and then every layer after it
+and rather more stages. Each dial does one small local thing, it multiplies
+one number on its way into the next layer, and then every layer after it
 multiplies the result again. A dial near the input can be the most important
 number in the machine or completely beside the point, and which of those it is
 depends on numbers it never touches.
@@ -82,7 +82,7 @@ wrong the answer was**
 Read out loud: a dial that swings the answer a long way is a large part of why
 the answer is wrong, and the wronger the answer, the more everyone has to move.
 The second half of that multiplication is a single number the entire machine
-shares. Only the first half differs from dial to dial — and the first half is
+shares. Only the first half differs from dial to dial, and the first half is
 precisely the thing that looked unaffordable.
 
 Here is the move that makes it cheap, and it is worth reading twice.
@@ -105,7 +105,7 @@ slope actually comes from, and the step afterwards is somebody else's job.
 
 <Figure
   title="The same links, walked the other way"
-  description="Only the end of the machine can see how wrong the answer was, so the sweep starts there and hands one number back per neuron — each neuron splitting its share among everything that fed it — until every line in the stack has a number of its own, and the machine was never run a second time."
+  description="Only the end of the machine can see how wrong the answer was, so the sweep starts there and hands one number back per neuron, each neuron splitting its share among everything that fed it, until every line in the stack has a number of its own, and the machine was never run a second time."
 >
   <LayerStackDiagram
     direction="backward"
@@ -138,7 +138,7 @@ shape shrunk until every number fits on one screen.
 
 Six dials, guessing how long a bike ride takes from two facts about it: how far
 it is, and how hilly. Two numbers go in on the left. Two neurons sit in the
-middle — middle A and middle B — each adding up its own weighted version of
+middle, middle A and middle B, each adding up its own weighted version of
 those two numbers. What the pair of them produce is combined into a guess in
 minutes.
 
@@ -168,8 +168,8 @@ Nothing chose that ranking. It is the product of two numbers that were lying
 around anyway.
 
 Now switch to the three-kilometre climb. Same machine, same six dials, nothing
-retuned in between. The guess comes out at 39 minutes against an actual 45 —
-six minutes too short this time — and the largest share has moved to a
+retuned in between. The guess comes out at 39 minutes against an actual 45,
+six minutes too short this time, and the largest share has moved to a
 different dial altogether: the one carrying hilliness into middle B, at 29%.
 That dial sits in the first layer, and it has just overtaken both of the dials
 on the output.
@@ -221,14 +221,14 @@ At six dials that is an irritation. It is the shape that matters.
 
 <Figure
   title="Two routes to the same six numbers"
-  description="Both methods produce identical instructions for every dial, so the choice is entirely about cost — and one line grows in step with the machine while the other grows with the machine multiplied by itself, which is the whole reason a deep stack can be trained at all."
+  description="Both methods produce identical instructions for every dial, so the choice is entirely about cost, and one line grows in step with the machine while the other grows with the machine multiplied by itself, which is the whole reason a deep stack can be trained at all."
 >
   <CountingTheSweeps />
 </Figure>
 
 Add a dial and the sweep gets one multiplication longer. Add a dial to the
 nudging method and it gains a whole extra run of a machine that is itself now
-bigger — so its total grows with the machine multiplied by itself, while the
+bigger, so its total grows with the machine multiplied by itself, while the
 sweep only grows in step with the machine. At seventy billion dials the sweep is
 still two passes over the machine. The other route is seventy billion of them.
 
@@ -296,7 +296,7 @@ times the memory that running the same model does, and that is where it goes.
 
 <Checkpoint question="Two dials sit in the same layer of the same machine, and after one wrong answer one of them is told to move fifty times as far as the other. Neither dial was changed, and both were judged on the same answer. Where did that difference come from?">
   From how much each dial moves the answer. A dial's share is that number
-  multiplied by how wrong the answer was — and the second half is one number
+  multiplied by how wrong the answer was, and the second half is one number
   the whole machine shares, so it cannot be the source of any difference
   between two dials. The entire gap is in the first half: what each dial had to
   act on, and how strongly the thing it feeds carries through to the end.

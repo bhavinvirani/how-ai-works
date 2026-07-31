@@ -2,12 +2,12 @@
 title: Train the habit, hand over the fact
 part: building-an-assistant
 order: 3
-summary: A second short training run over a few thousand hand-picked examples is the right way to change how a model behaves and a poor, expensive way to install what it needs to know — because training moves dials, and moving a dial files nothing anywhere you can look up, correct or quote.
+summary: A second short training run over a few thousand hand-picked examples is the right way to change how a model behaves and a poor, expensive way to install what it needs to know, because training moves dials, and moving a dial files nothing anywhere you can look up, correct or quote.
 prerequisites:
   - base-models
 connections:
   - to: rlhf
-    why: Fine-tuning can only install a habit that somebody managed to write down as an example, and the qualities that matter most in an answer are precisely the ones nobody can write down — which is what the next stage exists to reach, by asking people to compare rather than to compose.
+    why: Fine-tuning can only install a habit that somebody managed to write down as an example, and the qualities that matter most in an answer are precisely the ones nobody can write down, which is what the next stage exists to reach, by asking people to compare rather than to compose.
   - to: rag
     why: This is the rule about facts belonging in the prompt, built into an architecture — look the answer up and hand it over, so it can be cited, checked, and changed by editing a file rather than by retraining.
 interactives:
@@ -52,7 +52,7 @@ Take the finished model and run the training loop over it a second time: a
 guess, a score for how wrong the guess was, a nudge to every dial in the
 direction that would have made it less wrong. Exactly the machinery from the
 first Part of this site, nothing added. What changes is the reading matter and
-the length — not a large slice of the internet read once, but a few thousand
+the length, not a large slice of the internet read once, but a few thousand
 examples somebody chose on purpose, read a handful of times, with the nudges kept
 deliberately gentle.
 
@@ -122,7 +122,7 @@ the example's text slightly likelier. Repeat.
 Read that again with the weight on _likelier_, because that is the whole of the
 operation. A training run does not put anything anywhere. There is no shelf, no
 row, no record. Afterwards, "we accept returns within fourteen days" has not been
-stored — it has been converted into a hair's movement on several million dials,
+stored. It has been converted into a hair's movement on several million dials,
 mixed in with the movement every other sentence in your pile asked for, on top of
 the movements every sentence on the internet had already asked for.
 
@@ -134,7 +134,7 @@ number to change, because the fourteen was never in one place to begin with. The
 repair is another training run.
 
 **Nobody can be shown where it came from.** Ask the model why it said fourteen.
-A page has a source; a dial does not. This is not evasiveness — there is
+A page has a source; a dial does not. This is not evasiveness. There is
 genuinely nothing attached to a dial recording why it sits where it sits,
 because every sentence the model has ever read contributed to its position.
 
@@ -155,7 +155,7 @@ A prompt is just text put in front of the model at the moment of asking. It has
 none of the dignity of a training run and all of the properties you actually
 wanted.
 
-Change it and the next answer is different — not next quarter, next second. It is
+Change it and the next answer is different, not next quarter, next second. It is
 sitting right there, so an answer can quote it and a person can check the quote
 against the original. And it blended with nothing, because it is not a tendency
 the model acquired last March; it is the text in front of it now.
@@ -173,7 +173,7 @@ reprinted it when it changed.
 
 <Figure
   title="The same sentence, taken in two ways"
-  description="Pushed through a training run, a fact stops being a sentence and becomes a hair's movement on every dial — so there is nothing left to correct, nothing to quote, and what comes back is blended with every similar sentence the model ever read; handed over with the question, the same fact leaves every dial where it was, can be rewritten between one question and the next, and gives the answer something to point at."
+  description="Pushed through a training run, a fact stops being a sentence and becomes a hair's movement on every dial, so there is nothing left to correct, nothing to quote, and what comes back is blended with every similar sentence the model ever read; handed over with the question, the same fact leaves every dial where it was, can be rewritten between one question and the next, and gives the answer something to point at."
 >
   <DialsOrPrompt />
 </Figure>
@@ -188,7 +188,7 @@ every single time, and to survive a long conversation that has drifted a long wa
 from them.
 
 And knowledge is not entirely absent from a training run. A fact repeated ten
-thousand times across a pile does become likelier to come out — that is how a
+thousand times across a pile does become likelier to come out. That is how a
 model knows anything about the solar system at all. The trouble is that "repeated
 ten thousand times" is not something your internal documentation is, and
 "likelier to come out" is not something you can audit, correct or cite. Facts are
@@ -266,14 +266,14 @@ and those examples have started to cost real money.
     One line like that per example, a few hundred to a few thousand of them.
     Before you spend anything, read ten of your own lines out loud. If they are
     answers to questions about your products, you are about to buy a training run
-    to install facts — and the run will succeed, which is the problem. Nothing in
+    to install facts, and the run will succeed, which is the problem. Nothing in
     the pipeline anywhere will warn you. The loss will come down, the job will go
     green, and the model will be confidently wrong in your own house style.
 
   </Fragment>
 </DevAside>
 
-<Checkpoint question="A bank fine-tunes a model on three years of its own customer emails and the replies its agents sent. What comes back writes exactly like the bank — and quotes an interest rate that was withdrawn last spring, in a message nobody can trace to a source. One training run, two results. Why did the same run do both?">
+<Checkpoint question="A bank fine-tunes a model on three years of its own customer emails and the replies its agents sent. What comes back writes exactly like the bank, and quotes an interest rate that was withdrawn last spring, in a message nobody can trace to a source. One training run, two results. Why did the same run do both?">
   Because the two things it was asked to absorb are different in kind, and only
   one of them is the kind a dial can hold.
 
@@ -289,7 +289,7 @@ it in a reply, and nowhere near enough to be right about it. The untraceability
 is the same fact seen from the other side: nothing was filed, so there is nothing
 to point at.
 
-The fix is not a better training run. Keep the fine-tune, which did its job — and
+The fix is not a better training run. Keep the fine-tune, which did its job, and
 put the current rate in the prompt, read from wherever the bank actually keeps
 rates. The manner is trained; the number is handed over.
 

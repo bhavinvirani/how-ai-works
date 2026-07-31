@@ -9,9 +9,9 @@ connections:
   - to: backpropagation
     why: Training runs this exact sweep first and then sends the mistake back down the very same wires, which is why one journey backwards costs about what one journey forwards costs.
   - to: feature-hierarchy
-    why: A forward pass describes the route the numbers take through the stack and says nothing about what they come to mean at each stop, which is a separate discovery — and one nobody designed.
+    why: A forward pass describes the route the numbers take through the stack and says nothing about what they come to mean at each stop, which is a separate discovery, and one nobody designed.
   - to: reasoning-models
-    why: If one sweep costs the same whatever it is asked, there is no dial for trying harder — so the only way left to spend more effort on a hard question is to write more, because every piece written is another sweep.
+    why: If one sweep costs the same whatever it is asked, there is no dial for trying harder, so the only way left to spend more effort on a hard question is to write more, because every piece written is another sweep.
 interactives: []
 status: published
 updated: 2026-07-31
@@ -107,7 +107,7 @@ Not roughly the same. The same.
 
 <Figure
   title="Two questions, one price"
-  description="Both bills itemise the same three junctions and reach the same total, because the only thing that differs between them is the question printed at the top — and the question is the one thing the count cannot depend on."
+  description="Both bills itemise the same three junctions and reach the same total, because the only thing that differs between them is the question printed at the top, and the question is the one thing the count cannot depend on."
 >
   <SameBillEitherWay />
 </Figure>
@@ -154,8 +154,8 @@ ever revised.
 
 <Aside title="Where extra thinking has to come from">
   Nobody has found a way to make one sweep work harder; the wiring forbids it.
-  The models sold as reasoning models get around that by spending more sweeps —
-  they are trained to write their working out first, sometimes for thousands of
+  The models sold as reasoning models get around that by spending more sweeps.
+  They are trained to write their working out first, sometimes for thousands of
   words, before committing to an answer. Every one of those words is a full pass
   through the stack, and every pass gets to read all the words before it. In
   this business, thinking for longer means writing more. There is no other
@@ -182,7 +182,7 @@ it.
 
 Their bills are shaped completely differently. A serious training run can cost
 more than a building, and that is paid once. One inference costs a fraction of a
-penny, and it is paid again every time anybody anywhere asks anything — which is
+penny, and it is paid again every time anybody anywhere asks anything, which is
 why the small number, not the enormous one, decides whether a product can exist
 at all.
 
@@ -230,7 +230,7 @@ for.
 </DevAside>
 
 <Checkpoint question="An image model identifies a crisp photo correctly and a blurred, ambiguous one wrongly. A colleague concludes that it 'rushed' the difficult one. What is wrong with that conclusion?">
-  It did not rush anything — it did exactly the same amount of arithmetic on
+  It did not rush anything. It did exactly the same amount of arithmetic on
   both photos, because that amount is set by how the machine is wired and not by
   what it is looking at. "Rushed" implies there was a slower, more careful
   option available, and a forward pass has no such option to take.

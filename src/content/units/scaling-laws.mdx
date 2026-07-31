@@ -9,7 +9,7 @@ connections:
   - to: pretraining
     why: These curves are a claim about what a fixed pile of text and a fixed electricity bill will buy, and pretraining is where the whole of that budget is spent — one continuous run, months long, planned in advance on exactly this arithmetic.
   - to: small-models
-    why: The curves say bigger wins at the hardest tasks, which is not the same as saying you need the hardest-task machine for an easy one — and most real jobs are easy ones.
+    why: The curves say bigger wins at the hardest tasks, which is not the same as saying you need the hardest-task machine for an easy one, and most real jobs are easy ones.
 interactives: []
 status: published
 updated: 2026-07-31
@@ -42,7 +42,7 @@ intelligence, and not usefulness. One number: how surprised the model is by the
 next chunk of text in a document it has never seen. Cover the next token, ask
 for a guess, and score how much probability it put on the piece that actually
 came. That is the same wrongness score training runs on, taken on held-back
-text — and it is the only quantity in this unit that anybody can measure
+text, and it is the only quantity in this unit that anybody can measure
 cleanly.
 
 Three things were varied against it. How many dials the model has. How much text
@@ -57,7 +57,7 @@ Add ten per cent more dials and essentially nothing happens. The number twitches
 in the fourth decimal place, and you would struggle to tell it from noise.
 
 Multiply the dials by ten, and it drops by a definite amount. Multiply by ten
-again — a hundred times the machine you started with — and it drops by very
+again, a hundred times the machine you started with, and it drops by very
 nearly the same amount a second time. Then a third.
 
 That is a different claim from "bigger is better". It says the return is not
@@ -93,7 +93,7 @@ is heading somewhere, and that somewhere is not zero.
 
 <Figure
   title="Four small models, and a line read forwards"
-  description="Four cheap models were built and measured, and their points sat on a straight line once the bottom axis multiplied rather than added — so the line could be extended with a ruler to a size nobody had built, and the machine eventually built at that size landed on the prediction, which is what made the cheque a calculation rather than a leap of faith."
+  description="Four cheap models were built and measured, and their points sat on a straight line once the bottom axis multiplied rather than added, so the line could be extended with a ruler to a size nobody had built, and the machine eventually built at that size landed on the prediction, which is what made the cheque a calculation rather than a leap of faith."
 >
   <ReadingTheLineForwards />
 </Figure>
@@ -114,8 +114,8 @@ not fall on a line, you have found that out before spending anything, which is
 the cheapest bad news on the market.
 
 And it works. The final wrongness score of at least one frontier model was
-published as a prediction before the expensive run began — worked out from small
-models using something like a ten-thousandth of the computing — and the finished
+published as a prediction before the expensive run began, worked out from small
+models using something like a ten-thousandth of the computing, and the finished
 machine came in on the figure.
 
 The line settles a second argument too, and this is the one that decides
@@ -136,9 +136,9 @@ The rule of thumb that came out of it was roughly twenty tokens of text for
 every dial in the model. It has moved again since, for a reason worth carrying:
 that rule makes _training_ as cheap as possible, and training happens once.
 Answering happens every time anybody asks a question, and a smaller model
-answers cheaper for ever. So the habit now is to overshoot deliberately — take a
+answers cheaper for ever. So the habit now is to overshoot deliberately, take a
 smaller model and pour far more text through it than the training-optimal split
-calls for — because paying extra once beats paying a little extra a billion
+calls for, because paying extra once beats paying a little extra a billion
 times.
 
 ## The part the line said nothing about
@@ -147,13 +147,13 @@ Now the awkward half.
 
 That curve is about one number, and the number is how surprised a machine is by
 text. Nobody wants that. What people want is a list of things the machine can
-do — and when the field went and checked those, the tidiness fell apart.
+do, and when the field went and checked those, the tidiness fell apart.
 
 Some abilities did not creep in. They were missing at one size and present at
 the next, with nothing in between. Adding two three-digit numbers and getting
 the whole answer right. Carrying out a task in a notation that was invented in
 the prompt itself, three lines earlier. Transliterating a name from one alphabet
-into another. On each of these, model after model scored nothing at all — and
+into another. On each of these, model after model scored nothing at all, and
 then one scored.
 
 The name for that is **emergence**: an ability that is absent below a certain
@@ -189,14 +189,14 @@ sequence.
 
 Now mark the whole answer instead. If the steps are roughly independent of one
 another, the chance of all five surviving is that figure multiplied by itself
-five times — which gives 0%, 1%, 4%, 15% and then 42%.
+five times, which gives 0%, 1%, 4%, 15% and then 42%.
 
 Three sizes of nothing, and then a cliff. Same models, same answers, same
 afternoon. The only thing that changed is where the marks came from.
 
 <Figure
   title="One climb, two scoreboards"
-  description="Marking each step separately gives a perfectly steady rise of sixteen points per size, while demanding all five steps at once turns the same five models into 0, 1, 4, 15 and 42 per cent — so whether an ability looks like it appeared suddenly can depend entirely on where the marks come from rather than on anything the machine did."
+  description="Marking each step separately gives a perfectly steady rise of sixteen points per size, while demanding all five steps at once turns the same five models into 0, 1, 4, 15 and 42 per cent, so whether an ability looks like it appeared suddenly can depend entirely on where the marks come from rather than on anything the machine did."
 >
   <TwoWaysToCount />
 </Figure>
@@ -233,8 +233,8 @@ imply that everything about them got better.
 **It did not make them truthful.** The thing being improved was the ability to
 guess what text comes next. Text that sounds right and text that is right are
 two different targets, and only one of them was ever on the scoreboard. Bigger
-models did become more accurate about the world — there is more of the world in
-more text — but they became fluent faster than they became correct, which means
+models did become more accurate about the world, there is more of the world in
+more text, but they became fluent faster than they became correct, which means
 the gap between how right an answer sounds and how right it is got wider rather
 than narrower.
 
@@ -283,8 +283,8 @@ true. They are just no longer the cheapest thing to buy.
     A suite built out of that line produces a number that can sit flat at zero
     while the model behind it improves steadily, and then move all at once. It
     is the artefact from this unit, arriving in your own test report. Requiring
-    the whole answer is often correct — plenty of software cannot use a
-    near-miss — but reading the flat stretch as "no progress" is not. Log one
+    the whole answer is often correct, plenty of software cannot use a
+    near-miss, but reading the flat stretch as "no progress" is not. Log one
     graded measure alongside it, such as how many of the required fields came
     back right, and you can tell "nowhere near" apart from "one field short".
 
@@ -297,19 +297,19 @@ true. They are just no longer the cheapest thing to buy.
 
     Two lines, and the second is the one that tells you whether to keep going.
     A team logging only the first spends months unable to distinguish a model
-    that is hopeless from one that is a single field away — and then reports
+    that is hopeless from one that is a single field away, and then reports
     the week it suddenly started working.
 
   </Fragment>
 </DevAside>
 
-<Checkpoint question="A team swaps in a model ten times the size, and their score on a benchmark goes from 4% to 42%. Someone says the larger model has unlocked an ability the smaller one did not have. Before you agree, what is the cheapest thing you could check — and what would each result mean?">
+<Checkpoint question="A team swaps in a model ten times the size, and their score on a benchmark goes from 4% to 42%. Someone says the larger model has unlocked an ability the smaller one did not have. Before you agree, what is the cheapest thing you could check, and what would each result mean?">
   Re-mark what you already have, with partial credit. Nothing needs retraining
   and nothing needs rerunning; the smaller models' answers are still on disk.
   Score them per step rather than whole, and look at the shape.
 
-If the graded score was climbing steadily the whole way — roughly the same
-amount at every size — then the ability had been growing all along, and the jump
+If the graded score was climbing steadily the whole way, roughly the same
+amount at every size, then the ability had been growing all along, and the jump
 happened in the marking rather than in the machine. If the graded score is flat
 and then jumps too, the sudden reading has survived its cheapest test and is
 worth taking seriously.

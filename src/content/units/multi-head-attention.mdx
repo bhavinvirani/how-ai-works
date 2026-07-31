@@ -2,12 +2,12 @@
 title: The jobs nobody handed out
 part: the-transformer
 order: 2
-summary: One round of attention can only follow one kind of relationship, so a model runs many of them at the same moment — and what each one ends up watching is settled by training rather than by anyone's decision.
+summary: One round of attention can only follow one kind of relationship, so a model runs many of them at the same moment, and what each one ends up watching is settled by training rather than by anyone's decision.
 prerequisites:
   - attention
 connections:
   - to: transformers
-    why: A transformer block never runs attention once — it runs a row of these heads side by side and stitches their answers back into one word, then does the whole thing again on the layer above.
+    why: A transformer block never runs attention once. It runs a row of these heads side by side and stitches their answers back into one word, then does the whole thing again on the layer above.
 interactives:
   - MultiHeadLanes
 status: published
@@ -60,8 +60,8 @@ same instant on the same sentence, each with its own recipe for questions and
 labels, each producing its own blend for every word.
 
 One such round is a **head**. Running a row of them side by side and joining
-what they produce is **multi-head attention**, and it is what a transformer —
-the design nearly every large language model is built on — actually contains.
+what they produce is **multi-head attention**, and it is what a transformer,
+the design nearly every large language model is built on, actually contains.
 The single round of the last unit does not appear on its own anywhere.
 
 Joining is not choosing. The blends are laid end to end and mixed back down
@@ -125,7 +125,7 @@ real model stacks that layer dozens deep.
 
 One row never wakes at all, whichever word you choose. The fourth head is
 asking what came immediately before it, and nothing in attention knows where a
-word sits — which is the next unit's business, not this one's.
+word sits, which is the next unit's business, not this one's.
 
 ## Nobody hands out the jobs
 
@@ -174,12 +174,12 @@ else.
     ```
 
     The heads are not twelve objects. They are one array with an extra axis,
-    so "in parallel" is not a scheduling claim — it is a single matrix
+    so "in parallel" is not a scheduling claim. It is a single matrix
     multiply that happens to have a spare dimension. The last line is the
     joining: the axis is folded back in and the strips become one word again.
 
     Worth noticing what is absent. `n_head` is a number somebody typed, and
-    nowhere in the file — or anywhere else in the repository — is there a line
+    nowhere in the file, or anywhere else in the repository, is there a line
     saying what any particular head is for.
 
   </Fragment>

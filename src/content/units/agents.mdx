@@ -2,7 +2,7 @@
 title: The step nobody wrote down
 part: letting-it-act
 order: 3
-summary: An agent is the tool-use loop with one thing changed — the model picks the next step instead of following a sequence you wrote — and both what it can suddenly do and everything that goes wrong with it come out of that single move.
+summary: An agent is the tool-use loop with one thing changed, the model picks the next step instead of following a sequence you wrote, and both what it can suddenly do and everything that goes wrong with it come out of that single move.
 prerequisites:
   - tool-use
   - context-engineering
@@ -54,7 +54,7 @@ met four of them.
    everything that has happened so far.
 2. It writes one thing: either the name of a tool with some arguments, or an
    answer.
-3. If it named a tool, your code runs it — or refuses to.
+3. If it named a tool, your code runs it, or refuses to.
 4. Whatever came back is added to the end of everything that has happened so
    far.
 5. Go back to step one.
@@ -86,7 +86,7 @@ That sentence is the unit. Everything below it is a consequence.
 
 <Figure
   title="Who drew the arrow"
-  description="In ordinary software every arrow between the steps was drawn before anything ran, so the same order happens every time whatever the meter says. In an agent the arrow leaving the model is picked while it runs — one of several calls it could equally have made — and whatever comes back is added to what the next pass reads, so the choice after this one is made from a different position."
+  description="In ordinary software every arrow between the steps was drawn before anything ran, so the same order happens every time whatever the meter says. In an agent the arrow leaving the model is picked while it runs, one of several calls it could equally have made, and whatever comes back is added to what the next pass reads, so the choice after this one is made from a different position."
 >
   <WhereTheChoiceSits />
 </Figure>
@@ -125,8 +125,8 @@ numbers is the arithmetic of the real thing.
 
 <AgentTraceExplorer client:visible />
 
-Press the plus until the run stops. On the first setting — the meter says usage
-really did double — it takes five turns. It reads the bill, reads the meter,
+Press the plus until the run stops. On the first setting, the meter says usage
+really did double, it takes five turns. It reads the bill, reads the meter,
 checks the equipment log, checks the daily pattern, and answers.
 
 The turn worth slowing down for is the fourth. Having found that a second
@@ -137,7 +137,7 @@ not proof, and that is the kind of thing the writing it was scored on is full of
 
 Now set the meter to _usage unchanged_.
 
-The first two turns are identical. Same reasoning, same tool, same call — because
+The first two turns are identical. Same reasoning, same tool, same call, because
 at that point nothing had come back for a plan to depend on. From the third turn
 the two runs have nothing in common at all. This one never opens the equipment
 log, because there is nothing in the shop to look for. It goes to the tariff,
@@ -180,7 +180,7 @@ Two out of three, in a letter that has gone.
 Notice what did not happen. Nothing paused. `email` is not on the held list;
 `switch` is. A person was asked before a tariff change that could have been
 changed straight back, and nobody was asked before an accusation went to the
-supplier. That list is not a judgement about what is serious — it is a list, and
+supplier. That list is not a judgement about what is serious. It is a list, and
 this one has the wrong thing on it.
 
 Now hold the three runs beside each other. Same goal, same tools, same first two
@@ -217,8 +217,8 @@ times is decided at run time, by the thing doing the reading.
   are in the first person, they give reasons, they change course.
 
 Every one of them is the next-piece loop. The model was handed a pile of text
-ending in a tool result and produced the most plausible continuation, which —
-because of how it was tuned — is a short line of reasoning followed by a tool
+ending in a tool result and produced the most plausible continuation, which,
+because of how it was tuned, is a short line of reasoning followed by a tool
 name. It is writing what a competent person's next line would look like.
 
 That is not nothing. Writing the plausible next line is exactly how it gets the
@@ -310,8 +310,8 @@ decision over where you have to, and not an inch further.
     ```
 
     A dozen lines, and nothing is missing. Everything people attribute to "the
-    agent" is either `model.next` — the same call you would make for a one-shot
-    question — or the loop around it.
+    agent" is either `model.next`, the same call you would make for a one-shot
+    question, or the loop around it.
 
     Two of those lines are the whole of your control. `MAX_TURNS` is the only
     thing standing between you and an unbounded bill, and it belongs in the
@@ -353,7 +353,7 @@ decision over where you have to, and not an inch further.
 <Checkpoint question="A team ships an agent that handles billing questions. It has five read-only tools and one that issues a refund, and any refund over £50 is held for a person to approve. It tests beautifully. In its first live week it issues four hundred refunds of under £50 to customers who were owed nothing, each with a short and plausible explanation attached, and nothing anywhere errors. Explain how a system with a working approval gate produced that, and say what you would change.">
   The gate worked exactly as written, and it was never the protection anybody
   thought it was. It is a rule about an amount, not about whether a refund is
-  deserved — and nothing in the loop ever asks whether a refund is deserved,
+  deserved, and nothing in the loop ever asks whether a refund is deserved,
   because there is nothing in the loop capable of asking. Every refund the model
   reached for under the threshold was, as far as the system was concerned,
   authorised in advance.
@@ -361,7 +361,7 @@ decision over where you have to, and not an inch further.
 The four hundred is the compounding. Somewhere early in each run a turn read
 something ambiguous and produced a line concluding that the customer was owed
 money. That line then went into the context, and the turn after it was not
-judging the case afresh — it was continuing a chain in which the matter was
+judging the case afresh. It was continuing a chain in which the matter was
 already settled. The refund is not the mistake. It is the fourth or fifth thing
 built on the mistake.
 

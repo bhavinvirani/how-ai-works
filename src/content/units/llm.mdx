@@ -7,7 +7,7 @@ prerequisites:
   - transformers
 connections:
   - to: text-generation
-    why: Scoring the vocabulary produces a table and then stops, so something outside the model has to take one entry, glue it on and run the whole machine again — which is where sentences actually come from.
+    why: Scoring the vocabulary produces a table and then stops, so something outside the model has to take one entry, glue it on and run the whole machine again, which is where sentences actually come from.
   - to: hallucination
     why: Nothing in a next-piece score has anywhere to record whether the piece is true, so a well-scored invention and a well-scored fact come out of identical arithmetic and arrive looking the same.
 interactives: []
@@ -39,8 +39,8 @@ That ranking is the machine this Part is about. Not the tea. The ranking.
 
 One difference, and it is the whole difference. You stopped at four alternatives
 because four were offered. The machine does not stop. Every time it produces
-anything at all, it puts a number on **every** entry in its vocabulary — the
-hundred thousand or so chunks you watched text being cut into — including the
+anything at all, it puts a number on **every** entry in its vocabulary, the
+hundred thousand or so chunks you watched text being cut into, including the
 overwhelming majority that are obvious nonsense. It has no way of skipping them,
 because it has no way of noticing that they are nonsense.
 
@@ -101,7 +101,7 @@ before.
 **A table, not a choice.** And then it stops. The model does not pick anything.
 It has produced a column of a hundred thousand numbers, and that column is what
 leaves it. Some very ordinary code outside the model reads the column and takes
-one entry — that is the next unit, not this one. Hold the seam between them,
+one entry. That is the next unit, not this one. Hold the seam between them,
 because everything famous about these machines happens on the scoring side of
 it, and everything that feels like a decision happens on the other.
 
@@ -111,7 +111,7 @@ that operation, run once, and then run again on the same text with its own
 output added to the end.
 
 There is nowhere in the machine for translation to live. Not "it is hard to
-find" — there is no place of that kind. You have already been shown the complete
+find". There is no place of that kind. You have already been shown the complete
 inventory: a lookup table that turns chunks into numbers, then the same block
 stacked a fixed number of times, then the scoring. Nobody is holding anything
 back from you.
@@ -138,7 +138,7 @@ largest artefact anyone has ever built.
 
 <Figure
   title="What it does, and what it takes to do it"
-  description="The output of a large language model is not a word but a column with an entry for every chunk in its vocabulary, absurd candidates included and still carrying numbers — and the hundreds of billions of adjustable numbers on the other side of the rule are not a second ability, they are all spent producing that one column."
+  description="The output of a large language model is not a word but a column with an entry for every chunk in its vocabulary, absurd candidates included and still carrying numbers, and the hundreds of billions of adjustable numbers on the other side of the rule are not a second ability, they are all spent producing that one column."
 >
   <OneOperationVeryLarge />
 </Figure>
@@ -253,11 +253,11 @@ enough turned out to require.
   </Fragment>
 </DevAside>
 
-<Checkpoint question="A support assistant answers three sentences of company policy correctly and then, in exactly the same tone, invents a refund window that does not exist. The team lead proposes making the model check its answer before it commits to it. Using only what a large language model does, say what is wrong with that sentence — and where a check could genuinely go.">
+<Checkpoint question="A support assistant answers three sentences of company policy correctly and then, in exactly the same tone, invents a refund window that does not exist. The team lead proposes making the model check its answer before it commits to it. Using only what a large language model does, say what is wrong with that sentence, and where a check could genuinely go.">
   There is no moment inside the machine when an answer exists to be checked. It
   produces one piece at a time, so at the instant it is scoring whatever follows
   _returns are accepted within_, there is no claim about refunds anywhere in the
-  machine to hold up against anything — there is a column of chunks with numbers
+  machine to hold up against anything. There is a column of chunks with numbers
   beside them, and that is the entire contents of the box. "Check" is not an
   operation the model has, and there is no step to insert it into.
 

@@ -1,5 +1,5 @@
 ---
-title: The steps are not a report — they are the work
+title: The steps are not a report. They are the work
 part: asking-well
 order: 3
 summary: Asking a model to write its working out buys it a fresh pass through the machine for every piece it writes, and leaves each finished step sitting in the text where every later step can read it.
@@ -20,7 +20,7 @@ import WhatTheLastPassReads from '../../components/diagrams/WhatTheLastPassReads
 
 At the end of dinner, a friend at the far end of the table works out the bill in
 her head. Four of us, a voucher off the total, service added to whatever is left
-afterwards — and she says a number before the card machine has finished waking
+afterwards, and she says a number before the card machine has finished waking
 up.
 
 She is wrong by about three pounds. Nobody says anything, because arguing with
@@ -30,7 +30,7 @@ An hour later, at home, you do the same sum on the back of the receipt. It takes
 ninety seconds and it comes out right.
 
 Nothing about you improved in that hour. You did not get better at arithmetic,
-or sharper, or less tired — you were more tired. What you got was somewhere to
+or sharper, or less tired. You were more tired. What you got was somewhere to
 put the middle of the problem down.
 
 A language model is at that table, doing it in its head, every single time you
@@ -65,7 +65,7 @@ top, and works everything out again. Nothing carries across that could not be
 recomputed from the words on the page.
 
 Which means the working-out has exactly one place it can live. Not in the
-machine — there is nowhere in the machine for it to be. In the output.
+machine. There is nowhere in the machine for it to be. In the output.
 
 Write _Friday = 200_ and that number has stopped being a fleeting internal
 quantity and become text. It sits at a position in the input. Every later pass
@@ -85,7 +85,7 @@ This is why writing the steps is not a longer way of saying the same thing. The
 page is not a transcript of the thinking. The page is the only surface the
 thinking has.
 
-The technique has a name — **chain of thought** — which is a good deal grander
+The technique has a name, **chain of thought**, which is a good deal grander
 than what it describes. What it describes is: ask for the steps before the
 answer.
 
@@ -177,7 +177,7 @@ same page, requested by the model's training rather than by you.
 
 <Aside title="The working is not a transcript" tone="caution">
   The temptation, once a model shows its steps, is to read them as an account of
-  how the answer was reached — and to trust the answer more because the account
+  how the answer was reached, and to trust the answer more because the account
   looks sound. That goes one step past what the evidence supports.
 
 Models have been shown reaching a conclusion by one route and then writing a
@@ -211,7 +211,7 @@ never as a report of what happened.
 
     Swap the two here and nothing fails. The schema still validates, the tests
     still pass, the JSON still parses, and the accuracy quietly drops back to
-    where it was before anyone added the field — because `working` is now a
+    where it was before anyone added the field, because `working` is now a
     justification rather than a route.
 
   </Fragment>
@@ -251,7 +251,7 @@ You are not wording the question better. You are handing it a receipt to work
 on.
 
 <Checkpoint question="A team adds “think through this step by step” to the prompt for a pricing tool. Because the figure has to go straight into a spreadsheet cell, they also add “reply with the final number only, no explanation”. The bill is unchanged, the accuracy is unchanged, and they conclude that chain of thought is overrated. What actually happened, and what should they have done instead?">
-  The two instructions cancel, and the second one wins — because there is no
+  The two instructions cancel, and the second one wins, because there is no
   thinking anywhere except in what gets written. Told to reply with a number and
   nothing else, the model wrote a number and nothing else: a handful of pieces,
   a handful of passes, and no intermediate result anywhere in the text for a

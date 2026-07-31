@@ -2,16 +2,16 @@
 title: The table underneath everything
 part: why-this-exists
 order: 3
-summary: Everything a machine learns from is a table of examples and measurements — and which column counts as the answer is a decision somebody makes, not a fact about the data.
+summary: Everything a machine learns from is a table of examples and measurements, and which column counts as the answer is a decision somebody makes, not a fact about the data.
 prerequisites:
   - model-as-dials
 connections:
   - to: embeddings
-    why: A column of words is the awkward case here, because there is no obvious number to put in it — and the answer, learning a position for every word from the company it keeps, is one of the field's better ideas.
+    why: A column of words is the awkward case here, because there is no obvious number to put in it, and the answer, learning a position for every word from the company it keeps, is one of the field's better ideas.
   - to: model-as-dials
     why: The wrongness score compares each guess against one column of this table, so choosing that column is choosing what the dials are being tuned to do.
   - to: why-rules-fail
-    why: Examples were the way out of the rule problem — this is what an example turns out to be once somebody actually writes it down.
+    why: Examples were the way out of the rule problem. This is what an example turns out to be once somebody actually writes it down.
 interactives:
   - LabelPicker
 status: published
@@ -61,7 +61,7 @@ different in kind. Somebody recorded whether the customer left in exactly the wa
 they recorded what the customer paid.
 
 What makes it the answer is that a person pointed at it and said: this is the
-one I want guessed. The chosen column has a name — the **label** — and the name
+one I want guessed. The chosen column has a name, the **label**, and the name
 matters far less than the thing underneath it. Nothing in the data told you which
 column to choose. You chose.
 
@@ -75,11 +75,11 @@ There is one real constraint on the choice, and it is about timing rather than
 data. **The answer column has to be something you will not have at the moment you
 need the guess.** You can train on "did they leave" precisely because these
 customers' stories are over. For the person who signed up this morning that cell
-is empty — and that emptiness is the only reason anybody built the machine.
+is empty, and that emptiness is the only reason anybody built the machine.
 
 <Figure
   title="A training table, with the answer column marked"
-  description="Rows are cases that already finished and columns are things somebody measured — but the column holding the answer is only the answer because a person nominated it, and on the case you actually care about that cell is blank."
+  description="Rows are cases that already finished and columns are things somebody measured, but the column holding the answer is only the answer because a person nominated it, and on the case you actually care about that cell is blank."
 >
   <ExampleTable />
 </Figure>
@@ -95,14 +95,14 @@ the rest of the table turns into.
 The instrument ranks the leftover columns by how far each one pulls the answer
 apart. Two results are worth stopping on.
 
-Frame size is a real measurement, taken carefully, in centimetres — and it
+Frame size is a real measurement, taken carefully, in centimetres, and it
 finishes last whichever column you nominate. A column earns its keep by relating
 to the answer, and no amount of care in the measuring creates that relationship.
 
 Then make asking price the answer and look at what wins: whether the bicycle sold
 within a week. Which is true, and useless. On the morning you set a price nothing
 has sold yet. The strongest column in your table is one you will never have in
-time — and that mistake, which gets its own unit later, almost always arrives
+time, and that mistake, which gets its own unit later, almost always arrives
 looking exactly like this.
 
 ## Everything has to become numbers
@@ -187,7 +187,7 @@ spreadsheet.
 <Checkpoint question="Your table has a column, filled in by the support team, called 'refund issued'. You are trying to predict which customers will cancel. Should it be one of the clues?">
   Only if it is reliably filled in _before_ you need the prediction. If refunds
   are usually issued during the cancellation call, that column is not a clue
-  about cancelling — it is a piece of the cancellation arriving early. A model
+  about cancelling. It is a piece of the cancellation arriving early. A model
   trained on it scores beautifully in testing and is worthless on anybody who has
   not cancelled yet.
 

@@ -2,7 +2,7 @@
 title: Nearest is not the same as matching
 part: your-own-documents
 order: 3
-summary: A question is turned into a position and the passages nearest it come back, which finds the right page even when it shares not one word with the question — and misses an exact code that plain word matching finds instantly, which is why real systems run both.
+summary: A question is turned into a position and the passages nearest it come back, which finds the right page even when it shares not one word with the question, and misses an exact code that plain word matching finds instantly, which is why real systems run both.
 prerequisites:
   - embeddings
   - rag
@@ -71,7 +71,7 @@ spots. Searching is: which spots are nearest to this one?
 
 Sit with that for a moment, because the rest of the unit falls out of it. No word
 of the question is ever held up against any word of a passage. Nothing is looked
-up. There is a measurement — how far this position sits from that one — and a
+up. There is a measurement, how far this position sits from that one, and a
 list sorted by the answer.
 
 Which explains the thing that looks like a trick. A passage can come back first
@@ -88,14 +88,14 @@ is more correct.
 
 <Figure
   title="The question, put on the same map as the passages"
-  description="Searching by meaning never compares a word with a word: the question is turned into a position on the map the passages were already on, and the nearest few come back — which is why the page that answers a question can share nothing with it that a search box could see, and why two error codes a digit apart end up in the same spot."
+  description="Searching by meaning never compares a word with a word: the question is turned into a position on the map the passages were already on, and the nearest few come back, which is why the page that answers a question can share nothing with it that a search box could see, and why two error codes a digit apart end up in the same spot."
 >
   <NearestFewOnTheMap />
 </Figure>
 
 <Aside title="The number you will see quoted">
   The distance in these systems is almost never a ruler measurement. It is an
-  angle — how nearly two positions point the same way — reported as **cosine
+  angle, how nearly two positions point the same way, reported as **cosine
   similarity**, where 1 means the same direction and 0 means directions with
   nothing to do with each other. It is the scale the panel below reports on.
 
@@ -126,7 +126,7 @@ one. On a map built out of how things get used, they are the same kind of thing,
 so they go in the same place.
 
 Nothing has gone wrong there. You asked for near and it gave you near. What you
-wanted was _identical_ — and identical is not a very small distance, it is not a
+wanted was _identical_, and identical is not a very small distance, it is not a
 distance at all.
 
 The same goes for a surname, a part number, a version string, an invoice
@@ -140,8 +140,8 @@ on it much.
 
 Split every passage into words. Keep a list, for each word, of the passages
 containing it. Look a word up, get the passages back. That arrangement is called
-an **inverted index** — inverted because an ordinary index runs from document to
-words and this one runs the other way — and it is what sat under every search box
+an **inverted index**, inverted because an ordinary index runs from document to
+words and this one runs the other way, and it is what sat under every search box
 you used before about 2020.
 
 It knows nothing whatsoever about meaning, and that is precisely why it works
@@ -180,8 +180,8 @@ answers the question is not further down that list. It is not on that list at
 all. Nothing anywhere pointed at it.
 
 **my money back.** The same shape, and worse in one instructive way. The refunds
-page shares not one of those seven words either. Meanwhile `money` — plainly the
-word the question is about — appears on none of the eight pages, so it matches
+page shares not one of those seven words either. Meanwhile `money`, plainly the
+word the question is about, appears on none of the eight pages, so it matches
 nothing anywhere. The one word that does match is `back`, and it matches a page
 about how many calls a minute an interface will take.
 
@@ -219,7 +219,7 @@ The word column returns one page, and it is the right one.
 
 So the scoreboard reads two out of four, and two out of four, and it is the same
 two either way round. Whichever single method you build on, half your questions
-come back wrong — and they are precisely the questions the other method would
+come back wrong, and they are precisely the questions the other method would
 have got right.
 
 ## Running both is the ordinary answer
@@ -296,7 +296,7 @@ excellent at being one.
   marketing suggests.
 
 **The positions belong to the model that made them.** Change the model that turns
-text into positions and every position you have stored becomes meaningless — not
+text into positions and every position you have stored becomes meaningless, not
 degraded, meaningless, because it is a location in a space that no longer exists.
 All of it has to be made again. Worth knowing before you have forty million of
 them and a re-run nobody has budgeted for.
@@ -353,7 +353,7 @@ Which is why the man and the drawers are both still in the shop.
     Four lines, and they are the first four to write when a retrieval system is
     disappointing. Teams spend weeks rewording prompts and swapping models for a
     problem that is visible in that printout in about a minute: the passage
-    holding the answer is not in `hits` at all — because it was cut in half, or
+    holding the answer is not in `hits` at all, because it was cut in half, or
     because the question was an order number and no position was ever going to
     find it.
 
@@ -368,7 +368,7 @@ Which is why the man and the drawers are both still in the shop.
   Because there is nothing wrong with the embedding model. It is being asked for
   _near_ and it is returning _near_, correctly. An order reference like
   `GH-88412` has almost no company anywhere in the text any model was built from,
-  so the position it gets carries almost no information — and the position
+  so the position it gets carries almost no information, and the position
   `GH-88421` gets is practically the same one. A better model puts both of those
   positions slightly more sensibly, and the two of them stay indistinguishable,
   because being indistinguishable is a fact about the strings rather than about
@@ -389,6 +389,6 @@ Worth carrying beyond this unit. When somebody proposes making retrieval better,
 the question that settles it is what kind of question is failing. If people are
 asking in their own words, a better model may genuinely help. If the question
 contains a string that has to match exactly, no model will, and the thing you are
-missing is not smarter than what you have — it is older.
+missing is not smarter than what you have. It is older.
 
 </Checkpoint>

@@ -2,7 +2,7 @@
 title: The number it chases
 part: the-learning-loop
 order: 2
-summary: A machine can only ever improve against one number — so whatever you choose to count is exactly what it becomes good at, and everything else is free to get worse.
+summary: A machine can only ever improve against one number, so whatever you choose to count is exactly what it becomes good at, and everything else is free to get worse.
 prerequisites:
   - training-loop
 connections:
@@ -96,7 +96,7 @@ smaller, a few trillion words at a time.
 
 <Figure
   title="What reaches the score, and what does not"
-  description="Only the qualities somebody decided to count ever reach the score, and the score is the only thing the dials can chase — so every quality left outside it can quietly get worse with nothing anywhere to stop it."
+  description="Only the qualities somebody decided to count ever reach the score, and the score is the only thing the dials can chase, so every quality left outside it can quietly get worse with nothing anywhere to stop it."
 >
   <OneNumberScore />
 </Figure>
@@ -106,7 +106,7 @@ smaller, a few trillion words at a time.
 Here is the consequence, and it catches everyone anyway.
 
 Below are five answers to the same question. Choose what to score them on, and
-the instrument keeps whichever one scores best — which is what training does,
+the instrument keeps whichever one scores best, which is what training does,
 except across billions of dial settings rather than five fixed answers. Work
 through all four rules and watch which answer survives each time.
 
@@ -130,7 +130,7 @@ quality you left out of the number was free to drift wherever it liked.
 ## Where you will meet this again
 
 An assistant that flatters you was not built by anyone who wanted flattery. It
-was scored, somewhere in its training, on whether people preferred its answers —
+was scored, somewhere in its training, on whether people preferred its answers,
 and people prefer answers that agree with them. A feed that leaves you miserable
 was scored on whether you kept watching. A model that would rather invent a
 plausible citation than admit it does not know was scored on producing an
@@ -151,7 +151,7 @@ asked to make smaller?
 
     Four lines, and the most consequential thing in the repository. Swapping
     that square for `Math.abs` changes what the trained model does more than
-    swapping the architecture underneath it — but it reviews like a one-line
+    swapping the architecture underneath it, but it reviews like a one-line
     change, and in most projects it is buried in a config file rather than in
     code anybody reads.
 
@@ -172,7 +172,7 @@ asked to make smaller?
 <Checkpoint question="A team scores its assistant on how many replies users rate five stars. A month later it agrees with users far more often, including when they are plainly wrong. What broke?">
   Nothing broke. Users rate agreement highly, so agreeing scored well, so
   agreeing is what the training kept. The machine did the only thing it is able
-  to do — make the number smaller — and the number said that flattery was good.
+  to do, make the number smaller, and the number said that flattery was good.
 
 The fix is never to tell the machine to stop, because there is nobody in there
 to tell. It is to change what the number counts, and then go looking for

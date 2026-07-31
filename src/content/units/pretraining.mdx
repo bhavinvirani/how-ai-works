@@ -2,7 +2,7 @@
 title: It read everything once, and then stopped
 part: building-an-assistant
 order: 1
-summary: Everything a model knows arrives in one enormous, one-off pass over a pile of text that was filtered far harder than anyone expects — and when the pass ends, what it knows stops there and never moves again.
+summary: Everything a model knows arrives in one enormous, one-off pass over a pile of text that was filtered far harder than anyone expects, and when the pass ends, what it knows stops there and never moves again.
 prerequisites:
   - self-supervised-learning
 connections:
@@ -43,7 +43,7 @@ unit is about the process that gives it that shape.
 
 A long way back, this site asked you to put your thumb over the last word of an
 ordinary written sentence. Under the thumb was an exam question and its marked
-answer at the same time — nobody had to write the answer, because the answer was
+answer at the same time. Nobody had to write the answer, because the answer was
 already there. Move the thumb along and you have another one. Every sentence
 anybody has ever typed is a stack of free questions.
 
@@ -93,7 +93,7 @@ Spam. The same template repeated on ten thousand pages of the same site. And an
 enormous and growing volume of machine-written filler that exists only to be
 found by search engines. Feed that in and you get a model good at producing it.
 
-So the pile is filtered, and the filtering is not a tidy-up — it is most of the
+So the pile is filtered, and the filtering is not a tidy-up. It is most of the
 work. In the pipelines whose details have been published, something like nine
 parts in ten of the text collected from the open web is discarded before
 training starts. Three kinds of cut do the bulk of it.
@@ -116,7 +116,7 @@ and nobody at any lab pretends otherwise.
 
 <Figure
   title="From what was collected to what was kept"
-  description="Nine parts in ten of the collected text never reaches the model — and even the tenth that does is not fed in the proportions it arrived in, because a source can simply be shown more than once, which means the recipe shapes the model as much as any part of its design."
+  description="Nine parts in ten of the collected text never reaches the model, and even the tenth that does is not fed in the proportions it arrived in, because a source can simply be shown more than once, which means the recipe shapes the model as much as any part of its design."
 >
   <WhatSurvivesTheFilter />
 </Figure>
@@ -133,7 +133,7 @@ architecture, the same size and the same training code come out noticeably
 different if their piles differ. Weighting code heavily makes a model better at
 things that are not code at all, which was one of the field's genuine surprises.
 And a language that was thin in the pile produces a model that is thin in that
-language, permanently — which is the same shape of problem as the one that
+language, permanently, which is the same shape of problem as the one that
 decided how text gets chopped into tokens, arriving one stage later and with
 larger stakes.
 
@@ -157,7 +157,7 @@ today.
 Here is the part that catches almost everyone. You can tell it. You can explain
 the bypass, patiently and clearly, and it will take the correction, use it well,
 reason with it competently, and thank you for it. And when the conversation
-ends, that is gone. Not stored badly — not stored. The next conversation begins
+ends, that is gone. Not stored badly, not stored. The next conversation begins
 from exactly the same unaltered model as the last one, because you were never
 handed a copy that could be written on.
 
@@ -165,7 +165,7 @@ Every conversation is a fresh, unmarked reprint of the 2019 atlas.
 
 <Figure
   title="Where the knowledge stops, and what does not get in"
-  description="A model's knowledge ends at a hard line rather than fading out, so everything written after that line is absent — and conversations that happen afterwards, however many corrections they contain, stop short of it instead of adding to it."
+  description="A model's knowledge ends at a hard line rather than fading out, so everything written after that line is absent, and conversations that happen afterwards, however many corrections they contain, stop short of it instead of adding to it."
 >
   <FrozenAtTheCutoff />
 </Figure>
@@ -187,7 +187,7 @@ about current events: not by knowing, but by being told, every single time.
 <Aside title="It agreed with you, and it kept nothing" tone="caution">
   The trap is specific and it has caught serious teams. A model gets something
   wrong, someone corrects it, the model accepts the correction gracefully and
-  gets it right for the rest of the session — and everybody concludes it has
+  gets it right for the rest of the session, and everybody concludes it has
   learned. It has not. Nothing that happens in a conversation writes to the
   model.
 
@@ -202,11 +202,11 @@ or by a further training stage that costs real money.
 <Aside title="The edge is fuzzy, and it cannot see it">
   A cutoff is a hard line in the data and a soft one in practice. The last
   stretch before it is thin, because the world had not finished writing about
-  those months when the text was collected — so a model is reliably shakier
+  those months when the text was collected, so a model is reliably shakier
   about the half-year before its cutoff than about the five years before that.
 
 Nor can a model look the date up. It knows roughly when its text stops the way
-you know roughly how old a photograph is, by what appears in it — which is why
+you know roughly how old a photograph is, by what appears in it, which is why
 models state their own cutoff confidently and are sometimes wrong. Take the
 figure from the documentation, not from the model.
 
@@ -232,7 +232,7 @@ Whether "publicly visible" ever implied "available for this" is precisely the
 question being argued.
 
 **Who was in it.** A pile of text is not a sample of humanity. It is a sample of
-what got written down, digitised, and left reachable — which leans hard towards
+what got written down, digitised, and left reachable, which leans hard towards
 particular languages, countries, decades and kinds of people. A model's default
 manner of speaking is whatever was most common in the pile, and everybody else's
 is treated as a departure from it.
@@ -294,7 +294,7 @@ organisation could pay. The knowledge arrives here or it does not arrive.
 
     A quick test for whether a "memory" feature is really a memory: point the
     same application at a different model and see whether the memory survives.
-    It will, because it was never in the model — it is a row in your database
+    It will, because it was never in the model. It is a row in your database
     that gets fetched and pasted onto the front of the next request.
 
     That is not a criticism of the design. It is the only design available,
@@ -303,7 +303,7 @@ organisation could pay. The knowledge arrives here or it does not arrive.
   </Fragment>
 </DevAside>
 
-<Checkpoint question="A company puts an assistant in front of its support team in March. In April the returns policy changes, and for a week the team corrects the assistant every time it quotes the old one — which it accepts, every time. In May it is still telling customers the old policy. What actually happened, and what would fix it?">
+<Checkpoint question="A company puts an assistant in front of its support team in March. In April the returns policy changes, and for a week the team corrects the assistant every time it quotes the old one, which it accepts, every time. In May it is still telling customers the old policy. What actually happened, and what would fix it?">
   Nothing was learned, because nothing in a conversation can write to the model.
   Its knowledge was fixed when its pretraining run ended, and a week of
   corrections lived only inside the individual conversations where they were

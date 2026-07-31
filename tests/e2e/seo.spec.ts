@@ -72,7 +72,7 @@ test.describe('the home page', () => {
 test.describe('a lesson page', () => {
   test('suffixes its title with the site name', async ({ page }) => {
     await page.goto(`./units/${UNIT}/`);
-    await expect(page).toHaveTitle(new RegExp(`. — ${SITE_NAME}$`));
+    await expect(page).toHaveTitle(new RegExp(`. \\| ${SITE_NAME}$`));
   });
 
   test('is an article, with a modified date from its frontmatter', async ({

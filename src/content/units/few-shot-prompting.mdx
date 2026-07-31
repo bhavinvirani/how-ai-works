@@ -48,7 +48,7 @@ way to finish it.
 Two worked examples are the most direct arrangement there is.
 
 They do not describe the format. They make the document _be_ a list of finished
-examples — and once a document is unmistakably that, the most plausible
+examples, and once a document is unmistakably that, the most plausible
 continuation is not a paragraph, or an apology, or an answer in some other
 shape. It is a third one, in the same shape as the first two. The pattern is not
 something the model has been told about. It is something the document has.
@@ -76,8 +76,8 @@ did.
 
 The panel below is a community centre's booking inbox. Requests arrive as
 ordinary messages and somebody has to turn each one into a line the room diary
-can read. The instruction is the one a person writes first — _take each booking
-request and put it in our usual format_ — and it is exactly as useless as it
+can read. The instruction is the one a person writes first, _take each booking
+request and put it in our usual format_, and it is exactly as useless as it
 looks, because a format is a shape and that is a sentence.
 
 Start where it opens, with no examples at all, and step between the three
@@ -85,7 +85,7 @@ requests — plain, unusual, unanswerable — without changing anything else.
 
 The yoga class comes back as `Room: Small Room | Day: Wednesday | Time: 7pm–8pm`.
 The choir comes back as `Big room, Friday 19:30–21:00`. The christening gets a
-polite question. Three requests, three different shapes, one instruction — and
+polite question. Three requests, three different shapes, one instruction, and
 the model has not made a single mistake about any of the bookings. It simply has
 no idea what your format is, and neither would a new volunteer.
 
@@ -122,7 +122,7 @@ They were also, silently, a demonstration of what the values look like.
 
 This is the expensive kind of wrong. `hall` is nearly right. Half past seven
 recorded as seven o'clock is nearly right. Nothing downstream will catch either,
-because both arrive as perfectly well-formed lines — and a system that validates
+because both arrive as perfectly well-formed lines, and a system that validates
 the shape of its input is checking precisely the part that is fine.
 
 Add the second example, which is the first one containing the big room, and the
@@ -140,7 +140,7 @@ _Do you have anything free next month? It's for a christening._ There is no day
 in that message, no room and no time. There is nothing to put in a line.
 
 Wind the examples back to none and read what comes back. It asks. _Do you know
-which date you are after, and roughly how many people?_ — which is what the
+which date you are after, and roughly how many people?_, which is what the
 person on the desk would say, and it is the correct answer.
 
 Then put the examples back one at a time and watch that ability disappear. At
@@ -155,7 +155,7 @@ fictional. Every one of them is flawlessly formatted. Somebody turns up on a
 Saturday.
 
 Now add the fourth example. Its request is one that cannot be answered — _any
-chance of a room next week? It's for a birthday do_ — and the line beneath it is
+chance of a room next week? It's for a birthday do_, and the line beneath it is
 `ASK · day and time missing`.
 
 The christening comes back as `ASK · day and time missing`. The model is the
@@ -186,7 +186,7 @@ that has not been demonstrated does not exist as far as the document is
 concerned.
 
 It is also, precisely, where systems fail once they are live. Your clean cases
-were clean because you chose them. Real traffic is not chosen — it is whatever
+were clean because you chose them. Real traffic is not chosen. It is whatever
 turns up, and what turns up includes the person who typed one word, the person
 who asked three questions in one message, and the person who is not asking about
 bookings at all. Three tidy examples teach a model to be fluent about all of
@@ -251,7 +251,7 @@ example that is still buying something the others did not.
     The separator between your examples and the separator before the live
     request have to be identical, character for character. A trailing space on
     one of them, or a `\r\n` that arrived when somebody edited the file on
-    Windows, is invisible in a diff and perfectly visible in the output — you
+    Windows, is invisible in a diff and perfectly visible in the output. You
     have shown the model two patterns and asked it to pick.
 
     Which is the argument for keeping examples as data with a single formatter,
@@ -282,7 +282,7 @@ example that is still buying something the others did not.
   </Fragment>
 </DevAside>
 
-<Checkpoint question="A team ships a message classifier built on four examples in the prompt. It is right on every case they tried while building it, and in its first week live it produces a steady stream of confident, perfectly formatted nonsense on the messages that do not fit any category. The model, the code and the prompt are all unchanged since testing. What went wrong — and why did testing not catch it?">
+<Checkpoint question="A team ships a message classifier built on four examples in the prompt. It is right on every case they tried while building it, and in its first week live it produces a steady stream of confident, perfectly formatted nonsense on the messages that do not fit any category. The model, the code and the prompt are all unchanged since testing. What went wrong, and why did testing not catch it?">
   All four examples were cases with a clean answer, because those are the cases
   anybody reaches for. That set says something nobody intended: every message
   can be answered. The model cannot tell "they never showed me one of those"

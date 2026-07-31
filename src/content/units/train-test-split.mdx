@@ -2,7 +2,7 @@
 title: The pile nobody is allowed to look at
 part: when-scores-lie
 order: 2
-summary: A machine can only be judged on examples it has never seen, so a slice of the data is hidden before anything starts — and a third slice exists because you, not the machine, are what spoils the second.
+summary: A machine can only be judged on examples it has never seen, so a slice of the data is hidden before anything starts, and a third slice exists because you, not the machine, are what spoils the second.
 prerequisites:
   - overfitting
   - training-data
@@ -46,8 +46,8 @@ Ask it about a row it was trained on and it hands the answer straight back,
 because that answer is in there somewhere. Score it on those rows and you get
 something close to perfect whether or not it has learned anything at all.
 
-The number is not a lie. It answers a question — how well does this machine
-reproduce what it was shown — that nobody wanted answered. What anyone cares
+The number is not a lie. It answers a question, how well does this machine
+reproduce what it was shown, that nobody wanted answered. What anyone cares
 about is the delivery that has not run yet, the email that has not arrived, the
 patient walking in on Tuesday.
 
@@ -79,7 +79,7 @@ change helped. The last slice is the **test** set, and it carries one rule:
 opened once, at the very end, and whatever it says is the number you report.
 
 Back to your nephew. The weekly list is what he studies. The practice paper you
-keep setting him tells you whether the revision is working — and stops telling
+keep setting him tells you whether the revision is working, and stops telling
 you much by the fourth attempt, once you have picked the revision that suits
 that paper. The exam in the hall is sat once, on questions nobody in the house
 has seen.
@@ -98,7 +98,7 @@ ran: how far it covered, how many parcels were on it, whether it finished late.
 Fourteen rows were studied; ten were held back before anything began.
 
 The machine is the plainest one there is: to guess about a round, it finds the
-studied round most like it — closest on distance and parcel count — and copies
+studied round most like it, closest on distance and parcel count, and copies
 what happened to that one. Its bluntness is the point. What a large model does
 where nobody can watch, this one does in the open.
 
@@ -110,7 +110,7 @@ Fourteen out of fourteen, and worth nothing. Asked about a round it studied, the
 most similar studied round is that same row — the machine is reading its own
 notes back. Every model does a version of this. Most are less obvious about it.
 
-Now switch to the rounds that were held back. Still perfect — and now it looks
+Now switch to the rounds that were held back. Still perfect, and now it looks
 like an achievement.
 
 It is not. Four of those twenty rounds were entered twice: once by the office,
@@ -123,7 +123,7 @@ Now turn on the switch that keeps both copies of a round on the same side, and
 watch seven out of ten come up instead.
 
 That drop is the whole instrument. Nothing about the machine changed; the
-held-back rows simply became genuinely held back — and **the honest number is
+held-back rows simply became genuinely held back, and **the honest number is
 the worse one**. Which is what makes this mistake so hard to catch. Nobody goes
 hunting for the bug that is improving their results.
 

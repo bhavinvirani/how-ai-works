@@ -40,7 +40,7 @@ those two questions is what the rest of this site was for.
 This site opened by taking something away.
 
 It put a job in front of you that could not be done by writing down how to do
-it — not a job whose instructions were long or fiddly, but one where the
+it, not a job whose instructions were long or fiddly, but one where the
 instructions did not exist in any form a person could get at. Sorting junk mail
 from real mail. Recognising a face in bad light. Hearing that a sentence is
 wrong.
@@ -94,7 +94,7 @@ Two things made it the one.
 
 The first is that the second box comes free. Take a sentence somebody already
 wrote, cover the next chunk, ask for a guess, uncover it. The exercise and its
-marked answer arrived in the same envelope — which is why the exercise book could
+marked answer arrived in the same envelope, which is why the exercise book could
 be an appreciable share of everything ever published, rather than however many
 examples a company could afford to have labelled by hand.
 
@@ -128,7 +128,7 @@ shortcut and a rescale wrapped round it so that ninety-six copies can be stacked
 without training falling over.
 
 Not one of those changed the exercise. Every one of them made the guessing
-better — and then size did the rest, at which point the guessing got good enough
+better, and then size did the rest, at which point the guessing got good enough
 that people started talking to it.
 
 There is one more turn of the same handle, and it produced the thing you actually
@@ -140,7 +140,7 @@ have been given.
 
 The second box changed hands. Instead of the next chunk of a real sentence, the
 correction now comes from a model fitted to a pile of human comparisons. Same two
-boxes. A different thing holding the answer — and, as the unit on preference
+boxes. A different thing holding the answer, and, as the unit on preference
 training spent its length arguing, a thing that knows a great deal about approval
 and nothing whatever about truth.
 
@@ -170,7 +170,7 @@ pass over the text finished, because nothing has corrected it since. It cannot
 tell your instructions from a sentence in a document you asked it to read,
 because both are text in front of a machine that scores what comes next. It
 cannot report how sure it is, because the only number available says how strongly
-it preferred that chunk — and halfway through a fluent invention, that number is
+it preferred that chunk, and halfway through a fluent invention, that number is
 high.
 
 Not a list of separate problems. One hole, and a different name for each side of
@@ -233,7 +233,7 @@ It reads as verification, and what settles it is where the two things being
 compared live. The answer is in the conversation. The thing it is being held up
 against is the same machine, scoring what comes next. What you have actually done
 is append text in which somebody has expressed doubt, and the most plausible
-continuation of that is an apology and a revision — which is why a model will
+continuation of that is an apology and a revision, which is why a model will
 cheerfully retract an answer that was correct.
 
 The unit on hallucination left a test behind for exactly this, and it is the one
@@ -244,8 +244,8 @@ checked.
 </Aside>
 
 <Figure
-  title="Before it, around it, after it — and never inside it"
-  description="Everything anyone has built to make these systems reliable occupies one of three positions relative to the guess: narrowing what it could say, taking the job away from it, or comparing what it produced against something you hold. The route that skips the box entirely is drawn going under it, because a tool call never enters the machine — and no arrow anywhere on the drawing goes in."
+  title="Before it, around it, after it, and never inside it"
+  description="Everything anyone has built to make these systems reliable occupies one of three positions relative to the guess: narrowing what it could say, taking the job away from it, or comparing what it produced against something you hold. The route that skips the box entirely is drawn going under it, because a tool call never enters the machine, and no arrow anywhere on the drawing goes in."
 >
   <NoneOfItGoesInside />
 </Figure>
@@ -257,8 +257,8 @@ piece exactly as it did before you started.
 Which is why _the model is the easy part_ is a fair description of nearly every
 system that works. Choosing a model takes an afternoon. The search that decides
 what it gets to see, the tools it is permitted to call, the limits on what it may
-do unsupervised, and the fixed set of cases you measure every change against —
-that is the year, and that is the product.
+do unsupervised, and the fixed set of cases you measure every change against.
+That is the year, and that is the product.
 
 ## The word doing the damage is “just”
 
@@ -294,7 +294,7 @@ like with slightly less noise in it. Nothing about that is next-piece prediction
 
 Go up one level, though, and it is the same pair of boxes: make a guess, be told
 how wrong it was against an example somebody already had, nudge, repeat a few
-million times — and then, in use, the second box is gone and nothing checks the
+million times, and then, in use, the second box is gone and nothing checks the
 result. What it is guessing changes from one family to the next. That there is a
 guess, and that the correcting has stopped, does not.
 
@@ -321,7 +321,7 @@ What is holding it up? Now you have a list of things to ask, and every one of
 them is about somebody else's code rather than about the model.
 
 Does the whole contract fit in the window, or is something choosing which parts to
-send — and what happens to a clause that did not make the cut? When it calls a
+send, and what happens to a clause that did not make the cut? When it calls a
 clause unusual, is that a comparison against a body of contracts, or a sentence
 that scores well after the word _unusual_? Where did six come from? What has this
 been measured on, other than the demo I am watching — is there a set of contracts
@@ -350,7 +350,7 @@ question.
     One line of that is the model. The rest is the three places to stand, in the
     order this unit put them, and all of it is ordinary code you write, own and
     can step through in a debugger. That ratio is not an artefact of a small
-    example — it is roughly the ratio of every system that survives contact with
+    example. It is roughly the ratio of every system that survives contact with
     real traffic. Swap the provider behind `model` and this method barely
     notices.
 
@@ -402,7 +402,7 @@ coming next year. What is it guessing, and what is holding the guess up?
 
 Ask it out loud. Then listen to whether anyone in the room can answer.
 
-<Checkpoint question="Two teams describe what they are building, and both plan to use the same model with much the same prompt. The first is an assistant that drafts replies to customer emails in the company's voice. The second is an assistant that tells a manager which of their invoices are overdue and by how much. One of these is nearly finished and the other has barely started. Which is which — and if the second team ships anyway, what will their assistant actually do?">
+<Checkpoint question="Two teams describe what they are building, and both plan to use the same model with much the same prompt. The first is an assistant that drafts replies to customer emails in the company's voice. The second is an assistant that tells a manager which of their invoices are overdue and by how much. One of these is nearly finished and the other has barely started. Which is which, and if the second team ships anyway, what will their assistant actually do?">
   Put the first question to each of them and the answer falls out. The email
   team is asking the machine to guess the next piece of a reply, given the
   incoming message and some examples of the house voice. A voice is a property

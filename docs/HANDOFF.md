@@ -15,7 +15,7 @@ true right now.
 
 ## Where things stand
 
-**Last updated:** end of Phase 1 (2026-07-31).
+**Last updated:** Phase 1 merged, site live, artifact landed (2026-07-31).
 
 | Phase                    | State                                                           |
 | ------------------------ | --------------------------------------------------------------- |
@@ -32,26 +32,36 @@ the content collection + unit graph, the progress store and `/progress`,
 `gh-pages` holds a working build (`index.html`, `gallery/`, `progress/`,
 `404.html`, `_astro/`, `.nojekyll`).
 
-### Blocked on Bhavin — nothing else can unblock these
+### Done
 
-1. **GitHub Pages is not enabled.** Settings → Pages → Deploy from a branch →
-   `gh-pages` / root. Until then <https://bhavinvirani.github.io/how-ai-works/>
-   returns **404**, and so does every preview URL. The content is already
-   published; only the setting is missing.
-2. **`reference/how-ai-works.html` has never been exported.** The directory
-   does not exist. The public share URL serves a JS shell, so **no agent can
-   fetch it** — it has to be saved by hand. This blocks `docs/CURRICULUM.md`
-   and therefore the pilot unit and all of Phase 2.
-3. **`main` has no required status checks.** Settings → Branches. Phases 0–2
-   want _only_ "require status checks to pass" — nothing else from §5.5, and
-   **not** Code Owner review, which deadlocks a solo maintainer.
+- **The site is live.** Pages serves the `gh-pages` branch;
+  <https://bhavinvirani.github.io/how-ai-works/>, `/gallery/`, and `/progress/`
+  all return 200, with KaTeX rendering in production.
+- **`reference/how-ai-works.html` is in the repo** (~258 KB of real content, not
+  the JS shell). Tailwind's `@source not '../../reference'` holds — adding it
+  did not grow the CSS bundle.
+- **PR previews work end to end**, including the sticky comment, verified on
+  PR #3.
 
-### Consequences of #2 worth knowing
+### Still blocked on Bhavin
+
+1. **`main` has no required status checks.** Settings → Rules → Rulesets → New
+   branch ruleset: target the default branch, enable _Require status checks to
+   pass_, and add exactly `Lint, types, unit tests`, `Build, budgets, E2E +
+a11y`, and `Link check`.
+   Do **not** add `Build preview` / `Publish preview` / `Remove preview` — they
+   are deployment steps, and `Remove preview` only runs on close, so requiring
+   it blocks every merge. Do **not** enable Code Owner review: GitHub forbids
+   approving your own PR, so it deadlocks a solo maintainer.
+
+### Still true
 
 - `src/pages/units/[...slug].astro` and `ConnectionsFooter` are wired and
-  typechecked but **never rendered end to end** — there are no units.
+  typechecked but **never rendered end to end** — there are still no units. The
+  pilot unit is their first real exercise.
 - The `part` enum in `src/content.config.ts` is a placeholder taken from
-  PLAN §2.1's examples. `CURRICULUM.md` decides the real grouping.
+  PLAN §2.1's examples. `CURRICULUM.md` decides the real grouping, and the enum
+  must be reconciled with whatever is signed off.
 - The build prints `The collection "units" does not exist or is empty`. Expected
   until the first unit lands.
 
@@ -210,7 +220,7 @@ component-url renderer-url>`), not a Vite manifest — Astro will not emit one,
 
 ## Starting Phase 2
 
-Phase 2 cannot begin until the artifact is exported (blocker #2 above).
+**Unblocked — the artifact is in `reference/how-ai-works.html`.**
 
 The order that matters:
 

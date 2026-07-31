@@ -288,6 +288,24 @@ test.describe('the sitemap', () => {
   });
 });
 
+test('the Search Console verification tag is still on the site', async ({
+  page,
+}) => {
+  // Verification is not a one-off: Google re-checks the tag periodically and
+  // un-verifies the property when it disappears, silently, weeks later. The
+  // token is one empty string in `site.ts` away from being dropped — and the
+  // rest of `SeoHead` renders identically without it, so nothing else notices.
+  //
+  // Asserted on a lesson rather than the home page because that is the harder
+  // case: Google checks the property URL, and this proves the tag rides on
+  // every page rather than on one.
+  await page.goto('./units/attention/');
+  const token = await meta(page, 'meta[name="google-site-verification"]');
+
+  expect(token, 'google-site-verification tag is missing').toBeTruthy();
+  expect(token?.length).toBeGreaterThan(20);
+});
+
 test('a normal build ships no analytics', async ({ page }) => {
   // The counter is gated on ENABLE_ANALYTICS, which only deploy.yml sets. If
   // this ever fails, CI has started making requests to a third party on every

@@ -1,0 +1,209 @@
+---
+/**
+ * The same job — tell a face from a car — given to a wide, shallow machine
+ * and then to a narrow, deep one.
+ *
+ * The teaching load is carried by what the arrows DO, not by colour. In the top
+ * panel every arrow runs from the raw pixels to a finished answer, so nothing
+ * in the middle is shared and each row is labelled with the whole thing it has
+ * to work out on its own. In the bottom panel the arrows run in stages, and one
+ * stage-1 box has two outgoing paths that end at two different answers — that
+ * fan-out is the entire point of the unit. It is drawn with a thicker stroke, a
+ * dashed surround, the words "built once" inside the box, and a legend line
+ * spelling the claim out, so the emphasis survives without colour (rule 9).
+ *
+ * The two panels also state their bill in words underneath, because the payoff
+ * of depth is an argument about how many examples each machine needs, and a
+ * picture cannot show a count of examples.
+ *
+ * Every `<text>` line is kept short enough to sit inside 80 columns; Prettier
+ * reflows longer ones into a hanging-bracket shape that is unreadable in a
+ * diagram this dense.
+ *
+ * Decorative on its own, so `aria-hidden`: `Figure` carries the accessible name
+ * and the description.
+ */
+---
+
+<svg viewBox="0 0 640 460" class="w-full" aria-hidden="true">
+  <g class="fill-none stroke-rule-strong" stroke-width="1.25">
+    <rect x="8" y="8" width="624" height="200" rx="8"></rect>
+    <rect x="8" y="224" width="624" height="228" rx="8"></rect>
+  </g>
+
+  <g class="fill-ink font-display" font-size="14" font-weight="700">
+    <text x="26" y="32">Wide and shallow</text>
+    <text x="26" y="248">Narrow and deep</text>
+  </g>
+
+  <g class="fill-ink-faint font-mono" font-size="9">
+    <text x="26" y="46">one huge layer, pixels straight to answer</text>
+    <text x="26" y="262">small parts, built once, arranged per answer</text>
+  </g>
+
+  <!-- Where the photograph goes in, in both machines. -->
+  <g class="fill-paper-sunken stroke-rule-strong" stroke-width="1.25">
+    <rect x="26" y="64" width="76" height="88" rx="4"></rect>
+    <rect x="26" y="288" width="80" height="94" rx="4"></rect>
+  </g>
+
+  <g class="fill-ink-muted font-mono" font-size="9" text-anchor="middle">
+    <text x="64" y="104">the photo</text>
+    <text x="64" y="118">raw pixels</text>
+    <text x="66" y="331">raw</text>
+    <text x="66" y="345">pixels</text>
+  </g>
+
+  <!-- Panel 1: every neuron wired straight from pixels to a whole answer. -->
+  <g class="stroke-rule" stroke-width="0.75">
+    <line x1="102" y1="108" x2="146" y2="69"></line>
+    <line x1="102" y1="108" x2="146" y2="89"></line>
+    <line x1="102" y1="108" x2="146" y2="109"></line>
+    <line x1="102" y1="108" x2="146" y2="129"></line>
+    <line x1="102" y1="108" x2="146" y2="149"></line>
+    <line x1="456" y1="69" x2="516" y2="87"></line>
+    <line x1="456" y1="89" x2="516" y2="87"></line>
+    <line x1="456" y1="109" x2="516" y2="133"></line>
+    <line x1="456" y1="129" x2="516" y2="133"></line>
+    <line x1="456" y1="149" x2="516" y2="133"></line>
+  </g>
+
+  <g class="fill-paper-raised stroke-rule-strong" stroke-width="1">
+    <rect x="146" y="62" width="310" height="14" rx="3"></rect>
+    <rect x="146" y="82" width="310" height="14" rx="3"></rect>
+    <rect x="146" y="102" width="310" height="14" rx="3"></rect>
+    <rect x="146" y="122" width="310" height="14" rx="3"></rect>
+    <rect x="146" y="142" width="310" height="14" rx="3"></rect>
+  </g>
+
+  <g class="fill-ink font-mono" font-size="9">
+    <text x="152" y="72">a whole face, worked out from pixels</text>
+    <text x="152" y="92">a second whole face, worked out again</text>
+    <text x="152" y="112">a whole car, worked out from pixels</text>
+    <text x="152" y="132">a second whole car, worked out again</text>
+    <text x="152" y="152">and one more for every new thing</text>
+  </g>
+
+  <!-- Panel 2: the same photograph, taken apart in stages. -->
+  <g class="fill-ink-faint font-mono" font-size="8" text-anchor="middle">
+    <text x="66" y="280">the photo</text>
+    <text x="196" y="280">stage 1</text>
+    <text x="326" y="280">stage 2</text>
+    <text x="456" y="280">stage 3</text>
+    <text x="586" y="280">answer</text>
+  </g>
+
+  <g class="stroke-rule" stroke-width="0.75">
+    <line x1="106" y1="335" x2="156" y2="299"></line>
+    <line x1="106" y1="335" x2="151" y2="335"></line>
+    <line x1="106" y1="335" x2="156" y2="371"></line>
+    <line x1="236" y1="299" x2="286" y2="299"></line>
+    <line x1="236" y1="299" x2="286" y2="335"></line>
+    <line x1="236" y1="371" x2="286" y2="371"></line>
+    <line x1="236" y1="371" x2="286" y2="335"></line>
+    <line x1="241" y1="335" x2="286" y2="299"></line>
+    <line x1="366" y1="299" x2="416" y2="299"></line>
+    <line x1="366" y1="299" x2="416" y2="371"></line>
+    <line x1="366" y1="371" x2="416" y2="335"></line>
+    <line x1="366" y1="371" x2="416" y2="371"></line>
+    <line x1="496" y1="371" x2="546" y2="365"></line>
+  </g>
+
+  <g class="fill-paper-raised stroke-rule-strong" stroke-width="1">
+    <rect x="156" y="288" width="80" height="22" rx="3"></rect>
+    <rect x="156" y="360" width="80" height="22" rx="3"></rect>
+    <rect x="286" y="288" width="80" height="22" rx="3"></rect>
+    <rect x="286" y="324" width="80" height="22" rx="3"></rect>
+    <rect x="286" y="360" width="80" height="22" rx="3"></rect>
+    <rect x="416" y="288" width="80" height="22" rx="3"></rect>
+    <rect x="416" y="324" width="80" height="22" rx="3"></rect>
+    <rect x="416" y="360" width="80" height="22" rx="3"></rect>
+  </g>
+
+  <!-- The one part that serves both answers: bigger box, dashed surround,
+       and it says so in words. -->
+  <rect
+    x="156"
+    y="321"
+    width="80"
+    height="28"
+    rx="3"
+    class="fill-accent-soft stroke-accent"
+    stroke-width="1.75"></rect>
+  <rect
+    x="151"
+    y="316"
+    width="90"
+    height="38"
+    rx="5"
+    class="fill-none stroke-accent"
+    stroke-width="1"
+    stroke-dasharray="3 2"></rect>
+
+  <!-- One part, two answers. Thicker than every other arrow in the panel. -->
+  <g class="stroke-accent" stroke-width="2.25">
+    <line x1="241" y1="335" x2="286" y2="335"></line>
+    <line x1="366" y1="335" x2="416" y2="299"></line>
+    <line x1="366" y1="335" x2="416" y2="335"></line>
+    <line x1="496" y1="299" x2="546" y2="305"></line>
+    <line x1="496" y1="335" x2="546" y2="365"></line>
+  </g>
+
+  <g class="fill-ink font-mono" font-size="9" text-anchor="middle">
+    <text x="196" y="302">upright edge</text>
+    <text x="196" y="337">slanted edge</text>
+    <text x="196" y="374">flat edge</text>
+    <text x="326" y="302">corner</text>
+    <text x="326" y="338">curve</text>
+    <text x="326" y="374">texture</text>
+    <text x="456" y="302">an eye</text>
+    <text x="456" y="338">a wheel</text>
+    <text x="456" y="374">a window</text>
+  </g>
+
+  <g class="fill-accent font-mono" font-size="7.5" text-anchor="middle">
+    <text x="196" y="346">built once</text>
+  </g>
+
+  <!-- The two answers, in both machines. -->
+  <g class="fill-paper stroke-ink-muted" stroke-width="1.25">
+    <rect x="516" y="72" width="90" height="30" rx="4"></rect>
+    <rect x="516" y="118" width="90" height="30" rx="4"></rect>
+    <rect x="546" y="290" width="80" height="30" rx="4"></rect>
+    <rect x="546" y="350" width="80" height="30" rx="4"></rect>
+  </g>
+
+  <g
+    class="fill-ink font-display"
+    font-size="12"
+    font-weight="700"
+    text-anchor="middle"
+  >
+    <text x="561" y="91">face</text>
+    <text x="561" y="137">car</text>
+    <text x="586" y="309">face</text>
+    <text x="586" y="369">car</text>
+  </g>
+
+  <!-- Legend for the thick path, so the emphasis is never colour alone. -->
+  <line
+    x1="26"
+    y1="395"
+    x2="52"
+    y2="395"
+    class="stroke-accent"
+    stroke-width="2.25"></line>
+
+  <g class="fill-ink-muted font-mono" font-size="9">
+    <text x="26" y="172">Every neuron reaches back to the pixels alone.</text>
+    <text x="26" y="184">Nothing one works out helps any of the others.</text>
+    <text x="58" y="398">one part, under two different answers</text>
+    <text x="26" y="414">The same edge sits under the eye and the wheel.</text>
+    <text x="26" y="426">It was paid for by every photo, of anything.</text>
+  </g>
+
+  <g class="fill-ink font-display" font-size="11" font-weight="700">
+    <text x="26" y="200">A new thing needs new neurons and examples.</text>
+    <text x="26" y="442">A new thing is a new arrangement of old parts.</text>
+  </g>
+</svg>

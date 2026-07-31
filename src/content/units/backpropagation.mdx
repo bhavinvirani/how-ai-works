@@ -1,0 +1,309 @@
+---
+title: Whose fault it was, and how much
+part: inside-the-machine
+order: 4
+summary: One sweep backwards through the layers works out how much of a wrong answer each dial is responsible for, and it costs about what the forward run that produced the answer cost.
+prerequisites:
+  - gradient-descent
+  - forward-pass
+connections:
+  - to: why-depth-works
+    why: Stacking layers was an old idea that nobody could train; this is the technique that made a deep stack trainable at a price somebody would pay, so everything depth later delivered had to wait for it.
+interactives:
+  - BlameFlow
+status: published
+updated: 2026-07-31
+---
+
+import Aside from '../../components/blocks/Aside.astro';
+import Checkpoint from '../../components/blocks/Checkpoint.astro';
+import DevAside from '../../components/blocks/DevAside.astro';
+import Figure from '../../components/blocks/Figure.astro';
+import CountingTheSweeps from '../../components/diagrams/CountingTheSweeps.astro';
+import LayerStackDiagram from '../../components/diagrams/LayerStackDiagram.astro';
+import { BlameFlow } from '../../components/interactives/BlameFlow';
+
+The machine has just said _dog_, and the photograph was of a cat.
+
+Inside it are seventy billion adjustable numbers. Somewhere among them is the
+reason it said that, and the repair is to move some of them — but which ones,
+which way, and how far each? A wrong answer says none of that. It is one word.
+
+There is an obvious way to find out, and it genuinely works. Take the first of
+those seventy billion numbers. Nudge it up a hair, then run the entire machine
+again on the same photograph. If the answer came out a little less wrong, that
+number should go up; if it came out worse, down; and how far the answer moved
+tells you how hard to push. Put it back. Start on the second number.
+
+That is seventy billion complete runs of the machine to learn what to do about
+one photograph. Then the next photograph. It is not a job you set going and
+come back to after lunch — it is a job nobody alive would see finish.
+
+## Everything downstream decides how much you matter
+
+Three things stand between a song and the room, and every one of them has a
+volume control on it. The phone, the app playing through it, and the speaker on
+the shelf.
+
+Turn the phone's volume up by two notches. How much louder does the room get?
+
+There is no answer to that without knowing the other two. With the speaker's
+dial near the top, two notches is a jolt that makes people look up. With the
+speaker almost off, the same two notches on the same phone change nothing
+anybody can hear, because whatever they add gets multiplied by something close
+to zero on its way out.
+
+So the effect of moving one control is not a fact about that control. It is
+what the move does where it sits, multiplied by everything standing between it
+and the sound.
+
+A machine built out of layers has exactly that shape, with rather more controls
+and rather more stages. Each dial does one small local thing — it multiplies
+one number on its way into the next layer — and then every layer after it
+multiplies the result again. A dial near the input can be the most important
+number in the machine or completely beside the point, and which of those it is
+depends on numbers it never touches.
+
+That is why you cannot look at a dial and know what to do with it. Nobody can,
+and neither can the machine.
+
+## The one number that starts it off
+
+Go to the end of the machine instead. It is the only place where anything is
+known for certain: the answer came out, the right answer is sitting next to it,
+so you know exactly how wrong the machine was and in which direction. One
+number, and it took no work at all to get.
+
+Put that together with the volume controls and the whole method falls out:
+
+**a dial's share of the blame = how much a nudge to it moves the answer × how
+wrong the answer was**
+
+Read out loud: a dial that swings the answer a long way is a large part of why
+the answer is wrong, and the wronger the answer, the more everyone has to move.
+The second half of that multiplication is a single number the entire machine
+shares. Only the first half differs from dial to dial — and the first half is
+precisely the thing that looked unaffordable.
+
+Here is the move that makes it cheap, and it is worth reading twice.
+
+The sweep never works out a dial's effect from scratch. It works out one number
+per _neuron_: for each neuron in a layer, how much the final answer would change
+if that neuron's output changed by one. Once a neuron has that number, every
+dial arriving at it gets its own answer immediately — whatever that dial does
+locally, times the neuron's number. And every neuron in the layer below is
+handed its own number the same way, by the neurons it feeds.
+
+One number per neuron, one layer at a time, from the end towards the front. By
+the time it arrives at the input, every dial in the machine has been told which
+way to move and how far, and the machine was never run again.
+
+That is **backpropagation** — propagating, meaning spreading, the error
+backwards through the layers. What it produces is the slope of the wrongness
+landscape you walked down in gradient descent: backpropagation is where that
+slope actually comes from, and the step afterwards is somebody else's job.
+
+<Figure
+  title="The same links, walked the other way"
+  description="Only the end of the machine can see how wrong the answer was, so the sweep starts there and hands one number back per neuron — each neuron splitting its share among everything that fed it — until every line in the stack has a number of its own, and the machine was never run a second time."
+>
+  <LayerStackDiagram
+    direction="backward"
+    footnote="same links, opposite direction"
+    layers={[
+      { size: 3, label: 'input' },
+      { size: 5, label: 'hidden' },
+      { size: 5, label: 'hidden' },
+      { size: 2, label: 'output' },
+    ]}
+    highlight={[
+      [2, 0, 0],
+      [2, 1, 0],
+      [2, 2, 0],
+      [2, 3, 0],
+      [2, 4, 0],
+      [1, 0, 2],
+      [1, 1, 2],
+      [1, 2, 2],
+      [1, 3, 2],
+      [1, 4, 2],
+    ]}
+  />
+</Figure>
+
+## Hand out the blame yourself
+
+That picture is honest and far too big to check by hand. So here is the same
+shape shrunk until every number fits on one screen.
+
+Six dials, guessing how long a bike ride takes from two facts about it: how far
+it is, and how hilly. Two numbers go in on the left. Two neurons sit in the
+middle — middle A and middle B — each adding up its own weighted version of
+those two numbers. What the pair of them produce is combined into a guess in
+minutes.
+
+Take the eight-kilometre flat ride first. Middle A works out 18, middle B works
+out 10, and the guess arrives at 38 minutes. The ride actually took 26. Twelve
+minutes too long.
+
+Before you press the button, pick a dial. Which one is about to be told to move
+furthest?
+
+<BlameFlow client:visible />
+
+It is the dial between middle A and the guess. Turning that dial up by one adds
+18 minutes to the answer, because middle A is sitting at 18 and that dial is
+what middle A gets multiplied by on the way out. Eighteen minutes of movement,
+on an answer that was twelve minutes out: 18 × 12 = 216, and no other product
+in the machine comes to more. That single dial is handed 31% of everything the
+sweep asks for.
+
+At the bottom of the list is the dial carrying hilliness into middle A. One
+notch on it moves the answer by two minutes, because the route was barely hilly
+and there is almost nothing there for it to act on. 2 × 12 = 24, which is 3% of
+the total and one ninth of what the top dial was told to do. Both are asked to
+move. One is asked to move nine times as far.
+
+Nothing chose that ranking. It is the product of two numbers that were lying
+around anyway.
+
+Now switch to the three-kilometre climb. Same machine, same six dials, nothing
+retuned in between. The guess comes out at 39 minutes against an actual 45 —
+six minutes too short this time — and the largest share has moved to a
+different dial altogether: the one carrying hilliness into middle B, at 29%.
+That dial sits in the first layer, and it has just overtaken both of the dials
+on the output.
+
+It won because this route has a hilliness of 9 for it to act on, and because
+whatever passes through middle B is doubled on its way to the guess. Plenty to
+work with, multiplied by a strong onward link. On the flat ride the same dial
+was near the bottom.
+
+The direction flipped too. The guess was too short rather than too long, so
+every dial is now told to go up instead of down — one sign, on one shared
+number, turning the whole machine round at once.
+
+Then there is the third ride, which is the control. The machine is nearly right
+on it, three minutes out, and every share in the list shrinks to match. When
+the answer is nearly right, this method says so by asking almost nobody to
+move.
+
+<Aside title="Two ways that small machine is neater than the real thing">
+  Its two middle neurons pass their results straight on. A real one squashes the
+  result first — clipping negatives to zero, say — which is what stops a stack
+  of layers collapsing into one. That squash adds one more multiplication to
+  every chain: how steep the squash was at the value it was handed. One extra
+  term in the same product, worked out in the same sweep, on the way past.
+
+And every dial here is a positive number, so all six push the guess upwards
+and a guess that is too long sends all six down together. Put a minus sign on
+one and that dial goes the other way while nothing else changes. Real
+machines are full of negative dials; the tidiness is this example's, not the
+method's.
+
+</Aside>
+
+## Why this was the piece that was missing
+
+Layered machines are older than most people assume. The idea was in print in
+the 1950s and worked over through the 1960s, and it went almost nowhere. What
+nobody had was a way to train one, and the obstacle was exactly the question
+this unit opened with: past the first layer, there is no local way to tell what
+a dial did to an answer produced three layers later.
+
+So count the two routes to the same six numbers. Running the bike machine
+forwards costs six multiplications, one per link. Sweeping the blame back out
+of it costs eight — one per link for that link's own share, plus a couple more
+to hand the numbers back a layer. Getting those same six numbers by nudging
+each dial and re-running takes forty-two.
+
+At six dials that is an irritation. It is the shape that matters.
+
+<Figure
+  title="Two routes to the same six numbers"
+  description="Both methods produce identical instructions for every dial, so the choice is entirely about cost — and one line grows in step with the machine while the other grows with the machine multiplied by itself, which is the whole reason a deep stack can be trained at all."
+>
+  <CountingTheSweeps />
+</Figure>
+
+Add a dial and the sweep gets one multiplication longer. Add a dial to the
+nudging method and it gains a whole extra run of a machine that is itself now
+bigger — so its total grows with the machine multiplied by itself, while the
+sweep only grows in step with the machine. At seventy billion dials the sweep is
+still two passes over the machine. The other route is seventy billion of them.
+
+Deep learning was never really the discovery that stacking layers helps. That
+was suspected from the beginning. It was the discovery that a stack could be
+trained for a price somebody was prepared to pay.
+
+## What it costs you in practice
+
+In a modern framework the whole backward sweep is one line. You work out how
+wrong the answer was, call something like `backward()` on that number, and
+every dial in the model quietly acquires an instruction. Applying those
+instructions is a separate call, and it is the subtraction from gradient
+descent, unchanged.
+
+Two consequences follow, and both of them show up on invoices.
+
+The first is speed. One training step costs roughly three times what answering
+a single question costs — the forward run, then rather more than that again on
+the way back. What matters is that it is a small, stable multiple rather than
+something that depends on the model or the example. It is why a training run
+can be costed in advance at all, by measuring one answer and multiplying.
+
+The second is memory, and it catches people out. Look again at what the sweep
+needed: to work out the top dial's share it multiplied by 18, which is the
+value middle A produced on the way forward. That number exists only because the
+forward run made it, and the sweep cannot start until it has it. So every
+intermediate result in the machine has to be kept from the moment it is
+computed until the sweep comes back for it. Training a model needs several
+times the memory that running the same model does, and that is where it goes.
+
+<DevAside>
+  <Fragment slot="java">
+    ```java
+    try (GradientCollector collector = engine.newGradientCollector()) {
+      NDArray loss = lossFn.evaluate(labels, model.forward(batch));
+      collector.backward(loss);   // one sweep; every parameter now has a slope
+    }
+
+    optimiser.step();             // and only here does anything actually move
+    ```
+
+    The collector is the part worth noticing. It is what keeps every
+    intermediate value from the forward run alive so the sweep has something to
+    multiply by, and closing it is what releases them. Hold one open across
+    work that does not need it and you are paying training-sized memory for
+    inference-sized work.
+
+  </Fragment>
+  <Fragment slot="python">
+    ```python
+    optimizer.zero_grad()   # throw away the last batch's numbers
+    loss = criterion(model(batch), labels)
+    loss.backward()         # one sweep; every parameter now has a .grad
+    optimizer.step()        # and only here does anything actually move
+    ```
+
+    That first line is the classic bug. Slopes accumulate rather than replace,
+    so forgetting it adds this batch's blame on top of the previous batch's and
+    trains the model on a total nobody meant. Nothing errors. The run just
+    quietly gets worse.
+
+  </Fragment>
+</DevAside>
+
+<Checkpoint question="Two dials sit in the same layer of the same machine, and after one wrong answer one of them is told to move fifty times as far as the other. Neither dial was changed, and both were judged on the same answer. Where did that difference come from?">
+  From how much each dial moves the answer. A dial's share is that number
+  multiplied by how wrong the answer was — and the second half is one number
+  the whole machine shares, so it cannot be the source of any difference
+  between two dials. The entire gap is in the first half: what each dial had to
+  act on, and how strongly the thing it feeds carries through to the end.
+
+Worth keeping, because it is what stops "which part of the model was
+responsible" being a matter of opinion. Nobody forms a view about a dial. It is
+a product of two numbers, one of which the forward run had already worked out
+and left lying there.
+
+</Checkpoint>

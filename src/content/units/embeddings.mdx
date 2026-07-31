@@ -1,0 +1,276 @@
+---
+title: The map nobody drew
+part: inside-the-machine
+order: 7
+summary: Give every word a position rather than a name, learn those positions from the company each word keeps, and distance starts to mean similarity — with whole directions across the space turning out to mean something too.
+prerequisites:
+  - self-supervised-learning
+connections:
+  - to: why-language-is-hard
+    why: Every word gets one position here, and that is the assumption the next part starts pulling apart — the sentence around a word can change what it means, and a fixed spot on the map cannot follow it.
+interactives:
+  - MeaningMap
+status: published
+updated: 2026-07-31
+---
+
+import Aside from '../../components/blocks/Aside.astro';
+import Checkpoint from '../../components/blocks/Checkpoint.astro';
+import DevAside from '../../components/blocks/DevAside.astro';
+import Figure from '../../components/blocks/Figure.astro';
+import NameOrPlace from '../../components/diagrams/NameOrPlace.astro';
+import { MeaningMap } from '../../components/interactives/MeaningMap';
+
+The ironmonger's on the corner has been there since before the war, and nothing
+in it is where you would put it. Bin 3,180 is brass hinges. Bin 3,181 is fuse
+wire. Bin 3,182 is bath plugs.
+
+There is a system. Everything went into the next empty bin on the day it
+arrived, and the numbers have been climbing ever since.
+
+Ask the owner for bin 3,180 and it is in your hand in four seconds. Ask him for
+"something like this, only longer" and the numbers are no help to him at all. He
+walks off into the back of the shop and finds it from memory, because nothing
+about 3,181 tells you what is in it. All it tells you is what turned up next.
+
+A machine handed a pile of words is standing in that shop.
+
+## A number can be a name without being a meaning
+
+Everything inside a machine is arithmetic. Dials get multiplied, sums get
+compared, one number gets nudged a little closer to another. The word _happy_
+does not take part in any of that. It is not a number, and there is no obvious
+number it ought to be.
+
+So the first move is the shop's move. Take every word anybody uses, sort them
+into one long list, and give each word its row number. This is not a bad idea
+and real systems really do it — the number is a **name**, a way of saying which
+word you mean in a form a computer can hold on to.
+
+What the number is not is a meaning. Sorted alphabetically, row 1,742 is _cat_
+and row 1,743 is _catapult_, which are neighbours by an accident of spelling.
+_Kitten_ is three thousand rows away.
+
+That is not merely untidy. It means a machine that has been shown a million
+sentences about cats has learned nothing at all about kittens, because as far as
+its arithmetic is concerned those are two unrelated names. Every word has to be
+learned from scratch, on its own, from however few examples it happened to get.
+Rare words never stand a chance.
+
+## A position instead
+
+Change one thing. Instead of a single number that names the word, give each word
+a **position** — a couple of numbers saying where it sits, the way a grid
+reference says where a village is.
+
+The numbers have not become more meaningful on their own. What has appeared is
+the space between them. Two words now have a distance, and once there is a
+distance, an arrangement can be judged: put words that mean similar things close
+together and words with nothing in common far apart, and _near_ starts carrying
+information that a row number never could.
+
+A machine that learns something about one word now automatically knows a little
+about everything sitting nearby, because everything it does with a position it
+does with the positions around it too.
+
+That position is called the word's **embedding**, and the whole arrangement is
+an embedding space. It is a graceless name for one of the prettiest ideas in the
+subject.
+
+## Nobody chose the positions
+
+Here is the part that makes it work, and it is the fill-in-the-blank game
+wearing a different hat.
+
+Nobody sits down and arranges the words. The positions are learned — cover a
+word, make the machine guess it, score how far off the guess was, nudge. The
+positions are among the dials being nudged.
+
+Think about what winning that game requires. If the machine is guessing what
+goes in _the ——— pulled into the yard_, then whatever it does with _lorry_ it
+had better also do with _truck_, because either one could be the answer and it
+has no way of knowing which. The cheapest arrangement that achieves this is to
+put those two words in the same place.
+
+That is worth saying precisely, because it is easy to get backwards. Words do
+not end up near each other because they appear together. _Lorry_ and _truck_
+almost never appear in the same sentence. They end up near each other because
+they appear in the same company — surrounded by yards and drivers and
+motorways, in gaps where each of them would have done.
+
+Run that over billions of sentences and the map builds itself. Nobody defined
+similar. It fell out of the fact that similar words get used in similar company,
+which was sitting in the text all along waiting for someone to notice.
+
+<Aside title="The word “word” is doing temporary work here">
+  Everything in this unit says "word", and two topics from now that turns out to
+  be slightly too neat. What a language model actually reads are pieces —
+  sometimes a whole word, sometimes a fragment of a long one, sometimes a space
+  and a comma travelling together.
+
+That correction changes what gets a position. It changes nothing else here.
+Whatever the pieces turn out to be, each one gets a position, distance between
+them still means similarity, and everything below still holds. Read "word" as
+"whatever unit the machine reads" and you will not have to take any of this
+back.
+
+</Aside>
+
+<Figure
+  title="The same three words, numbered and then placed"
+  description="A row number is only a name, so it puts cat next to catapult and three thousand rows from kitten; a position is a claim about meaning, so the two words that mean nearly the same thing are the two that end up close, and nobody had to say which those were."
+>
+  <NameOrPlace />
+</Figure>
+
+## Walk around a small one
+
+Below is a map with twenty-five words on it. The marker starts on _king_.
+
+Leave the arrows alone at first and just move. The two sliders slide the marker
+across the map and up it, and the sentence underneath names the words nearest to
+wherever you have put it. Drop it on _kitten_ and the nearest three are puppy,
+cat and dog. Drop it on _doctor_ and they are teacher, nurse and engineer.
+Nobody wrote either of those lists.
+
+Notice how much of the map is empty. Most positions are not near anything at
+all, which will matter in a minute.
+
+<MeaningMap client:visible />
+
+## The arrows are the surprising bit
+
+Now the second thing, which is stranger than the first.
+
+Set the arrow to _man → woman_. That is not a setting; it is a measurement. It
+is the step you would take to walk from the dot marked _man_ to the dot marked
+_woman_, and the map shows it faintly, where it was measured.
+
+The marker is still on _king_. Take that same step, that exact length in that
+exact direction, from there instead. It ends on _queen_.
+
+Do it again from _uncle_ and it ends on _aunt_. From _boy_ it ends on _girl_.
+One arrow, measured once, between one pair of words — and it keeps landing on
+the counterpart of whatever you start it from.
+
+Then try the other arrow, _puppy → dog_, which if it is about anything is about
+growing up. Lay it down at _kitten_ and it ends on _cat_. Lay it down at _boy_,
+which is nowhere near the animals, and it ends on _man_.
+
+You will meet this written as arithmetic, and it is worth being able to read:
+
+$$
+\text{king} - \text{man} + \text{woman} \approx \text{queen}
+$$
+
+In words: start from where _king_ sits, take away _man_, add _woman_, and you
+end up beside _queen_. Subtracting one word and adding another is only another
+way of writing "take the step that leads from man to woman", and every word in
+that line is a position, so the plus and minus are the ordinary ones.
+
+Nobody built those directions. Nobody checked that the man-to-woman step would
+work starting from _uncle_. It works because of how the words were used by the
+people who wrote the text, and the arrangement had no cheaper way to keep all of
+that straight.
+
+## What the demonstration is not telling you
+
+Three honest corrections, because this idea is usually oversold.
+
+**The map above is drawn by hand.** Twenty-five words, placed deliberately, so
+that there would be something small enough to look at. The shape of it is
+faithful — that is what real maps do — but no machine learned this one.
+
+**Two numbers is a flattening.** A real word map gives each word a few hundred
+numbers, sometimes a few thousand. Not two axes but hundreds of them at once,
+which nobody can picture and which does not squash down onto a page without
+losing most of what is in it. Every flat picture of an embedding space you have
+ever seen, including this one, is a shadow.
+
+**The arithmetic is patchier than the demonstration suggests.** Put the marker
+on _kitten_ and follow the man → woman arrow. It lands in open ground, nearest
+to the word it set off from, because this map holds no feminine of a kitten and
+was never going to invent one. Most starting points do that, and real maps
+behave the same way — which is why the usual way of running the famous
+demonstration quietly forbids the answer from being one of the three words you
+started with. Without that rule the answer that comes back is very often _king_
+itself. The trick is real. It is not the clean machine it looks like on a slide.
+
+## The idea is not really about words
+
+The move generalises, and this is where most of its working life is spent.
+Anything you can teach a machine to place can go on a map like this: photographs,
+songs, products, faces, molecules, whole documents. Similar things land near
+each other for the same reason and by the same route.
+
+Once things are positions, "find me more like this one" stops being a question
+about meaning and becomes a question about distance, which a computer can answer
+for a billion items without understanding any of them. That is what is behind
+the search box that copes with you not using the site's words, and the row of
+recommendations under whatever you just watched.
+
+It is also where every language model starts. Before the machinery in the rest
+of this site gets to do anything, the incoming text is turned into positions.
+Everything after that is arithmetic on the map.
+
+<Aside title="The map learns the prejudice too" tone="caution">
+  Put the marker on _doctor_ in the instrument above and follow the man → woman
+  arrow. It lands on _nurse_.
+
+That is not a joke somebody dropped into the demonstration. Word maps built from
+real text put those two words in exactly that relationship, and the early ones
+were shown doing it — along with putting traditionally male occupations nearer
+to male words and traditionally female ones nearer to female words. Nobody
+intended it and nobody wrote it down. The maps were built out of how people
+actually write, and that is how people actually write.
+
+It matters because these maps are load-bearing. They sit underneath systems that
+sort job applications and rank search results, where "near" quietly becomes
+"relevant", and a machine reproducing the average of what it read is doing
+exactly what it was built to do.
+
+</Aside>
+
+<DevAside>
+  <Fragment slot="java">
+    ```java
+    float[][] table = new float[vocabularySize][300];  // one row per word
+
+    int id = 1742;                 // "cat", from the alphabetical list
+    float[] cat = table[id];       // the meaning, as 300 numbers
+    ```
+
+    Three lines, and the whole unit is in them. The id is the name — a row
+    number, chosen by whoever built the list. The row it points at is the
+    position, and those 300 numbers are dials like any other, tuned by
+    training. Nobody ever types a value into that array.
+
+  </Fragment>
+  <Fragment slot="python">
+    ```python
+    table = nn.Embedding(vocabulary_size, 300)   # one row per word
+
+    cat = table(torch.tensor([1742]))            # the meaning, as 300 numbers
+    ```
+
+    It is called a layer and it behaves like one, but there is no multiplying
+    going on — a lookup is all it is. The `300` is a decision somebody made, and
+    it is the number of directions the space has to work with.
+
+  </Fragment>
+</DevAside>
+
+<Checkpoint question="The words 'lorry' and 'truck' almost never turn up in the same sentence as each other. A map built by reading text puts them practically on top of one another anyway. How did that happen?">
+  Because position comes from the company a word keeps, not from the words it
+  appears beside. Both of them show up surrounded by yards, drivers, loads and
+  motorways, in gaps where either would have been a good guess — so anything the
+  machine does with one of them it needs to do with the other, and the cheapest
+  way to arrange that is to put them in the same place.
+
+Worth holding on to, because it also tells you what the map is not. It is not a
+record of what words mean. It is a record of how they were used by the people
+who wrote the text it read, which is why it can be right about lorries and
+trucks and wrong about doctors and nurses in the same breath, without anything
+having gone wrong.
+
+</Checkpoint>

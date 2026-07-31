@@ -1,0 +1,290 @@
+---
+title: Every word asks the whole sentence at once
+part: the-transformer
+order: 1
+summary: Instead of passing one fading summary along a line, every word puts a question to every other word at the same moment and rebuilds its own meaning out of whichever ones answered.
+prerequisites:
+  - recurrent-networks
+connections:
+  - to: multi-head-attention
+    why: One round of attention can only follow one kind of relationship at a time, so a working model runs several of them side by side over the same sentence and joins the answers back together afterwards.
+  - to: transformers
+    why: This is the part that does the thinking, and a transformer is the machine built around it — the same step stacked dozens deep, with everything else a usable model needs bolted on.
+interactives:
+  - AttentionMap
+status: published
+updated: 2026-07-31
+---
+
+import Aside from '../../components/blocks/Aside.astro';
+import Checkpoint from '../../components/blocks/Checkpoint.astro';
+import DevAside from '../../components/blocks/DevAside.astro';
+import Figure from '../../components/blocks/Figure.astro';
+import AskingTheSentence from '../../components/diagrams/AskingTheSentence.astro';
+import { AttentionMap } from '../../components/interactives/AttentionMap';
+
+Halfway down the second page of a tenancy agreement:
+
+_The tenant may not sublet the property without written consent, and she must
+give thirty days' notice before leaving._
+
+**She.** You stopped for perhaps a quarter of a second, went back up the line,
+found _the tenant_, and carried on reading.
+
+Now notice what you did not do. You did not start the sentence again from the
+top. You did not go rummaging in a summary of everything you had read so far,
+hoping the answer was still somewhere in it. You asked one question — who is
+_she_? — and one word answered it. Everything else in the sentence stayed
+exactly where it was.
+
+A machine that reads one word at a time cannot work like that. It carries a
+single running summary and rewrites it at every step, so a word twenty places
+back is not something it can go and look at. It is something it had to have
+remembered, and by then the remembering has usually been written over.
+
+The idea in this unit is almost rude in its simplicity. Stop making the words
+take turns. Let every word ask its own question of every other word, all at the
+same moment, and let each one rebuild its meaning out of whichever words
+answered. That is **attention**, and nearly every language model in use today is
+built out of it.
+
+## Three things every word has to be able to make
+
+Picture a large room at a conference. Two hundred people, and everyone is
+wearing a badge with a few words on it about what they do.
+
+You want to know something specific, so you say what you are after. You have no
+idea who can help. What you actually do is read badges — not faces, not
+histories, just the short line each person has chosen to advertise about
+themselves — and you steer towards the ones that look like a match. Then you
+listen to what those people tell you, which is a great deal more than what fitted
+on a badge.
+
+Three separate things are in play there, and keeping them apart is most of this
+unit. What you asked for. What each person advertised. What each person actually
+had to say.
+
+Attention gives every word all three. A word arrives inside the machine as a list
+of numbers standing for its meaning, and the model squeezes that same list three
+different ways to produce:
+
+- a **question** — what this word wants to know about the rest of the sentence
+- a **label** — what this word is advertising about itself
+- its **contents** — what it hands over to anything that picks it
+
+All three are made from the same word, and none of them is the word. The label is
+short and public, built to be matched against; the contents are the substantial
+part, and nobody looks at them until the matching is over. That separation is not
+decoration. It is what lets a word advertise one thing and deliver another,
+exactly like a badge.
+
+The formal names are **query**, **key** and **value**, and you will meet them
+written as Q, K and V in every paper and every codebase. Question, label,
+contents is what they mean.
+
+## Every question, against every label
+
+Now the arithmetic, which is smaller than you would expect.
+
+Take one word — say _she_ — and its question. Compare that question against the
+label of every word in the sentence, its own included. Each comparison produces a
+single number saying how well that question and that label go together.
+
+Nine words, so nine numbers for _she_. Then the same for every other word: nine
+questions, each meeting nine labels, eighty-one numbers in all. No word waits for
+any other to finish, because no word needs anything another word has not already
+got.
+
+Those raw numbers then get divided by one fixed amount before anything else
+happens — the square root of how many numbers each question is made of. Nothing
+deep is going on there. A question built from sixty-four numbers produces larger
+comparisons than one built from four, purely because more things are being added
+up, and the division cancels that out so the next step behaves the same whatever
+size the model is.
+
+## A budget, not a set of dials
+
+Scores on no particular scale are not usable, so they go through one more step.
+**Softmax** takes any row of numbers and turns it into a row of shares: all
+positive, the largest still the largest, and adding up to exactly one.
+
+That last property is the most consequential fact in this unit, and it is easy to
+read straight past.
+
+Every word gets one unit of attention. Not one unit per relationship — one unit,
+full stop, to be divided among the entire sentence. A word cannot decide that
+three other words are all extremely relevant and lean hard on all three for
+nothing. Leaning harder on one word means, as a matter of arithmetic, leaning
+less on everything else.
+
+Attention is a budget, not a set of independent dials. Hold on to that: a
+surprising amount of what follows is about giving a model more budgets to spend
+rather than a larger one.
+
+After that, the last step is the easy one. The word's new meaning is the mix — a
+large share of one word's contents, a smaller share of another's, a scrap of each
+of the rest. The word has been rebuilt out of the sentence around it.
+
+<Figure
+  title="One word's question, against everybody's label"
+  description="Every word makes three things out of itself — a question, a label and its contents — and the shares one word spends are all cut from a single unit, so the only way to lean harder on one word is to lean less on all the others."
+>
+  <AskingTheSentence />
+</Figure>
+
+## Nine words, and a pronoun with a question
+
+Below is one sentence — _The student carried the box because she was strong_ —
+and one round of attention over it. Choosing a word chooses the word doing the
+asking; the number printed under each of the others is the share it spent there.
+
+<AttentionMap client:visible />
+
+It opens on _she_, asking who it stands for. Forty-three per cent of everything
+_she_ has goes to _student_. Sixteen per cent goes to _box_, which is a
+reasonable wrong answer rather than a random one — a box is at least the kind of
+thing a pronoun could be standing for. The other seven words get about six per
+cent each, which is this arithmetic's way of saying it found nothing there.
+
+Look at where _student_ sits. Five words earlier, with four words in between —
+and one of those in-between words, _because_, is pressed right up against _she_
+and receives exactly the same six per cent as _The_ at the very start of the
+sentence and _strong_ at the very end. Distance contributed nothing at all. It is
+not that distance was overcome; there is nowhere in the arithmetic for distance
+to enter.
+
+Then read the strip underneath. _she_ arrived carrying one thing — it is a
+pointing word, and that is the whole of it — and it leaves carrying 0.43 of a
+person and 0.29 of a thing. The pronoun has been resolved, and nothing anywhere
+in that process looked up a rule about pronouns.
+
+Now choose **because**. Eleven per cent to every word in the sentence, itself
+included, and the strip reports that it now means the plain average of the whole
+sentence — which is a precise way of saying it learned nothing. That is not the
+instrument giving up. _because_ carries none of the meaning these questions are
+asking about, so its question matches every label equally badly, and a row of
+equal scores comes out of softmax as a row of equal shares. Nobody assigned that
+flat row. It was computed, by exactly the arithmetic that produced the
+interesting one, and it is the best evidence on this page that none of these
+answers were written down in advance.
+
+Finally, change the question at the bottom and watch the same nine words
+rearrange themselves. Ask who is doing this, and _carried_ leans on _student_.
+Ask what a word is caught up in, and _box_ leans on _carried_. The sentence did
+not change. The question did.
+
+## What is real here, and what is stage scenery
+
+One thing has to be said plainly, and this is the unit that owes it.
+
+The arithmetic in that panel is the real thing. A score for every ordered pair of
+words, divided by the square root of the width, pushed through softmax so each
+row sums to one, then spent on the other words' contents — that is attention as
+it runs inside a production model, not an impression of it. Every number on this
+page came out of it.
+
+What is staged is where the scores come from. In a real model nobody writes down
+that a pronoun should go looking for a person. The three squeezes that turn a
+word into a question, a label and its contents are made of numbers that are
+**learned** — nudged a few million times towards whatever made the model's
+answers less wrong, exactly like every other number in the machine.
+
+So nobody decides what a round of attention ends up following, and nobody knows
+in advance. Here those numbers are hand-written, so that nine words produce a
+pattern legible enough to point at. That is the entire difference, and it matters
+in one specific way: a real round of attention is usually not interpretable at
+all. Researchers do occasionally find one doing something nameable, and those get
+written up precisely because they are unusual. The honest picture is thousands of
+them all doing something real, and almost none of them explicable.
+
+Take the mechanism from that panel. Do not take the tidiness.
+
+## Why this beat everything that came before
+
+**Distance stopped mattering.** In a machine that reads one word at a time, a
+word twenty places back has been through twenty rounds of rewriting before you
+can ask about it, and what survives is a smear. Here _she_ reached _student_ in
+one comparison, and it would have reached just as directly across five hundred
+words. There is no fading, because there is nothing to fade through.
+
+**And it all happens at once.** Reading in order is not only a design choice, it
+is a speed limit: step two cannot begin until step one has finished, so a
+thousand-word passage takes a thousand turns however much machinery you own.
+Attention has no turns. Every question meets every label in the same instant,
+which means the work splits cleanly across thousands of processors.
+
+The second point is the less obvious one, and it is the one that changed the
+industry. Attention did not win by understanding a single sentence better —
+early on it often did not. It won because it could be trained on far more text in
+the same week. Almost everything about the last few years follows from that.
+
+<Aside title="What it costs" tone="caution">
+  Every word compares itself against every word, so nine words means eighty-one
+  comparisons and a thousand words means a million. Double the length of the
+  text and you roughly quadruple the work — and the memory, which is usually
+  what runs out first. That is why a model has a limit on how much it will read
+  at once, why that limit is quoted in the specifications like a headline
+  figure, and why a large slice of current research is people trying to get most
+  of attention's behaviour for less than all of attention's bill.
+</Aside>
+
+## The line everybody quotes
+
+$$
+\text{Attention}(Q, K, V) = \text{softmax}\!\left(\frac{QK^{\top}}{\sqrt{d_k}}\right)V
+$$
+
+Read left to right, in the words this unit has been using. $Q$ is every word's
+question, stacked into one grid; $K$ is every word's label; $V$ is every word's
+contents. $QK^{\top}$ compares every question against every label in a single
+multiplication — the whole table of eighty-one scores. $\sqrt{d_k}$ is that fixed
+division, where $d_k$ is how many numbers a question is made of. $\text{softmax}$
+turns each row of the table into shares adding to one. Multiplying by $V$ spends
+those shares on the contents.
+
+There is nothing in that line you have not already done by hand.
+
+<DevAside>
+  <Fragment slot="java">
+    ```java
+    double[][] scores  = matmul(queries, transpose(keys));
+    scale(scores, 1.0 / Math.sqrt(headWidth));
+    double[][] weights = softmaxRows(scores);   // every row now sums to 1
+    double[][] output  = matmul(weights, values);
+    ```
+
+    The method worth naming carefully is `softmaxRows`, not `softmax`. Attention
+    softmaxes each row on its own — one budget per word — and a helper that
+    normalises the whole grid at once compiles, runs, and produces a model that
+    never learns anything. The shapes do not protect you here; both versions are
+    the same square of doubles going in and coming out.
+
+  </Fragment>
+  <Fragment slot="python">
+    ```python
+    scores  = queries @ keys.transpose(-2, -1) / math.sqrt(head_width)
+    weights = scores.softmax(dim=-1)   # every row now sums to 1
+    output  = weights @ values
+    ```
+
+    Three lines, and the whole lesson is in `dim=-1`. Point the softmax at the
+    wrong axis and every shape still lines up, the tensors are the same size, no
+    exception is raised, and the loss simply refuses to come down. It is the
+    classic first bug, and nothing except knowing what the row means will find
+    it.
+
+  </Fragment>
+</DevAside>
+
+<Checkpoint question="A model reading a long report attaches the word she to the wrong person. A colleague suggests fixing it by making the model pay more attention to the right person. Setting aside whether that is possible, what does it cost — and where does the cost land?">
+  It costs attention taken from every other word in that sentence. Each word has
+  one unit to spend and no more, so raising the share on the right person
+  necessarily lowers the share on everything else, including words the model was
+  relying on. It is a trade, never an addition.
+
+Worth keeping, because it generalises well beyond this unit. Any time somebody
+says a model should focus more on something, the honest version of that sentence
+has a second half — and less on something else. There is no setting anywhere in
+the machine that adds attention.
+
+</Checkpoint>

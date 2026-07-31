@@ -10,8 +10,16 @@ import DevAside from '../components/blocks/DevAside.astro';
 import ConnectionsFooter from '../components/blocks/ConnectionsFooter.astro';
 import Figure from '../components/blocks/Figure.astro';
 import { UnitProgress } from '../components/blocks/UnitProgress';
+import { AttentionMap } from '../components/interactives/AttentionMap';
+import { BlameFlow } from '../components/interactives/BlameFlow';
 import { ClusterFinder } from '../components/interactives/ClusterFinder';
 import { DialTuner } from '../components/interactives/DialTuner';
+import { MeaningMap } from '../components/interactives/MeaningMap';
+import { MultiHeadLanes } from '../components/interactives/MultiHeadLanes';
+import { OrderBlindness } from '../components/interactives/OrderBlindness';
+import { PronounFlip } from '../components/interactives/PronounFlip';
+import { TasteNeuron } from '../components/interactives/TasteNeuron';
+import { TokenSplitter } from '../components/interactives/TokenSplitter';
 import { ExploreExploitBandit } from '../components/interactives/ExploreExploitBandit';
 import { FlexibilityDial } from '../components/interactives/FlexibilityDial';
 import { FreeLabelMaker } from '../components/interactives/FreeLabelMaker';
@@ -137,6 +145,62 @@ honest.
 A detector that raises no alarms at all scores 99%.
 
 <ThresholdMatrix client:visible />
+
+### Set someone else's taste in films
+
+Take the bend out and a stack of neurons collapses into something one neuron
+could already do. That is the whole reason the bend is there.
+
+<TasteNeuron client:visible />
+
+### Hand out the blame
+
+Every dial is told its share of one wrong answer, and the share is a product of
+two numbers that were lying around anyway.
+
+<BlameFlow client:visible />
+
+### Move around a map of meaning
+
+Distance is similarity, and the same arrow means the same thing wherever you
+start it from.
+
+<MeaningMap client:visible />
+
+### Change one word, move the meaning
+
+One word swaps, and what the pronoun refers to swaps with it. Nothing else in
+the sentence moved.
+
+<PronounFlip client:visible />
+
+### Cut a sentence into the pieces a model reads
+
+A rare name costs more pieces than a longer common one, and the letters inside a
+piece are unreachable from the outside.
+
+<TokenSplitter client:visible />
+
+### Watch one word ask the others
+
+Each word's attention sums to one, so leaning harder on one word means leaning
+less on everything else.
+
+<AttentionMap client:visible />
+
+### Four readings of one sentence
+
+Four heads, one sentence, four different answers — and nobody assigned any of
+them a job.
+
+<MultiHeadLanes client:visible />
+
+### Shuffle the words and see what survives
+
+With no sense of position, every word computes exactly the same meaning in a
+scrambled sentence as in a real one.
+
+<OrderBlindness client:visible />
 
 ## Instrument panel
 

@@ -1,0 +1,301 @@
+---
+/**
+ * One transformer block, opened up — the assembly drawing for the second half
+ * of the site.
+ *
+ * The teaching load is carried by shape and position, never by tint. The
+ * shortcut is a *lane* that physically leaves the main column, runs down the
+ * left-hand side and comes back into a `+`, because "goes around the stage" is
+ * the whole point of it and an arrow drawn the short way would say the opposite.
+ * The two `+` junctions are circles rather than boxes, so a reader can see at a
+ * glance which stops do work and which stops only combine. And the dashed
+ * outline says "one block" — a dash, not a colour, so the boundary survives a
+ * greyscale print and a colour-blind reader alike.
+ *
+ * Stages 2 and 3 deliberately carry repeated numerals. A reader who notices
+ * that the same two numbers appear twice has understood the structure: the
+ * block is two stages that do work, each wrapped in the identical pair of
+ * cheap operations.
+ *
+ * Vertical rather than horizontal on purpose. A tall narrow drawing is the one
+ * shape that survives a phone, because `w-full` scales the viewBox to the
+ * column width and a wide diagram is what turns 10px text into 5px text.
+ *
+ * Every run of text is interpolated from a constant instead of being written
+ * across several lines of markup: SVG 1.1 *removes* newlines inside text
+ * content rather than collapsing them to spaces, so a label re-wrapped by a
+ * formatter can silently lose the spaces at its line breaks.
+ *
+ * Label lengths were measured against a real render and then cut back by
+ * another tenth, because the page ships Public Sans and any measurement taken
+ * before the webfont lands is taken in a narrower system face. Anything that
+ * only just fits at measuring time does not fit on the site.
+ *
+ * Decorative on its own, so `aria-hidden` — `Figure` carries the accessible
+ * name and the plain-English description.
+ */
+
+interface Box {
+  /** Stage number. Repeats where the operation repeats; that is the teaching. */
+  readonly n: string;
+  readonly title: string;
+  readonly sub: string;
+  readonly y: number;
+  readonly h: number;
+}
+
+const CX = 214; // the main column, straight down the middle
+const LANE_X = 50; // the shortcut lane, out to the left of everything
+const BOX_X = 92;
+const BOX_W = 244;
+const TEXT_X = 124; // box copy clears the numeral in the gutter
+
+const BOXES: readonly Box[] = [
+  {
+    n: '1',
+    title: 'the words talk to each other',
+    sub: 'attention — every head at once',
+    y: 82,
+    h: 54,
+  },
+  {
+    n: '3',
+    title: 'rescale',
+    sub: 'recentre and resize the numbers',
+    y: 200,
+    h: 42,
+  },
+  {
+    n: '4',
+    title: 'each word thinks on its own',
+    sub: 'a small network, the same for every word',
+    y: 272,
+    h: 54,
+  },
+  {
+    n: '3',
+    title: 'rescale',
+    sub: 'the same operation, a second time',
+    y: 390,
+    h: 42,
+  },
+];
+
+/** Where the shortcut leaves the column, and the `+` it comes back into. */
+const SHORTCUTS: readonly { readonly from: number; readonly to: number }[] = [
+  { from: 68, to: 176 },
+  { from: 258, to: 366 },
+];
+
+/** Every straight run of the main column, as [top, bottom]. */
+const SPINE: readonly [number, number][] = [
+  [42, 82],
+  [136, 163],
+  [187, 200],
+  [242, 272],
+  [326, 353],
+  [377, 390],
+  [432, 466],
+];
+
+const SAYS = {
+  in: 'one list of numbers per word — position already nudged in',
+  out: 'one list of numbers per word — now rewritten by this block',
+  add: 'add the shortcut back in',
+  lane: 'shortcut',
+  foot1: 'everything inside the dashed outline is one block',
+  foot2: 'stages 2 and 3 appear twice — they wrap each stage that does work',
+  foot3: 'same shape out as in — which is what lets blocks stack',
+} as const;
+---
+
+<svg viewBox="0 0 400 550" class="w-full" aria-hidden="true">
+  <defs>
+    <marker
+      id="insideblock-arrow"
+      viewBox="0 0 10 10"
+      refX="9"
+      refY="5"
+      markerWidth="5"
+      markerHeight="5"
+      orient="auto"
+    >
+      <path d="M0,0 L10,5 L0,10 z" class="fill-ink-muted"></path>
+    </marker>
+
+    <marker
+      id="insideblock-skip"
+      viewBox="0 0 10 10"
+      refX="9"
+      refY="5"
+      markerWidth="5"
+      markerHeight="5"
+      orient="auto"
+    >
+      <path d="M0,0 L10,5 L0,10 z" class="fill-accent-2"></path>
+    </marker>
+  </defs>
+
+  <!-- What arrives -->
+  <rect
+    x="44"
+    y="12"
+    width="340"
+    height="30"
+    rx="6"
+    class="fill-paper-sunken stroke-rule-strong"
+    stroke-width="1.25"></rect>
+  <text x={CX} y="32" text-anchor="middle" class="fill-ink" font-size="10"
+    >{SAYS.in}</text
+  >
+
+  <!-- The block boundary: a dash, so it is not carried by colour -->
+  <rect
+    x="10"
+    y="56"
+    width="380"
+    height="390"
+    rx="10"
+    class="fill-none stroke-ink-muted"
+    stroke-width="1.25"
+    stroke-dasharray="6 4"></rect>
+
+  <!-- The main column -->
+  {
+    SPINE.map(([top, bottom]) => (
+      <line
+        x1={CX}
+        y1={top}
+        x2={CX}
+        y2={bottom}
+        class="stroke-ink-muted"
+        stroke-width="1.5"
+        marker-end="url(#insideblock-arrow)"
+      />
+    ))
+  }
+
+  <!-- The shortcut: out of the column, past the stage, and back into a plus -->
+  {
+    SHORTCUTS.map((skip) => (
+      <>
+        <path
+          d={`M${String(CX)} ${String(skip.from)} H${String(LANE_X)} V${String(skip.to)} H201`}
+          class="fill-none stroke-accent-2"
+          stroke-width="2.25"
+          marker-end="url(#insideblock-skip)"
+        />
+        <circle cx={CX} cy={skip.from} r="3.5" class="fill-accent-2" />
+        <text
+          x="38"
+          y={(skip.from + skip.to) / 2}
+          transform={`rotate(-90 38 ${String((skip.from + skip.to) / 2)})`}
+          text-anchor="middle"
+          class="fill-accent-2 font-mono"
+          font-size="9"
+        >
+          {SAYS.lane}
+        </text>
+      </>
+    ))
+  }
+
+  <!-- The four stages -->
+  {
+    BOXES.map((box) => (
+      <>
+        <rect
+          x={BOX_X}
+          y={box.y}
+          width={BOX_W}
+          height={box.h}
+          rx="6"
+          class="fill-paper-raised stroke-rule-strong"
+          stroke-width="1.25"
+        />
+        <text
+          x="104"
+          y={box.y + box.h / 2 + 4}
+          class="fill-accent font-mono"
+          font-size="13"
+          font-weight="700"
+        >
+          {box.n}
+        </text>
+        <text
+          x={TEXT_X}
+          y={box.y + box.h / 2 - 3}
+          class="fill-ink"
+          font-size="11"
+          font-weight="700"
+        >
+          {box.title}
+        </text>
+        <text
+          x={TEXT_X}
+          y={box.y + box.h / 2 + 13}
+          class="fill-ink-muted"
+          font-size="8.75"
+        >
+          {box.sub}
+        </text>
+      </>
+    ))
+  }
+
+  <!-- The two places where the shortcut is added back on -->
+  {
+    SHORTCUTS.map((skip) => (
+      <>
+        <circle
+          cx={CX}
+          cy={skip.to}
+          r="11"
+          class="fill-paper stroke-ink"
+          stroke-width="1.5"
+        />
+        <text
+          x={CX}
+          y={skip.to + 5}
+          text-anchor="middle"
+          class="fill-ink"
+          font-size="15"
+          font-weight="700"
+        >
+          +
+        </text>
+        <text
+          x="234"
+          y={skip.to + 4}
+          class="fill-accent font-mono"
+          font-size="11"
+          font-weight="700"
+        >
+          2
+        </text>
+        <text x="248" y={skip.to + 4} class="fill-ink-muted" font-size="9">
+          {SAYS.add}
+        </text>
+      </>
+    ))
+  }
+
+  <!-- What leaves -->
+  <rect
+    x="44"
+    y="468"
+    width="340"
+    height="30"
+    rx="6"
+    class="fill-paper-sunken stroke-rule-strong"
+    stroke-width="1.25"></rect>
+  <text x={CX} y="488" text-anchor="middle" class="fill-ink" font-size="10"
+    >{SAYS.out}</text
+  >
+
+  <g class="fill-ink-faint" font-size="9" text-anchor="middle">
+    <text x={CX} y="512">{SAYS.foot1}</text>
+    <text x={CX} y="526">{SAYS.foot2}</text>
+    <text x={CX} y="540">{SAYS.foot3}</text>
+  </g>
+</svg>

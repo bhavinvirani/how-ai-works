@@ -1,0 +1,257 @@
+---
+/**
+ * The same block, ninety-six times — and the one thing that only becomes
+ * visible once you stack it.
+ *
+ * `InsideOneBlock` draws the shortcut as a lane around each stage. Stacked, it
+ * stops being ninety-six separate lanes and becomes a single unbroken line
+ * running the whole height of the model, with each block reaching into it and
+ * writing a change back. That is the point of this drawing, so the lane is the
+ * only element that runs edge to edge, and the blocks hang off it rather than
+ * sitting in it.
+ *
+ * Nothing is carried by colour: the lane is the thickest stroke on the page and
+ * the only continuous one, the blocks are the only rectangles, and the `+`
+ * circles are named as additions by the glyph inside them.
+ *
+ * Blocks 3 to 95 are one ellipsis and a count rather than ninety-three tiles.
+ * Drawing them all would say "a lot of blocks", which the caption says better;
+ * what the tiles have to say is "identical", and three of them say it.
+ *
+ * Every run of text is interpolated from a constant so no `<text>` element has
+ * to wrap across lines of markup — SVG removes newlines inside text content
+ * rather than collapsing them to spaces.
+ *
+ * Label lengths were measured against a real render and then cut back by
+ * another tenth, because the page ships Public Sans and any measurement taken
+ * before the webfont lands is taken in a narrower system face. The closing
+ * claim is two lines for exactly that reason; as one line it overran the
+ * viewBox the moment the real face arrived.
+ *
+ * Decorative on its own, so `aria-hidden` — `Figure` carries the name and the
+ * plain-English description.
+ */
+
+interface Tile {
+  readonly x: number;
+  readonly label: string;
+}
+
+const TILE_W = 84;
+const TILE_Y = 96;
+const TILE_H = 64;
+const LANE_Y = 216;
+
+const TILES: readonly Tile[] = [
+  { x: 58, label: 'block 1' },
+  { x: 158, label: 'block 2' },
+  { x: 294, label: 'block 96' },
+];
+
+const SAYS = {
+  legend1: 'Each tile below is the whole block from the drawing above, small.',
+  legend2:
+    'The wide lane along the bottom is the shortcut, running the full height.',
+  mix: 'attention',
+  solo: 'think alone',
+  gap: '93 more',
+  note1:
+    'The lane never breaks. Every block writes a change into it; none replaces it.',
+  note2:
+    'That is what lets ninety-six be stacked without the signal getting lost.',
+  claim1: '96 blocks for “what is 2 + 2”.',
+  claim2: '96 blocks for a page of contract law. Always 96.',
+  in: 'in',
+  out: 'out',
+} as const;
+---
+
+<svg viewBox="0 0 448 330" class="w-full" aria-hidden="true">
+  <defs>
+    <marker
+      id="manytimes-arrow"
+      viewBox="0 0 10 10"
+      refX="9"
+      refY="5"
+      markerWidth="5"
+      markerHeight="5"
+      orient="auto"
+    >
+      <path d="M0,0 L10,5 L0,10 z" class="fill-ink-muted"></path>
+    </marker>
+  </defs>
+
+  <g class="fill-ink-muted" font-size="9.5">
+    <text x="24" y="30">{SAYS.legend1}</text>
+    <text x="24" y="48">{SAYS.legend2}</text>
+  </g>
+
+  <!-- The one continuous thing on the page -->
+  <line
+    x1="38"
+    y1={LANE_Y}
+    x2="399"
+    y2={LANE_Y}
+    class="stroke-accent-2"
+    stroke-width="5"
+    stroke-linecap="round"></line>
+  <path d="M398,209 L412,216 L398,223 z" class="fill-accent-2"></path>
+
+  <rect
+    x="6"
+    y="202"
+    width="32"
+    height="28"
+    rx="5"
+    class="fill-paper-sunken stroke-rule-strong"
+    stroke-width="1.25"></rect>
+  <text x="22" y="220" text-anchor="middle" class="fill-ink" font-size="9"
+    >{SAYS.in}</text
+  >
+
+  <rect
+    x="414"
+    y="202"
+    width="32"
+    height="28"
+    rx="5"
+    class="fill-paper-sunken stroke-rule-strong"
+    stroke-width="1.25"></rect>
+  <text x="430" y="220" text-anchor="middle" class="fill-ink" font-size="9"
+    >{SAYS.out}</text
+  >
+
+  {
+    TILES.map((tile) => {
+      const mid = tile.x + TILE_W / 2;
+
+      return (
+        <>
+          <text
+            x={mid}
+            y="88"
+            text-anchor="middle"
+            class="fill-ink font-mono"
+            font-size="9"
+          >
+            {tile.label}
+          </text>
+
+          <rect
+            x={tile.x}
+            y={TILE_Y}
+            width={TILE_W}
+            height={TILE_H}
+            rx="6"
+            class="fill-paper-raised stroke-rule-strong"
+            stroke-width="1.25"
+          />
+
+          <rect
+            x={tile.x + 8}
+            y="106"
+            width={TILE_W - 16}
+            height="17"
+            rx="3"
+            class="fill-accent-soft stroke-accent"
+            stroke-width="1"
+          />
+          <text
+            x={mid}
+            y="118"
+            text-anchor="middle"
+            class="fill-ink"
+            font-size="8"
+          >
+            {SAYS.mix}
+          </text>
+
+          <rect
+            x={tile.x + 8}
+            y="131"
+            width={TILE_W - 16}
+            height="17"
+            rx="3"
+            class="fill-accent-2-soft stroke-accent-2"
+            stroke-width="1"
+          />
+          <text
+            x={mid}
+            y="143"
+            text-anchor="middle"
+            class="fill-ink"
+            font-size="8"
+          >
+            {SAYS.solo}
+          </text>
+
+          {/* Read the lane... */}
+          <circle cx={mid - 20} cy={LANE_Y} r="3" class="fill-accent-2" />
+          <line
+            x1={mid - 20}
+            y1={LANE_Y - 4}
+            x2={mid - 20}
+            y2="164"
+            class="stroke-ink-muted"
+            stroke-width="1.25"
+            marker-end="url(#manytimes-arrow)"
+          />
+
+          {/* ...and add a change back into it */}
+          <line
+            x1={mid + 20}
+            y1={TILE_Y + TILE_H}
+            x2={mid + 20}
+            y2="203"
+            class="stroke-ink-muted"
+            stroke-width="1.25"
+            marker-end="url(#manytimes-arrow)"
+          />
+          <circle
+            cx={mid + 20}
+            cy={LANE_Y}
+            r="9"
+            class="fill-paper stroke-ink"
+            stroke-width="1.5"
+          />
+          <text
+            x={mid + 20}
+            y={LANE_Y + 5}
+            text-anchor="middle"
+            class="fill-ink"
+            font-size="14"
+            font-weight="700"
+          >
+            +
+          </text>
+        </>
+      );
+    })
+  }
+
+  <!-- Blocks 3 to 95, which are the same drawing again -->
+  <text
+    x="268"
+    y="88"
+    text-anchor="middle"
+    class="fill-ink-faint font-mono"
+    font-size="8.5">{SAYS.gap}</text
+  >
+  <text
+    x="268"
+    y="140"
+    text-anchor="middle"
+    class="fill-ink-muted"
+    font-size="24">…</text
+  >
+
+  <g class="fill-ink" font-size="9.5">
+    <text x="24" y="254">{SAYS.note1}</text>
+    <text x="24" y="272">{SAYS.note2}</text>
+  </g>
+
+  <g class="fill-ink" font-size="10" font-weight="700">
+    <text x="24" y="296">{SAYS.claim1}</text>
+    <text x="24" y="312">{SAYS.claim2}</text>
+  </g>
+</svg>

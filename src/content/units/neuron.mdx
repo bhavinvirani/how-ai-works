@@ -1,0 +1,266 @@
+---
+title: Multiply, add, and bend
+part: inside-the-machine
+order: 1
+summary: A neuron multiplies each fact it is handed by its own dial, adds the results up, and bends the total — and without that last small step, a whole stack of them collapses into something one of them could already do.
+prerequisites:
+  - model-as-dials
+connections:
+  - to: layers
+    why: One neuron makes a single judgement, and that unit is what happens when you stand a row of them side by side and feed each row into the next — an arrangement that is only worth building because of the bend.
+interactives:
+  - TasteNeuron
+status: published
+updated: 2026-07-31
+---
+
+import Aside from '../../components/blocks/Aside.astro';
+import Checkpoint from '../../components/blocks/Checkpoint.astro';
+import DevAside from '../../components/blocks/DevAside.astro';
+import Figure from '../../components/blocks/Figure.astro';
+import NeuronAnatomy from '../../components/diagrams/NeuronAnatomy.astro';
+import { TasteNeuron } from '../../components/interactives/TasteNeuron';
+
+Somewhere in a filing cabinet there is a scoring sheet. Three points for every
+year of experience. Ten if the degree is relevant. Twenty if somebody on the
+panel has worked with you before. Add it up, and anyone over sixty gets an
+interview.
+
+Nobody defends these sheets and everybody uses them, because they turn an
+argument into arithmetic.
+
+They also fail in a way you have probably watched happen. Somebody arrives with
+forty years in an unrelated trade, scores a hundred and twenty on the first line
+alone, and is through to the interview before the other two lines are even read.
+The sheet has no way of saying that forty years is not eight times better than
+five. It can only say that more is more.
+
+Keep hold of that sheet. It is not an analogy for what the rest of this part is
+built from. It is very nearly the thing itself.
+
+## A scoring sheet with a name
+
+Write the sheet out as arithmetic and it is one line. Each fact is multiplied by
+a number saying how much it counts, the results are added together, and one more
+number is added on top.
+
+$$
+\text{total} = w_1 x_1 + w_2 x_2 + w_3 x_3 + b
+$$
+
+In words: take each fact, multiply it by its own dial, add up what comes out,
+and then add one more number that arrives whatever the facts happen to be.
+
+Those multipliers have a name you have already met under a different word. They
+are **weights**, and they are dials in exactly the sense of the unit before this
+one — adjustable numbers that nobody sets by hand and training moves.
+
+The number added on top is called the **bias**, which sounds more sinister than
+it is. It is simply where the sheet starts before it has been told anything at
+all. On our hiring sheet the bar sat at sixty, so a bias of minus sixty puts the
+bar at zero and lets everything after it be a comparison against nothing.
+
+That much — a multiplication per fact, an addition, and a bias — is most of what
+a **neuron** is. It is also the entire contents of a scoring sheet, which is the
+point. Nothing here is unfamiliar and nothing here is clever.
+
+<Aside title="About that name">
+  These were named in the 1940s after a loose sketch of a brain cell. Signals
+  arrive, they are weighed, and past some point the cell fires. "Loose" is doing
+  an enormous amount of work in that sentence. A real neuron is a living cell
+  with its own chemistry and its own timing, and neuroscience has not finished
+  describing one. This is three multiplications, an addition and, in a moment, a
+  corner. The name is a historical accident, and taking it literally costs you
+  something real — it invites you to expect understanding where there is only
+  arithmetic.
+</Aside>
+
+## The part that is not a scoring sheet
+
+There is one more step, and everything built in this part of the site rests on
+it.
+
+Before a neuron passes its total on, it pushes it through a bend.
+
+The bend in almost universal use today is close to embarrassing to write down:
+if the total is below zero, send zero; otherwise send the total unchanged. That
+is the whole of it. One corner, sitting at zero. It has a formal name, **ReLU**,
+which is considerably grander than the arithmetic it stands for.
+
+The bend in general has a name too. **Activation function** is the phrase you
+will meet in every description of a model, and it means nothing more than the
+shape a total is pushed through on its way out.
+
+<Figure
+  title="One neuron, with its numbers showing"
+  description="Each fact is multiplied by its own weight, the results are added up along with one number that arrives regardless, and the total is pushed through a bend before it leaves. Everything before the bend is a scoring sheet; the bend is the part that makes stacking these worth doing at all."
+>
+  <NeuronAnatomy />
+</Figure>
+
+On its own that corner looks like a detail — a tidying-up step, the sort of
+thing you would skip in a first draft and add later if it seemed to help.
+
+It is the reason the field exists.
+
+## Why a hundred sheets are still one sheet
+
+Here is what you would want from stacking. Build a sheet whose inputs are the
+outputs of other sheets, so the second layer works on judgements rather than on
+raw facts, and you would expect the pair to say things neither could say alone.
+
+Without the bend, they cannot. Take the smallest possible case. One sheet
+doubles its input and adds three. A second sheet takes whatever the first one
+produced, multiplies it by five, and subtracts one.
+
+$$
+y = 2x + 3 \qquad\qquad z = 5y - 1
+$$
+
+In words: the first sheet turns a fact into a judgement, and the second turns
+that judgement into an answer. Two layers, honestly stacked.
+
+Now put the first line inside the second and see what survives.
+
+$$
+z = 5(2x + 3) - 1 = 10x + 14
+$$
+
+The second sheet has gone. What is left is one multiplication and one addition
+— two multiply-and-adds in a row are a single multiply-and-add, with different
+numbers in it.
+
+Nothing about that depends on the size. A hundred layers of weighted sums, wired
+however you like, can always be multiplied out into a single weighted sum — one
+multiplication per fact and one addition, a machine that fits on a postcard.
+
+You might object that the hiring sheet already has a bend in it, and it does.
+The bar at sixty is as sharp a corner as anyone could want. It is also in the
+wrong place. A cut-off applied at the very end, once everything has been added
+up, still has a single weighted sum underneath it — all the cut-off does is draw
+a line across the answer that sum produced. The bend has to sit _between_ the
+layers, on what each one hands to the next, or the layers below it flatten
+exactly as before.
+
+So depth without a bend is not slow, or wasteful, or hard to train. It is
+pointless in the strict sense: the hundred-layer version can express exactly the
+set of answers the one-layer version can, and not one thing more.
+
+Put the bend in the middle and the substitution stops working, because a bend is
+not a multiplication and cannot be multiplied out. The second layer is now
+handed something the first layer could not have produced by scaling, and every
+layer after it widens what the whole thing can say instead of restating it.
+
+There is a plainer way to put what you have bought. A weighted sum is straight in
+every fact it is given — more years pushes the total the same way, by the same
+amount per year, forever. It has no vocabulary for _enough_. The bend is the
+smallest possible thing that gives it one, and "enough" turns out to be most of
+what judgement is.
+
+## Take the bend out yourself
+
+Below is a machine with four neurons in it. Three have already been tuned and
+left alone; each reads the same three facts about a film and reports one number.
+Your three dials sit on the fourth, saying how much each of those reports counts
+towards recommending the film.
+
+There are six films, and your own verdict on each. Three of them are identical
+except for how much action they have. You would watch the middle one. You would
+not sit through the quiet one, and you would not sit through the relentless one.
+
+<TasteNeuron client:visible />
+
+It opens on the sheet everybody writes first — action counts, nothing else does.
+That machine agrees with you on three of the six, and the single film it
+recommends is the one you said you would walk out of. It is not confused. It is
+doing precisely what you told it — one report counts, that report climbs with
+action, so the loudest film on the list is the best film on the list.
+
+Getting all six needs one dial below zero. That is the move worth pausing on. A
+neuron that only speaks up when a film never lets up, counted negatively, is a
+machine saying _too much of this_. Every one of the 788 settings that gets all
+six right has that dial below zero, and not one setting without it gets there at
+all.
+
+Then switch the bend off.
+
+Nothing else changes — same four neurons, same weights, same six films — and the
+line across the plot straightens into a single run from one edge to the other. A
+straight line can cross the bar once. It can be under the bar and then over it,
+which is "more is better", and it can be over and then under, which is "less is
+better". It cannot be under, over, and under again, which is what your taste
+actually is.
+
+All 68,921 settings those three dials can take have been tried. With the bend in,
+six out of six is reachable in 788 of them. Without it, the best that exists
+anywhere on the grid is five, and not one setting gets all three of the
+identical-but-for-action films right. Not because the good setting is hard to
+find. Because it does not exist.
+
+The readout will also show you the collapse itself. With the bend gone, whatever
+your dials say, the whole stack reduces to one neuron reading the three raw
+facts — three weights and a bias, printed on the page. Four neurons of
+machinery, and four numbers are what is left of them.
+
+## Where you actually meet this
+
+You will never write one of these by hand. In any framework a layer of a
+thousand neurons is a single line, and the bend is one word inside it, usually
+`relu`. That word is the entire subject of this unit and it is very easy to read
+straight past.
+
+The place it becomes visible is when somebody leaves it out. A model built from
+weighted sums with no bend anywhere has a name of its own — a **linear model** —
+and it is a respectable, widely used thing for problems where the answer really
+does keep going the same way as each fact rises. House prices against floor area
+is one. What it cannot do is _enough_.
+
+So when a deep stack performs no better than the plainest baseline anyone could
+have written, a missing activation is a classic and very quiet cause. The code
+looks deep. The machine is not.
+
+<DevAside>
+  <Fragment slot="java">
+    ```java
+    double total = bias;
+    for (int i = 0; i < inputs.length; i++) {
+      total += weights[i] * inputs[i];
+    }
+
+    double output = Math.max(0, total);   // the bend
+    ```
+
+    One loop and one `Math.max`. Delete that last line and nothing breaks:
+    it compiles, it trains, the loss goes down. What it removes is the only
+    reason there is more than one layer, and the symptom is a model that
+    plateaus somewhere it never should have.
+
+  </Fragment>
+  <Fragment slot="python">
+    ```python
+    total = bias + sum(w * x for w, x in zip(weights, inputs))
+    output = max(0.0, total)   # the bend
+    ```
+
+    You will not write either line in practice. You will write something like
+    `Dense(128, activation="relu")`, where the whole of the second line is that
+    last argument — and where leaving the argument out is perfectly legal and
+    gives you a layer that adds nothing at all.
+
+  </Fragment>
+</DevAside>
+
+<Checkpoint question="A colleague has stacked six layers of neurons and cannot work out why the model does no better than a single layer did. Nothing errors, training runs, the wrongness score falls. What would you check first, and why would it explain the result exactly rather than approximately?">
+  Whether the layers have a bend on them at all. Without one, every layer is a
+  weighted sum, and a weighted sum of weighted sums is a weighted sum — so the
+  six layers can be multiplied out into one, and the stack can express precisely
+  what a single layer can and nothing beyond it. That is why the answer is
+  exact rather than approximate. It is not that depth helps less than expected;
+  it is that depth is arithmetically the same machine.
+
+It is worth keeping the shape of this failure, because nothing about it looks
+like a failure. There is no error, no warning, and no obviously wrong number.
+The model trains perfectly happily, all the way up to a ceiling it should never
+have had.
+
+</Checkpoint>

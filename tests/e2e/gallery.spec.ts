@@ -106,7 +106,17 @@ test('the reveal keeps its answer out of the page until asked', async ({
   const answer = /build it out of smaller pieces/;
   await expect(page.getByText(answer)).toHaveCount(0);
 
-  await page.getByRole('button', { name: 'Show answer' }).click();
+  // The gallery holds more than one reveal now: this demo, plus every
+  // instrument that uses RevealButton for predict-then-check (BlameFlow was
+  // the first, and it will not be the last). An unscoped locator was only ever
+  // unambiguous while exactly one existed — the same "fine until the site
+  // grows" fragility as trap 13. This test is about the primitive's own demo,
+  // so it takes the reveal that sits outside every instrument panel.
+  const demoReveal = page
+    .getByRole('button', { name: 'Show answer' })
+    .and(page.locator(':not(section[aria-labelledby] *)'));
+
+  await demoReveal.click();
 
   await expect(page.getByText(answer)).toBeVisible();
 });

@@ -1,0 +1,261 @@
+---
+title: Nothing in it ever learned to see
+part: the-transformer
+order: 5
+summary: Cut a picture into squares, turn each square into the same kind of number-list a word piece becomes, and the machine from the last four units reads it unchanged — which is also why it can describe a photograph fluently and still miscount what is in it.
+prerequisites:
+  - embeddings
+  - transformers
+  - tokenization
+connections: []
+interactives: []
+status: published
+updated: 2026-07-31
+---
+
+import Aside from '../../components/blocks/Aside.astro';
+import Checkpoint from '../../components/blocks/Checkpoint.astro';
+import DevAside from '../../components/blocks/DevAside.astro';
+import Figure from '../../components/blocks/Figure.astro';
+import PictureIntoPositions from '../../components/diagrams/PictureIntoPositions.astro';
+
+The coffee machine at the ferry terminal takes euros. It has taken euros since
+it was bolted to the wall, and it takes nothing else — not a card, not a note,
+and not the handful of pound coins in your pocket.
+
+Forty metres away, there is a bureau de change.
+
+So you get your coffee, and the machine is exactly the machine it was this
+morning. Nobody opened it. Nobody rewired it. It still understands one thing
+and one thing only, precisely as well as it ever did. What changed is that
+somebody stood between you and it and turned what you were carrying into the
+one thing it accepts.
+
+That is very nearly the whole story of how a language model came to be able to
+look at a photograph.
+
+## The stack has never seen a letter
+
+It is worth being exact about what the machine you have spent four units
+assembling actually receives, because it is not text.
+
+By the time anything reaches the first layer, the sentence has been cut into
+pieces from a fixed list, and every piece has been swapped for its position — a
+few hundred numbers saying where that piece sits on the map. The spelling is
+gone. The words are gone. What arrives is a row of number-lists, in order, and
+nothing else at all.
+
+Everything after that point works on those lists and only on those lists.
+Attention compares them, blends them, and hands on new ones. Nothing in there
+ever asks what a word is, because by the time it runs, nothing is a word.
+
+Which quietly changes what the job is. To feed this machine a new kind of
+material, you do not have to make it understand pictures. You have to produce a
+row of number-lists. That is a very much smaller thing to ask, and it is the
+thing somebody did.
+
+## Sixteen pixels at a time
+
+Start with a photograph. Squash it to a standard size — 224 pixels each way is a
+common one — because the machinery gets built once, for one shape, and every
+picture after that has to fit it.
+
+Now lay a grid over it and cut. Sixteen pixels across, sixteen down, and no
+cleverness whatsoever about where the edges fall: the cuts go where the ruler
+says, straight through faces and doorways and whatever else is in the way. A
+224-pixel square gives you 14 rows of 14, so 196 pieces. Each one is called a
+**patch**, and that is the entire sophistication of the step.
+
+Every patch is already numbers, and always was. A pixel is three numbers saying
+how much red, green and blue — that conversion happened in the camera, years
+before anybody thought about machine learning. Sixteen by sixteen pixels, three
+numbers apiece, is 768 numbers per patch sitting there for free.
+
+Then comes the one learned step. Those 768 numbers are multiplied through a
+small block of dials that squashes them down into a position — the same length
+of number-list that a word piece already gets. Those dials are tuned by the
+ordinary training loop, alongside everything else in the machine. That block is
+the bureau de change, and it is the only new part in the building.
+
+Notice what did not happen. The patch did not become a word. Nothing wrote a
+caption, and nothing looked the patch up in the vocabulary, because there is no
+entry in a vocabulary for the top-left corner of somebody's kitchen. It went
+straight to a position, skipping language entirely. What the stack gets is not a
+description of the picture; it is the picture, in the only currency the stack
+has ever handled.
+
+One thing is still missing, and it is the same thing that was missing for
+sentences. A row of positions has no order in it — attention compares
+everything with everything and would be just as happy with the squares shuffled.
+So each patch gets stamped with where it sat, square 1 to square 196, read
+across and down, exactly as the word pieces were.
+
+And that is the end of the modifications. Hand the row over. The stack, entirely
+unchanged, does what it always did.
+
+<Figure
+  title="A photograph and a sentence, arriving as the same kind of row"
+  description="The picture is cut on a fixed grid and unrolled into a line of squares, each squashed into a position — so what reaches the machine is a row of number-lists indistinguishable from the row a sentence produces, and nothing after that point is told which is which."
+>
+  <PictureIntoPositions />
+</Figure>
+
+## Sound is one dimension shorter
+
+Sound gets cut the same way, along the single dimension it has.
+
+A recording is already numbers too — how hard the air pushed on the microphone,
+measured tens of thousands of times a second. Slice it into chunks a few
+hundredths of a second long, push each chunk through its own block of dials, and
+each one comes out as a position. A minute of speech becomes a row a few
+thousand long.
+
+Whether the pieces were cut off a grid or off a timeline makes no difference
+downstream, because by then they are not pieces of anything. They are
+number-lists in a row, which is the only material this machine has ever been
+able to read.
+
+A model that accepts more than one kind of input is called **multimodal** — a
+mode here meaning a kind of material, so text, images and audio are three modes.
+It is an imposing word for a stack that never found out.
+
+## What the trick buys
+
+The reason to do it this way is that the alternative is building everything
+twice. Before this, a picture and a sentence meant two separate machines, two
+separate training runs, and no way to ask a question in one about the other. Now
+there is one machine and one run, and the expensive part — the stack, the
+attention, the billions of dials — is shared.
+
+**Paperwork in the state it actually arrives in.** A council tax bill
+photographed on a kitchen table, a train timetable, a form somebody filled in by
+hand. Where a thing sits on the page is half of what it means, and typing the
+words out destroys that half before the machine has had a look.
+
+**Screens.** Software that clicks around an application for you is not reading
+its source code. It is looking at the same window you are, which is only
+possible because a window is a picture.
+
+**Listening and describing.** Turning an hour of recorded conversation into
+writing. Reading the label on a jar in a language you do not have. Telling
+somebody who cannot see a photograph what is in it.
+
+**Running the conversion the other way.** If a picture can be turned into a row
+of positions, a row of positions can be turned back into a picture — which is
+what sits underneath every system that produces an image from a sentence.
+
+## What it does not buy
+
+Now the part the enthusiasm skips. It falls straight out of the same paragraphs
+that made the whole thing work.
+
+Show a model a photograph of a kitchen and it will describe it well: the light,
+the clutter, the era of the cupboards, the cat on the windowsill. Ask it how
+many chairs are at the table and it will answer at once, in exactly the same
+confident tone, and be wrong far more often than anybody expects.
+
+That is not a gap somebody forgot to fill. Think about what counting actually
+requires. You have to hold a running total, find the next chair, add one, and
+keep going until there are no chairs left — which means going round again, an
+unknown number of times, with somewhere to keep the count while you do.
+
+The last unit was blunt about that. There is no counter in the stack and no way
+to write "go round again"; the stack has a length, and every question gets the
+same number of blocks. What those blocks do is rebuild each position as a blend
+of the others, which is a superb instrument for arriving at "kitchen, cluttered,
+afternoon" and a poor one for arriving at "six".
+
+The same reasoning covers the rest of the weak spots, and it is worth seeing
+that they are all one weak spot. Getting a number off a chart with forty bars on
+it. Text small enough to have landed inside a single square. Which of two
+objects is to the left of the other. Whether two lines actually meet or merely
+come close. Every one of those is a precise fact about quantity or position, and
+every one of them has been blended.
+
+So carry it as a rule of thumb: these models are reliable about what a picture
+is, and unreliable about how much of it there is.
+
+They are also not cheap. A photograph arriving as 196 squares is 196 pieces the
+machine has to pay for, and a full-resolution screen grab is usually carved into
+several times that. Pasting one image into a conversation routinely costs more
+than the entire thread of writing around it.
+
+<Aside title="The clean version and the real one">
+  The account above is the tidy one, and real systems are messier in a way worth
+  knowing about. Many do not push raw patches into the language stack at all:
+  the picture goes through a vision model of its own — itself a transformer
+  reading patches — trained separately on images paired with their captions, and
+  a small learned bridge maps its output into the language model's space. Others
+  convert each patch into an entry from a fixed visual vocabulary, so a picture
+  really does arrive as something very like tokens.
+
+The shape survives all of it. Cut into pieces, each piece becomes a position,
+the stack is not modified. What the variants argue about is how much machinery
+belongs in the bureau de change.
+
+</Aside>
+
+## The machine was never about language
+
+Four units ago this looked like a device for reading English. Attention was
+invented for a problem about sentences, every example was a sentence, and the
+Part you are finishing is named after the thing that finally cracked language.
+
+Read back what the machine actually does, though, and there is not a word in it
+about words. It takes a row of positions. It lets every position consult every
+other one. It rebuilds each of them as a blend of whatever it found, and it does
+that the same fixed number of times, whatever it was handed.
+
+Nothing in that description mentions language, and nothing in it ever had to.
+English was simply the first material anybody happened to pour in.
+
+So nothing here was ever taught to see. Somebody worked out how to cut a
+photograph into pieces small enough to fit.
+
+<DevAside>
+  <Fragment slot="java">
+    ```java
+    float[][] fromText  = embed(tokenize("a dog on the sofa")); //   5 x 768
+    float[][] fromImage = project(patches(photo));              // 196 x 768
+
+    float[][] answer = stack(concat(fromText, fromImage));
+    ```
+
+    The declared type is the same on both lines, which is the entire unit. That
+    is what makes `concat` legal, and it is why the stack needs no branch for
+    one case or the other. Strip the comments and there is nothing in the file
+    saying that one of those arrays came from a camera.
+
+  </Fragment>
+  <Fragment slot="python">
+    ```python
+    from_text  = embed(tokenize("a dog on the sofa"))   #   5 x 768
+    from_image = project(patches(photo))                # 196 x 768
+
+    answer = stack(torch.cat([from_text, from_image]))
+    ```
+
+    Worth knowing what those two calls are. `patches` is a reshape — it
+    rearranges the numbers already in the image and learns nothing. `project`
+    is one `nn.Linear(768, 768)`. The famous "vision transformer" is close to
+    those two lines plus the stack you already had.
+
+  </Fragment>
+</DevAside>
+
+<Checkpoint question="A model is shown a photograph of a car park. It correctly reports the weather, the time of day, and the make of the car nearest the camera — then says there are nine cars when there are fourteen. Given how the picture got in, why should the second answer have been expected?">
+  Because the picture arrived as a fixed grid of squares, each squashed into a
+  position, and the stack then rebuilt every position as a blend of the others
+  in a fixed amount of work. Weather, time of day and the shape of one large car
+  are properties of the blend — they survive it. A count is not. Counting needs
+  a running total and a way to go round again for the next one, and the machine
+  has neither. Nothing miscounted. Nothing counted.
+
+Worth keeping, because the failure is silent and the shape of it generalises.
+The number nine arrives in the same tone as everything that was right, and there
+is nothing in the answer marking one part as the reliable half. That is the
+trade the whole trick makes: a picture becomes readable by being turned into
+something the machine can blend, and what will not survive blending is anything
+that had to be exact.
+
+</Checkpoint>

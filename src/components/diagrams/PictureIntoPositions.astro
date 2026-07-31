@@ -1,0 +1,353 @@
+---
+/**
+ * The whole claim of the unit in three panels: a photograph is cut on a grid,
+ * unrolled into a row, and the row that reaches the stack is the same kind of
+ * row a sentence produces.
+ *
+ * Panel 3 is the one doing the teaching. The two wells are deliberately drawn
+ * identically — same width, same height, same monospaced run of numbers —
+ * because the point is that nothing downstream can tell them apart. Only the
+ * written labels beside them say where each came from, which is exactly the
+ * situation inside the machine.
+ *
+ * The link between a square in the grid and its tile in the unrolled row is
+ * carried by the number printed in both, not by the accent outline (hard rule
+ * 9). The outline is a second signal on top of a first one: delete the colour
+ * and "6" still appears twice, and panel 3 still says "from square 6".
+ *
+ * The grid is 4 x 4 rather than the real 14 x 14 because sixteen numbered cells
+ * are legible on a phone and 196 are not. The panel says so in words rather
+ * than leaving a reader to assume real grids are this coarse.
+ *
+ * Every run of text is interpolated from a constant instead of being written
+ * across several lines of markup. SVG 1.1 removes newlines inside text content
+ * rather than collapsing them to spaces, so a label wrapped by a formatter
+ * loses the space at its break; keeping each string on one line here puts that
+ * out of reach.
+ *
+ * Decorative on its own, so `aria-hidden`: `Figure` carries the accessible name
+ * and the plain-English description.
+ */
+
+/**
+ * Sixteen squares of a photograph, in reading order. The fills only suggest a
+ * scene — sky above, something standing in the middle, ground below. Nothing is
+ * being said by the tint, and every one of them is light enough for the cell
+ * number printed on it to stay legible.
+ */
+const SQUARES: readonly string[] = [
+  'fill-paper-raised',
+  'fill-paper-raised',
+  'fill-paper',
+  'fill-paper-raised',
+  'fill-paper-raised',
+  'fill-accent-2-soft',
+  'fill-accent-2-soft',
+  'fill-paper',
+  'fill-rule',
+  'fill-accent-soft',
+  'fill-accent-soft',
+  'fill-rule',
+  'fill-paper-sunken',
+  'fill-rule',
+  'fill-rule',
+  'fill-paper-sunken',
+];
+
+/** The square followed all the way through to panel 3, counting from one. */
+const FOLLOWED = 6;
+
+const GRID_X = 24;
+const GRID_Y = 42;
+const CELL = 27;
+
+const ROW_X = 24;
+const ROW_Y = 176;
+const TILE = 24;
+const TILE_GAP = 2;
+
+const followedX = GRID_X + ((FOLLOWED - 1) % 4) * CELL;
+const followedY = GRID_Y + Math.floor((FOLLOWED - 1) / 4) * CELL;
+const followedTileX = ROW_X + (FOLLOWED - 1) * (TILE + TILE_GAP);
+
+interface Square {
+  readonly n: number;
+  readonly fill: string;
+  /** Where the square sits while the picture is still a picture. */
+  readonly gx: number;
+  readonly gy: number;
+  /** Where the same square sits once the picture has been unrolled. */
+  readonly rx: number;
+}
+
+const CUT: readonly Square[] = SQUARES.map((fill, index) => ({
+  n: index + 1,
+  fill,
+  gx: GRID_X + (index % 4) * CELL,
+  gy: GRID_Y + Math.floor(index / 4) * CELL,
+  rx: ROW_X + index * (TILE + TILE_GAP),
+}));
+
+interface Piece {
+  readonly text: string;
+  readonly x: number;
+  readonly w: number;
+  readonly mid: number;
+}
+
+/**
+ * Lays a row of word pieces out by arithmetic. JetBrains Mono advances exactly
+ * 0.6em per character, so a tile's width is calculable rather than measured,
+ * and editing a piece moves everything after it.
+ */
+function pieces(
+  words: readonly string[],
+  left: number,
+  font: number,
+  pad: number,
+  gap: number,
+): Piece[] {
+  const laid: Piece[] = [];
+  let x = left;
+
+  for (const text of words) {
+    const w = text.length * font * 0.6 + pad * 2;
+    laid.push({ text, x, w, mid: x + w / 2 });
+    x += w + gap;
+  }
+
+  return laid;
+}
+
+const SENTENCE = pieces(['a', 'dog', 'on', 'the', 'sofa'], 24, 11, 6, 4);
+
+/** The piece followed through to panel 3, counting from one. */
+const FOLLOWED_PIECE = 2;
+
+/** Fails the build loudly rather than drawing an outline around nothing. */
+function pieceAt(index: number): Piece {
+  const piece = SENTENCE[index];
+  if (!piece) throw new Error(`no sentence piece at position ${String(index)}`);
+  return piece;
+}
+
+const followedPiece = pieceAt(FOLLOWED_PIECE - 1);
+
+const SAYS = {
+  headingPhoto: '1 — a photograph, cut where the ruler says',
+  headingWords: '2 — a sentence, cut from a fixed list',
+  headingBoth: '3 — what the stack is actually handed',
+
+  photoA: '224 pixels each way, cut into squares 16 pixels across.',
+  photoB: 'That is 14 rows of 14 — 196 squares. Drawn here as 16.',
+  photoC: 'Each square is already numbers: 16 × 16 pixels, 3 numbers',
+  photoD: 'apiece, so 768 of them before anything has been trained.',
+  photoE: 'One block of dials squashes those 768 down to a position,',
+  photoF: 'the same length every word piece already gets.',
+
+  unrolled: 'Unrolled left to right, top to bottom. Now it is a row.',
+
+  wordsA: 'Cut from a fixed list, then each piece',
+  wordsB: 'swapped for its position on the map.',
+  wordsC: 'The squares never touch that list. There is no entry in it for',
+  wordsD: 'a corner of a photograph, so they go straight to a position.',
+
+  wellPhoto: '0.42   −1.07   0.15   0.88   −0.31   0.06   …',
+  wellWords: '−0.18   0.55   −0.90   0.07   0.63   −0.44   …',
+
+  fromSquare: 'from square 6',
+  ofPhoto: 'of the photograph',
+  fromPiece: 'from piece 2',
+  ofSentence: 'of the sentence',
+
+  punchline:
+    'Same length, same kind of thing, one row. Nothing past this point is told which is which.',
+} as const;
+---
+
+<svg viewBox="0 0 480 486" class="w-full" aria-hidden="true">
+  <!-- Panel frames -->
+  <g class="fill-none stroke-rule-strong" stroke-width="1.25">
+    <rect x="10" y="8" width="460" height="206" rx="8"></rect>
+    <rect x="10" y="226" width="460" height="110" rx="8"></rect>
+    <rect x="10" y="348" width="460" height="128" rx="8"></rect>
+  </g>
+
+  <g class="fill-ink font-display" font-size="12" font-weight="700">
+    <text x="24" y="30">{SAYS.headingPhoto}</text>
+    <text x="24" y="248">{SAYS.headingWords}</text>
+    <text x="24" y="370">{SAYS.headingBoth}</text>
+  </g>
+
+  <!-- Panel 1: the grid, still in the shape of a picture -->
+  {
+    CUT.map((square) => (
+      <g>
+        <rect
+          x={square.gx}
+          y={square.gy}
+          width={CELL}
+          height={CELL}
+          class={`${square.fill} stroke-rule-strong`}
+          stroke-width="1"
+        />
+        <text
+          x={square.gx + 5}
+          y={square.gy + 13}
+          class="fill-ink-muted font-mono"
+          font-size="8"
+        >
+          {square.n}
+        </text>
+      </g>
+    ))
+  }
+
+  <!-- The one square followed all the way to panel 3 -->
+  <rect
+    x={followedX}
+    y={followedY}
+    width={CELL}
+    height={CELL}
+    class="fill-none stroke-accent"
+    stroke-width="2.5"></rect>
+
+  <g class="fill-ink" font-size="9">
+    <text x="152" y="58">{SAYS.photoA}</text>
+    <text x="152" y="94">{SAYS.photoC}</text>
+    <text x="152" y="130">{SAYS.photoE}</text>
+  </g>
+
+  <g class="fill-ink-faint" font-size="9">
+    <text x="152" y="72">{SAYS.photoB}</text>
+    <text x="152" y="108">{SAYS.photoD}</text>
+    <text x="152" y="144">{SAYS.photoF}</text>
+    <text x="24" y="168">{SAYS.unrolled}</text>
+  </g>
+
+  <!-- Panel 1, second half: the same sixteen squares, in a line -->
+  {
+    CUT.map((square) => (
+      <g>
+        <rect
+          x={square.rx}
+          y={ROW_Y}
+          width={TILE}
+          height={TILE}
+          rx="3"
+          class={`${square.fill} stroke-rule-strong`}
+          stroke-width="1"
+        />
+        <text
+          x={square.rx + TILE / 2}
+          y={ROW_Y + 16}
+          text-anchor="middle"
+          class="fill-ink-muted font-mono"
+          font-size="9"
+        >
+          {square.n}
+        </text>
+      </g>
+    ))
+  }
+
+  <rect
+    x={followedTileX}
+    y={ROW_Y}
+    width={TILE}
+    height={TILE}
+    rx="3"
+    class="fill-none stroke-accent"
+    stroke-width="2.5"></rect>
+
+  <!-- Panel 2: the sentence, cut into pieces -->
+  {
+    SENTENCE.map((piece, index) => (
+      <g>
+        <rect
+          x={piece.x}
+          y="262"
+          width={piece.w}
+          height="24"
+          rx="4"
+          class="fill-paper-sunken stroke-rule-strong"
+          stroke-width="1"
+        />
+        <text
+          x={piece.mid}
+          y="278"
+          text-anchor="middle"
+          class="fill-ink font-mono"
+          font-size="11"
+          font-weight={index + 1 === FOLLOWED_PIECE ? '700' : '400'}
+        >
+          {piece.text}
+        </text>
+        <text
+          x={piece.mid}
+          y="298"
+          text-anchor="middle"
+          class="fill-ink-faint font-mono"
+          font-size="8"
+        >
+          {index + 1}
+        </text>
+      </g>
+    ))
+  }
+
+  <rect
+    x={followedPiece.x}
+    y="262"
+    width={followedPiece.w}
+    height="24"
+    rx="4"
+    class="fill-none stroke-accent"
+    stroke-width="2.5"></rect>
+
+  <g class="fill-ink" font-size="9">
+    <text x="196" y="272">{SAYS.wordsA}</text>
+  </g>
+
+  <g class="fill-ink-faint" font-size="9">
+    <text x="196" y="286">{SAYS.wordsB}</text>
+    <text x="24" y="316">{SAYS.wordsC}</text>
+    <text x="24" y="328">{SAYS.wordsD}</text>
+  </g>
+
+  <!-- Panel 3: two rows nothing downstream can tell apart -->
+  <rect
+    x="24"
+    y="382"
+    width="290"
+    height="28"
+    rx="6"
+    class="fill-paper-sunken stroke-rule-strong"
+    stroke-width="1"></rect>
+  <text x="36" y="400" class="fill-ink font-mono" font-size="9"
+    >{SAYS.wellPhoto}</text
+  >
+
+  <rect
+    x="24"
+    y="418"
+    width="290"
+    height="28"
+    rx="6"
+    class="fill-paper-sunken stroke-rule-strong"
+    stroke-width="1"></rect>
+  <text x="36" y="436" class="fill-ink font-mono" font-size="9"
+    >{SAYS.wellWords}</text
+  >
+
+  <g class="fill-ink" font-size="9">
+    <text x="326" y="396">{SAYS.fromSquare}</text>
+    <text x="326" y="432">{SAYS.fromPiece}</text>
+  </g>
+
+  <g class="fill-ink-faint" font-size="9">
+    <text x="326" y="408">{SAYS.ofPhoto}</text>
+    <text x="326" y="444">{SAYS.ofSentence}</text>
+    <text x="24" y="466">{SAYS.punchline}</text>
+  </g>
+</svg>

@@ -1,0 +1,48 @@
+---
+import LayerStackDiagram from './LayerStackDiagram.astro';
+
+/**
+ * The shared layer stack with one route lit, for `forward-pass`.
+ *
+ * This is `LayerStackDiagram` and nothing else. The wrapper exists because the
+ * `highlight` prop is `[number, number, number][]`, and an array literal written
+ * at the call site infers as `number[][]`, which strict TypeScript refuses — the
+ * tuple type has to be declared somewhere, and MDX has nowhere to declare it.
+ *
+ * The second reason is that a lit path has to be a *chain*: each triple must
+ * start at the node the previous one ended on, or the picture shows three
+ * unrelated sparks rather than one signal travelling. That constraint is worth
+ * writing down once, beside the data, instead of re-deriving it per call site.
+ *
+ * `backpropagation` draws this same stack with the arrows reversed. The two
+ * pictures being nearly indistinguishable is the teaching, not an oversight:
+ * one machine, one set of wires, walked in each direction.
+ */
+
+/** Each triple is [junction, node in the lower layer, node in the upper one]. */
+const litPath: [number, number, number][] = [
+  [0, 2, 1],
+  [1, 1, 3],
+  [2, 3, 1],
+];
+---
+
+{
+  /*
+  3-5-5-2 is not an arbitrary shape: it is the exact stack `layers` counted to
+  fifty connections and the exact stack `backpropagation` walks backwards. The
+  three pictures have to be the SAME machine or the repetition teaches nothing —
+  a reader who sees a different network each time learns that these are three
+  topics rather than three views. Change this shape and change all three.
+*/
+}
+<LayerStackDiagram
+  layers={[
+    { size: 3, label: 'input' },
+    { size: 5, label: 'hidden' },
+    { size: 5, label: 'hidden' },
+    { size: 2, label: 'output' },
+  ]}
+  highlight={litPath}
+  footnote="one sweep, left to right — every line is live, no line runs twice"
+/>

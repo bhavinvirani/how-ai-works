@@ -142,6 +142,38 @@ export const ui = {
       title: 'Turn the bar up and down',
       lead: 'Start at the far left, where it raises no alarms at all, and read the accuracy. Then drag right.',
     },
+    TasteNeuron: {
+      title: 'Set someone else’s taste in films',
+      lead: 'Turn the three dials until it recommends what you would. Then take the bend out and find what it can no longer be taught.',
+    },
+    BlameFlow: {
+      title: 'Hand out the blame',
+      lead: 'One wrong answer, and every dial is told its share of it. Try to guess which dial is told to move most, then press and see.',
+    },
+    MeaningMap: {
+      title: 'Move around a map of meaning',
+      lead: 'Drop the marker somewhere new and read its neighbours. Then follow the same arrow from a different word and see where you land.',
+    },
+    PronounFlip: {
+      title: 'Change one word, move the meaning',
+      lead: 'Swap the last word and watch what “it” now points at. Nothing else in the sentence moved.',
+    },
+    TokenSplitter: {
+      title: 'Cut a sentence into the pieces a model reads',
+      lead: 'Type a rare name, a long number, and something that is not English — and watch the piece count rather than the letters.',
+    },
+    AttentionMap: {
+      title: 'Watch one word ask the others',
+      lead: 'Pick a word and read where its attention went. Try “she” first, then try “because”.',
+    },
+    MultiHeadLanes: {
+      title: 'Four readings of one sentence',
+      lead: 'Same words, four heads, four different answers. Find the word they disagree about most.',
+    },
+    OrderBlindness: {
+      title: 'Shuffle the words and see what survives',
+      lead: 'Scramble the sentence and compare the two readouts closely. Then stamp positions in and scramble it again.',
+    },
     // new:interactive inserts above this line — do not remove.
   } as Record<string, { title: string; lead: string }>,
 

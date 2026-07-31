@@ -1,0 +1,255 @@
+---
+title: The good idea that had to wait
+part: inside-the-machine
+order: 6
+summary: Stacking layers deep is a 1980s idea that sat unusable for twenty years until data, graphics cards and a few unglamorous fixes turned up — and what depth buys, once it works, is reuse, because a part built once can be shared by everything above it.
+prerequisites:
+  - feature-hierarchy
+  - backpropagation
+connections:
+  - to: embeddings
+    why: Reuse is why a deep stack ends up holding its own vocabulary of parts, and an embedding is what that vocabulary looks like when the things being described are words rather than pixels.
+interactives: []
+status: published
+updated: 2026-07-31
+---
+
+import Aside from '../../components/blocks/Aside.astro';
+import Checkpoint from '../../components/blocks/Checkpoint.astro';
+import DevAside from '../../components/blocks/DevAside.astro';
+import Figure from '../../components/blocks/Figure.astro';
+import WideVsDeep from '../../components/diagrams/WideVsDeep.astro';
+
+Everything you have just read about — layers stacked on layers, the sweep
+forwards, the blame pushed back — was written down, published and understood
+before 1990.
+
+It sat in textbooks. Anyone with a maths degree and a winter to spare could
+code it up, and plenty of people did. Then they ran it on the photographs they
+had, and it did not work. Not badly, not nearly. It ground away for a week and
+came out no better than a method you could write in an afternoon.
+
+By the middle of the nineties most of the field had drawn the sensible
+conclusion and gone elsewhere. That is not stupidity. A technique that clever
+people have tried properly for a decade, and that keeps losing to something
+simpler, is a technique that does not work.
+
+They were right about the results and wrong about the reason, and the gap
+between those two things cost roughly twenty years.
+
+## Three things arrived, and none of them was an idea
+
+Nothing was missing from the instructions. What was missing was everything the
+instructions quietly assumed.
+
+**Examples, by the million.** In 1990 a large labelled collection of
+photographs meant a few thousand pictures, gathered by hand by whoever's
+postgraduate students could be persuaded. A deep stack holds an enormous number
+of dials, and you already know what happens when a machine with that much
+freedom meets a few thousand examples: it memorises them and learns nothing
+worth having. Then the internet happened to everybody. By 2010 there was a
+freely downloadable collection of more than a million photographs, labelled by
+hand into a thousand categories. The instructions had always needed a pile like
+that. Nobody had ever had one.
+
+**Machines that could do the arithmetic.** Training is one tiny sum — multiply,
+add — repeated a preposterous number of times, and the sums mostly do not
+depend on each other, so they can be done all at once rather than one after
+another. That is also, by complete coincidence, the shape of drawing a video
+game. Graphics cards were built to perform millions of small independent sums
+simultaneously because that is what shading a screenful of pixels requires, and
+somebody noticed they would do a network's arithmetic just as happily.
+
+The size of that change is easy to understate. It is not that training got
+faster. It is that an experiment which used to take a month took a day — and a
+field where you can try an idea before lunch behaves nothing like a field where
+you get four attempts a year. What limits progress is how often you can afford
+to be wrong.
+
+**Fixes nobody would put on a poster.** The specific way deep stacks failed was
+this. Blame travels backwards from the answer, and at each layer it is
+multiplied by a number smaller than one. Do that twenty times and a correction
+that started out respectable arrives at the bottom as a rounding error. So the
+layers nearest the answer learned, the layers nearest the pixels barely moved,
+and those are precisely the layers that were supposed to be finding edges.
+Occasionally the numbers were larger than one instead and the correction
+arrived as an infinity, which at least had the decency to be obvious.
+
+The repairs were dull. A squashing function simple enough not to strangle the
+signal on its way through; sensible starting values for the dials instead of
+whatever the random number generator produced. Later came wiring that lets the
+signal skip past layers altogether, which is what took stacks from tens of
+layers to hundreds. Not one of these is a beautiful idea. Together they are the
+difference between a stack that trains and a stack that sits there.
+
+## The year everybody changed their mind
+
+There was an annual competition for sorting photographs into categories, and it
+had settled into the rhythm of a mature field — a percent or so of improvement
+a year, won by teams who had spent months deciding, by hand, what the machine
+ought to look for. Roundness. How densely corners cluster. A tally of which
+directions the edges run in. Careful human expertise, written out as
+instructions.
+
+In 2012 a deep network entered and won by a margin that read like a typo. It
+had been told nothing about roundness or corners. It had worked out what to
+look for by itself, which is the thing the lower layers of a deep stack do.
+
+Within two years the hand-designed instructions were gone, first from the
+competition and then from most of the field. Nothing had been discovered that
+week. Something had merely become possible.
+
+## Why not just make the layer wider?
+
+Here is the awkward fact that turns this into a real question. A network with a
+single layer of neurons, if you make that layer wide enough, can approximate any
+sensible pattern you care to name. That is not a hunch — it was proved in the
+late eighties. Depth is not necessary.
+
+Which means the case for depth cannot be that shallow machines are incapable.
+It has to be something else, and it is: depth is about how much it costs.
+
+## Parts, not wholes
+
+You have already watched a stack sort itself into a ladder, and met the short
+reason it bothers. This is that fact from the other side. Not "why does a ladder
+turn up", but "what would it cost you not to have one" — and the only way to
+answer that is to put a shallow machine and a deep one on the same job and
+compare the bills.
+
+So: look at a photograph and say whether it holds a face or a car.
+
+The wide, shallow machine has one enormous layer between the pixels and the
+answer, so every neuron in it stares straight at raw pixels and has to arrive
+at a finished verdict in a single move. A neuron that fires for faces must work
+out for itself, from nothing, that there are boundaries where light meets dark,
+that boundaries make curves, and that certain curves make an eye. A neuron that
+fires for cars works out the first two of those separately, from its own
+examples, and neither one can tell the other. There is nowhere to put a shared
+conclusion, because there is no floor between the pixels and the answer.
+
+The narrow, deep machine works in stages. Its bottom layer finds edges — short
+boundaries where light meets dark, at assorted angles — and that is all it
+finds. The layer above assembles edges into corners, curves and textures. The
+layer above that assembles those into eyes, wheels and window frames. Only at
+the top does anything say "face" or "car".
+
+Now the sentence this whole unit exists for. **An edge is an edge.** The
+detector that finds a slanted boundary sits under the eye and under the wheel —
+the same detector, built once, paid for by every photograph the machine has
+ever seen, of anything at all. When the hundredth kind of object turns up, the
+deep machine does not have to learn what an edge is. It has one.
+
+<Figure
+  title="The same job, given to a wide machine and a deep one"
+  description="The wide machine learns each object whole and from scratch, so nothing it works out for faces is any use for cars; the deep machine builds an edge once and puts that same edge under the eye and under the wheel, which is why its second object costs a fraction of its first."
+>
+  <WideVsDeep />
+</Figure>
+
+So the two machines are billed differently. The wide one pays full price for
+every new object, forever; its hundredth costs exactly what its first did. The
+deep one pays full price once, for a vocabulary of parts, and after that a new
+object costs only the short recipe that arranges parts which already exist.
+
+And the price is paid in examples. Learning fewer things means needing fewer
+examples to learn them, which is why the deep machine can be good at a hundred
+objects on a pile of photographs that would leave the wide one hopeless at two.
+The shallow network really could reach the same answer in principle. It would
+need a layer of implausible width and a quantity of examples nobody has.
+
+A joiner who makes a hundred different pieces of furniture has not learned a
+hundred unrelated crafts. They have learned to cut a straight edge, cut a
+joint, plane a face true — and every piece after that is those few skills,
+arranged differently. Somebody who instead memorised the exact sequence of
+movements for one particular chair would know precisely nothing about the next
+chair and would have to start again from the beginning. Depth is what lets a
+machine take the joiner's route.
+
+<Aside title="What 'in principle' is hiding">
+  The proof that one wide layer can approximate anything is an existence proof.
+  It says a setting of the dials exists. It does not say how wide the layer
+  would have to be — the honest answer can grow absurdly fast with the
+  difficulty of the pattern — and it says nothing whatsoever about whether
+  training could ever find that setting from examples. Those two questions are
+  the entire practical problem. Being told the answer is somewhere in the
+  building is not the same as being given the room number.
+</Aside>
+
+## Who ends up paying for the parts
+
+Keeping somebody else's lower layers and retraining only the top is the
+everyday form of all this, and you have already met it. The reuse argument is
+what tells you why that habit is not a convenient trick but the shape the whole
+industry has settled into.
+
+Parts are expensive and general. Arrangements are cheap and specific. Those two
+facts pull the work apart along a seam and keep it apart: a small number of
+organisations spend enormous sums building vocabularies of parts out of
+quantities of data nobody else can gather, and everyone else buys the vocabulary
+and pays only for the arrangement on top. Every claim you will meet later about
+a model "tuned on our own documents" is that split being cashed in.
+
+It is also why nobody quotes a price for these things in layers. The bill for a
+deep stack is not the depth. It is the examples and the electricity that bought
+the bottom of it, and the reason a hospital or a factory can join in at all is
+that somebody else has already paid.
+
+None of which makes depth free, and more of it is not automatically better.
+"Deep" is not a target to aim at. Past some point the extra layers add nothing
+you can measure while costing memory, training time, and every one of the
+failure modes those dull fixes were invented to hold back.
+
+Nor is the number derived. Depth is inherited: you start from an arrangement
+that already worked on something similar and adjust it, for exactly the reason
+nobody can calculate a step size. The honest description is that somebody tried
+several and kept whichever behaved.
+
+<DevAside>
+  <Fragment slot="java">
+    ```java
+    // A layer, and the same layer with a way round it.
+    NDArray plain    = layer.forward(x);
+    NDArray residual = layer.forward(x).add(x);   // the entire fix
+    ```
+
+    That `.add(x)` is what took stacks from tens of layers to hundreds. Blame
+    travelling backwards now has a route straight past the layer instead of
+    only through it, so it arrives at the bottom without having been multiplied
+    down at every step on the way.
+
+  </Fragment>
+  <Fragment slot="python">
+    ```python
+    def block(x):
+        return x + layer(x)      # not: return layer(x)
+    ```
+
+    One `x +`. When an architecture diagram is full of arrows hopping over
+    boxes, that is what they are — a way home for the correction. Take them out
+    and the same model, on the same data, trains to a visibly worse score for
+    no reason you can see from the outside.
+
+  </Fragment>
+</DevAside>
+
+<Checkpoint question="A colleague proposes skipping the stack entirely: one layer of neurons, made as wide as the budget allows, straight from pixels to answer. They point out — correctly — that a wide enough single layer can approximate any pattern at all. Nothing in that claim is false. So what is wrong with the plan, and what exactly would it cost them?">
+  Nothing is wrong with the maths. Everything is wrong with the bill.
+
+A single layer has no floor to rest shared work on. Every neuron runs from raw
+pixels to a finished verdict, so whatever one of them works out about
+boundaries between light and dark is unavailable to all the others, and each
+new object has to be learned whole and from nothing. The cost turns up twice.
+The layer has to be implausibly wide, and — the part that actually stops you —
+every object needs its own full pile of examples, so the hundredth costs
+exactly what the first did.
+
+The deep stack buys a vocabulary of parts once and pays only for the
+arrangement afterwards, which is why its hundredth object is cheap. Same
+answers available in both machines; wildly different prices.
+
+Worth keeping: "can, in principle" and "can, on the data and hardware you
+actually have" are different claims, and almost every argument about how to
+build one of these is really about the second.
+
+</Checkpoint>

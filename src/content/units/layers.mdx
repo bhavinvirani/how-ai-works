@@ -1,0 +1,217 @@
+---
+title: The billions are in the wiring
+part: inside-the-machine
+order: 2
+summary: Neurons standing side by side make a layer, and every line between one layer and the next is a single adjustable number — which is why joining a thousand neurons to a thousand costs a million of them.
+prerequisites:
+  - neuron
+connections:
+  - to: feature-hierarchy
+    why: This unit counts the middle layers without opening them; that one opens them, and finds each level working on what the level below it produced rather than on the raw input.
+  - to: forward-pass
+    why: Every connection counted here is one multiplication waiting to happen, and that unit is the single trip through all of them that turns an input into an answer.
+interactives: []
+status: published
+updated: 2026-07-31
+---
+
+import Aside from '../../components/blocks/Aside.astro';
+import Checkpoint from '../../components/blocks/Checkpoint.astro';
+import DevAside from '../../components/blocks/DevAside.astro';
+import Figure from '../../components/blocks/Figure.astro';
+import LayerStackDiagram from '../../components/diagrams/LayerStackDiagram.astro';
+import OneJunctionCounted from '../../components/diagrams/OneJunctionCounted.astro';
+
+Two small offices merge. Four people in one, three in the other, and on the
+first Monday somebody sensible decides that everyone should know everyone: each
+of the four takes a standing weekly call with each of the three.
+
+Twelve calls. Nobody minds twelve calls.
+
+A year later both offices have grown ten times over — forty people and thirty —
+and nobody has thought to revoke the rule. It is now twelve hundred calls a
+week, and the entire company does nothing else.
+
+Count what actually happened there. The staff grew ten times. The calendar grew
+a hundred times. Nothing was added but people, and the thing that got out of
+hand was not the people.
+
+## Neurons in a row
+
+One neuron does one small thing. Numbers arrive, each gets multiplied by a dial
+saying how much it matters, the total is put through a small bend, and one
+number comes out the far side. That is a single judgement, and not a very
+sophisticated one.
+
+Now stand five hundred of them side by side. Every one receives the same
+incoming numbers — the same photograph, the same sentence — and every one has
+its own dials. So five hundred small judgements get made about the same
+material at once, each neuron responding to something different about it. That
+row is a **layer**, and the word means nothing more than that: neurons at the
+same depth, fed the same thing, not talking to each other.
+
+The move that matters is what comes next. Those five hundred outputs are five
+hundred numbers, and numbers are exactly what a neuron eats. So you feed them
+into another layer of neurons. The second layer never sees the photograph at
+all. It sees what the first layer made of the photograph, and it looks for
+patterns in _that_.
+
+It is worth being clear about why anyone bothers stacking, because widening is
+the obvious alternative. You could put a million neurons in a single layer.
+They would all be looking directly at the raw input, so what you would own is a
+million opinions about pixels and no way to form an opinion about an opinion.
+Stacking is the only thing that buys the second storey. "Deep" learning is
+named for the height of the stack, not the width of it.
+
+Three names get used for positions in that stack. The **input layer** is where
+the raw numbers arrive — one neuron per pixel, per measurement, per whatever
+the material has been chopped into. The **output layer** is the far end, where
+the answer comes out: one neuron per category, or a single neuron holding a
+price.
+
+Everything in between is a **hidden layer**, and hidden is a badly chosen word.
+There is no lid. The numbers in the middle layers sit in the same file as
+everything else and can be printed at any time. Hidden means only that they are
+neither the question nor the answer, so in ordinary use nobody ever looks.
+
+<Figure
+  title="Four layers, and every line between them"
+  description="Each column is one layer and every line between columns is a single adjustable number, so the count that matters grows with the lines rather than the dots — fifty lines between fifteen neurons, before the machine has done anything at all."
+>
+  <LayerStackDiagram
+    layers={[
+      { size: 3, label: 'input' },
+      { size: 5, label: 'hidden' },
+      { size: 5, label: 'hidden' },
+      { size: 2, label: 'output' },
+    ]}
+    footnote="15 + 25 + 10 = 50 lines, and every line is one number"
+  />
+</Figure>
+
+## Every line is one number
+
+Look at what is actually in the gap between two of those columns. Every neuron
+on the left reaches every neuron on the right — that arrangement has a name,
+**fully connected**, and it means exactly what it says. At the first junction
+above, three neurons reach five neurons, which is fifteen lines.
+
+Each line carries exactly one number: how much of what comes out of the neuron
+behind it the neuron in front should take. Turn that number up and the second
+neuron leans heavily on the first. Set it to zero and it ignores it entirely.
+Turn it negative and whatever excites the first neuron actively puts the second
+one off.
+
+One line, one adjustable number. That number is a **parameter** — the same kind
+of dial you turned by hand on the house-price machine, except that nobody turns
+this one by hand and nobody could say what it is for. There is nothing else in
+that gap. The wiring _is_ the parameters.
+
+Which makes the count a multiplication rather than a total, and that is the
+whole unit. A layer of 4 into a layer of 3 is 4 × 3 = 12 connections, because
+each of the four has to reach each of the three. Not seven. Twelve. Add one
+neuron to the left-hand layer and you have not added one connection, you have
+added three.
+
+<Figure
+  title="One junction, counted twice"
+  description="The connections between two layers make a rectangle — one number for every pairing — so widening both sides multiplies rather than adds, and a junction you could draw in full turns into one that will not fit on a page."
+>
+  <OneJunctionCounted />
+</Figure>
+
+Now widen both sides at once, which is what actually happens when people build
+bigger models. A thousand neurons into a thousand is 1,000 × 1,000 = 1,000,000
+connections. A million numbers, for one junction, in a machine that has not yet
+done anything.
+
+That is the merged offices again. Ten times the people on each side, a hundred
+times the calls — and here nobody is going to notice and revoke the rule,
+because the whole point of the machine is to have as many of these numbers as
+can be afforded.
+
+Real networks are deep as well as wide, and the total is just those products
+added up. Take a hundred junctions, each between layers ten thousand neurons
+across: 10,000 × 10,000 = 100,000,000 per junction, times a hundred junctions,
+is ten billion numbers.
+
+That is the entire origin of "70 billion parameters". It is not a measure of
+anything clever anybody did. It is a count of the lines in a diagram too big to
+draw.
+
+<Aside title="Two things the count glosses over">
+  Each neuron also owns one number of its own — the level its total has to clear
+  before it passes anything on. That adds one per neuron, which is real, and
+  next to the products it is dust: a thousand extra numbers against a million
+  connections.
+
+The large language models later in this site are also not wired
+everything-to-everything all the way through. Their layers use a more
+particular pattern, which is what an entire Part further on is about. The
+counting does not change when you get there — those parts are still rectangles
+of numbers, and a rectangle's size is still one width times another.
+
+</Aside>
+
+## What the number is good for
+
+You will meet the parameter count on the front page of every model ever
+released. It answers two questions honestly, and a third one not at all.
+
+The first is whether you can run the thing. Every parameter has to be held in
+memory while the model works, so the count times the bytes per number is the
+memory bill, and there is no arguing with it. Seventy billion parameters at two
+bytes each is 140 gigabytes, which is far more memory than an ordinary computer
+has. That is why running a large model at home means squeezing each number down
+to one byte, or half of one, and accepting slightly worse answers in exchange.
+
+The second is capacity: roughly how much pattern the machine can physically
+hold. More parameters means more room for what it was shown. This is a real
+property and it is why the counts kept climbing.
+
+The third question is how good it is, and the count is silent on that. Capacity
+is the size of a container, and it says nothing whatever about what was poured
+in. A smaller model trained on carefully chosen material routinely beats a
+larger one trained on whatever was lying around — which is why "how many
+parameters" is a much less interesting question than the one about the training
+pile.
+
+<DevAside>
+  <Fragment slot="java">
+    ```java
+    // One junction between two layers of a thousand.
+    double[][] weights = new double[1000][1000];   // 1,000,000 numbers
+    ```
+
+    A network is a short list of those arrays, and the file it ships as is not
+    much more than them written out end to end. So the size on disk and the
+    parameter count are the same fact in two units: divide bytes by parameters
+    and you learn what precision it was saved at. Almost nothing else about a
+    weights file can be read at all.
+
+  </Fragment>
+  <Fragment slot="python">
+    ```python
+    sum(p.numel() for p in model.parameters())   # the number on the model card
+    ```
+
+    The headline figure is this line, run once. Notice what it throws away:
+    two networks of completely different shapes can report the same total, and
+    the number will not tell you which of them to use.
+
+  </Fragment>
+</DevAside>
+
+<Checkpoint question="A network has two hidden layers of 1,000 neurons each. Someone proposes doubling both to 2,000, and calls it making the model twice as big. What actually happens to the number of parameters between those two layers?">
+  It goes up four times, not two. The connections between two layers are every
+  neuron on one side reaching every neuron on the other, so the count is a
+  product: 1,000 × 1,000 is a million, and 2,000 × 2,000 is four million.
+  Doubling both widths doubles both terms of the multiplication at once, and two
+  doublings is a quadrupling.
+
+Worth keeping, because it is the shape of almost every cost here. Memory,
+training time and the electricity bill all follow the parameter count, and the
+parameter count follows an area rather than a length. "Slightly wider" is
+rarely slightly more expensive, and nobody proposing it says so.
+
+</Checkpoint>

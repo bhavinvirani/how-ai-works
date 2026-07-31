@@ -1,0 +1,277 @@
+---
+title: The jobs nobody handed out
+part: inside-the-machine
+order: 5
+summary: Nobody tells a network to look for edges, or ears, or which person a "she" belongs to — the layers sort themselves into a ladder from crude fragments up to whole meanings, because that arrangement is what makes the wrongness score smallest.
+prerequisites:
+  - layers
+connections:
+  - to: why-depth-works
+    why: Each rung here exists because the rung below it did some shared work once, and that unit is where the argument for depth itself gets made — along with why an idea this old sat useless for thirty years.
+  - to: embeddings
+    why: Words get the same treatment as pixels, and nobody hand-writes what makes two of them similar — the positions that end up carrying meaning are found by the same pressure to be less wrong.
+interactives: []
+status: published
+updated: 2026-07-31
+---
+
+import Aside from '../../components/blocks/Aside.astro';
+import Checkpoint from '../../components/blocks/Checkpoint.astro';
+import DevAside from '../../components/blocks/DevAside.astro';
+import Figure from '../../components/blocks/Figure.astro';
+import LayerStackDiagram from '../../components/diagrams/LayerStackDiagram.astro';
+
+A photograph lands on your desk as two hundred thousand brightness readings, and
+your job is to say whether there is a cat in it.
+
+You already know better than to sit down and write the rule. You will collect
+examples and let a machine tune itself against them. But that leaves a question
+nobody warns you about at the start: tune itself against _what_?
+
+Not those two hundred thousand readings. Move the cat two centimetres to the
+left and every single number changes, while the answer does not. A machine
+handed the raw grid would have to learn "cat" all over again for every position,
+every size and every lighting condition a cat might turn up in, and there is no
+pile of examples large enough for that.
+
+So somebody decides first what is worth measuring. How much of the picture is
+fur-coloured. Whether there are two dark ovals about a head's width apart. How
+sharply the brightness changes at each point, and in which direction. Those
+measurements go to the machine, and the machine learns from those.
+
+That somebody was a person. For roughly the first two decades of any of this
+working at all, it was thousands of people, and their measurements had names,
+papers and whole careers behind them. The machine learned the last step. A human
+being invented everything it was learning from.
+
+## The word for something worth measuring
+
+A **feature** is one of those measurements — a single number pulled out of an
+example because somebody believed it helps tell one answer from another.
+Fur-colouredness is a feature. So is the number of capital letters in an email,
+and so was floor area when you priced a house.
+
+Hand-made features work. They have a ceiling, though, and the ceiling has a
+particular shape.
+
+The first problem is that they do not travel. A set of measurements refined over
+five years for finding faces tells you nothing whatsoever about finding tumours
+on a scan, or a cracked weld on a production line. Every new job started from an
+empty page, and the page took years to fill.
+
+The second problem is worse. A feature is a guess about what matters, made by
+someone who cannot see what their own eyes are doing. You can pick your brother
+out of a crowd in a tenth of a second and you cannot say how — and the same
+locked door that stops you writing the rule stops you naming the right
+measurements. What got written down was whatever happened to be describable,
+which is not the same list as whatever happens to be useful.
+
+So that was the ceiling, and it is what the rest of this unit exists to get past.
+Every problem needed a person to invent its vocabulary from scratch, one problem
+at a time, arriving at results everyone involved agreed were mediocre.
+
+## The layers nobody gave a job to
+
+So take the person out.
+
+Hand the machine the raw grid after all — but instead of two dials sitting on
+the end of somebody's measurements, give it a stack of layers, each one feeding
+the next. Then run the loop.
+
+Here is the part worth being precise about, because you have just watched it
+happen. When an answer comes out wrong, the blame travels backwards. Every layer
+is told how much of that wrongness was its doing, and every dial inside it moves
+a little in the direction that would have made the number smaller.
+
+Now notice what is absent from that sentence. Nobody ever tells layer three what
+to look for. Layer three has no target of its own, no label to match, nothing
+anywhere describing a corner or a curve or the texture of fur. The only message
+it ever receives is "of the final wrongness, this much was yours", and the only
+thing it can do about it is move.
+
+Do that a few million times, then stop the machine and look inside. The layers
+have arranged themselves.
+
+## What is actually in there
+
+The first layer has become an edge finder. Its neurons respond to a boundary
+between light and dark, each one at its own particular angle, and to nothing
+else. On their own they are worthless — an edge fires exactly the same way on a
+cat, a car and an empty car park.
+
+The layer above takes those edges and responds to arrangements of them. Two
+meeting at a right angle. Three fanning out from a point. A run of them bending
+into a curve. Still nothing you would give a name to.
+
+Above that, patterns: stripes, mesh, the specific busyness of fur.
+
+Higher again, and neurons start answering to things you can name out loud. One
+fires for eye-shaped arrangements wherever they sit in the frame. Another for
+wheels. Another for the diagonal of an ear against a background.
+
+At the top, a neuron responds to cats — upside down, half behind a chair, or the
+wrong colour entirely — because it is not looking at pixels at all. It is
+reading the layer below it, which is reading the layer below that.
+
+Nobody wrote any of that down. There was no design document with "layer 2:
+corners" in it. There was a stack of dials and a signal saying you were wrong by
+this much.
+
+<Figure
+  title="What a photo network's layers turned into"
+  description="Nothing on the bottom rung knows what a cat is — an edge fires the same way on a cat, a car and an empty car park. What makes the top rung reachable is that each level only ever has to combine the level directly beneath it."
+>
+  <LayerStackDiagram
+    layers={[
+      { size: 5, label: 'raw pixels' },
+      { size: 6, label: 'edges' },
+      { size: 6, label: 'corners' },
+      { size: 5, label: 'textures' },
+      { size: 4, label: 'eyes, wheels' },
+      { size: 2, label: 'cat, car' },
+    ]}
+    footnote="photographs in — nobody assigned a single one of these jobs"
+  />
+</Figure>
+
+## The same shape, built out of sentences
+
+None of this is a fact about pictures.
+
+Feed a stack like that a few million customer reviews instead, with nothing to
+go on but whether each writer ended up happy, and the same thing happens in the
+same order. Early layers settle on the small mechanical business of language —
+which endings mark a plural, which words tend to follow "the".
+
+Middle layers hold phrases and the joins between them: which noun a verb belongs
+to, and which of the three people already mentioned is the one "she" now means.
+
+Higher layers carry something much closer to what the passage is about. That a
+complaint is being made. That the writer is being sarcastic. That the second
+half of the message contradicts the first.
+
+Same stack, same loop, same total silence about what any middle layer is for.
+Only the raw material changed — which is what makes this a fact about learning
+rather than a fact about photographs.
+
+<Figure
+  title="The same stack, fed sentences"
+  description="Word endings sit where edges sat and the point of the message sits where the cat did, because the loop never knew the difference — it only ever pushed for a smaller wrongness score, and a ladder is what that pressure builds out of whatever it is given."
+>
+  <LayerStackDiagram
+    layers={[
+      { size: 5, label: 'raw text' },
+      { size: 6, label: 'word endings' },
+      { size: 6, label: 'phrases' },
+      { size: 5, label: 'who she means' },
+      { size: 4, label: 'what happened' },
+      { size: 2, label: 'happy, unhappy' },
+    ]}
+    footnote="reviews in — same stack, same silence, different raw material"
+  />
+</Figure>
+
+## Why a ladder, of all things
+
+It is worth asking why this particular arrangement, since nothing ever asked for
+it.
+
+The loop only does one thing: make the wrongness score smaller. So the real
+question is not why the machine built a ladder. It is whether a ladder is the
+cheapest way to be less wrong with a fixed number of dials — and it is, for a
+plain reason.
+
+Every cat photo, every car photo and every photo of a kitchen contains edges,
+and there are only so many ways two edges can meet. A layer that works out edges
+once has done a job that every later layer, on every image it will ever see,
+gets for free. The alternative is storing each object as its own arrangement of
+raw pixels, and there are not enough dials in the machine for that, nor enough
+photographs in the world.
+
+Shared parts are simply smaller to hold than whole answers. The hierarchy is
+what thrift looks like when the only pressure in the system is to be less wrong.
+
+## What people do with this
+
+Here is the consequence that put this idea in ordinary working life rather than
+in a paper.
+
+A network trained on millions of photographs has, in its lower layers, a
+general-purpose vocabulary of visual parts — edges, corners, textures — and not
+one rung of that is specifically about cats. So nobody sensible trains from
+scratch. You take the finished network, keep everything except the top, bolt on
+a fresh final layer for your own categories, and train that.
+
+It is how a hospital with four thousand labelled scans gets a working detector,
+when starting from nothing would have needed several million. The ladder was
+paid for by somebody else's data, and it carries over, because the bottom of it
+is about images in general rather than about the thousand things that network
+was originally asked to name.
+
+The name for this is **transfer learning**, and it is by a wide margin the most
+common thing anyone does with a deep network they did not train themselves.
+
+<Aside title="Tidier in the diagram than in the machine">
+  The clean version — this layer does edges, that one does eyes — is the version
+  the field can show you, and it flatters the truth a little. A single neuron
+  rarely holds one tidy concept. A concept is usually smeared across many
+  neurons, and one neuron will often respond to several unrelated things at
+  once. The famous photographs of "the neuron that fires for faces" are the ones
+  that were easiest to visualise, which is a form of selection. The direction of
+  travel is solid and turns up in every network anyone has opened. The
+  one-neuron-one-idea picture is a simplification, and working out what is
+  really stored where is an open field of research with its own name,
+  interpretability.
+</Aside>
+
+<DevAside>
+  <Fragment slot="java">
+    ```java
+    // Before: a person's judgement, hand-written, one problem at a time.
+    double[] features = { furRatio(img), edgeHistogram(img), symmetry(img) };
+    Label answer = classifier.predict(features);
+
+    // After: the features are layers, and nobody wrote them.
+    Label answer = network.predict(img.pixels());
+    ```
+
+    The second version deletes the file its author was proudest of. In practice
+    you write neither — you load a stack somebody else trained and replace only
+    the end of it.
+
+    ```java
+    Network base = Networks.pretrained("resnet50");   // keep: the ladder
+    base.replaceHead(new Dense(myLabels.size()));     // train: your problem
+    ```
+
+  </Fragment>
+  <Fragment slot="python">
+    ```python
+    features = [fur_ratio(img), edge_histogram(img), symmetry(img)]
+    answer = classifier.predict(features)
+
+    answer = network.predict(img.pixels)
+
+    base = ResNet50(weights="imagenet", include_top=False)
+    ```
+
+    `include_top=False` is this entire unit compressed into a keyword argument.
+    Keep the learned ladder; throw away the one rung that was about somebody
+    else's thousand categories.
+
+  </Fragment>
+</DevAside>
+
+<Checkpoint question="A team has a network trained on millions of ordinary photographs and 800 labelled chest X-rays. They freeze every layer except the last, retrain that one, and have something useful by the afternoon. Why does keeping a stranger's layers work at all, when that network has never seen an X-ray?">
+  Because the lower layers were never about cats and dogs in the first place.
+  Nobody ever told them to be. They only ever received a share of the blame for
+  a wrong answer, and what survived that pressure was a vocabulary of edges,
+  corners and textures — which an X-ray has as much as a holiday snap does. The
+  part that really was about the original categories is the top, and the top is
+  exactly what got thrown away.
+
+Turn it around and the point gets sharper. Freeze the top and retrain the
+bottom, and they would have kept the one specific rung and discarded the general
+ones — the same 800 scans, the same afternoon, and nothing to show for it.
+
+</Checkpoint>

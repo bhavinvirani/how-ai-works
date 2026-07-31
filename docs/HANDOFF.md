@@ -23,7 +23,7 @@ search and sitemap all live (2026-07-31).
 | 0 — Foundation           | Merged (#1)                                            |
 | 1 — Component system     | Merged (#2). The pilot unit shipped with Phase 2 (#10) |
 | 2 — Curriculum port      | **Complete.** 60/60 units, 16/16 Parts, `2-meta` done  |
-| 3 — Community launch kit | **Next.** Not started                                  |
+| 3 — Community launch kit | **Complete**, bar fork-preview verification (below)    |
 
 Built and merged: design tokens, the primitive control set, MDX content blocks,
 the content collection + unit graph, the progress store and `/progress`,
@@ -63,8 +63,38 @@ preview` are deployment steps, and `Remove preview` only runs on close, so
 - **`2-meta` shipped with the last slice**: `/map`, `/search` (Pagefind) and a
   sitemap.
 
-**Nothing is blocked.** Phase 3 — the community launch kit (`PLAN.md` §8.0) — is
-the next thing, and nothing in it depends on anything above.
+- **Phase 3 shipped.** `CONTRIBUTING.md` (three tracks + the Claude-artifact
+  conversion checklist), `CODE_OF_CONDUCT.md`, `SECURITY.md`, `MAINTAINERS.md`,
+  `docs/FUTURE.md`, four YAML issue forms + PR template, `CODEOWNERS`,
+  Dependabot, a devcontainer, and a public-facing README.
+
+**Repository settings changed in Phase 3** — none of these live in a file, so
+they are recorded here or nowhere:
+
+- **Private vulnerability reporting: ON.** Both `SECURITY.md`'s only reporting
+  route and the Code of Conduct's enforcement route point at it. With it off,
+  both documents send people to a tab with no form on it.
+- **CodeQL default setup: configured** (`javascript-typescript`, `actions`).
+  `SECURITY.md` states this as fact, so it has to stay true.
+- **Dependabot alerts + security updates: ON**, alongside the weekly grouped
+  version updates in `.github/dependabot.yml`.
+- **Labels the issue forms depend on exist**: `content`, `diagram`,
+  `interactive`, `proposal`, `approved-to-build`. GitHub **silently drops** a
+  label named in a form that does not exist in the repo — no error, no warning.
+- **Branch protection raised to the solo configuration** — see PLAN §5.5 and
+  `MAINTAINERS.md`. Code Owner review stays OFF; the deadlock reason is in
+  `.github/CODEOWNERS`.
+
+**One Phase 3 item is not done and cannot be done solo:** the **fork-preview
+verification**. A PR from a branch in this repo uses a different token than a
+PR from a real fork, so the same-repo path can be green while every external
+contributor's preview silently fails — and every external contributor arrives
+by fork, because GitHub's web editor forks first. It needs a second account.
+Until it is exercised, treat the preview pipeline as verified for maintainers
+only. (PLAN §6.2, §9.)
+
+**Nothing else is blocked.** Everything remaining is Phase 4 material, in
+`docs/FUTURE.md`, with the trigger conditions written down.
 
 ### Still true
 

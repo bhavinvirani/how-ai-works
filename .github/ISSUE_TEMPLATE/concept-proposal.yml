@@ -1,0 +1,122 @@
+name: Concept proposal
+description: A concept that should have a unit of its own, and does not.
+title: '[concept] '
+labels: ['content', 'proposal']
+body:
+  - type: markdown
+    attributes:
+      value: |
+        The curriculum is sixty units in sixteen Parts, and the number is a
+        decision rather than a stopping point. Every unit added is time a reader
+        spends before reaching the thing they came for, so the bar is not "this
+        is interesting" — everything here is interesting. The bar is that
+        something downstream does not make sense without it.
+
+        Look at [the map](https://bhavinvirani.github.io/how-ai-works/map/)
+        first. A surprising number of gaps turn out to be a paragraph missing
+        from a unit that already exists, which is a
+        [content fix](https://github.com/bhavinvirani/how-ai-works/issues/new?template=content-fix.yml)
+        and lands in a day rather than a month.
+
+  - type: input
+    id: concept
+    attributes:
+      label: The concept
+      description: In a few words, as a reader would say it — not as a paper would.
+      placeholder: Why models are bad at arithmetic
+    validations:
+      required: true
+
+  - type: textarea
+    id: gap
+    attributes:
+      label: What breaks for a reader without it
+      description: >-
+        Name the unit that currently has the hole in it, and what a reader
+        reaching it cannot follow. The strongest version of this argument is
+        usually "unit X spends two paragraphs apologising for something that
+        should have been explained before it".
+    validations:
+      required: true
+
+  - type: dropdown
+    id: part
+    attributes:
+      label: Which Part it belongs to
+      description: >-
+        Parts are listed in reading order. Part is not in any URL, so a unit can
+        be moved later without breaking a link — this is a starting position,
+        not a commitment.
+      options:
+        - 1 — Why any of this exists
+        - 2 — How a machine learns
+        - 3 — Where the answers come from
+        - 4 — When a good score lies
+        - 5 — What the machine is made of
+        - 6 — Why language broke everything
+        - 7 — The idea that cracked it
+        - 8 — What a large model does
+        - 9 — Turning a model into an assistant
+        - 10 — Why it behaves like that
+        - 11 — Asking well
+        - 12 — Giving it your own documents
+        - 13 — Letting it act
+        - 14 — Knowing whether it works
+        - 15 — Small enough, fast enough, cheap enough
+        - 16 — The whole picture
+        - None of these — it would need a new Part
+        - Not sure
+    validations:
+      required: true
+
+  - type: textarea
+    id: prerequisites
+    attributes:
+      label: What a reader must have read first
+      description: >-
+        Unit slugs, one per line. Prerequisites mean genuinely required, not
+        merely related: they set reading order, and the graph they form has to
+        stay acyclic or the build fails. Anything that is "worth knowing about
+        too" goes in the next box instead.
+      placeholder: |
+        tokenization
+        embeddings
+    validations:
+      required: true
+
+  - type: textarea
+    id: leads-to
+    attributes:
+      label: What it leads to
+      description: >-
+        Unit slugs again, with a line each on the relationship. These become the
+        connections footer, where "related to attention" is not good enough —
+        it has to be a sentence about why one unit changes how you read the
+        other.
+    validations:
+      required: true
+
+  - type: textarea
+    id: hook
+    attributes:
+      label: How would you open it
+      description: >-
+        Optional, and the most useful box on this form. Units open with a
+        situation or a problem and name the term only afterwards, once the reader
+        already has the idea. If you can sketch that opening, the unit is
+        probably real. If the only opening you can find is a definition, it is
+        probably a paragraph inside an existing unit.
+
+  - type: dropdown
+    id: author
+    attributes:
+      label: Do you want to write it
+      description: >-
+        Either answer is welcome. Handing over a well-argued gap is worth more
+        than a unit nobody agreed on.
+      options:
+        - Yes — I will open the pull request
+        - Yes, if someone reviews an outline first
+        - 'No: I am handing over the idea'
+    validations:
+      required: true

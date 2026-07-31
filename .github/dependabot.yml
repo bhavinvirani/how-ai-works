@@ -1,0 +1,64 @@
+# Dependency updates (PLAN.md §6.3).
+#
+# Grouped deliberately. Ungrouped, a project this size produces a dozen
+# single-package pull requests a week, each costing a full CI run and a review
+# decision — and the reliable outcome of that is that nobody reads any of them.
+# Three grouped PRs get read.
+#
+# Everything still goes through the same gates as a human PR, so a bad update
+# fails on budgets, axe or the e2e suite rather than on someone noticing.
+version: 2
+
+updates:
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 3
+    commit-message:
+      prefix: 'deps'
+    groups:
+      # Astro and its integrations move together; upgrading one without the
+      # others is how the `@astrojs/markdown-remark` exact-version peer gets
+      # broken (docs/HANDOFF.md, version pins).
+      astro:
+        patterns:
+          - 'astro'
+          - '@astrojs/*'
+      dev-tooling:
+        patterns:
+          - 'eslint*'
+          - '@eslint/*'
+          - 'typescript-eslint'
+          - 'prettier*'
+          - 'vitest'
+          - '@vitest/*'
+          - '@playwright/*'
+          - '@testing-library/*'
+          - '@types/*'
+      runtime:
+        patterns:
+          - '*'
+        exclude-patterns:
+          - 'astro'
+          - '@astrojs/*'
+          - 'typescript'
+    ignore:
+      # TypeScript 7 breaks `astro check` — the native Go compiler does not
+      # expose the programmatic API it needs, and typescript-eslint caps below
+      # 6.1 independently. Plain `tsc --noEmit` passes under 7, so a project
+      # that only ran tsc would never notice. Pinned on purpose; see
+      # docs/HANDOFF.md.
+      - dependency-name: 'typescript'
+        update-types: ['version-update:semver-major']
+
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+    commit-message:
+      prefix: 'ci'
+    groups:
+      actions:
+        patterns:
+          - '*'

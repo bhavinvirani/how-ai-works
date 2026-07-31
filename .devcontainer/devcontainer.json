@@ -1,0 +1,66 @@
+{
+  // Zero-setup contributions (PLAN.md §5.1, §8.0).
+  //
+  // The point of this file is Track A and Track B: someone who wants to fix a
+  // sentence or redraw a diagram should get a working environment from one
+  // click in the GitHub UI, without installing Node, without hitting the
+  // version trap below, and without reading anything first.
+  //
+  // The Node version is NOT a preference. `eslint-plugin-astro@3` requires
+  // `^22.22.3 || ^24.16.0 || >=26.3.0`, which is the binding constraint, and on
+  // Node 20 the install fails with a misleading `node:sqlite` error that costs
+  // a newcomer an hour. Pinned to match `.nvmrc` exactly.
+  "name": "how-ai-works",
+  "image": "mcr.microsoft.com/devcontainers/typescript-node:1-24-bookworm",
+
+  "features": {
+    "ghcr.io/devcontainers/features/github-cli:1": {}
+  },
+
+  // corepack reads `packageManager` from package.json (pnpm@11.18.0), so the
+  // version comes from the repo rather than from whatever the image shipped.
+  // Never `npm install` here.
+  "postCreateCommand": "corepack enable && corepack pnpm install --frozen-lockfile",
+
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "astro-build.astro-vscode",
+        "bradlc.vscode-tailwindcss",
+        "esbenp.prettier-vscode",
+        "dbaeumer.vscode-eslint",
+        "unifiedjs.vscode-mdx",
+        "ms-playwright.playwright"
+      ],
+      "settings": {
+        "editor.formatOnSave": true,
+        "editor.defaultFormatter": "esbenp.prettier-vscode",
+        "[astro]": { "editor.defaultFormatter": "esbenp.prettier-vscode" },
+        "[mdx]": { "editor.defaultFormatter": "esbenp.prettier-vscode" },
+        // MDX is not linted (docs/HANDOFF.md trap 11) and never gets squiggles.
+        // Format-on-save is the only automated feedback a prose contributor
+        // gets, so it is on rather than left to personal preference.
+        "files.eol": "\n"
+      }
+    }
+  },
+
+  // 4321 is Astro's dev server and `astro preview`. Opening it automatically
+  // means a prose contributor sees their change rendered without being told how.
+  "forwardPorts": [4321],
+  "portsAttributes": {
+    "4321": {
+      "label": "site",
+      "onAutoForward": "openPreview"
+    }
+  },
+
+  // Playwright's browsers are ~400 MB and are NOT installed here on purpose:
+  // Track A and Track B contributors never need them, and CI runs the e2e suite
+  // on every pull request anyway. If you are working on an interactive and want
+  // the suite locally, run:
+  //
+  //   corepack pnpm exec playwright install --with-deps chromium
+  //
+  "remoteUser": "node"
+}

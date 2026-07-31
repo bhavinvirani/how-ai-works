@@ -21,7 +21,7 @@
     "lint": "astro sync && eslint . && node scripts/check-raw-colors.mjs",
     "lint:fix": "eslint . --fix",
     "format": "prettier --write .",
-    "format:check": "prettier --check .",
+    "format:check": "prettier --check . --ignore-path .prettierignore --ignore-path .prettierignore-ci",
     "test": "vitest run",
     "test:watch": "vitest",
     "test:e2e": "pnpm build && playwright test",

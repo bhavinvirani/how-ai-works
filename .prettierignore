@@ -13,3 +13,8 @@ reference/
 # markers and reflow tables, which buries real edits in formatting churn.
 PLAN.md
 CLAUDE.md
+
+# Prettier has no parser for CODEOWNERS and errors rather than skipping it,
+# which fails `pnpm format:check` for the whole repo.
+.github/CODEOWNERS
+

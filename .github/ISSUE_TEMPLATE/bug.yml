@@ -1,0 +1,91 @@
+name: Bug
+description: Something on the site does not work.
+title: '[bug] '
+labels: ['bug']
+body:
+  - type: markdown
+    attributes:
+      value: |
+        This form is for things that are broken: a page that will not load, a
+        control that ignores you, a diagram that renders as a blank box, an
+        equation that shows up as raw LaTeX. Words that are wrong or unclear are
+        not a bug — they go to
+        [content fix](https://github.com/bhavinvirani/how-ai-works/issues/new?template=content-fix.yml).
+
+  - type: input
+    id: url
+    attributes:
+      label: The page
+      description: >-
+        The full URL, including the `/how-ai-works/` part. The path is usually
+        the evidence here: the site is served under a base path, and the most
+        common class of bug on it is a link or an asset that dropped that prefix
+        and now points at a page that does not exist.
+      placeholder: https://bhavinvirani.github.io/how-ai-works/units/attention/
+    validations:
+      required: true
+
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What you did, and what happened
+      description: Enough for someone else to make it happen again.
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: What you expected instead
+    validations:
+      required: true
+
+  - type: input
+    id: browser
+    attributes:
+      label: Browser and version
+      placeholder: Firefox 148 on Windows 11
+    validations:
+      required: true
+
+  - type: dropdown
+    id: javascript
+    attributes:
+      label: Was JavaScript running
+      description: >-
+        Worth asking, because a lot of this site is meant to work without it.
+        Every lesson page ships zero JavaScript, and there is a test that fails
+        the build if that stops being true — so a page that breaks with scripting
+        blocked is a real bug here, not an edge case. Check your content blocker
+        too; it counts.
+      options:
+        - Yes — an ordinary browser, nothing blocked
+        - No — scripting disabled, or blocked by an extension
+        - Not sure
+    validations:
+      required: true
+
+  - type: dropdown
+    id: screen
+    attributes:
+      label: What you were reading on
+      description: >-
+        Below a tablet width some instruments deliberately swap themselves for a
+        captioned still image, because the interaction needs hover or drag
+        precision that a thumb does not have. Knowing which you saw tells us
+        whether you found a bug or the fallback.
+      options:
+        - Desktop or laptop
+        - Tablet
+        - Phone
+    validations:
+      required: true
+
+  - type: textarea
+    id: console
+    attributes:
+      label: Console output
+      description: >-
+        Optional. Anything red in the browser's developer console, pasted
+        verbatim.
+      render: text

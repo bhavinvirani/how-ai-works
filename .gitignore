@@ -31,3 +31,8 @@ yarn-error.log*
 .vscode/*
 !.vscode/extensions.json
 !.vscode/launch.json
+
+# stray verification artefacts (agents screenshotting diagrams have produced these)
+/diagram.png
+/*.png
+!public/**/*.png

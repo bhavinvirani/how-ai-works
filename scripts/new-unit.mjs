@@ -28,8 +28,15 @@ const fail = (message) => {
   exit(1);
 };
 
+// `PARTS` is a readonly tuple of literals, so `.includes()` on it will only
+// accept one of those literals — which is precisely the argument we cannot make
+// about something typed off the command line. Widening to `readonly string[]`
+// is what lets an arbitrary string be *tested* rather than assumed.
+/** @type {readonly string[]} */
+const partNames = PARTS;
+
 const id = argv[2];
-const part = argv[3] ?? PARTS[0];
+const part = argv[3] ?? partNames[0];
 
 if (!id) fail('Usage: pnpm new:unit <id> [part]');
 if (!ID_PATTERN.test(id)) {
@@ -37,8 +44,8 @@ if (!ID_PATTERN.test(id)) {
     `"${id}" is not a unit id. Use lowercase words joined by hyphens — e.g. how-models-guess.\n  The id is the filename, and other units reference it by that name.`,
   );
 }
-if (!PARTS.includes(part)) {
-  fail(`"${part}" is not a Part. Pick one of: ${PARTS.join(', ')}`);
+if (!partNames.includes(part)) {
+  fail(`"${part}" is not a Part. Pick one of: ${partNames.join(', ')}`);
 }
 
 const file = path.join('src/content/units', `${id}.mdx`);

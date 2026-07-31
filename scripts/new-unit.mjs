@@ -13,14 +13,14 @@ import { mkdir, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { argv, exit } from 'node:process';
 
-const ID_PATTERN = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
+// Imported, never copied. This file used to keep its own hardcoded list, which
+// meant the generator and the schema could disagree — and the failure mode was
+// the generator rejecting a Part that `astro build` would happily accept.
+// Node strips the types on the way in (>=24.16 is already required by
+// `engines`, and stripping is unflagged there), so a .ts import costs nothing.
+import { PARTS } from '../src/lib/units/parts.ts';
 
-const PARTS = [
-  'foundations',
-  'how-models-learn',
-  'language-models',
-  'using-models',
-];
+const ID_PATTERN = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 
 /** @param {string} message */
 const fail = (message) => {
@@ -28,8 +28,15 @@ const fail = (message) => {
   exit(1);
 };
 
+// `PARTS` is a readonly tuple of literals, so `.includes()` on it will only
+// accept one of those literals — which is precisely the argument we cannot make
+// about something typed off the command line. Widening to `readonly string[]`
+// is what lets an arbitrary string be *tested* rather than assumed.
+/** @type {readonly string[]} */
+const partNames = PARTS;
+
 const id = argv[2];
-const part = argv[3] ?? PARTS[0];
+const part = argv[3] ?? partNames[0];
 
 if (!id) fail('Usage: pnpm new:unit <id> [part]');
 if (!ID_PATTERN.test(id)) {
@@ -37,8 +44,8 @@ if (!ID_PATTERN.test(id)) {
     `"${id}" is not a unit id. Use lowercase words joined by hyphens — e.g. how-models-guess.\n  The id is the filename, and other units reference it by that name.`,
   );
 }
-if (!PARTS.includes(part)) {
-  fail(`"${part}" is not a Part. Pick one of: ${PARTS.join(', ')}`);
+if (!partNames.includes(part)) {
+  fail(`"${part}" is not a Part. Pick one of: ${partNames.join(', ')}`);
 }
 
 const file = path.join('src/content/units', `${id}.mdx`);

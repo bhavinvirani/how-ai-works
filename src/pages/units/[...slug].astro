@@ -37,9 +37,16 @@ export async function getStaticPaths() {
     (unit) => unit.data.status === 'published' || import.meta.env.DEV,
   );
 
+  // `visible`, not `units` — and this is load-bearing rather than tidy. The
+  // page below builds its lookup table from this prop, so passing the full
+  // collection would let a published unit resolve a *draft* it connects to and
+  // emit a link to `/units/<draft>` — a page this very function just declined
+  // to generate. That ships as a broken internal link caught by lychee, not as
+  // the Zod reference error it looks like. Passing the filtered list is what
+  // makes `resolve.ts`'s documented "drop anything missing" behaviour real.
   return visible.map((unit) => ({
     params: { slug: unit.id },
-    props: { unit, units },
+    props: { unit, units: visible },
   }));
 }
 

@@ -1,0 +1,258 @@
+---
+/**
+ * The whole unit as one picture: the complaints people actually make, on the
+ * left, and the handful of properties of the machine that produce them, on the
+ * right, with the arrows drawn in.
+ *
+ * The teaching is in the arithmetic of the two columns, not in any single row.
+ * Eight things go in the left column and only five come out of the right one,
+ * which is the claim the unit exists to make — the list of failures is long and
+ * the list of causes is short, so the list is worth forgetting and the causes
+ * are not. Drawing them as a prose list would have hidden exactly that.
+ *
+ * Two rows carry two arrows each. That is deliberate and it is the second thing
+ * to notice: a complaint can have more than one cause, and the ones people find
+ * hardest to accept are the ones where two properties stack.
+ *
+ * The mapping is readable WITHOUT following a single line, because every left
+ * box carries its cause letters in mono at its right edge. That is what keeps
+ * the drawing usable at phone width, where 234px of gutter becomes about 90 real
+ * pixels, and it is also the reason no meaning rests on colour: the columns are
+ * separated by position and by their own headings, the causes are tinted AND
+ * tagged with a letter, and the letters are what the arrows duplicate.
+ *
+ * The letters are A, B, D, C, E down the right column rather than A–E in order.
+ * Row order there is chosen to keep the arrows from crossing; only one crossing
+ * survives, and it is the long reach from "say why it actually answered that",
+ * which is the row where the reader should slow down anyway.
+ *
+ * No mechanism here is new. Every one of the five is a unit already read, which
+ * is the point — nothing in the left column needed anything the reader did not
+ * already have.
+ *
+ * Every run of text is interpolated from a constant so that no `<text>` element
+ * wraps across lines of markup: SVG strips newlines inside text content rather
+ * than collapsing them to spaces, so a wrapped label silently loses its spaces.
+ *
+ * Decorative on its own, so `aria-hidden` — `Figure` carries the accessible name
+ * and the plain-English description.
+ */
+
+/** Left column: box top edge, the complaint, and the causes behind it. */
+const LIMITS = [
+  { y: 58, text: 'count the letters in a word', tags: 'A' },
+  { y: 94, text: 'add up a long column of figures', tags: 'A B' },
+  { y: 130, text: 'tell recall from invention', tags: 'B' },
+  { y: 166, text: 'give a citation that exists', tags: 'B' },
+  { y: 202, text: 'say why it actually answered that', tags: 'B D' },
+  { y: 238, text: 'know what happened last week', tags: 'C' },
+  { y: 274, text: 'remember you from yesterday', tags: 'D' },
+  { y: 310, text: 'think harder about a harder question', tags: 'E' },
+] as const;
+
+/** Right column: box top edge, the letter, and the property in two lines. */
+const CAUSES = [
+  {
+    y: 58,
+    tag: 'A',
+    l1: 'it reads chunks —',
+    l2: 'never letters, never digits',
+  },
+  {
+    y: 117,
+    tag: 'B',
+    l1: 'it scores plausible continuations.',
+    l2: 'nothing anywhere consults a fact',
+  },
+  {
+    y: 176,
+    tag: 'D',
+    l1: 'nothing survives a pass',
+    l2: 'except the text on the page',
+  },
+  {
+    y: 235,
+    tag: 'C',
+    l1: 'the dials stopped changing',
+    l2: 'the day training ended',
+  },
+  {
+    y: 294,
+    tag: 'E',
+    l1: 'every pass is the same',
+    l2: 'fixed amount of arithmetic',
+  },
+] as const;
+
+/**
+ * `from` is a complaint's centre line, `to` is where it lands on the cause box.
+ * Arrivals are fanned within each box so four incoming arrows stay separable.
+ */
+const ARROWS = [
+  { from: 72, to: 74 },
+  { from: 108, to: 88 },
+  { from: 108, to: 126 },
+  { from: 144, to: 136 },
+  { from: 180, to: 146 },
+  { from: 216, to: 156 },
+  { from: 216, to: 192 },
+  { from: 252, to: 257 },
+  { from: 288, to: 208 },
+  { from: 324, to: 316 },
+] as const;
+
+const SAYS = {
+  leftHead: 'What people say it cannot do',
+  leftSub: 'the complaints, in the words people use',
+  rightHead: 'Where each one comes from',
+  rightSub: 'every one of these is a unit already read',
+  note: 'Two rows have two arrows. The causes stack.',
+  foot1:
+    'Eight complaints on the left. Five properties on the right. Nothing else is needed.',
+  foot2:
+    'None of the five is a law about machines. They are what this design is made of.',
+} as const;
+---
+
+<svg viewBox="0 0 600 414" class="w-full" aria-hidden="true">
+  <defs>
+    <marker
+      id="limits-arrow"
+      viewBox="0 0 10 10"
+      refX="9"
+      refY="5"
+      markerWidth="5"
+      markerHeight="5"
+      orient="auto"
+    >
+      <path d="M0,0 L10,5 L0,10 z" class="fill-ink-muted"></path>
+    </marker>
+  </defs>
+
+  <!-- ── Column headings ──────────────────────────────────────── -->
+
+  <g class="fill-ink font-display" font-size="12.5" font-weight="700">
+    <text x="20" y="26">{SAYS.leftHead}</text>
+    <text x="350" y="26">{SAYS.rightHead}</text>
+  </g>
+
+  <g class="fill-ink-muted" font-size="9">
+    <text x="20" y="42">{SAYS.leftSub}</text>
+    <text x="350" y="42">{SAYS.rightSub}</text>
+  </g>
+
+  <!-- ── The complaints ───────────────────────────────────────── -->
+
+  {
+    LIMITS.map((l) => (
+      <rect
+        x="20"
+        y={l.y}
+        width="252"
+        height="28"
+        rx="6"
+        class="fill-paper-sunken stroke-rule-strong"
+        stroke-width="1.25"
+      />
+    ))
+  }
+
+  <g class="fill-ink" font-size="9.5">
+    {
+      LIMITS.map((l) => (
+        <text x="30" y={l.y + 18}>
+          {l.text}
+        </text>
+      ))
+    }
+  </g>
+
+  <g class="fill-ink font-mono" font-size="9" text-anchor="end">
+    {
+      LIMITS.map((l) => (
+        <text x="262" y={l.y + 18}>
+          {l.tags}
+        </text>
+      ))
+    }
+  </g>
+
+  <!-- ── The properties they come out of ──────────────────────── -->
+
+  {
+    CAUSES.map((c) => (
+      <rect
+        x="350"
+        y={c.y}
+        width="234"
+        height="44"
+        rx="6"
+        class="fill-accent-soft stroke-accent"
+        stroke-width="1.25"
+      />
+    ))
+  }
+
+  <g class="fill-ink font-mono" font-size="10" font-weight="700">
+    {
+      CAUSES.map((c) => (
+        <text x="360" y={c.y + 19}>
+          {c.tag}
+        </text>
+      ))
+    }
+  </g>
+
+  <g class="fill-ink" font-size="9.5">
+    {
+      CAUSES.map((c) => (
+        <text x="378" y={c.y + 19}>
+          {c.l1}
+        </text>
+      ))
+    }
+  </g>
+
+  <g class="fill-ink-muted" font-size="9.5">
+    {
+      CAUSES.map((c) => (
+        <text x="378" y={c.y + 33}>
+          {c.l2}
+        </text>
+      ))
+    }
+  </g>
+
+  <!-- ── Which comes from which ───────────────────────────────── -->
+
+  {
+    ARROWS.map((a) => (
+      <line
+        x1="276"
+        y1={a.from}
+        x2="348"
+        y2={a.to}
+        class="stroke-ink-muted"
+        stroke-width="1.1"
+        marker-end="url(#limits-arrow)"
+      />
+    ))
+  }
+
+  <!-- ── What the two columns say to each other ───────────────── -->
+
+  <g class="fill-ink-faint" font-size="8.5">
+    <text x="20" y="354">{SAYS.note}</text>
+  </g>
+
+  <line x1="12" y1="368" x2="588" y2="368" class="stroke-rule" stroke-width="1"
+  ></line>
+
+  <g class="fill-ink" font-size="10" font-weight="700">
+    <text x="20" y="388">{SAYS.foot1}</text>
+  </g>
+
+  <g class="fill-ink-muted" font-size="9.5">
+    <text x="20" y="404">{SAYS.foot2}</text>
+  </g>
+</svg>

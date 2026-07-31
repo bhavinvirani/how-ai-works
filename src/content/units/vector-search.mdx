@@ -1,0 +1,394 @@
+---
+title: Nearest is not the same as matching
+part: your-own-documents
+order: 3
+summary: A question is turned into a position and the passages nearest it come back, which finds the right page even when it shares not one word with the question — and misses an exact code that plain word matching finds instantly, which is why real systems run both.
+prerequisites:
+  - embeddings
+  - rag
+  - chunking
+connections: []
+interactives:
+  - MeaningVsKeywordSearch
+status: published
+updated: 2026-07-31
+---
+
+import Aside from '../../components/blocks/Aside.astro';
+import Checkpoint from '../../components/blocks/Checkpoint.astro';
+import DevAside from '../../components/blocks/DevAside.astro';
+import Figure from '../../components/blocks/Figure.astro';
+import NearestFewOnTheMap from '../../components/diagrams/NearestFewOnTheMap.astro';
+import { MeaningVsKeywordSearch } from '../../components/interactives/MeaningVsKeywordSearch';
+
+There is a hardware shop on the high street with about forty thousand things in
+it and one man behind the counter who started there in 1988.
+
+You go in and ask for the thing that stops a door slamming.
+
+He is back inside a minute with a door closer, which is what it is called, and
+which you did not know when you walked in. Nothing on any drawer in that shop
+says _stops a door slamming_. Had the shop been a wall of labelled drawers and no
+man, you would have left with nothing.
+
+Come back on Thursday and ask for a number 8 by 40 pozidriv countersunk screw in
+stainless.
+
+Now he is the slow one. He knows roughly where the screws live and he will get
+there, but roughly is what he does, and roughly is not what you asked for. The
+drawer marked `8 × 40 PZ CSK A2` would have had you back out on the pavement in
+four seconds.
+
+A shop with only the man is bad at the second question. A shop with only the
+drawers is bad at the first. Nobody calls having both a clever arrangement; it is
+just what a shop is.
+
+Hold on to that, because a system searching your documents has exactly the same
+two halves, is bad at exactly the same two things, and ends up at exactly the
+same answer.
+
+## A question is a position too
+
+Getting documents into one of these systems is a two-part job, and you have met
+both parts. The documents are cut into pieces small enough to be useful. Then
+every piece is run through the machinery that turns text into a **position** — a
+long list of numbers saying where something sits, in a space arranged so that
+things meaning similar things end up near each other.
+
+That is the whole of the storing step. Cut it up, and put each piece somewhere.
+
+Nothing so far has said how anything comes back out.
+
+Here is the move, and it is one line long. Run the question through exactly the
+same machinery.
+
+The question is text. The machinery turns text into positions. So the question
+gets a position too — the same kind of object, in the same space, measured
+against the same everything.
+
+And now the question has stopped being a question. It is a spot. The passages are
+spots. Searching is: which spots are nearest to this one?
+
+Sit with that for a moment, because the rest of the unit falls out of it. No word
+of the question is ever held up against any word of a passage. Nothing is looked
+up. There is a measurement — how far this position sits from that one — and a
+list sorted by the answer.
+
+Which explains the thing that looks like a trick. A passage can come back first
+while sharing not one word with the question, because words were never what got
+compared. The question landed in the part of the space where being shut out of an
+account lives, and a passage about failed sign-in attempts had been sitting there
+for months, put there by the same machinery, in the same way, before anybody
+asked anything.
+
+**Semantic search** is the usual name for this, semantic meaning to do with
+meaning. **Vector search** is the other name, vector being the technical word for
+the list of numbers that is a position. They are the same thing and neither name
+is more correct.
+
+<Figure
+  title="The question, put on the same map as the passages"
+  description="Searching by meaning never compares a word with a word: the question is turned into a position on the map the passages were already on, and the nearest few come back — which is why the page that answers a question can share nothing with it that a search box could see, and why two error codes a digit apart end up in the same spot."
+>
+  <NearestFewOnTheMap />
+</Figure>
+
+<Aside title="The number you will see quoted">
+  The distance in these systems is almost never a ruler measurement. It is an
+  angle — how nearly two positions point the same way — reported as **cosine
+  similarity**, where 1 means the same direction and 0 means directions with
+  nothing to do with each other. It is the scale the panel below reports on.
+
+Angle rather than length, because the length of a position turns out to carry
+mostly how much text there was, and hardly anything about what the text was
+about. Measuring by length would make a one-line answer and a five-page document
+on the same subject look unrelated. Measuring by angle lets them sit on top of
+each other, which is what you wanted.
+
+</Aside>
+
+## Where near is exactly the wrong idea
+
+Now the second question in the shop.
+
+Type `E-4102` at a system like this and follow what has to happen. That string is
+text, so it gets a position, the way everything does. But a position is learned
+from company kept — from what turns up around a thing, across an enormous amount
+of writing. `E-4102` has almost no company. It appears a handful of times in one
+manual, next to whatever happened to be next to it.
+
+So it gets a position, and the position carries almost nothing.
+
+Now the sharper half. Whatever position `E-4102` ends up with, `E-4120` ends up
+with one almost exactly like it. Two strings of the same shape, appearing in the
+same kind of sentence, in the same kind of document, doing the same job in every
+one. On a map built out of how things get used, they are the same kind of thing,
+so they go in the same place.
+
+Nothing has gone wrong there. You asked for near and it gave you near. What you
+wanted was _identical_ — and identical is not a very small distance, it is not a
+distance at all.
+
+The same goes for a surname, a part number, a version string, an invoice
+reference, a street. Anything whose entire value is that it is exactly itself and
+not the thing next to it.
+
+## The half that does not know anything
+
+The other half is older than everything else on this site and nobody has improved
+on it much.
+
+Split every passage into words. Keep a list, for each word, of the passages
+containing it. Look a word up, get the passages back. That arrangement is called
+an **inverted index** — inverted because an ordinary index runs from document to
+words and this one runs the other way — and it is what sat under every search box
+you used before about 2020.
+
+It knows nothing whatsoever about meaning, and that is precisely why it works
+here. `E-4102` and `E-4120` are two different strings, so they sit on two
+different lists, and no amount of looking alike changes that. There is nothing in
+there to fool.
+
+One refinement matters enough to name. A word appearing on every passage tells
+you nothing; a word appearing on one tells you a great deal. So a match is
+weighted by how rare the word is across the shelf, which is why `the` is worth
+nothing and `ashgrove` decides the whole question on its own. Production systems
+use a formula called **BM25**, which is this idea plus two sensible corrections
+for long documents and repeated words. The panel below uses the plain version,
+and nothing in what follows depends on the difference.
+
+## Both halves, one shelf
+
+Eight help pages for a handheld scanner that does not exist, four things somebody
+typed into the search box, and the same shelf searched twice for each of them.
+Start where it is set and work along the four.
+
+<MeaningVsKeywordSearch client:visible />
+
+**my password.** Somebody typed _Why does it keep refusing my password?_
+
+Meaning search puts _Shut out after five wrong tries_ on top at 0.81, and that
+page shares not one of the seven words in the question. Not `password`, not `my`,
+not even `it`. The line under it saying so is not a claim somebody typed in: it is
+the same word-by-word comparison the other column runs, reporting that it found
+nothing.
+
+Now read the other column. Words matched on one page out of eight, and it is the
+page about adding people from a spreadsheet, which contains the word `password`
+in the course of telling you not to put one in a spreadsheet. The page that
+answers the question is not further down that list. It is not on that list at
+all. Nothing anywhere pointed at it.
+
+**my money back.** The same shape, and worse in one instructive way. The refunds
+page shares not one of those seven words either. Meanwhile `money` — plainly the
+word the question is about — appears on none of the eight pages, so it matches
+nothing anywhere. The one word that does match is `back`, and it matches a page
+about how many calls a minute an interface will take.
+
+Two questions, and meaning search has won both outright. This is roughly where
+most explanations of it stop.
+
+**E-4102.** Somebody has pasted an error code with the word _error_ in front of
+it.
+
+Read the meaning column slowly, because the interesting part is not that it is
+wrong. _Error E-4120_ scores 0.63. _Error E-4102_, which is the page that answers
+the question, scores 0.62. One hundredth of a point.
+
+That is not a near miss. A hundredth is the machine reporting that it cannot
+separate the two, and which of them surfaces on top is a coin landing. If the gap
+were wide you would be looking at a tuning problem. At a hundredth you are looking
+at the shape of the tool.
+
+The word column has no such difficulty. It scores the right page 3.47 and the
+other 1.39, and the reason is printed underneath: the right page matched `error`
+and `e-4102`, the wrong one matched `error` and nothing else, because `e-4120` is
+a different string and different strings live on different lists.
+
+**Ashgrove.** A place name, on its own.
+
+Look at the whole meaning column rather than the top of it. Every one of the
+eight scores between 0.15 and 0.26 — a band a tenth of a point wide, across an
+entire shelf. Nothing here is more relevant than anything else, and that is not
+the machine being cautious. The name has no company anywhere in what the model
+read, so it has no position worth having, and eight distances measured from a
+meaningless spot are eight indistinguishable numbers. The right page does come
+second, and there is no sense in which it earned that.
+
+The word column returns one page, and it is the right one.
+
+So the scoreboard reads two out of four, and two out of four, and it is the same
+two either way round. Whichever single method you build on, half your questions
+come back wrong — and they are precisely the questions the other method would
+have got right.
+
+## Running both is the ordinary answer
+
+Turn on the switch and a third list appears. It gets all four.
+
+It is not doing anything clever. The two columns sit on scales with nothing to do
+with each other — one is an angle between positions, the other a pile of rarity
+weights — so a score from one cannot simply be added to a score from the other.
+Each list is divided by its own best score first, which puts both on nought to
+one, and then the two are mixed:
+
+$$
+\text{combined} = 0.7 \times \text{by meaning} + 0.3 \times \text{by words}
+$$
+
+Read in words: seven parts how near it is, three parts how many of your words it
+has, once the two have been put on a comparable footing.
+
+The 0.7 is not a discovery. Somebody picked it. Every product offering both
+halves exposes that number as a dial, and teams move it by running their own
+questions and looking at what comes back, which sounds unsatisfying and is simply
+where the subject is.
+
+The arrangement is called **hybrid search**, and the name does it a disservice,
+because hybrid suggests a refinement somebody adds later once the basics are
+working. It is closer to the default. A team shipping meaning search on its own
+has not built the simple version. They have built the version that cannot find an
+order number.
+
+## What is real in that panel, and what is typed in
+
+Worth being exact, because half of it is arithmetic and half of it is not.
+
+Real: the whole word column. The pages are split into words, the shared ones are
+found, each is weighted by how few pages hold it, and the totals are added up.
+When the panel says a page shares not one word with the question, that is the
+same comparison reporting an empty result — checked by running it, not by
+somebody typing in a zero.
+
+Typed in: the whole meaning column. A page in a browser cannot run an embedding
+model, so those distances were written by hand. They are chosen to behave the way
+measured systems behave — the ordinary questions answered well, the two error
+pages a hundredth apart, the bare name producing a flat column — but no model
+reported any of them, and they should be read as an argument rather than as a
+measurement.
+
+## What a vector database actually is
+
+Comparing a question against eight positions is nothing. You can do it with a
+loop and a few lines of arithmetic. Comparing it against ten million, on every
+request, is a different proposition, and it is the entire reason a **vector
+database** exists.
+
+What it is, is an index built for one question: given this position, which stored
+positions are nearest? It gets its speed by not checking most of them. The stored
+positions are grouped in advance, so a search visits a few promising groups and
+skips the rest, and comes back with almost always the right answers rather than
+certainly the right answers. That trade is called **approximate nearest
+neighbour**, and the approximate is not a flaw in it. The approximate is what you
+are buying.
+
+Now the part the name encourages people to get backwards. There is no meaning
+stored in a vector database. Whatever meaning is involved was decided by the model
+that produced the positions, before any of them were stored, and the store holds
+numbers and answers questions about distance. It is a filing system, and it is
+excellent at being one.
+
+<Aside title="Two things that catch people out" tone="caution">
+  **You may well not need one.** Under a hundred thousand passages, an ordinary
+  database with a similarity extension will answer this in a few milliseconds,
+  and it is one fewer system to run, back up and pay for. The point at which a
+  dedicated one starts earning its keep is a good deal further along than the
+  marketing suggests.
+
+**The positions belong to the model that made them.** Change the model that turns
+text into positions and every position you have stored becomes meaningless — not
+degraded, meaningless, because it is a location in a space that no longer exists.
+All of it has to be made again. Worth knowing before you have forty million of
+them and a re-run nobody has budgeted for.
+
+</Aside>
+
+## The thing to stop believing
+
+The instinct this unit is arguing with is that meaning search is the modern one
+and word matching is the old one, so a system built today should obviously use
+the modern one. Both halves of that are wrong, and the second half is wrong in a
+way that ships.
+
+They are not a new and an old way of doing one job. They are two jobs. One
+answers _what is this about_, and it is the only thing that can find a page
+written in words the asker does not know. The other answers _where does this exact
+string occur_, and it is the only thing that can tell `E-4102` from `E-4120`.
+Neither question is a worse version of the other, and no amount of progress on
+one will ever turn it into the other.
+
+Which is why the man and the drawers are both still in the shop.
+
+<DevAside>
+  <Fragment slot="java">
+    ```java
+    float[] position = embedder.embed(question);   // the same model that filled the store
+
+    List<Hit> byMeaning = store.nearest(position, 20);
+    List<Hit> byWord    = index.search(question, 20);
+    ```
+
+    Two calls, two round trips, two sets of results, and nothing anywhere that
+    makes them comparable. `byMeaning` carries angles; `byWord` carries scores
+    from a different formula on a different scale. Merging them is your problem
+    and there is no correct answer, which is why every library that does it
+    ships a weight and a default.
+
+    The line to stare at is the first one. `embedder` has to be the same model,
+    at the same version, that produced everything already in `store`. Swap it
+    and nothing throws: you get positions in a different space, distances that
+    are arithmetically perfect, and results that are quietly and plausibly
+    wrong. It is one of the few mistakes in this area with no error message
+    attached to it at all.
+
+  </Fragment>
+  <Fragment slot="python">
+    ```python
+    hits = store.query(embed(question), n=20)
+
+    for hit in hits:
+        print(round(hit.score, 3), hit.text[:80])
+    ```
+
+    Four lines, and they are the first four to write when a retrieval system is
+    disappointing. Teams spend weeks rewording prompts and swapping models for a
+    problem that is visible in that printout in about a minute: the passage
+    holding the answer is not in `hits` at all — because it was cut in half, or
+    because the question was an order number and no position was ever going to
+    find it.
+
+    Nothing downstream can recover a passage that was never retrieved. The model
+    reading the results has no way of knowing that the good one is missing, and
+    every symptom you get afterwards will look like a problem with the model.
+
+  </Fragment>
+</DevAside>
+
+<Checkpoint question="A team ships an assistant over their support documentation using meaning search. It works well in the demo and well for most customers. Then complaints start arriving from the ones who quote an order reference, or a specific error code, or the surname of the engineer who visited — for those, the assistant answers confidently from the wrong page. Somebody proposes swapping in a better embedding model. Say why that will not fix it, and what will.">
+  Because there is nothing wrong with the embedding model. It is being asked for
+  _near_ and it is returning _near_, correctly. An order reference like
+  `GH-88412` has almost no company anywhere in the text any model was built from,
+  so the position it gets carries almost no information — and the position
+  `GH-88421` gets is practically the same one. A better model puts both of those
+  positions slightly more sensibly, and the two of them stay indistinguishable,
+  because being indistinguishable is a fact about the strings rather than about
+  the model.
+
+Notice what the failure looks like from outside, too. It is not an empty result.
+Meaning search always returns something, because every stored passage has a
+distance, so the customer gets a confident answer assembled from the nearest wrong
+page. A method with no way of coming back empty-handed is the one that needs the
+other half most.
+
+The fix is the dull one. Run word matching alongside it, over the same passages,
+and combine the two lists. That is not an upgrade to their system; it is the
+missing half of it, and it is what everybody shipping this in earnest already
+does.
+
+Worth carrying beyond this unit. When somebody proposes making retrieval better,
+the question that settles it is what kind of question is failing. If people are
+asking in their own words, a better model may genuinely help. If the question
+contains a string that has to match exactly, no model will, and the thing you are
+missing is not smarter than what you have — it is older.
+
+</Checkpoint>

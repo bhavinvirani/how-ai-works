@@ -1,0 +1,306 @@
+---
+/**
+ * One hundred requests through a cascade, drawn so that all three of the unit's
+ * claims about routing are visible at once.
+ *
+ * Every request passes through the small model first — that is the shape people
+ * get wrong, and it is why the arithmetic panel charges the small model on all
+ * hundred rather than on the eighty-eight that stopped there. The figures in
+ * the panel are the ones the prose quotes and they are one multiplication each:
+ * 100 × 1.00 = 100.00 against 100 × 0.02 = 2.00 plus 12 × 1.00 = 12.00, giving
+ * 14.00, which is a little over a seventh. Change any of them and the prose is
+ * wrong.
+ *
+ * The two costs that routing adds rather than removes are drawn as prominently
+ * as the saving: the escalated twelve now wait 2.2 s instead of 2.0, and the
+ * dashed panel holds the requests the gate misjudged, which come back confident
+ * and unflagged.
+ *
+ * Nothing is carried by colour: each branch is labelled with its count, each
+ * box states its own timing and price in words, and the failure path is dashed
+ * and says what it is. Decorative on its own, so `aria-hidden`: `Figure`
+ * supplies the accessible name and the description.
+ */
+---
+
+<svg viewBox="0 0 640 368" class="w-full" aria-hidden="true">
+  <text
+    x="12"
+    y="18"
+    class="fill-ink font-display"
+    font-size="14"
+    font-weight="700">One hundred requests, small model first</text
+  >
+  <text x="12" y="32" class="fill-ink-faint font-mono" font-size="9"
+    >prices in whatever unit you like — the large model costs fifty times the
+    small one</text
+  >
+
+  <!-- Everything arrives. -->
+  <rect
+    x="12"
+    y="118"
+    width="86"
+    height="44"
+    rx="6"
+    class="fill-paper stroke-rule-strong"
+    stroke-width="1.25"></rect>
+  <text
+    x="55"
+    y="140"
+    text-anchor="middle"
+    class="fill-ink font-display"
+    font-size="15"
+    font-weight="700">100</text
+  >
+  <text
+    x="55"
+    y="154"
+    text-anchor="middle"
+    class="fill-ink-muted font-mono"
+    font-size="8">requests in</text
+  >
+
+  <g class="stroke-rule-strong" stroke-width="1.5">
+    <line x1="98" y1="140" x2="122" y2="140"></line>
+    <path d="M118 136 L124 140 L118 144" class="fill-none"></path>
+  </g>
+
+  <!-- Every single one of them goes through the small model. -->
+  <rect
+    x="126"
+    y="110"
+    width="118"
+    height="60"
+    rx="6"
+    class="fill-accent-2-soft stroke-accent-2"
+    stroke-width="1.5"></rect>
+  <text
+    x="185"
+    y="130"
+    text-anchor="middle"
+    class="fill-ink font-display"
+    font-size="11"
+    font-weight="700">small model</text
+  >
+  <text
+    x="185"
+    y="144"
+    text-anchor="middle"
+    class="fill-ink-muted font-mono"
+    font-size="8">on hardware you own</text
+  >
+  <text
+    x="185"
+    y="157"
+    text-anchor="middle"
+    class="fill-ink-muted font-mono"
+    font-size="8">0.2 s, 0.02 each</text
+  >
+
+  <g class="stroke-rule-strong" stroke-width="1.5">
+    <line x1="244" y1="140" x2="258" y2="140"></line>
+    <path d="M254 136 L260 140 L254 144" class="fill-none"></path>
+  </g>
+
+  <!-- The gate reads what came back. -->
+  <rect
+    x="262"
+    y="112"
+    width="84"
+    height="56"
+    rx="6"
+    class="fill-paper-sunken stroke-rule-strong"
+    stroke-width="1.25"></rect>
+  <text
+    x="304"
+    y="132"
+    text-anchor="middle"
+    class="fill-ink font-display"
+    font-size="11"
+    font-weight="700">gate</text
+  >
+  <text
+    x="304"
+    y="146"
+    text-anchor="middle"
+    class="fill-ink-muted font-mono"
+    font-size="8">was this one</text
+  >
+  <text
+    x="304"
+    y="157"
+    text-anchor="middle"
+    class="fill-ink-muted font-mono"
+    font-size="8">beyond it?</text
+  >
+
+  <!-- Escalated. -->
+  <g class="fill-none stroke-rule-strong" stroke-width="1.5">
+    <polyline points="346,126 372,126 372,72 394,72"></polyline>
+    <path d="M390 68 L396 72 L390 76"></path>
+  </g>
+  <text
+    x="366"
+    y="100"
+    text-anchor="end"
+    class="fill-ink font-mono"
+    font-size="9">12 sent on</text
+  >
+
+  <rect
+    x="400"
+    y="44"
+    width="224"
+    height="58"
+    rx="6"
+    class="fill-accent-soft stroke-accent"
+    stroke-width="1.5"></rect>
+  <text
+    x="412"
+    y="64"
+    class="fill-ink font-display"
+    font-size="11"
+    font-weight="700">12 escalated to the large model</text
+  >
+  <text x="412" y="78" class="fill-ink-muted font-mono" font-size="8"
+    >hosted elsewhere, 2.0 s and 1.00 each</text
+  >
+  <text x="412" y="92" class="fill-ink-muted font-mono" font-size="8"
+    >so these twelve now wait 2.2 s, not 2.0</text
+  >
+
+  <!-- Answered where they landed. -->
+  <g class="fill-none stroke-rule-strong" stroke-width="1.5">
+    <polyline points="346,154 372,154 372,209 394,209"></polyline>
+    <path d="M390 205 L396 209 L390 213"></path>
+  </g>
+  <text
+    x="366"
+    y="192"
+    text-anchor="end"
+    class="fill-ink font-mono"
+    font-size="9">88 stay here</text
+  >
+
+  <rect
+    x="400"
+    y="180"
+    width="224"
+    height="58"
+    rx="6"
+    class="fill-accent-2-soft stroke-accent-2"
+    stroke-width="1.5"></rect>
+  <text
+    x="412"
+    y="200"
+    class="fill-ink font-display"
+    font-size="11"
+    font-weight="700">88 answered by the small model</text
+  >
+  <text x="412" y="214" class="fill-ink-muted font-mono" font-size="8"
+    >0.2 s each, nothing leaves the building</text
+  >
+  <text x="412" y="228" class="fill-ink-muted font-mono" font-size="8"
+    >this branch is where the saving comes from</text
+  >
+
+  <!-- The ones the gate misjudged, drawn as a failure: dashed, and unflagged. -->
+  <g
+    class="fill-none stroke-rule-strong"
+    stroke-width="1.5"
+    stroke-dasharray="4 3"
+  >
+    <line x1="490" y1="238" x2="490" y2="248"></line>
+    <path d="M486 244 L490 250 L494 244" stroke-dasharray="0"></path>
+  </g>
+
+  <rect
+    x="400"
+    y="252"
+    width="224"
+    height="64"
+    rx="6"
+    class="fill-paper-sunken stroke-rule-strong"
+    stroke-width="1.25"
+    stroke-dasharray="4 3"></rect>
+  <text
+    x="412"
+    y="272"
+    class="fill-ink font-display"
+    font-size="10"
+    font-weight="700">and the gate is not perfect</text
+  >
+  <text x="412" y="286" class="fill-ink-muted font-mono" font-size="8"
+    >some of the eighty-eight were beyond it.</text
+  >
+  <text x="412" y="297" class="fill-ink-muted font-mono" font-size="8"
+    >They came back confident anyway, and</text
+  >
+  <text x="412" y="308" class="fill-ink-muted font-mono" font-size="8"
+    >nothing in the system says otherwise.</text
+  >
+
+  <!-- What the hundred cost, either way. Kept clear of the lower branch, which
+       turns at x=372. -->
+  <rect
+    x="12"
+    y="206"
+    width="352"
+    height="118"
+    rx="6"
+    class="fill-paper stroke-rule"
+    stroke-width="1"></rect>
+  <text
+    x="24"
+    y="226"
+    class="fill-ink font-display"
+    font-size="11"
+    font-weight="700">what the hundred cost</text
+  >
+
+  <g class="fill-ink-muted font-mono" font-size="9">
+    <text x="24" y="246">all hundred to the large model</text>
+    <text x="24" y="266">cascade — the small model, all hundred</text>
+    <text x="24" y="280">cascade — the large model, the twelve</text>
+  </g>
+  <g class="fill-ink font-mono" font-size="9" text-anchor="end">
+    <text x="352" y="246">100 × 1.00 = 100.00</text>
+    <text x="352" y="266">100 × 0.02 = 2.00</text>
+    <text x="352" y="280">12 × 1.00 = 12.00</text>
+  </g>
+
+  <line x1="24" y1="288" x2="352" y2="288" class="stroke-rule" stroke-width="1"
+  ></line>
+
+  <text
+    x="24"
+    y="302"
+    class="fill-ink font-mono"
+    font-size="9"
+    font-weight="700">cascade, total</text
+  >
+  <text
+    x="352"
+    y="302"
+    text-anchor="end"
+    class="fill-ink font-mono"
+    font-size="9"
+    font-weight="700">14.00</text
+  >
+  <text x="24" y="316" class="fill-ink-faint font-mono" font-size="8"
+    >the small model is paid on all hundred, not only the eighty-eight</text
+  >
+
+  <text
+    x="12"
+    y="344"
+    class="fill-ink font-display"
+    font-size="12"
+    font-weight="700"
+    >Just over seven times cheaper — and the twelve hardest requests got slower.</text
+  >
+  <text x="12" y="358" class="fill-ink-muted font-mono" font-size="9"
+    >Both of those are the arrangement working exactly as designed.</text
+  >
+</svg>

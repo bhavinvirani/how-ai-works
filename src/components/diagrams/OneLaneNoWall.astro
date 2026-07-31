@@ -1,0 +1,342 @@
+---
+/**
+ * The two-channel arrangement people assume, and the single lane that is there.
+ *
+ * The unit's claim is structural, so the drawing has to be a diagram of a
+ * SHAPE rather than a sequence of events. Top band: the arrangement that makes
+ * ordinary software safe — two ways in, a wall between them, and a rule that
+ * nothing arriving on the lower one can ever become a command on the upper.
+ * Bottom band: the same question asked of a context window, where the answer
+ * is one lane and no second channel for a wall to sit in.
+ *
+ * The lane is the load-bearing part. Every piece in it is drawn as the same
+ * kind of block on the same baseline, including the three role tags — because
+ * that is exactly the fact: a tag is not a barrier between two regions, it is
+ * another piece in the same sequence, read in the same pass.
+ *
+ * Nothing is carried by colour (hard rule 9). Origin is carried by outline
+ * STYLE (dashed = arrived from outside) and, redundantly, by the two labelled
+ * brackets underneath, which say in words which pieces you put there and which
+ * a stranger chose. The one piece that matters most is additionally the only
+ * one with a heavy outline AND a pointer AND a label spelling out what it is.
+ *
+ * Lane geometry is computed from a widths array so the pieces cannot drift out
+ * of alignment when a label is edited; the total is asserted by construction
+ * (the last piece ends at LANE_RIGHT) rather than by hand-tuned x values.
+ *
+ * Every run of text is interpolated from a constant so that no `<text>` element
+ * wraps across lines of markup: SVG strips newlines inside text content rather
+ * than collapsing them to spaces, so a wrapped label silently loses its spaces.
+ *
+ * Decorative on its own, so `aria-hidden` — `Figure` carries the accessible
+ * name and the plain-English description.
+ */
+
+const SAYS = {
+  topHead: 'What people assume is in there',
+  topSub: 'two ways in, and a wall between them',
+
+  ctrl1: 'your instructions',
+  ctrl2: 'commands · obeyed',
+  wall: 'nothing below can become a command above',
+  data1: 'the document it reads',
+  data2: 'material · never obeyed',
+  topModel: 'the model',
+  topFoot:
+    'This is the arrangement that makes ordinary software safe. It is not this one.',
+
+  botHead: 'What is actually in there',
+  botSub: 'one sequence of pieces, and no second channel to build a wall in',
+  pass: 'one pass, left to right',
+
+  yours: 'you put these here',
+  outside: 'arrived from outside · a stranger chose these words',
+  same: 'same substance as the pieces on the left',
+  note1: 'the three tags are pieces too — same sequence, same kind of thing',
+  note2: 'the model was trained to weight them. trained is not enforced.',
+
+  foot1: 'There is no second channel, so there is nowhere to put a wall.',
+  foot2:
+    'Every defence in this unit is somewhere else: around what the model can reach, never inside what it reads.',
+} as const;
+
+const LANE_LEFT = 30;
+const LANE_RIGHT = 612;
+const LANE_TOP = 286;
+const LANE_HEIGHT = 40;
+const GAP = 2;
+
+type Piece = {
+  width: number;
+  top: string;
+  bottom?: string;
+  kind: 'tag' | 'yours' | 'outside' | 'payload';
+};
+
+/** Widths sum to LANE_RIGHT - LANE_LEFT once the gaps are counted. */
+const PIECES: Piece[] = [
+  { width: 36, top: 'system', kind: 'tag' },
+  { width: 94, top: 'standing', bottom: 'instructions', kind: 'yours' },
+  { width: 32, top: 'user', kind: 'tag' },
+  { width: 74, top: 'your', bottom: 'question', kind: 'yours' },
+  { width: 32, top: 'tool', kind: 'tag' },
+  { width: 104, top: 'a page it', bottom: 'was told to read', kind: 'outside' },
+  { width: 70, top: '…more of', bottom: 'the page…', kind: 'outside' },
+  {
+    width: 126,
+    top: 'a sentence shaped',
+    bottom: 'like an instruction',
+    kind: 'payload',
+  },
+];
+
+let cursor = LANE_LEFT;
+const lane = PIECES.map((piece) => {
+  const x = cursor;
+  cursor += piece.width + GAP;
+
+  return { ...piece, x, centre: x + piece.width / 2 };
+});
+
+const OUTLINE: Record<Piece['kind'], string> = {
+  tag: 'fill-paper-sunken stroke-rule-strong',
+  yours: 'fill-paper stroke-rule-strong',
+  outside: 'fill-paper stroke-rule-strong',
+  payload: 'fill-accent-soft stroke-accent',
+};
+
+const DASH: Record<Piece['kind'], string | undefined> = {
+  tag: undefined,
+  yours: undefined,
+  outside: '4 3',
+  payload: '4 3',
+};
+
+const WEIGHT: Record<Piece['kind'], string> = {
+  tag: '1.25',
+  yours: '1.25',
+  outside: '1.25',
+  payload: '2',
+};
+
+const payload = lane[lane.length - 1];
+const yoursEnd = lane[3].x + lane[3].width;
+const outsideStart = lane[5].x;
+---
+
+<svg viewBox="0 0 640 464" class="w-full" aria-hidden="true">
+  <defs>
+    <marker
+      id="lane-arrow"
+      viewBox="0 0 10 10"
+      refX="9"
+      refY="5"
+      markerWidth="5"
+      markerHeight="5"
+      orient="auto"
+    >
+      <path d="M0,0 L10,5 L0,10 z" class="fill-ink-muted"></path>
+    </marker>
+  </defs>
+
+  <!-- ══ the arrangement everyone has in mind ═══════════════════ -->
+
+  <rect
+    x="8"
+    y="8"
+    width="624"
+    height="196"
+    rx="8"
+    class="fill-none stroke-rule-strong"
+    stroke-width="1.25"></rect>
+
+  <text
+    x="28"
+    y="32"
+    class="fill-ink font-display"
+    font-size="13"
+    font-weight="700">{SAYS.topHead}</text
+  >
+  <text x="28" y="48" class="fill-ink-faint font-mono" font-size="10"
+    >{SAYS.topSub}</text
+  >
+
+  <rect
+    x="28"
+    y="66"
+    width="176"
+    height="40"
+    rx="6"
+    class="fill-paper-sunken stroke-rule-strong"
+    stroke-width="1.25"></rect>
+  <text x="40" y="84" class="fill-ink" font-size="10">{SAYS.ctrl1}</text>
+  <text x="40" y="98" class="fill-ink-faint font-mono" font-size="9"
+    >{SAYS.ctrl2}</text
+  >
+
+  <rect
+    x="28"
+    y="142"
+    width="176"
+    height="40"
+    rx="6"
+    class="fill-paper-sunken stroke-rule-strong"
+    stroke-width="1.25"></rect>
+  <text x="40" y="160" class="fill-ink" font-size="10">{SAYS.data1}</text>
+  <text x="40" y="174" class="fill-ink-faint font-mono" font-size="9"
+    >{SAYS.data2}</text
+  >
+
+  <path
+    d="M204,86 H430"
+    class="fill-none stroke-ink-muted"
+    stroke-width="1.25"
+    marker-end="url(#lane-arrow)"></path>
+  <path
+    d="M204,162 H430"
+    class="fill-none stroke-ink-muted"
+    stroke-width="1.25"
+    marker-end="url(#lane-arrow)"></path>
+
+  <!-- The wall, drawn as the solid thing people believe is there. -->
+  <line
+    x1="214"
+    y1="124"
+    x2="434"
+    y2="124"
+    class="stroke-rule-strong"
+    stroke-width="3"></line>
+  <text x="220" y="118" class="fill-ink-muted" font-size="9">{SAYS.wall}</text>
+
+  <rect
+    x="440"
+    y="66"
+    width="176"
+    height="116"
+    rx="6"
+    class="fill-paper-raised stroke-rule-strong"
+    stroke-width="1.25"></rect>
+  <text
+    x="528"
+    y="128"
+    text-anchor="middle"
+    class="fill-ink font-display"
+    font-size="12"
+    font-weight="700">{SAYS.topModel}</text
+  >
+
+  <text x="28" y="196" class="fill-ink-muted font-mono" font-size="9.5"
+    >{SAYS.topFoot}</text
+  >
+
+  <!-- ══ one lane, and the tags that are not walls ══════════════ -->
+
+  <rect
+    x="8"
+    y="214"
+    width="624"
+    height="196"
+    rx="8"
+    class="fill-none stroke-rule-strong"
+    stroke-width="1.25"></rect>
+
+  <text
+    x="28"
+    y="238"
+    class="fill-ink font-display"
+    font-size="13"
+    font-weight="700">{SAYS.botHead}</text
+  >
+  <text x="28" y="254" class="fill-ink-faint font-mono" font-size="10"
+    >{SAYS.botSub}</text
+  >
+
+  <text x="28" y="274" class="fill-ink-faint font-mono" font-size="9"
+    >{SAYS.pass}</text
+  >
+  <path
+    d="M168,271 H612"
+    class="fill-none stroke-ink-muted"
+    stroke-width="1"
+    marker-end="url(#lane-arrow)"></path>
+
+  {
+    lane.map((piece) => (
+      <g>
+        <rect
+          x={piece.x}
+          y={LANE_TOP}
+          width={piece.width}
+          height={LANE_HEIGHT}
+          rx="3"
+          class={OUTLINE[piece.kind]}
+          stroke-width={WEIGHT[piece.kind]}
+          stroke-dasharray={DASH[piece.kind]}
+        />
+        <text
+          x={piece.centre}
+          y={piece.bottom ? LANE_TOP + 19 : LANE_TOP + 24}
+          text-anchor="middle"
+          class={piece.kind === 'tag' ? 'fill-ink-muted font-mono' : 'fill-ink'}
+          font-size="7.5"
+        >
+          {piece.top}
+        </text>
+        {piece.bottom && (
+          <text
+            x={piece.centre}
+            y={LANE_TOP + 30}
+            text-anchor="middle"
+            class="fill-ink"
+            font-size="7.5"
+          >
+            {piece.bottom}
+          </text>
+        )}
+      </g>
+    ))
+  }
+
+  <!-- Which pieces are whose — said in words, not in colour. -->
+  <path
+    d={`M${LANE_LEFT},332 V338 H${yoursEnd} V332`}
+    class="fill-none stroke-rule-strong"
+    stroke-width="1"></path>
+  <text x={LANE_LEFT} y="350" class="fill-ink-muted" font-size="9"
+    >{SAYS.yours}</text
+  >
+
+  <path
+    d={`M${outsideStart},332 V338 H${LANE_RIGHT} V332`}
+    class="fill-none stroke-rule-strong"
+    stroke-width="1"></path>
+  <text x={outsideStart} y="350" class="fill-ink-muted" font-size="9"
+    >{SAYS.outside}</text
+  >
+
+  <!-- The one piece worth pointing at, pointed at. -->
+  <path
+    d={`M${payload.x},370 V364 H${LANE_RIGHT} V370`}
+    class="fill-none stroke-accent"
+    stroke-width="1.5"></path>
+  <text x={LANE_RIGHT} y="384" text-anchor="end" class="fill-ink" font-size="9"
+    >{SAYS.same}</text
+  >
+
+  <text x="28" y="384" class="fill-ink-faint font-mono" font-size="9"
+    >{SAYS.note1}</text
+  >
+  <text x="28" y="400" class="fill-ink-faint font-mono" font-size="9"
+    >{SAYS.note2}</text
+  >
+
+  <!-- ══ what the shape costs you ═══════════════════════════════ -->
+
+  <line x1="8" y1="424" x2="632" y2="424" class="stroke-rule" stroke-width="1"
+  ></line>
+  <text x="16" y="440" class="fill-ink" font-size="10" font-weight="700"
+    >{SAYS.foot1}</text
+  >
+  <text x="16" y="454" class="fill-ink-muted" font-size="9.5">{SAYS.foot2}</text
+  >
+</svg>

@@ -1,0 +1,236 @@
+---
+/**
+ * The same eight fetched pages in two orders, read against a profile of how
+ * reliably a model uses what sits at each position along a long window.
+ *
+ * The teaching load is entirely in the vertical alignment. The page that
+ * answers the question is page 5 in both rows; in the top row it sits dead
+ * centre, underneath the shortest bar in the profile, and in the bottom row it
+ * sits at the end, underneath one of the tallest. Same tokens, same bill, same
+ * eight pages — and the only edit is the order they were pasted in, which costs
+ * nothing at all.
+ *
+ * The profile is deliberately drawn as a shape rather than as measurements, and
+ * says so on the page. The dip is a real, repeatedly measured effect; its exact
+ * depth varies by model and by task, so putting numbers on these bars would be
+ * inventing precision the reader would then carry away.
+ *
+ * Nothing is carried by colour (hard rule 9). Every slot is labelled — the eight
+ * pages by their number, the question by a Q, the load-bearing page by a word —
+ * and the two rows are named at the left. The page that matters is also the only
+ * one with a thick outline and the only one carrying a second line of text.
+ * Decorative on its own, so `aria-hidden`: `Figure` supplies the accessible name
+ * and the description.
+ */
+
+const LEFT = 84;
+const RIGHT = 632;
+const GAP = 5;
+const SLOTS = 9;
+
+const W = (RIGHT - LEFT - GAP * (SLOTS - 1)) / SLOTS;
+const slotX = (index: number) => LEFT + index * (W + GAP);
+
+/**
+ * How reliably material at each position gets used. A shape, not a measurement
+ * — high at both ends, lowest in the middle.
+ */
+const PROFILE = [1, 0.8, 0.58, 0.42, 0.34, 0.42, 0.58, 0.8, 1];
+const PROFILE_BASE = 66;
+const PROFILE_MAX = 42;
+
+type Kind = 'page' | 'answer' | 'question';
+
+interface Cell {
+  kind: Kind;
+  /** The big label: a page number, a 5, or a Q. */
+  main: string;
+  /** Second line, present only where a slot needs naming in words. */
+  sub?: string;
+}
+
+const page = (n: number): Cell => ({ kind: 'page', main: String(n) });
+const ANSWER: Cell = { kind: 'answer', main: '5', sub: 'answers it' };
+const QUESTION: Cell = { kind: 'question', main: 'Q', sub: 'the question' };
+
+const ROWS: { name: string; note: string; top: number; cells: Cell[] }[] = [
+  {
+    name: 'as fetched',
+    note: 'search order',
+    top: 96,
+    cells: [
+      page(1),
+      page(2),
+      page(3),
+      page(4),
+      ANSWER,
+      page(6),
+      page(7),
+      page(8),
+      QUESTION,
+    ],
+  },
+  {
+    name: 'reordered',
+    note: 'same pages',
+    top: 144,
+    cells: [
+      page(1),
+      page(2),
+      page(3),
+      page(4),
+      page(6),
+      page(7),
+      page(8),
+      ANSWER,
+      QUESTION,
+    ],
+  },
+];
+
+const ROW_HEIGHT = 28;
+
+const BOX: Record<Kind, string> = {
+  page: 'fill-paper-sunken stroke-rule',
+  answer: 'fill-accent-soft stroke-accent',
+  question: 'fill-paper-sunken stroke-rule-strong',
+};
+
+const BOX_STROKE: Record<Kind, string> = {
+  page: '1',
+  answer: '2',
+  question: '1',
+};
+
+const MAIN_INK: Record<Kind, string> = {
+  page: 'fill-ink-faint',
+  answer: 'fill-ink',
+  question: 'fill-ink-muted',
+};
+---
+
+<svg viewBox="0 0 640 220" class="w-full" aria-hidden="true">
+  <text x="8" y="12" class="fill-ink-muted font-mono" font-size="9"
+    >how reliably a model uses what sits at each position along a long window</text
+  >
+
+  <text x="8" y="46" class="fill-ink-faint font-mono" font-size="8"
+    >how reliably</text
+  >
+  <text x="8" y="57" class="fill-ink-faint font-mono" font-size="8"
+    >it gets used</text
+  >
+
+  {
+    PROFILE.map((height, index) => (
+      <rect
+        x={slotX(index) + W * 0.2}
+        y={PROFILE_BASE - height * PROFILE_MAX}
+        width={W * 0.6}
+        height={height * PROFILE_MAX}
+        rx="1.5"
+        class="fill-ink-faint"
+      />
+    ))
+  }
+
+  <line
+    x1={LEFT}
+    y1={PROFILE_BASE}
+    x2={RIGHT}
+    y2={PROFILE_BASE}
+    class="stroke-rule-strong"
+    stroke-width="1"></line>
+
+  <text x={LEFT} y="78" class="fill-ink-faint font-mono" font-size="8"
+    >start</text
+  >
+  <text
+    x={(LEFT + RIGHT) / 2}
+    y="78"
+    text-anchor="middle"
+    class="fill-ink-faint font-mono"
+    font-size="8">middle</text
+  >
+  <text
+    x={RIGHT}
+    y="78"
+    text-anchor="end"
+    class="fill-ink-faint font-mono"
+    font-size="8">end</text
+  >
+
+  {
+    ROWS.map((row) => (
+      <g>
+        <text
+          x="8"
+          y={row.top + 12}
+          class="fill-ink font-display"
+          font-size="10"
+          font-weight="700"
+        >
+          {row.name}
+        </text>
+        <text
+          x="8"
+          y={row.top + 24}
+          class="fill-ink-faint font-mono"
+          font-size="8"
+        >
+          {row.note}
+        </text>
+
+        {row.cells.map((cell, index) => (
+          <g>
+            <rect
+              x={slotX(index)}
+              y={row.top}
+              width={W}
+              height={ROW_HEIGHT}
+              rx="3"
+              class={BOX[cell.kind]}
+              stroke-width={BOX_STROKE[cell.kind]}
+              stroke-dasharray={cell.kind === 'question' ? '3 2' : undefined}
+            />
+            <text
+              x={slotX(index) + W / 2}
+              y={row.top + (cell.sub === undefined ? 18 : 14)}
+              text-anchor="middle"
+              class={`${MAIN_INK[cell.kind]} font-mono`}
+              font-size="10"
+            >
+              {cell.main}
+            </text>
+            {cell.sub !== undefined && (
+              <text
+                x={slotX(index) + W / 2}
+                y={row.top + 23}
+                text-anchor="middle"
+                class="fill-ink-muted font-mono"
+                font-size="6"
+              >
+                {cell.sub}
+              </text>
+            )}
+          </g>
+        ))}
+      </g>
+    ))
+  }
+
+  <text x="8" y="188" class="fill-ink-muted font-mono" font-size="9"
+    >1&ndash;8 are the eight pages one search returned. Q is the question. Page
+    5 is the one that answers it.</text
+  >
+
+  <text x="8" y="202" class="fill-ink font-mono" font-size="9"
+    >The same eight pages, the same tokens, the same bill &mdash; only the order
+    changed.</text
+  >
+
+  <text x="8" y="215" class="fill-ink-faint font-mono" font-size="9"
+    >The profile is a shape, not a measurement. The dip is real; how deep it
+    goes varies by model.</text
+  >
+</svg>

@@ -1,0 +1,282 @@
+---
+/**
+ * The same system, drawn as the places a boundary can actually be built.
+ *
+ * The first diagram in this unit shows why nothing inside the window can hold.
+ * This one is the answer to "so what do I do", and it is deliberately a MAP
+ * rather than a list of advice: the reader should be able to see, without
+ * reading a word of the labels, that every gate is drawn on the right of the
+ * model and none is drawn inside it.
+ *
+ * Four gates, four different states, because "narrow the permissions" is four
+ * different moves rather than one. Each state is a distinct SHAPE — a wide gap,
+ * a gap with two stops in it, a barred gate with a person standing at it, a
+ * solid block crossed through — so the state survives greyscale, a phone screen
+ * and colour blindness (hard rule 9). Every one is also written out in words in
+ * the box beside it, which is the signal that actually does the work.
+ *
+ * The dashed outline means the same thing in both places it appears: text
+ * nobody you trust wrote. It is on the inbound box and on the model's own
+ * answer, because that identity is the point of the bottom third — an answer
+ * produced from tainted input is tainted input to whatever reads it next.
+ *
+ * Every run of text is interpolated from a constant so that no `<text>` element
+ * wraps across lines of markup: SVG strips newlines inside text content rather
+ * than collapsing them to spaces, so a wrapped label silently loses its spaces.
+ *
+ * Decorative on its own, so `aria-hidden` — `Figure` carries the accessible
+ * name and the plain-English description.
+ */
+
+const SAYS = {
+  head: 'Where a wall can actually go',
+  sub: 'and none of these is inside the model',
+
+  in1: 'text from outside',
+  in2: 'a page, a ticket, a file,',
+  in3: 'an invoice, a tool’s result',
+  noWall1: 'no wall is possible',
+  noWall2: 'on this arrow',
+
+  model: 'the model',
+  modelSub1: 'one sequence,',
+  modelSub2: 'no way to tell',
+  modelSub3: 'which is which',
+
+  outHead: 'its answer — untrusted input to whatever reads it next',
+  outSub: 'a shell, a query, a document, another model’s window',
+
+  foot1:
+    'Every wall here is a line of your code. None is a sentence the model was asked to obey.',
+  foot2:
+    'The two dashed outlines are the same category: words nobody you know wrote, going in — and coming out.',
+} as const;
+
+type GateShape = 'open' | 'narrowed' | 'person' | 'closed';
+
+const GATES: { y: number; name: string; rule: string; shape: GateShape }[] = [
+  {
+    y: 28,
+    name: 'search the handbook',
+    rule: 'read-only. nothing here can be lost.',
+    shape: 'open',
+  },
+  {
+    y: 80,
+    name: 'read a customer record',
+    rule: 'which customer comes from your session',
+    shape: 'narrowed',
+  },
+  {
+    y: 132,
+    name: 'send an email',
+    rule: 'a person signs it, outside the loop',
+    shape: 'person',
+  },
+  {
+    y: 184,
+    name: 'delete the account',
+    rule: 'never offered. unreachable, not forbidden.',
+    shape: 'closed',
+  },
+];
+
+const MODEL_RIGHT = 336;
+const MODEL_MID = 125;
+---
+
+<svg viewBox="0 0 640 348" class="w-full" aria-hidden="true">
+  <defs>
+    <marker
+      id="wall-arrow"
+      viewBox="0 0 10 10"
+      refX="9"
+      refY="5"
+      markerWidth="5"
+      markerHeight="5"
+      orient="auto"
+    >
+      <path d="M0,0 L10,5 L0,10 z" class="fill-ink-muted"></path>
+    </marker>
+  </defs>
+
+  <text
+    x="16"
+    y="24"
+    class="fill-ink font-display"
+    font-size="13"
+    font-weight="700">{SAYS.head}</text
+  >
+  <text x="16" y="40" class="fill-ink-faint font-mono" font-size="10"
+    >{SAYS.sub}</text
+  >
+
+  <!-- ── what comes in, and cannot be fixed on the way in ─────── -->
+
+  <rect
+    x="16"
+    y="76"
+    width="150"
+    height="56"
+    rx="6"
+    class="fill-paper-sunken stroke-rule-strong"
+    stroke-width="1.25"
+    stroke-dasharray="4 3"></rect>
+  <text x="28" y="96" class="fill-ink" font-size="10">{SAYS.in1}</text>
+  <text x="28" y="110" class="fill-ink-faint" font-size="8.5">{SAYS.in2}</text>
+  <text x="28" y="122" class="fill-ink-faint" font-size="8.5">{SAYS.in3}</text>
+
+  <path
+    d="M166,104 H188"
+    class="fill-none stroke-ink-muted"
+    stroke-width="1.25"
+    marker-end="url(#wall-arrow)"></path>
+
+  <text x="16" y="154" class="fill-ink-muted font-mono" font-size="9"
+    >{SAYS.noWall1}</text
+  >
+  <text x="16" y="166" class="fill-ink-muted font-mono" font-size="9"
+    >{SAYS.noWall2}</text
+  >
+
+  <!-- ── the model, which enforces nothing ────────────────────── -->
+
+  <rect
+    x="196"
+    y="70"
+    width="140"
+    height="110"
+    rx="6"
+    class="fill-paper-raised stroke-rule-strong"
+    stroke-width="1.25"></rect>
+  <text
+    x="266"
+    y="106"
+    text-anchor="middle"
+    class="fill-ink font-display"
+    font-size="12"
+    font-weight="700">{SAYS.model}</text
+  >
+  <g class="fill-ink-faint font-mono" font-size="8.5" text-anchor="middle">
+    <text x="266" y="126">{SAYS.modelSub1}</text>
+    <text x="266" y="139">{SAYS.modelSub2}</text>
+    <text x="266" y="152">{SAYS.modelSub3}</text>
+  </g>
+
+  <!-- ── four things it can reach, each held open by your code ── -->
+
+  {
+    GATES.map((gate) => (
+      <g>
+        <path
+          d={`M${MODEL_RIGHT},${MODEL_MID} C${MODEL_RIGHT + 12},${MODEL_MID} 344,${gate.y + 22} 352,${gate.y + 22}`}
+          class="fill-none stroke-ink-muted"
+          stroke-width="1.25"
+          marker-end="url(#wall-arrow)"
+        />
+
+        {gate.shape === 'open' && (
+          <g class="stroke-rule-strong" stroke-width="2.5">
+            <line x1="362" y1={gate.y + 8} x2="362" y2={gate.y + 36} />
+            <line x1="394" y1={gate.y + 8} x2="394" y2={gate.y + 36} />
+          </g>
+        )}
+
+        {gate.shape === 'narrowed' && (
+          <g class="stroke-rule-strong" stroke-width="2.5">
+            <line x1="362" y1={gate.y + 8} x2="362" y2={gate.y + 36} />
+            <line x1="394" y1={gate.y + 8} x2="394" y2={gate.y + 36} />
+            <line x1="362" y1={gate.y + 22} x2="372" y2={gate.y + 22} />
+            <line x1="384" y1={gate.y + 22} x2="394" y2={gate.y + 22} />
+          </g>
+        )}
+
+        {gate.shape === 'person' && (
+          <g>
+            <g class="stroke-rule-strong" stroke-width="2.5">
+              <line x1="362" y1={gate.y + 8} x2="362" y2={gate.y + 36} />
+              <line x1="394" y1={gate.y + 8} x2="394" y2={gate.y + 36} />
+              <line x1="362" y1={gate.y + 32} x2="394" y2={gate.y + 32} />
+            </g>
+            <circle
+              cx="378"
+              cy={gate.y + 13}
+              r="3.5"
+              class="fill-paper stroke-ink-muted"
+              stroke-width="1.5"
+            />
+            <path
+              d={`M370,${gate.y + 26} Q378,${gate.y + 17} 386,${gate.y + 26}`}
+              class="fill-none stroke-ink-muted"
+              stroke-width="1.5"
+            />
+          </g>
+        )}
+
+        {gate.shape === 'closed' && (
+          <g>
+            <rect
+              x="362"
+              y={gate.y + 8}
+              width="32"
+              height="28"
+              class="fill-paper-sunken stroke-rule-strong"
+              stroke-width="1.5"
+            />
+            <g class="stroke-ink-muted" stroke-width="2">
+              <line x1="366" y1={gate.y + 12} x2="390" y2={gate.y + 32} />
+              <line x1="390" y1={gate.y + 12} x2="366" y2={gate.y + 32} />
+            </g>
+          </g>
+        )}
+
+        <rect
+          x="408"
+          y={gate.y}
+          width="216"
+          height="44"
+          rx="5"
+          class="fill-paper stroke-rule-strong"
+          stroke-width="1.25"
+        />
+        <text x="418" y={gate.y + 19} class="fill-ink" font-size="10">
+          {gate.name}
+        </text>
+        <text x="418" y={gate.y + 33} class="fill-ink-muted" font-size="8.5">
+          {gate.rule}
+        </text>
+      </g>
+    ))
+  }
+
+  <!-- ── and what comes back out, in the same category ────────── -->
+
+  <path
+    d="M266,180 V224"
+    class="fill-none stroke-ink-muted"
+    stroke-width="1.25"
+    marker-end="url(#wall-arrow)"></path>
+
+  <rect
+    x="150"
+    y="230"
+    width="412"
+    height="46"
+    rx="6"
+    class="fill-paper-sunken stroke-rule-strong"
+    stroke-width="1.25"
+    stroke-dasharray="4 3"></rect>
+  <text x="162" y="250" class="fill-ink" font-size="10">{SAYS.outHead}</text>
+  <text x="162" y="266" class="fill-ink-faint" font-size="9">{SAYS.outSub}</text
+  >
+
+  <!-- ── the one sentence the drawing is for ──────────────────── -->
+
+  <line x1="8" y1="300" x2="632" y2="300" class="stroke-rule" stroke-width="1"
+  ></line>
+  <text x="16" y="316" class="fill-ink" font-size="10" font-weight="700"
+    >{SAYS.foot1}</text
+  >
+  <text x="16" y="330" class="fill-ink-muted" font-size="9.5">{SAYS.foot2}</text
+  >
+</svg>

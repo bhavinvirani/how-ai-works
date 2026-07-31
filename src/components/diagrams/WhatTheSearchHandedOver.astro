@@ -1,0 +1,515 @@
+---
+/**
+ * The assembly drawing for the whole Part, and the unit's argument in one
+ * picture: the search decides the contents of the box marked "everything the
+ * model gets to see", and nothing to the right of that box can tell what is
+ * missing from it.
+ *
+ * Three bands, in the order a system actually runs them:
+ *
+ *   1. the indexing pass, done once and again on edit — quiet, small, and
+ *      drawn first so that "the store" is an object the reader has watched
+ *      being built rather than a cloud the passages come out of;
+ *   2. the question path, ending in three named cards and the count of what
+ *      did not come back. Three out of 3,900 is the ceiling, drawn as a
+ *      quantity rather than asserted as a claim;
+ *   3. the enclosure. This is the load-bearing element. Saying "the passages
+ *      are the model's whole world" is a sentence the reader can nod at and
+ *      not believe; drawing a hard boundary with exactly five chips inside it
+ *      — and the same passage numbers as band 2 — makes the absence of
+ *      everything else a shape on the page.
+ *
+ * The citation is drawn as a dashed line running from the answer back to the
+ * card it names, because an answer that can point at something is the property
+ * that separates this route from baking documents into dials. It is dashed AND
+ * labelled AND the reference is spelled out in text inside the answer box, so
+ * it survives without colour.
+ *
+ * Nothing is carried by colour anywhere: the search is marked by a heavier
+ * stroke, its own two-line label and its position in the chain; the model box
+ * by its label; the retrieved passages by being numbered identically in both
+ * bands.
+ *
+ * Every run of text is interpolated from a constant so that no `<text>` element
+ * wraps across lines of markup — SVG strips newlines inside text content rather
+ * than collapsing them to spaces, so a wrapped label silently loses its spaces.
+ *
+ * Decorative on its own, so `aria-hidden` — `Figure` carries the accessible
+ * name and the plain-English description.
+ */
+
+const SAYS = {
+  setupHead: 'Once, before anyone asks anything',
+  setupSub: 'and again whenever one of the documents changes',
+
+  documents: 'your documents',
+  cut: 'cut into passages',
+  position: 'a position on the map',
+  stored: 'stored, ready to search',
+
+  askHead: 'Every time somebody asks',
+  askSub: 'and the third box decides everything after it',
+
+  question: 'the question',
+  questionPosition: 'a position on the map',
+  search: 'the search',
+  searchSub: 'the nearest passages win',
+  searches: 'what it searches',
+
+  cameBack: 'what came back',
+  cameBackSub: 'and it is now the whole world',
+  passage4: 'passage 4',
+  passage17: 'passage 17',
+  passage39: 'passage 39',
+  count: 'three came back. 3,897 did not.',
+
+  seesHead: 'Everything the model gets to see',
+  seesSub: 'nothing after this point can tell that the wrong three arrived',
+
+  instructions: 'instructions',
+  nothingElse: 'and nothing else at all',
+  onePass: 'one pass of the model',
+  answer: 'the answer',
+  reference: '[passage 17]',
+  cite: 'the answer can point back at the passage it came from',
+} as const;
+---
+
+<svg viewBox="0 0 600 420" class="w-full" aria-hidden="true">
+  <defs>
+    <marker
+      id="rag-arrow"
+      viewBox="0 0 10 10"
+      refX="9"
+      refY="5"
+      markerWidth="5"
+      markerHeight="5"
+      orient="auto"
+    >
+      <path d="M0,0 L10,5 L0,10 z" class="fill-ink-muted"></path>
+    </marker>
+    <marker
+      id="rag-cite"
+      viewBox="0 0 10 10"
+      refX="9"
+      refY="5"
+      markerWidth="5"
+      markerHeight="5"
+      orient="auto"
+    >
+      <path d="M0,0 L10,5 L0,10 z" class="fill-accent"></path>
+    </marker>
+  </defs>
+
+  <!-- ── Band 1: the pass you make once ───────────────────────── -->
+
+  <text
+    x="20"
+    y="24"
+    class="fill-ink font-display"
+    font-size="12"
+    font-weight="700">{SAYS.setupHead}</text
+  >
+  <text x="20" y="38" class="fill-ink-muted" font-size="9">{SAYS.setupSub}</text
+  >
+
+  <rect
+    x="20"
+    y="52"
+    width="100"
+    height="30"
+    rx="6"
+    class="fill-paper-sunken stroke-rule-strong"
+    stroke-width="1.25"></rect>
+  <text x="70" y="71" text-anchor="middle" class="fill-ink" font-size="9.5"
+    >{SAYS.documents}</text
+  >
+
+  <line
+    x1="120"
+    y1="67"
+    x2="138"
+    y2="67"
+    class="stroke-ink-muted"
+    stroke-width="1.25"
+    marker-end="url(#rag-arrow)"></line>
+
+  <rect
+    x="138"
+    y="52"
+    width="112"
+    height="30"
+    rx="6"
+    class="fill-paper-sunken stroke-rule-strong"
+    stroke-width="1.25"></rect>
+  <text x="194" y="71" text-anchor="middle" class="fill-ink" font-size="9.5"
+    >{SAYS.cut}</text
+  >
+
+  <line
+    x1="250"
+    y1="67"
+    x2="268"
+    y2="67"
+    class="stroke-ink-muted"
+    stroke-width="1.25"
+    marker-end="url(#rag-arrow)"></line>
+
+  <rect
+    x="268"
+    y="52"
+    width="138"
+    height="30"
+    rx="6"
+    class="fill-paper-sunken stroke-rule-strong"
+    stroke-width="1.25"></rect>
+  <text x="337" y="71" text-anchor="middle" class="fill-ink" font-size="9.5"
+    >{SAYS.position}</text
+  >
+
+  <line
+    x1="406"
+    y1="67"
+    x2="424"
+    y2="67"
+    class="stroke-ink-muted"
+    stroke-width="1.25"
+    marker-end="url(#rag-arrow)"></line>
+
+  <rect
+    x="424"
+    y="52"
+    width="156"
+    height="30"
+    rx="6"
+    class="fill-paper-sunken stroke-rule-strong"
+    stroke-width="1.25"></rect>
+  <text x="502" y="71" text-anchor="middle" class="fill-ink" font-size="9.5"
+    >{SAYS.stored}</text
+  >
+
+  <line x1="12" y1="100" x2="460" y2="100" class="stroke-rule" stroke-width="1"
+  ></line>
+
+  <!-- ── Band 2: the pass you make every time ─────────────────── -->
+
+  <text
+    x="20"
+    y="124"
+    class="fill-ink font-display"
+    font-size="12"
+    font-weight="700">{SAYS.askHead}</text
+  >
+  <text x="20" y="138" class="fill-ink-muted" font-size="9">{SAYS.askSub}</text>
+
+  <path
+    d="M502,82 V116 H439 V142"
+    class="fill-none stroke-ink-muted"
+    stroke-width="1.25"
+    marker-end="url(#rag-arrow)"></path>
+  <text x="496" y="112" text-anchor="end" class="fill-ink-faint" font-size="8"
+    >{SAYS.searches}</text
+  >
+
+  <rect
+    x="20"
+    y="152"
+    width="112"
+    height="32"
+    rx="6"
+    class="fill-paper-sunken stroke-rule-strong"
+    stroke-width="1.25"></rect>
+  <text x="76" y="172" text-anchor="middle" class="fill-ink" font-size="9.5"
+    >{SAYS.question}</text
+  >
+
+  <line
+    x1="132"
+    y1="168"
+    x2="150"
+    y2="168"
+    class="stroke-ink-muted"
+    stroke-width="1.25"
+    marker-end="url(#rag-arrow)"></line>
+
+  <rect
+    x="150"
+    y="152"
+    width="150"
+    height="32"
+    rx="6"
+    class="fill-paper-sunken stroke-rule-strong"
+    stroke-width="1.25"></rect>
+  <text x="225" y="172" text-anchor="middle" class="fill-ink" font-size="9.5"
+    >{SAYS.questionPosition}</text
+  >
+
+  <line
+    x1="300"
+    y1="168"
+    x2="346"
+    y2="168"
+    class="stroke-ink-muted"
+    stroke-width="1.25"
+    marker-end="url(#rag-arrow)"></line>
+
+  <!-- The one box with a heavier edge, and the only one carrying two lines. -->
+  <rect
+    x="354"
+    y="146"
+    width="170"
+    height="44"
+    rx="6"
+    class="fill-paper-raised stroke-accent"
+    stroke-width="2"></rect>
+  <text
+    x="439"
+    y="166"
+    text-anchor="middle"
+    class="fill-ink"
+    font-size="10.5"
+    font-weight="600">{SAYS.search}</text
+  >
+  <text
+    x="439"
+    y="181"
+    text-anchor="middle"
+    class="fill-ink-muted"
+    font-size="8.5">{SAYS.searchSub}</text
+  >
+
+  <line
+    x1="439"
+    y1="190"
+    x2="439"
+    y2="202"
+    class="stroke-ink-muted"
+    stroke-width="1.25"
+    marker-end="url(#rag-arrow)"></line>
+
+  <text x="20" y="212" class="fill-ink" font-size="9.5" font-weight="600"
+    >{SAYS.cameBack}</text
+  >
+  <text x="20" y="226" class="fill-ink-muted" font-size="8.5"
+    >{SAYS.cameBackSub}</text
+  >
+
+  <rect
+    x="300"
+    y="206"
+    width="90"
+    height="24"
+    rx="4"
+    class="fill-paper-raised stroke-rule-strong"
+    stroke-width="1.25"></rect>
+  <text
+    x="345"
+    y="222"
+    text-anchor="middle"
+    class="fill-ink font-mono"
+    font-size="9">{SAYS.passage4}</text
+  >
+
+  <rect
+    x="394"
+    y="206"
+    width="90"
+    height="24"
+    rx="4"
+    class="fill-paper-raised stroke-rule-strong"
+    stroke-width="1.25"></rect>
+  <text
+    x="439"
+    y="222"
+    text-anchor="middle"
+    class="fill-ink font-mono"
+    font-size="9">{SAYS.passage17}</text
+  >
+
+  <rect
+    x="488"
+    y="206"
+    width="90"
+    height="24"
+    rx="4"
+    class="fill-paper-raised stroke-rule-strong"
+    stroke-width="1.25"></rect>
+  <text
+    x="533"
+    y="222"
+    text-anchor="middle"
+    class="fill-ink font-mono"
+    font-size="9">{SAYS.passage39}</text
+  >
+
+  <text
+    x="439"
+    y="246"
+    text-anchor="middle"
+    class="fill-ink-muted"
+    font-size="8.5">{SAYS.count}</text
+  >
+
+  <line x1="12" y1="262" x2="588" y2="262" class="stroke-rule" stroke-width="1"
+  ></line>
+
+  <!-- ── Band 3: the boundary that is the whole argument ──────── -->
+
+  <text
+    x="20"
+    y="282"
+    class="fill-ink font-display"
+    font-size="12"
+    font-weight="700">{SAYS.seesHead}</text
+  >
+  <text x="20" y="296" class="fill-ink-muted" font-size="9">{SAYS.seesSub}</text
+  >
+
+  <rect
+    x="14"
+    y="306"
+    width="304"
+    height="66"
+    rx="6"
+    class="fill-paper-sunken stroke-rule-strong"
+    stroke-width="1.5"></rect>
+
+  <rect
+    x="22"
+    y="314"
+    width="72"
+    height="22"
+    rx="3"
+    class="fill-paper-raised stroke-rule"
+    stroke-width="1"></rect>
+  <text x="58" y="329" text-anchor="middle" class="fill-ink" font-size="8.5"
+    >{SAYS.instructions}</text
+  >
+
+  <rect
+    x="100"
+    y="314"
+    width="62"
+    height="22"
+    rx="3"
+    class="fill-paper-raised stroke-rule"
+    stroke-width="1"></rect>
+  <text
+    x="131"
+    y="329"
+    text-anchor="middle"
+    class="fill-ink font-mono"
+    font-size="8">{SAYS.passage4}</text
+  >
+
+  <rect
+    x="168"
+    y="314"
+    width="68"
+    height="22"
+    rx="3"
+    class="fill-paper-raised stroke-rule"
+    stroke-width="1"></rect>
+  <text
+    x="202"
+    y="329"
+    text-anchor="middle"
+    class="fill-ink font-mono"
+    font-size="8">{SAYS.passage17}</text
+  >
+
+  <rect
+    x="242"
+    y="314"
+    width="68"
+    height="22"
+    rx="3"
+    class="fill-paper-raised stroke-rule"
+    stroke-width="1"></rect>
+  <text
+    x="276"
+    y="329"
+    text-anchor="middle"
+    class="fill-ink font-mono"
+    font-size="8">{SAYS.passage39}</text
+  >
+
+  <rect
+    x="22"
+    y="342"
+    width="84"
+    height="22"
+    rx="3"
+    class="fill-paper-raised stroke-rule"
+    stroke-width="1"></rect>
+  <text x="64" y="357" text-anchor="middle" class="fill-ink" font-size="8.5"
+    >{SAYS.question}</text
+  >
+
+  <text x="116" y="357" class="fill-ink-muted" font-size="8.5"
+    >{SAYS.nothingElse}</text
+  >
+
+  <line
+    x1="318"
+    y1="339"
+    x2="334"
+    y2="339"
+    class="stroke-ink-muted"
+    stroke-width="1.25"
+    marker-end="url(#rag-arrow)"></line>
+
+  <rect
+    x="334"
+    y="323"
+    width="116"
+    height="32"
+    rx="6"
+    class="fill-accent-soft stroke-accent"
+    stroke-width="1.25"></rect>
+  <text x="392" y="343" text-anchor="middle" class="fill-ink" font-size="9.5"
+    >{SAYS.onePass}</text
+  >
+
+  <line
+    x1="450"
+    y1="339"
+    x2="466"
+    y2="339"
+    class="stroke-ink-muted"
+    stroke-width="1.25"
+    marker-end="url(#rag-arrow)"></line>
+
+  <rect
+    x="466"
+    y="319"
+    width="120"
+    height="40"
+    rx="6"
+    class="fill-paper-raised stroke-rule-strong"
+    stroke-width="1.25"></rect>
+  <text x="526" y="335" text-anchor="middle" class="fill-ink" font-size="9.5"
+    >{SAYS.answer}</text
+  >
+  <text
+    x="526"
+    y="350"
+    text-anchor="middle"
+    class="fill-accent font-mono"
+    font-size="8">{SAYS.reference}</text
+  >
+
+  <path
+    d="M526,359 V386 H202 V374"
+    class="fill-none stroke-accent"
+    stroke-width="1.5"
+    stroke-dasharray="4 3"
+    marker-end="url(#rag-cite)"></path>
+  <text
+    x="364"
+    y="402"
+    text-anchor="middle"
+    class="fill-ink-muted"
+    font-size="8.5">{SAYS.cite}</text
+  >
+</svg>

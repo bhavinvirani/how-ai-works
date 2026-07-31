@@ -1,0 +1,317 @@
+---
+/**
+ * The second half of the closing unit's argument: there are exactly three
+ * places anyone has ever been able to stand relative to the guess, and all
+ * three of them are outside it.
+ *
+ * The teaching load is carried by geometry rather than by the lists. Two panels
+ * sit either side of a box, and a third route leaves the left panel, travels
+ * UNDER the box and rejoins on the right without touching it. A reader who takes
+ * nothing else from the drawing should still come away with the shape: whatever
+ * you build goes before, around or after, and the middle is never opened.
+ *
+ * The lists inside each panel are deliberately concrete and deliberately mixed
+ * — a prompt sits next to a retrieved passage sits next to a short training run
+ * — because the unit's claim is that techniques readers have met under separate
+ * names are one manoeuvre seen three times.
+ *
+ * Each panel also carries a line saying what it does NOT do. That is the part
+ * people skip: narrowing the field is not verification, and a tool call is not
+ * the model doing the work.
+ *
+ * Nothing is carried by colour. The guess is identified by being the centre, by
+ * a heavier outline, and by its label; the bypass is identified by being a path
+ * that goes around rather than through, and by its own labelled box.
+ *
+ * Every run of text is interpolated from a constant so that no `<text>` element
+ * wraps across lines of markup: SVG strips newlines inside text content rather
+ * than collapsing them to spaces, so a wrapped label silently loses its spaces.
+ *
+ * Decorative on its own, so `aria-hidden` — `Figure` carries the accessible
+ * name and the plain-English description.
+ */
+
+const SAYS = {
+  title: 'Three places to stand',
+  sub: 'and the box in the middle is not one of them',
+
+  guess: 'the guess',
+  guessLines: ['score every piece', 'take one, glue it on, again'],
+
+  beforeHead: 'Before it guesses',
+  beforeSub: 'narrow what could plausibly come next',
+  beforeItems: [
+    'the wording of the request',
+    'a few finished examples',
+    'passages you looked up first',
+    'a short training run of your own',
+  ],
+  beforeNot: [
+    'It shrinks the field of plausible',
+    'continuations. It verifies nothing.',
+  ],
+
+  afterHead: 'After it has guessed',
+  afterSub: 'compare the finished text with something you hold',
+  afterItems: [
+    'the passage it answered from',
+    'a fixed set of known-good cases',
+    'a person, on what matters',
+    'a limit on what it may do alone',
+  ],
+  afterNot: [
+    'The only place a check has ever',
+    'fitted, because two things exist.',
+  ],
+
+  bypassHead: 'Instead of guessing',
+  bypassSub: 'hand the job to something that is not a guesser',
+  bypassItems: 'a search · a sum · a database query · code that runs',
+  bypassNot: 'the model writes the request; your program does the work',
+
+  footerA: 'All three of them stand outside the box.',
+  footerB:
+    'Nothing anyone has built in sixty units changes what happens inside it.',
+} as const;
+
+const PANEL_Y = 60;
+const PANEL_H = 140;
+const LEFT_X = 16;
+const RIGHT_X = 384;
+const PANEL_W = 200;
+---
+
+<svg viewBox="0 0 600 360" class="w-full" aria-hidden="true">
+  <defs>
+    <marker
+      id="bypass-arrow"
+      viewBox="0 0 10 10"
+      refX="9"
+      refY="5"
+      markerWidth="5"
+      markerHeight="5"
+      orient="auto"
+    >
+      <path d="M0,0 L10,5 L0,10 z" class="fill-ink-muted"></path>
+    </marker>
+  </defs>
+
+  <text
+    x="16"
+    y="22"
+    class="fill-ink font-display"
+    font-size="14"
+    font-weight="700">{SAYS.title}</text
+  >
+  <text x="16" y="37" class="fill-ink-faint font-mono" font-size="9"
+    >{SAYS.sub}</text
+  >
+
+  <!-- ── Before ───────────────────────────────────────────────── -->
+
+  <rect
+    x={LEFT_X}
+    y={PANEL_Y}
+    width={PANEL_W}
+    height={PANEL_H}
+    rx="8"
+    class="fill-paper-raised stroke-rule"
+    stroke-width="1"></rect>
+  <text
+    x={LEFT_X + 12}
+    y={PANEL_Y + 20}
+    class="fill-ink font-display"
+    font-size="11"
+    font-weight="700">{SAYS.beforeHead}</text
+  >
+  <text
+    x={LEFT_X + 12}
+    y={PANEL_Y + 34}
+    class="fill-ink-muted font-mono"
+    font-size="8">{SAYS.beforeSub}</text
+  >
+  {
+    SAYS.beforeItems.map((item, n) => (
+      <text
+        x={LEFT_X + 12}
+        y={PANEL_Y + 54 + n * 12}
+        class="fill-ink"
+        font-size="8.5"
+      >
+        {item}
+      </text>
+    ))
+  }
+  {
+    SAYS.beforeNot.map((line, n) => (
+      <text
+        x={LEFT_X + 12}
+        y={PANEL_Y + 116 + n * 11}
+        class="fill-ink-faint"
+        font-size="8"
+      >
+        {line}
+      </text>
+    ))
+  }
+
+  <!-- ── The guess ────────────────────────────────────────────── -->
+
+  <line
+    x1={LEFT_X + PANEL_W}
+    y1="130"
+    x2="234"
+    y2="130"
+    class="stroke-ink-muted"
+    stroke-width="1.25"
+    marker-end="url(#bypass-arrow)"></line>
+
+  <rect
+    x="236"
+    y="98"
+    width="128"
+    height="66"
+    rx="8"
+    class="fill-accent-soft stroke-accent"
+    stroke-width="2"></rect>
+  <text
+    x="300"
+    y="121"
+    text-anchor="middle"
+    class="fill-ink font-display"
+    font-size="11"
+    font-weight="700">{SAYS.guess}</text
+  >
+  {
+    SAYS.guessLines.map((line, n) => (
+      <text
+        x="300"
+        y={137 + n * 12}
+        text-anchor="middle"
+        class="fill-ink-muted font-mono"
+        font-size="8"
+      >
+        {line}
+      </text>
+    ))
+  }
+
+  <line
+    x1="364"
+    y1="130"
+    x2={RIGHT_X - 2}
+    y2="130"
+    class="stroke-ink-muted"
+    stroke-width="1.25"
+    marker-end="url(#bypass-arrow)"></line>
+
+  <!-- ── After ────────────────────────────────────────────────── -->
+
+  <rect
+    x={RIGHT_X}
+    y={PANEL_Y}
+    width={PANEL_W}
+    height={PANEL_H}
+    rx="8"
+    class="fill-paper-raised stroke-rule"
+    stroke-width="1"></rect>
+  <text
+    x={RIGHT_X + 12}
+    y={PANEL_Y + 20}
+    class="fill-ink font-display"
+    font-size="11"
+    font-weight="700">{SAYS.afterHead}</text
+  >
+  <text
+    x={RIGHT_X + 12}
+    y={PANEL_Y + 34}
+    class="fill-ink-muted font-mono"
+    font-size="8">{SAYS.afterSub}</text
+  >
+  {
+    SAYS.afterItems.map((item, n) => (
+      <text
+        x={RIGHT_X + 12}
+        y={PANEL_Y + 54 + n * 12}
+        class="fill-ink"
+        font-size="8.5"
+      >
+        {item}
+      </text>
+    ))
+  }
+  {
+    SAYS.afterNot.map((line, n) => (
+      <text
+        x={RIGHT_X + 12}
+        y={PANEL_Y + 116 + n * 11}
+        class="fill-ink-faint"
+        font-size="8"
+      >
+        {line}
+      </text>
+    ))
+  }
+
+  <!-- ── Instead: a route that never touches the middle ────────── -->
+
+  <path
+    d="M116,200 V244 H190"
+    class="fill-none stroke-ink-muted"
+    stroke-width="1.25"
+    marker-end="url(#bypass-arrow)"></path>
+
+  <rect
+    x="196"
+    y="222"
+    width="208"
+    height="44"
+    rx="6"
+    class="fill-paper-sunken stroke-rule-strong"
+    stroke-width="1.25"></rect>
+  <text
+    x="300"
+    y="240"
+    text-anchor="middle"
+    class="fill-ink font-display"
+    font-size="10"
+    font-weight="700">{SAYS.bypassHead}</text
+  >
+  <text
+    x="300"
+    y="254"
+    text-anchor="middle"
+    class="fill-ink-muted"
+    font-size="8">{SAYS.bypassSub}</text
+  >
+
+  <path
+    d="M404,244 H484 V204"
+    class="fill-none stroke-ink-muted"
+    stroke-width="1.25"
+    marker-end="url(#bypass-arrow)"></path>
+
+  <text x="300" y="284" text-anchor="middle" class="fill-ink" font-size="8.5"
+    >{SAYS.bypassItems}</text
+  >
+  <text
+    x="300"
+    y="296"
+    text-anchor="middle"
+    class="fill-ink-faint"
+    font-size="8">{SAYS.bypassNot}</text
+  >
+
+  <line x1="12" y1="314" x2="588" y2="314" class="stroke-rule" stroke-width="1"
+  ></line>
+  <text
+    x="16"
+    y="334"
+    class="fill-ink font-display"
+    font-size="12"
+    font-weight="700">{SAYS.footerA}</text
+  >
+  <text x="16" y="349" class="fill-ink-muted font-mono" font-size="9"
+    >{SAYS.footerB}</text
+  >
+</svg>

@@ -1,0 +1,367 @@
+---
+/**
+ * The unit's whole argument, and the only picture it gets — this unit ships no
+ * instrument, so the diagram carries the load an instrument usually would.
+ *
+ * One photograph, three panels, the same six labels in every one:
+ *
+ *   1. the lesson in the training data. One bar at 100%, five flat on the
+ *      floor. The point is not that the correct bar is tall; it is that the
+ *      five wrong ones are *identical*. A malamute and a bicycle are recorded
+ *      as the same number, and the reader has to see that they are level with
+ *      each other before the rest of the unit means anything.
+ *   2. the lesson in the teacher's row. Same scale as panel 1 — deliberately,
+ *      because the two panels are being compared — so the tail genuinely
+ *      vanishes. The bottom two bars are drawn at their true sub-pixel height
+ *      rather than nudged up to something visible, and the note owns it. A
+ *      bar quietly floored to 2px would make the third panel a lie.
+ *   3. the tail, magnified past a thousand times, horizontal so the length
+ *      comparison is a distance rather than a height. This is the payload:
+ *      two answers the training data calls equally wrong, two hundred apart.
+ *
+ * Nothing is carried by colour (hard rule 9). Every bar has its value printed
+ * above or beside it, the correct label is named in the panel-1 subhead as well
+ * as accented, and the two-hundredfold ratio is written out in words underneath
+ * rather than left to be measured off the page.
+ *
+ * Every run of text is interpolated from a constant so no `<text>` element
+ * wraps across lines of markup — SVG strips newlines inside text content rather
+ * than collapsing them to spaces, so a wrapped label silently loses its spaces.
+ *
+ * Decorative on its own, so `aria-hidden` — `Figure` carries the accessible
+ * name and the plain-English description.
+ */
+
+interface Row {
+  label: string;
+  /** The one label the training data says yes to. */
+  correct: boolean;
+  hardText: string;
+  /** The teacher's share of the row, as a percentage. */
+  teacher: number;
+  teacherText: string;
+}
+
+const rows: Row[] = [
+  {
+    label: 'husky',
+    correct: true,
+    hardText: '100%',
+    teacher: 71,
+    teacherText: '71%',
+  },
+  {
+    label: 'malamute',
+    correct: false,
+    hardText: '0%',
+    teacher: 22,
+    teacherText: '22%',
+  },
+  {
+    label: 'samoyed',
+    correct: false,
+    hardText: '0%',
+    teacher: 4,
+    teacherText: '4%',
+  },
+  {
+    label: 'collie',
+    correct: false,
+    hardText: '0%',
+    teacher: 2,
+    teacherText: '2%',
+  },
+  {
+    label: 'dachshund',
+    correct: false,
+    hardText: '0%',
+    teacher: 0.4,
+    teacherText: '0.4%',
+  },
+  {
+    label: 'bicycle',
+    correct: false,
+    hardText: '0%',
+    teacher: 0.002,
+    teacherText: '0.002%',
+  },
+];
+
+/** Pixels per percentage point. Shared by panels 1 and 2, which is the point. */
+const SCALE = 1;
+const HARD_BASE = 162;
+const SOFT_BASE = 366;
+/**
+ * Height of the stub drawn for a bar of zero. Panel 1 has to read as one tall
+ * bar and five *level* ones — five bars that had simply vanished would look
+ * like panel 2's tail, which is the exact opposite of the point being made.
+ */
+const FLOOR = 5;
+
+const SLOT = 92;
+const LEFT = 30;
+const BAR_W = 60;
+
+const bars = rows.map((row, i) => {
+  const softH = row.teacher * SCALE;
+  const hardH = row.correct ? 100 * SCALE : FLOOR;
+
+  return {
+    ...row,
+    x: LEFT + i * SLOT + (SLOT - BAR_W) / 2,
+    centre: LEFT + i * SLOT + SLOT / 2,
+
+    hardH,
+    hardY: HARD_BASE - hardH,
+    hardTextY: row.correct ? HARD_BASE - hardH - 7 : HARD_BASE - 10,
+
+    softH,
+    softY: SOFT_BASE - softH,
+    // Anything shorter than a line of type gets its value parked just above the
+    // axis instead, or the label would sit on top of the bar.
+    softTextY: softH > 12 ? SOFT_BASE - softH - 7 : SOFT_BASE - 9,
+  };
+});
+
+/**
+ * The two labels the linear panels are too small to draw. Panel 3 exists
+ * entirely for the ratio between them, so they are named rather than indexed.
+ */
+const NEAR_MISS = rows[4];
+const NOT_A_DOG = rows[5];
+
+/** Panel 3's own scale: 1000px per percentage point, so 0.4% is 400px wide. */
+const TAIL_SCALE = 1000;
+
+const SAYS = {
+  hardHead: 'What the label in the training data says',
+  hardSub:
+    'one photograph of a husky, and six of the thousand labels in the list',
+  hardNote1: 'Five different amounts of wrong, written down as one number.',
+  hardNote2: 'Nothing here says a malamute is a closer call than a bicycle.',
+
+  softHead: 'What the teacher says about the same photograph',
+  softSub: 'the same six labels, drawn at the same scale as the panel above',
+  softNote1:
+    'The last two bars are drawn to scale, which is why you cannot see them.',
+  softNote2: 'The 994 labels not drawn share the last 0.6% between them.',
+
+  tailHead: 'The bottom of the same row, magnified past a thousand times',
+  tailSub: 'the two bars the panel above could not draw',
+  tailTiny: 'two pixels long',
+  tailNote1:
+    'Both of these are zero in the top panel. Here they are two hundred apart.',
+  tailNote2:
+    'That factor of two hundred is the part a single right answer throws away.',
+} as const;
+---
+
+<svg viewBox="0 0 600 574" class="w-full" aria-hidden="true">
+  <!-- ── Panel 1: the lesson in the data ──────────────────────── -->
+
+  <text
+    x="24"
+    y="26"
+    class="fill-ink font-display"
+    font-size="13"
+    font-weight="700">{SAYS.hardHead}</text
+  >
+  <text x="24" y="41" class="fill-ink-faint" font-size="10">{SAYS.hardSub}</text
+  >
+
+  {
+    bars.map((bar) => (
+      <g>
+        <rect
+          x={bar.x}
+          y={bar.hardY}
+          width={BAR_W}
+          height={bar.hardH}
+          rx="2"
+          class={
+            bar.correct
+              ? 'fill-accent-soft stroke-accent'
+              : 'fill-paper-sunken stroke-rule-strong'
+          }
+          stroke-width={bar.correct ? '1.5' : '1'}
+        />
+        <text
+          x={bar.centre}
+          y={bar.hardTextY}
+          text-anchor="middle"
+          class="fill-ink font-mono"
+          font-size="10"
+          font-weight={bar.correct ? '700' : '400'}
+        >
+          {bar.hardText}
+        </text>
+      </g>
+    ))
+  }
+
+  <line
+    x1="24"
+    y1={HARD_BASE}
+    x2="588"
+    y2={HARD_BASE}
+    class="stroke-rule-strong"
+    stroke-width="1.25"></line>
+
+  {
+    bars.map((bar) => (
+      <text
+        x={bar.centre}
+        y="178"
+        text-anchor="middle"
+        class="fill-ink"
+        font-size="10"
+        font-weight={bar.correct ? '700' : '400'}
+      >
+        {bar.label}
+      </text>
+    ))
+  }
+
+  <text x="24" y="200" class="fill-ink-muted" font-size="10"
+    >{SAYS.hardNote1}</text
+  >
+  <text x="24" y="214" class="fill-ink-faint" font-size="10"
+    >{SAYS.hardNote2}</text
+  >
+
+  <line x1="12" y1="228" x2="588" y2="228" class="stroke-rule" stroke-width="1"
+  ></line>
+
+  <!-- ── Panel 2: the lesson in the teacher's row ──────────────── -->
+
+  <text
+    x="24"
+    y="252"
+    class="fill-ink font-display"
+    font-size="13"
+    font-weight="700">{SAYS.softHead}</text
+  >
+  <text x="24" y="267" class="fill-ink-faint" font-size="10"
+    >{SAYS.softSub}</text
+  >
+
+  {
+    bars.map((bar) => (
+      <g>
+        <rect
+          x={bar.x}
+          y={bar.softY}
+          width={BAR_W}
+          height={bar.softH}
+          rx="2"
+          class={
+            bar.correct
+              ? 'fill-accent-soft stroke-accent'
+              : 'fill-paper-sunken stroke-rule-strong'
+          }
+          stroke-width={bar.correct ? '1.5' : '1'}
+        />
+        <text
+          x={bar.centre}
+          y={bar.softTextY}
+          text-anchor="middle"
+          class="fill-ink font-mono"
+          font-size="10"
+          font-weight={bar.correct ? '700' : '400'}
+        >
+          {bar.teacherText}
+        </text>
+      </g>
+    ))
+  }
+
+  <line
+    x1="24"
+    y1={SOFT_BASE}
+    x2="588"
+    y2={SOFT_BASE}
+    class="stroke-rule-strong"
+    stroke-width="1.25"></line>
+
+  {
+    bars.map((bar) => (
+      <text
+        x={bar.centre}
+        y="382"
+        text-anchor="middle"
+        class="fill-ink"
+        font-size="10"
+        font-weight={bar.correct ? '700' : '400'}
+      >
+        {bar.label}
+      </text>
+    ))
+  }
+
+  <text x="24" y="404" class="fill-ink-muted" font-size="10"
+    >{SAYS.softNote1}</text
+  >
+  <text x="24" y="418" class="fill-ink-faint" font-size="10"
+    >{SAYS.softNote2}</text
+  >
+
+  <line x1="12" y1="432" x2="588" y2="432" class="stroke-rule" stroke-width="1"
+  ></line>
+
+  <!-- ── Panel 3: the tail, where the whole argument lives ─────── -->
+
+  <text
+    x="24"
+    y="456"
+    class="fill-ink font-display"
+    font-size="13"
+    font-weight="700">{SAYS.tailHead}</text
+  >
+  <text x="24" y="471" class="fill-ink-faint" font-size="10"
+    >{SAYS.tailSub}</text
+  >
+
+  <text x="24" y="499" class="fill-ink" font-size="11">{NEAR_MISS.label}</text>
+  <text
+    x="162"
+    y="499"
+    text-anchor="end"
+    class="fill-ink-muted font-mono"
+    font-size="10">{NEAR_MISS.teacherText}</text
+  >
+  <rect
+    x="170"
+    y="486"
+    width={NEAR_MISS.teacher * TAIL_SCALE}
+    height="18"
+    rx="2"
+    class="fill-accent-2-soft stroke-accent-2"
+    stroke-width="1.25"></rect>
+
+  <text x="24" y="527" class="fill-ink" font-size="11">{NOT_A_DOG.label}</text>
+  <text
+    x="162"
+    y="527"
+    text-anchor="end"
+    class="fill-ink-muted font-mono"
+    font-size="10">{NOT_A_DOG.teacherText}</text
+  >
+  <rect
+    x="170"
+    y="514"
+    width={NOT_A_DOG.teacher * TAIL_SCALE}
+    height="18"
+    rx="0.5"
+    class="fill-accent-2-soft stroke-accent-2"
+    stroke-width="1.25"></rect>
+  <text x="182" y="527" class="fill-ink-faint" font-size="10"
+    >{SAYS.tailTiny}</text
+  >
+
+  <text x="24" y="550" class="fill-ink-muted" font-size="10"
+    >{SAYS.tailNote1}</text
+  >
+  <text x="24" y="564" class="fill-ink-faint" font-size="10"
+    >{SAYS.tailNote2}</text
+  >
+</svg>

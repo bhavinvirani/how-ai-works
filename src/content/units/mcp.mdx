@@ -1,0 +1,226 @@
+---
+title: Fifty-four ways into nine buildings
+part: letting-it-act
+order: 2
+summary: Connecting six applications to nine systems by hand takes fifty-four separate pieces of plumbing; one agreed way for a tool to describe itself and be called makes it fifteen, each written once.
+prerequisites:
+  - tool-use
+connections:
+  - to: prompt-injection
+    why: A protocol turns adding somebody else's tool into a line of configuration, and everything that tool hands back lands in the same context as your own instructions with nothing marking which is which — so the thing that makes tools cheap to add makes that hole cheap to add too.
+  - to: agents
+    why: A model choosing its own next step can only choose among the things it can reach, so what a protocol changes is not how well it chooses but how much there is to choose from.
+interactives: []
+status: published
+updated: 2026-07-31
+---
+
+import Aside from '../../components/blocks/Aside.astro';
+import Checkpoint from '../../components/blocks/Checkpoint.astro';
+import DevAside from '../../components/blocks/DevAside.astro';
+import Figure from '../../components/blocks/Figure.astro';
+import FiftyFourOrFifteen from '../../components/diagrams/FiftyFourOrFifteen.astro';
+
+Six courier firms work the same handful of streets. Nine blocks of flats sit on
+them.
+
+None of it is written down anywhere, so every driver works it out. Which buzzer
+actually reaches the porter. Whether the side gate is the one that opens or the
+one that only looks like it opens. Whether parcels can be left, and with whom,
+and whether that stops at six. Each firm learns all of it for each block,
+separately, mostly by getting it wrong once. Each block explains itself,
+separately, to six different firms.
+
+Six firms, nine blocks, fifty-four private arrangements — every one of them
+about the same nine buildings.
+
+Nobody chose fifty-four. Each arrangement was sensible on the afternoon somebody
+worked it out, and they were worked out one at a time, by whoever had a parcel
+in their hand. No one ever sat down and decided there should be that many.
+
+Then block four replaces its entry-phone, and six sets of notes are quietly
+wrong at once. Nobody knows whose, because there was never a list.
+
+## The same arithmetic, with software in it
+
+Giving a model a tool means writing a description it can read — what the tool is
+for, what it needs from you, what comes back — and then the code that actually
+carries out the request when the model asks. Around that sit the logins, the
+error handling, and the paging for when there are four hundred results.
+
+Now notice where all of that lives. It lives in the application. The system on
+the other end — the calendar, the ticket tracker, the warehouse database —
+supplies none of it. It has had a way for programs to talk to it for years, and
+nothing about that is shaped for a model. So every application that wants to
+reach it does the whole job again, from the beginning.
+
+Six applications, nine systems, fifty-four pieces of work. And the fifty-four are
+not fifty-four different problems. They are the same nine problems, solved six
+times each, by six teams who mostly cannot see one another's answers.
+
+Nobody actually builds all fifty-four, which is the part worth holding onto. Each
+team builds the two or three connections it needs this quarter and leaves the
+rest. So the multiplication does not usually arrive as a bill. It arrives as an
+absence — the thing you wanted your assistant to reach turns out to be the thing
+nobody got round to.
+
+## Agreeing on the shape
+
+Suppose the nine buildings each put a card by the door, and every card carries
+the same headings in the same order. Nine cards. Six firms learn to read one
+layout. Fifteen pieces of work, and each one written once, by the people who
+actually know that building.
+
+The software move is the same. Agree on one way for a system to say what it
+offers and how it wants to be asked. Then the calendar's side publishes one
+small program — a **server**, in the sense of something that waits to be asked
+rather than something in a rack — which describes its own tools in that shape and
+carries out the calls. And an application implements the agreement once, after
+which it can talk to any server anyone has ever written.
+
+Six plus nine is fifteen.
+
+The number is not the interesting part. The shape of it is. In the first
+picture, joining costs one piece of work for every counterpart that already
+exists, so a tenth system arrives owing six of them and a seventh application
+arrives owing nine. In the second, joining costs one piece — and it costs one
+piece whether there are nine counterparts waiting or nine hundred.
+
+Fifteen is not free, and it is worth resisting the version of this argument that
+pretends it is. Somebody writes each of those fifteen and keeps it working, and
+somebody maintains the agreement itself, which is real and unglamorous work; a
+standard that keeps changing shape is worse than no standard at all. What the
+arithmetic buys is not less work in total. It is work done once, at the end that
+knows most about it.
+
+<Figure
+  title="Fifty-four pieces of work, or fifteen"
+  description="Each line is one piece of plumbing somebody wrote and now maintains. Wiring every application to every system by hand draws fifty-four of them; putting one agreed shape in the middle draws fifteen — and the same tenth system costs six lines in the first picture and one in the second."
+>
+  <FiftyFourOrFifteen />
+</Figure>
+
+## The name for the agreed shape
+
+The agreement is **MCP**, short for the **Model Context Protocol** — a protocol
+being nothing more than a settled way for two pieces of software to talk, the
+rules rather than the conversation. Anthropic wrote it and published it openly
+in late 2024, and it has since been taken up well beyond the company that
+started it, which is the only thing that ever turns a proposal into a standard.
+
+What it pins down is small and dull, which is the point. A server offers three
+kinds of thing:
+
+- **Tools** — things that can be done. Each carries a name, a plain sentence
+  saying what it is for, and a description of the arguments it expects.
+- **Resources** — things that can be read rather than done. A file, a record, a
+  page of notes.
+- **Prompts** — ready-made templates a person can pick, so that the wording
+  known to work with a tool travels with the tool instead of living in
+  somebody's head.
+
+Underneath those sits the plumbing proper: how an application asks a server what
+it has, what a call looks like going out, and what shape a result comes back in.
+
+## What it does not do
+
+It is worth being blunt about what the protocol adds to the model, because the
+answer is nothing at all.
+
+The model does exactly what the unit on tool use described. It reads
+descriptions of what is available, and when it wants one it writes out a call.
+That was true before any of this existed and it is true now. What a protocol
+changes is who wrote those descriptions and how many times they had to be
+written. It does not change how well the model chooses between them, and it
+cannot make a model able to do something it could not have done with the same
+tool wired in by hand.
+
+There is a sharper version of the same point, and it clears up most of the
+confusion around the term. The model never sees MCP. The protocol runs between
+your application and the server; your application collects what the servers
+offer and puts it into the model's context in whatever form that particular
+model expects. MCP is an agreement between two pieces of software, and the model
+is neither of them.
+
+<Aside title="Easy to plug in, in both directions" tone="caution">
+  A standard lowers the cost of connecting things, and it lowers it for
+  everything equally. Adding a server somebody else wrote becomes a line in a
+  configuration file — which is excellent when you trust them, and is the entire
+  problem when you do not.
+
+The specific hole is worth naming here rather than later. Whatever a server hands
+back arrives as more text in the model's context, sitting beside your own
+instructions, with nothing in the run of characters marking which is which. And
+instructions are made of text too. A card by a door tells the driver what to do,
+and it was written by whoever reached the door first.
+
+That is the subject of the unit on prompt injection. This one is the reason it
+stopped being theoretical.
+
+</Aside>
+
+<DevAside>
+  <Fragment slot="java">
+    ```java
+    record Tool(
+      String name,            // "create_ticket"
+      String description,     // read by the model, never by your code
+      JsonSchema inputSchema  // what the arguments have to look like
+    ) {}
+    ```
+
+    The middle field is the odd one out, and it is the one that decides
+    everything. Your program never inspects it. The model does — it is prose,
+    shipped as configuration, and it is what determines whether the tool gets
+    called at the right moment or sits there unused.
+
+    The protocol fixes the envelope: three fields, in a known shape, fetchable
+    by asking the server what it has. It fixes nothing whatsoever about whether
+    that sentence is any good, and a badly described tool is invisible in
+    exactly the same way as a missing one.
+
+  </Fragment>
+  <Fragment slot="python">
+    ```python
+    @server.tool()
+    def create_ticket(title: str, priority: str) -> str:
+        """Open a support ticket. Use when the user reports a fault."""
+        ...
+    ```
+
+    The decorator's whole job is to turn this function into a listing a client
+    can fetch — the name from the function, the argument schema from the type
+    hints, the description from the docstring.
+
+    Which puts that docstring somewhere unusual. It is not a note for whoever
+    opens the file next. It is the case for using this function, addressed to a
+    model, in production. Edit it and behaviour changes, with no code change and
+    nothing in the diff that looks like one.
+
+  </Fragment>
+</DevAside>
+
+<Checkpoint question="A team has one internal system and one assistant that needs it. Somebody proposes writing an MCP server for the system rather than wiring it straight into the assistant. Do the multiplication for one application and one system and the protocol comes out more expensive — two pieces of work instead of one. Is that a reason not to do it?">
+  The sum is right, and at that size the protocol genuinely is the more
+  expensive option. One times one is one; one plus one is two. It only starts
+  paying at around two applications and two systems, and it pays more the
+  further past that you go.
+
+So the question the arithmetic actually asks is not what it costs today. It is
+how many counterparts are plausible. A system that will only ever be reached by
+one application should probably just be reached by it, and saying so is not
+resisting the standard — it is applying the argument the standard is made of.
+
+There is also a thumb on the scale that the sum leaves out. Much of the nine has
+already been written by other people. If a server for that system exists, the
+team's cost for it is nothing, and if their assistant already speaks the
+protocol, the cost of the next system after this one is nothing either. The
+saving is not only the work you do once. It is the work you never do, because
+somebody at that end did it.
+
+One reason that is not a reason: that the model will understand the system
+better through a protocol. It will not. It reads a description and writes a call
+either way, and if the description is vague the protocol will carry the vagueness
+perfectly.
+
+</Checkpoint>

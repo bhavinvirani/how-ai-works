@@ -1,0 +1,437 @@
+---
+title: Nothing it cannot do is a surprise
+part: the-whole-picture
+order: 1
+summary: Every limit people complain about — the miscounted letters, the invented citation, the missing last month — falls out of a specific property of the machine you have already read about, which is what makes the list predictable rather than mysterious.
+prerequisites:
+  - hallucination
+connections:
+  - to: how-it-all-connects
+    why: This unit works backwards, from the failures to the handful of properties that produce them; the last one works forwards, from those same properties to everything built on top of them.
+interactives: []
+status: published
+updated: 2026-07-31
+---
+
+import Aside from '../../components/blocks/Aside.astro';
+import Checkpoint from '../../components/blocks/Checkpoint.astro';
+import DevAside from '../../components/blocks/DevAside.astro';
+import Figure from '../../components/blocks/Figure.astro';
+import EightComplaintsFiveCauses from '../../components/diagrams/EightComplaintsFiveCauses.astro';
+
+There is someone in the next team who can follow you across a loud open-plan
+floor and cannot follow you at all on the phone.
+
+Over a few months you collect other things about her, without meaning to. She
+asks you to repeat words like _bat_ and _pat_. She loses the thread whenever you
+turn to the whiteboard mid-sentence. She will not take the chair with its back
+to the window. She dislikes the dim end of the pub on a Friday.
+
+Five quirks. You file them as five quirks, because five separate things is what
+they look like.
+
+Then somebody mentions that she reads lips.
+
+Now it is not a list. It is one fact, and every item is that fact seen from a
+different angle. Lips carry across a noisy room and do not travel down a phone
+line. _Bat_, _pat_ and _mat_ are made with the lips closed in the same shape, so
+they arrive identical. A whiteboard turns a face away. A backlit window and a
+candlelit pub do the same thing in the end: they take the light off a face.
+
+And you can now do something you could not do an hour ago. You can name the
+sixth item before you ever meet it — a surgical mask, a heavy moustache, a video
+call with the camera switched off. You have stopped collecting quirks. You have
+the mechanism, and the quirks are consequences of it.
+
+Only the shape of that reasoning carries across to what follows, and it is worth
+saying so before we go on: nothing in a language model resembles a person doing
+anything at all. What carries across is the move. A scattered list of failures
+collapses into a small number of properties, and those properties then predict
+failures nobody has told you about yet.
+
+## The question that replaces "when will they fix it"
+
+Complaints about these systems arrive in a remarkably consistent form. It cannot
+count. It invented a court case. It has never heard of the thing that happened
+last month. It agreed with me when I was wrong. It got the arithmetic in the
+invoice wrong and did not flinch.
+
+The instinct is to ask when each one gets fixed, and that instinct smuggles in an
+assumption: that a complaint is a **defect** — something that got in by accident,
+sits on a list somewhere, and can be taken out again by people who are working on
+it.
+
+Ask something else instead. Not _when is this fixed_, but: what, exactly, in the
+way this thing was built, produces that?
+
+Two things happen when you do.
+
+The complaint stops being mysterious. It becomes an entry in a chain of
+reasoning that starts from a property you can name and ends where you are
+standing.
+
+And you get a prediction. Anything else that leans on the same property will
+fail too, and you can say what before you meet it — which is the difference
+between knowing how something works and having memorised a list of times it went
+wrong.
+
+That is why this unit exists, and the alternative is worth picturing. Without the
+mechanism you are left collecting anecdotes, and anecdotes go stale. Half of them
+stop being true when a model ships, the other half were never quite right, and
+neither the person who over-trusts this technology nor the person who dismisses
+it can tell you which is which. Both of them are reading the list.
+
+You have already read everything needed to stop doing that.
+
+## Four complaints, traced back
+
+### It cannot count the letters in a word
+
+The one everybody has seen. Ask how many times the letter _r_ appears in
+_strawberry_, and for a long time the answer came back as two — from a model that
+could, in the next breath, discuss where the word came from.
+
+The cause is the very first thing that happens to your sentence, before any of
+the interesting machinery gets involved. Text is cut into chunks — the vocabulary
+of roughly a hundred thousand pieces that everything the model reads is made of —
+and each chunk arrives as one entry, a number standing for the whole piece.
+_Strawberry_ is not delivered as ten letters. It is delivered as two or three
+items, each of them atomic.
+
+So the question asks the model to count something it was never sent. Not
+something it sees badly or attends to poorly. Something that is not in the input.
+
+It answers anyway, because answering is the only operation in the loop. What
+comes out is a plausible number for a question of that shape.
+
+Now put the example down and use the property, because the property is the part
+that travels. It predicts a whole family at once: reversing a word, taking the
+third letter of something, counting syllables, an acrostic where the _last_
+letters have to spell something, a simple letter-shift cipher. Same failure,
+every time, and nobody had to tell you about any of them.
+
+It predicts where the failure stops, too. Ask what a letter is, or how English
+spelling drifted, or where the word _strawberry_ came from, and the answers are
+fine — none of that needed the letters to arrive separately.
+
+One honest note, because models do now get _strawberry_ right and it looks like a
+counterexample. Either that exact question has appeared often enough in training
+text for the answer to come back as a memorised phrase, or the system quietly
+wrote a line of code and ran it. Neither of those is the model counting. Change
+the word to one nobody has written a blog post about and watch it go again.
+
+### It states false things in the voice it uses for true ones
+
+You had a whole unit on this one, so the trace is short — and it is two
+properties stacked rather than one, which is why it is so much worse to live with
+than any single item here.
+
+The first: there is no step anywhere in the machine at which a claim is held up
+against anything. A true answer and an invented one are one operation meeting two
+different worlds, at the same cost, in the same tenth of a second.
+
+The second was installed separately, by people aiming at something else. Writing
+on the internet is overwhelmingly confident, so hedging scores badly before
+anybody tunes anything on purpose. Then preference training — people shown two
+answers and asked which is better — rewards the direct answer over the one that
+declines to commit, because direct reads as more helpful and helpful is what was
+being judged.
+
+Stack those two and you get the specific shape of the problem. It is not that the
+machine is sometimes wrong; everything is sometimes wrong, and a source that is
+wrong a tenth of the time can still be enormously useful. It is that being wrong
+has no tell. Fluency is guaranteed by the design, confidence is a trained manner,
+and those are the two signals a reader naturally judges by.
+
+### It has never heard of last month
+
+Everything the model brought out of training is in its dials — the billions of
+adjustable numbers whose settings are the entire product of that process. Then
+training ends and the dials stop moving. Nothing that has happened since is
+anywhere in them, and nothing you say in a conversation moves one.
+
+Which makes this the least mysterious item on the page, and the one whose two
+consequences still catch people out.
+
+The first is that it cannot reliably tell you where its own line falls. Its
+cutoff is a fact about itself, and there is no route to facts about itself, so
+asking produces a plausible date rather than a reported one. It may well be
+wrong, and it will be stated in the same voice as everything else.
+
+The second is about the fix people reach for. Retraining on newer text does work,
+and it moves the line without removing it: a month later you are in the same
+position, having paid a great deal for the privilege, with no way to point at
+where any particular answer came from. The move that actually holds is the other
+one. Knowledge sits either in the dials, where it is fixed and unciteable, or in
+the window it reads each time, where it is current, swappable and quotable — and
+putting the fact in the window is what retrieval, tools and half of the last few
+Parts of this site have been about.
+
+### It cannot try harder on a hard question
+
+This is the one that sounds least mechanical and is the most mechanical of all.
+
+A pass through the model is a fixed amount of arithmetic. The same operations, in
+the same order, through the same layers, whatever you happened to ask. There is
+no dial for effort, because there is nothing in the design for such a dial to
+turn.
+
+So _what is twelve times twelve_ and _here are six people, six seats and nine
+constraints, work out who sits where_ receive exactly the same amount of
+arithmetic per piece produced. Which is why a model with nothing else bolted on
+hands back an immediate, confident seating plan that breaks two of the
+constraints. Nothing in it noticed that the second question was harder. Noticing
+that a question is hard is not one of the operations available.
+
+And this is the item that visibly moved in the last few years, which makes it the
+best test of whether reading limits as mechanisms actually survives contact with
+progress.
+
+Reasoning models write a long stretch of working before they answer, and they are
+genuinely, substantially better at hard problems. Not one thing about a single
+pass changed. What changed is how many passes the system spends: every piece of
+that working is another complete pass, and the working is then sitting in the
+text that the next pass reads. Effort became something you buy, in the only
+currency the machine has — more pieces, more passes, more seconds, more money, in
+direct proportion.
+
+Notice what that is and is not. The limit was not removed. It was paid around.
+Which is a real improvement, and it is also why hard questions now cost visibly
+more than easy ones, and why nobody can promise you a fixed price for a hard
+question.
+
+## All of it at once
+
+Four traces are enough to see the move. The drawing is what happens when you keep
+going.
+
+<Figure
+  title="Eight complaints and the five properties they come out of"
+  description="The left column is longer than the right one, and that gap is the entire lesson — a long, growing list of things people complain about is produced by a short, fixed list of properties, so the properties are what is worth carrying and the complaints are not; two rows carry two arrows each, because the failures people find hardest to accept are the ones where two properties stack."
+>
+  <EightComplaintsFiveCauses />
+</Figure>
+
+Read the two columns as a piece of arithmetic. Eight things go in on the left and
+five come out on the right, and that ratio only gets worse — you could add
+another twenty complaints to the left column tomorrow and the right column would
+barely move.
+
+Which is the practical reason not to memorise the left column. It is long, it
+grows, and it dates: some of those rows behave differently on a model released
+next spring. The right column is short, and it changes only when somebody builds
+a different machine.
+
+## Placing a complaint you have not been given
+
+The test of whether this has landed is not whether you can recite the drawing. It
+is whether a complaint you were never given has an obvious home. Here are three,
+and not one of them is on it.
+
+_It agreed with me when I pushed back, and I was the one who was wrong._ Property
+B — it scores plausible continuations and nothing consults a fact — plus the same
+preference training that installed the confident register. Your objection is text
+appended to text, and what most plausibly follows a complaint is an apology and a
+revision. Nothing anywhere compared the new answer to the old one, because
+comparing is not an operation it has.
+
+_It told me its knowledge runs to a date, and the date was wrong._ Properties C
+and B stacked. The dials froze, which is C; and where they froze is a fact about
+itself, to which it has no more access than to any other fact, which is B. So it
+produced a date-shaped answer.
+
+_It obeyed an instruction that was written inside a document I asked it to
+summarise._ This one is not on the drawing at all, and noticing that is the
+useful part. It comes from a sixth property: everything arrives as one sequence
+of pieces with nothing in the machinery marking which of them has authority. Five
+properties explain those eight complaints. A longer list of complaints needs one
+or two more properties, and the ratio still holds — that is the claim, not the
+number five.
+
+## Which of these go away
+
+Sort the whole list by what actually happens to a limit, and there are only three
+outcomes.
+
+**Moved outside the model.** Arithmetic goes to a calculator. This month's facts
+go to a search over documents. Remembering you between conversations goes to an
+ordinary database, the way it always did. Be precise about what has happened
+here: the model's limit did not move a millimetre. The system stopped depending
+on it. That distinction sounds pedantic until the tool call fails and the model
+cheerfully answers from its own head instead.
+
+**Bought with more of the same mechanism.** Reasoning models, and a good deal of
+prompting besides. The machine is unchanged and it is run more, so the gain is
+real and it arrives with a bill attached.
+
+**Still there, because they _are_ the mechanism.** Nothing checks a claim against
+the world. Nothing produces a faithful account of its own reasoning. Nothing
+separates an instruction from a document. These are the ones with no fix on the
+table, and the honest reason is structural: a fix would have to change one of the
+properties rather than build around it.
+
+## The sentence people want, and the honest one
+
+The sentence people want is either _these are permanent limits of artificial
+intelligence_ or _these will all be gone within two years_. Both are forecasts
+about a research field, and neither is a thing anyone can hand you.
+
+Here is what can be handed to you, and it is the stronger claim of the two
+because it is the one you can check.
+
+These are consequences of **this design**: a machine that scores the next chunk
+against dials frozen at the end of training, reading one undifferentiated
+sequence, at a fixed cost per pass. Every row in that left column follows from
+those properties the way the phone call follows from lip-reading. As long as that
+is the thing you are buying, that is the thing you get — which is not a
+prediction, it is an inspection.
+
+Something built on a different mechanism would have a different left column. It
+would not have no left column.
+
+So the test to put to any claim that a limit has been solved is a single
+question: which property changed? If the answer is _we gave it a tool_, the
+property is intact and the system routed around it — often exactly what you
+wanted, and worth saying out loud so that nobody plans as though the model got
+better. If the answer is _we trained it to be more careful_, nothing changed but
+a tendency, and tendencies are not boundaries. And if somebody really has changed
+one of the properties, they have built a different machine, and the first
+interesting question about it is what its own left column looks like.
+
+<Aside title="Two ways to hold this list, and both are wrong" tone="caution">
+  The first is to treat it as a temporary embarrassment — real today, gone by the
+  next release, so there is no point designing around it. Systems built that way
+  work beautifully in the demo, because the demo is the average case, and then
+  fail in the specific ways written above, at which point somebody adds a
+  sternly-worded instruction and ships.
+
+The second is to treat it as a verdict. The list is long, some of it is
+embarrassing, and it is tempting to conclude that the whole thing is a parlour
+trick. That reading has to explain why so many people who understand the
+mechanism in detail use it every day.
+
+Both are the same mistake in opposite directions: reading the list instead of the
+mechanism. The list is a symptom, it is incomplete, and it will look different in
+a year. The mechanism is what you were actually taught.
+
+</Aside>
+
+## The shape that is left
+
+None of this makes the technology less useful. It makes it useful in a particular
+shape, and the shape is the thing worth leaving with.
+
+Look at where the five properties came from. Reading chunks is what lets one
+modest vocabulary cover every language including ones nobody planned for.
+Scoring plausible continuations is what makes it write at all. Frozen dials are
+what make it cheap enough to answer a million people at once. Fixed work per pass
+is what makes the answer arrive in a second. Every limit on that page is the
+underside of something that had to be true for any of it to exist.
+
+What the shape leaves is a machine that is excellent at language, pattern,
+transformation and synthesis — rewriting, summarising, translating, extracting,
+drafting, explaining, turning a vague description into a specific one — and
+unreliable at facts recalled from memory, at arithmetic, at self-report, and at
+anything requiring a check.
+
+Systems that work are built to that shape. Supply the facts rather than trusting
+recall. Hand the arithmetic to something that does arithmetic. Put the check
+outside the model, where a check can actually exist. Give it the least
+independence the job needs, and earn the rest by measurement.
+
+Systems that disappoint were built as though the shape were not there. Usually by
+someone who saw a very good demo and drew the wrong conclusion from it — not that
+the machine is capable, which it is, but that it is capable in a different shape
+than the one it has.
+
+<DevAside>
+  <Fragment slot="java">
+    ```java
+    String prompt = """
+        Today is %s.
+        Current price list:
+        %s
+        Customer question: %s
+        """.formatted(clock.today(), prices.currentAsText(), question);
+
+    Draft draft = model.reply(prompt);
+    Money total = pricing.total(draft.lineItems());   // never draft.total()
+    ```
+
+    Two lines here are doing the work of two whole sections above, and both are
+    about supplying something the mechanism cannot produce.
+
+    `clock.today()` exists because there is no clock in a model. A date only
+    reaches it if you put one there, and a system that does not will produce
+    confident answers anchored to whenever training stopped.
+
+    `pricing.total(...)` exists because arithmetic left with the model is
+    arithmetic left with a next-piece scorer. What the model is good for in this
+    function is working out which line items the customer meant — the
+    language-shaped half — and everything downstream of that belongs in code
+    that adds up.
+
+    Worth stating what remains after both. The draft is still text produced by
+    scoring continuations, so it is still capable of a confident sentence about
+    a discount that does not exist. Nothing in this snippet is a check; they are
+    two limits routed around, and the third one is still open.
+
+  </Fragment>
+  <Fragment slot="python">
+    ```python
+    answer = model.reply(prompt, response_format=Answer)
+
+    answer.confidence   # a number the model wrote
+    answer.verified     # a boolean the model wrote
+    ```
+
+    Structured output is genuinely useful and these two fields are worth
+    understanding before anyone builds on them. Asking for a schema does not
+    create a measurement; it constrains the shape of the text. A field called
+    `confidence` is filled by the same operation that fills every other field —
+    what plausibly follows a request for a confidence figure is a confidence
+    figure, usually a reassuring one.
+
+    The tell is that `answer.verified` can be `True` in a program that contains
+    no verification. Nothing was compared to anything; a well-formed boolean was
+    produced.
+
+    The useful version of both fields lives in your code and is computed from
+    something outside the model — a lookup that either found the record or did
+    not, a quote that either appears in the source text or does not, a number
+    that either reconciles or does not. If you cannot say what the comparison
+    was and where the other side of it came from, the field is decoration with a
+    trustworthy name.
+
+  </Fragment>
+</DevAside>
+
+<Checkpoint question="A team's assistant keeps quoting last year's prices. One person proposes retraining the model every month on current company data so that it knows the prices. A second proposes leaving the model alone and putting the current price list into every request. A third says the real fix is an instruction telling it to quote a price only when it is certain. Rank the three, and for each one say what it does to the mechanism rather than to the symptom.">
+  The third does nothing structural, and it is worth being exact about why.
+  Certainty is not a quantity the machine computes, so there is nothing for the
+  instruction to consult. What it does is shift which continuations score well,
+  which is a real effect and a very small one — you will get slightly more
+  hedging, including on prices that were right. No step has been added, because
+  there is nowhere in the loop to add one.
+
+The first genuinely changes the dials, which makes it the only proposal that
+touches the property at all — and it still does not fix it. It moves the freeze
+date rather than removing the freeze, so the problem returns on a monthly cycle.
+It is expensive and slow. And it leaves every answer unciteable: nobody can say
+whether a quoted price came from this month's training or last year's, because a
+dial setting has no provenance.
+
+The second never touches the model, and it is the one to ship. It puts the price
+list in the window, where facts are current, swappable and quotable, and it
+converts the job from recalling a price to reading one — which moves it from the
+half of the shape the machine is unreliable at to the half it is excellent at.
+The limit is untouched. The system stopped depending on it.
+
+Two things to carry past this. Ranking them is easy once you ask what each does
+to the mechanism, and impossible if you only look at the symptom, because all
+three make the wrong prices less frequent in a demo. And the winning move here is
+the same one as for arithmetic, for last week's news, and for remembering a
+customer. The answer was never a better model. It was declining to ask the model
+for the one thing it was never built to supply.
+
+</Checkpoint>

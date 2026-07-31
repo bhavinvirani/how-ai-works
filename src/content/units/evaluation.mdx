@@ -1,0 +1,339 @@
+---
+title: The three you broke fixing one
+part: does-it-work
+order: 1
+summary: Nothing about an AI system can be judged from the one case in front of you, so a change is an improvement only if a fixed set of real cases with known-good answers says it is — and almost nobody has one.
+prerequisites:
+  - train-test-split
+  - precision-and-recall
+  - agents
+connections: []
+interactives:
+  - EvalScoreboard
+status: published
+updated: 2026-07-31
+---
+
+import Aside from '../../components/blocks/Aside.astro';
+import Checkpoint from '../../components/blocks/Checkpoint.astro';
+import DevAside from '../../components/blocks/DevAside.astro';
+import Figure from '../../components/blocks/Figure.astro';
+import ThreeRowsOfAFile from '../../components/diagrams/ThreeRowsOfAFile.astro';
+import WhichHalfIsBroken from '../../components/diagrams/WhichHalfIsBroken.astro';
+import { EvalScoreboard } from '../../components/interactives/EvalScoreboard';
+
+The biscuits came out pale, so you turned the oven up ten degrees. The next tray
+was perfect.
+
+That is the last thing about your oven you know for certain.
+
+The same oven does the bread on Sundays. It does the chicken, and the pastry at
+Christmas, and everything else you will cook in it for the next several years.
+You changed something that touches all of them, and you compared exactly one
+tray against a memory of what trays used to look like.
+
+Six weeks later somebody mentions that the bread has been coming out a bit dark
+lately. You cannot tell whether you did that in March, because there is no March
+to look at.
+
+Nothing in that required carelessness. You made a change, you checked the thing
+you had changed it for, and you had no way to see anything else move.
+
+Now the working version. A colleague forwards you a complaint: the assistant
+that sorts the support inbox is sending damage complaints to the wrong queue,
+here is the message. You add a line to its instructions. You paste the message
+back in, it lands in the right queue this time, and you ship it before lunch.
+
+You have just turned the oven up.
+
+## Why the ordinary answer does not reach
+
+Software solved a version of this problem long ago, which is part of why the
+hole is so easy to miss.
+
+An automated test is a written-down input beside the output you expect, and a
+machine that compares the two. You can have thousands of them, they run in a few
+seconds, and every change you make gets held up against every expectation
+anybody has ever recorded. It is not glamorous and it works.
+
+Two things about a language model break it.
+
+The first is that the wording moves. Ask the same question twice and you get two
+different sentences, both perfectly good. An exact comparison fails on the
+second one, and a test that fails when nothing is wrong gets deleted inside a
+week.
+
+The second is worse. For a great many of the interesting requests there is no
+single right answer at all. Two summaries of the same document can both be
+excellent and share barely a phrase. There is nothing to put on the right-hand
+side of the comparison.
+
+So the reflex stalls at the first case, and almost everybody arrives at the same
+conclusion: this kind of system cannot really be tested, so it has to be judged
+by looking at it. That conclusion is where the trouble starts — not because it
+is stupid, but because the thing it rules out is not a testing framework. It is
+a list.
+
+## What the thing actually is
+
+Here is the whole of it, said plainly, because most people imagine something far
+more elaborate and then decide they cannot afford one.
+
+Twenty to fifty real cases. Each one is a request somebody actually made,
+written down beside what a good answer to it contains. They sit in a file, in
+the same repository as the code, and every change to the system is run against
+all of them before it goes anywhere.
+
+That is an **eval set**. There is nothing else in the definition, and there is
+no version of this that requires a platform, a vendor or a team.
+
+Nothing in it is technically difficult either, and the two parts that are hard
+are hard in a way that has nothing to do with engineering.
+
+The first is getting real cases. A set assembled from the requests you thought
+of while sitting at your desk measures how well your system handles the requests
+you thought of while sitting at your desk. What you want is the awkward ones:
+ambiguous, out of scope, hostile, badly spelled, and above all the ones that
+have already gone wrong. The cheapest good habit in this whole field is that
+every failure anybody reports becomes a new row in that file, permanently,
+_before_ anyone tries to fix it.
+
+The second is writing down what a good answer is, which forces decisions nobody
+had made. A customer billed twice wants their money back — is that a refund, or
+a billing problem? Nobody in the company had to hold a view until the file
+demanded one. That is the first thing a set gives you, and it gives it before it
+has scored anything at all.
+
+<Figure
+  title="Three rows out of thirty"
+  description="A case is an input, the answer a good response has to contain, and a note saying how that gets checked — and the third row is a question with no single right answer, sitting in the same file in the same shape, which is the thing most people assume a set cannot hold."
+>
+  <ThreeRowsOfAFile />
+</Figure>
+
+## Break something, on purpose
+
+Below is a small shop's support inbox. Every message that arrives has to go to
+one of four queues: **refund** for money back, **replacement** for the goods put
+right, **delivery** for anything about where an order is or how it travelled,
+and **account** for details and sign-in.
+
+A model does the sorting, from one short instruction that has been running for
+months without anybody thinking about it. This morning a customer complained
+about a mug that arrived smashed. They asked for their money back and were sent
+to the delivery queue.
+
+The panel opens where you would be standing: one message — the one that was
+forwarded to you — and the instruction as it currently stands. Add the obvious
+rule, the one that says damage means refund, and read the score.
+
+<EvalScoreboard client:visible />
+
+One out of one. The reported case now goes where it should, and on that evidence
+the job is finished. Very nearly every change to very nearly every instruction
+running in production today has had exactly this much checking.
+
+Now turn the switch off and run the other nine.
+
+Seven out of ten. Three messages that were being sorted correctly this morning
+are being sorted wrongly now, and it took one line to do it.
+
+They are worth reading, because none of them is exotic. A box that turned up
+flattened with nothing damaged inside, from a customer who only wants somebody
+to have a word with the courier. Two broken glasses, from a customer asking for
+two more. A cracked lampshade, from a customer who wants a new shade. Every one
+of them describes something broken while asking for something that is not a
+refund, and the rule fires on the description.
+
+That is the shape of most prompt patches that go wrong. There is no mistake in
+the rule; the rule does exactly what it says. The mistake is that it was written
+to fit one message and is applied to all of them.
+
+Now try the second patch — the one that adds another line to rescue the
+customers asking for replacements.
+
+Nine out of ten, which is where you started this morning. The score has
+recovered and the system has not, because it is a different nine. The mug now
+passes and the flattened box now fails. Anybody reading the number would call
+the morning's work neutral, and two customers would disagree with them in
+opposite directions.
+
+That is the ninety-nine per cent detector all over again. One number can sit
+perfectly still while everything underneath it moves, and the only reason you
+can see it move here is that somebody wrote the cases down.
+
+Then throw the patches away and read the last version, which stops keying on
+words at all and asks what the customer wants to happen next. Ten out of ten.
+
+Notice carefully what the set did and did not do. It did not write that
+instruction — a person did, by reading what the patches broke and working out
+why. All the set did was tell four attempts apart. Which sounds like very little
+until you notice that nothing else in the room could do it: from where you were
+sitting at the start, with one message on the screen, all four versions look
+identical, because all four get that message right.
+
+One thing to be straight about. The ten answers in that panel are written down
+rather than collected from a live model, and the four queues are tidier than any
+real inbox. What is real is the shape — a rule that fires on a word rather than
+on a request, an inbox with far more of those words in it than anyone expected,
+and a score that recovers while the system does not. Those you will meet.
+
+## Deciding what counts as right
+
+The routing task was chosen because scoring it is beyond argument. The answer is
+one of four labels; it either is the label somebody wrote down or it is not.
+That is **exact match**, and it is available much more often than people assume
+— anything that pulls out a date, an amount, a name or a reference, and anything
+that sorts things into categories, has a checkable core even when it arrives
+wrapped in a polite sentence.
+
+One step out from that is a condition on what an answer must and must not
+contain. "Says it is rated IP54" and "never says waterproof" is a perfectly
+good known-good answer, and checking it is a search. It is brittle in one
+specific way: a model that writes "resistant to splashes" has satisfied you and
+failed the check. So the conditions have to be written about substance rather
+than wording, and they still want re-reading now and then.
+
+Then there is genuinely open text, where no condition you can write down
+captures what you meant. Somebody reads it. That is expensive, it does not
+scale, and it is still the best signal anybody has.
+
+Which is why most teams past a certain size do the obvious thing and use a
+second model as the marker: hand it the request, the answer and the criteria,
+and ask it to score. This works well enough to be worth doing, and it is how a
+great deal of evaluation actually happens.
+
+It also has biases, and they have been measured rather than merely suspected:
+
+- longer answers score higher than short ones saying the same thing;
+- answers written in the marker's own style score higher than answers that are
+  not, so a model marks its own family generously;
+- the order the answers are shown in moves the score.
+
+None of that makes a model marker useless. It makes it a measuring instrument
+with a known drift, and the way you use one of those is to check it against
+something you trust. Have a person mark thirty of the same cases, compare the
+two columns, and find out whether your marker agrees with them _before_ you let
+it tell you the system has improved. Otherwise a change that only made the
+answers longer gets reported back to you as progress.
+
+<Aside title="The set goes stale, and you are what stales it" tone="caution">
+  This is the held-back pile again, one level up. Nothing leaks into a model
+  here, because nothing is being trained. It leaks into you. Keep whichever
+  version of the prompt the set preferred, thirty times running, and your
+  instruction has been fitted to those particular cases just as surely as a
+  machine would have fitted them — by a slower search, run by a person, with no
+  record of itself.
+
+Two habits keep a set worth reading. Refill it from real traffic on a schedule,
+so it stays a sample of what people send rather than a museum of what they sent
+in January. And hold a slice back that is never used to choose between two
+versions: opened rarely, reported as the number, and spent a little every time
+you look.
+
+</Aside>
+
+## Where you put the score
+
+One more decision separates a set that is useful from a set that is merely
+reassuring, and it is where the measuring happens.
+
+Most AI systems are not one step. A system that answers from your own documents
+does two jobs — find the relevant passage, then write an answer from it — and a
+single score on the finished answer has added those two together. Sixty-two out
+of a hundred is an honest measurement of something, and there is no operation
+you can perform on it to discover which of the two halves spent the missing
+thirty-eight.
+
+<Figure
+  title="One score at the end, or one after each step"
+  description="The same run of the same system, measured first at the end and then after each step: a single end-to-end score is honest and unusable, because the two ways of failing have been added together, and pulling them apart turns one number nobody can act on into two that name the half to work on."
+>
+  <WhichHalfIsBroken />
+</Figure>
+
+Score the finding separately from the writing and the ambiguity disappears. The
+right passage is found sixty-six times in a hundred; when it is found, the
+answer is right ninety-four times in a hundred. The writing was never the
+problem, and every hour anyone spends rewriting that prompt is an hour spent on
+the half that works.
+
+Agents make the same point sharper, which is why they are the hardest thing on
+this list to evaluate. A run is a sequence of decisions — which tool to call,
+with what, when to stop, when to hand back to a person — and the end state
+reports on none of them. A wrong ending does not say which step went wrong. A
+right ending does not say the route was sound: a run that reached the correct
+answer after calling the wrong tool twice and being rescued by a retry is a
+failure that scores as a success, and it will not be rescued next week.
+
+So a case for an agent carries more than an expected answer. The tool that
+should have been called. The number of steps it should have taken. The point at
+which it should have stopped and asked somebody. Coarse, all of it — but each
+one names a step, and naming the step is the whole of the job.
+
+<DevAside>
+  <Fragment slot="java">
+    ```java
+    record Case(String id, String input, String expected, Scorer scorer) {}
+
+    Map<String, Boolean> run = new LinkedHashMap<>();
+    for (Case c : cases) {
+      String got = system.answer(c.input());
+      run.put(c.id(), c.scorer().passes(got, c.expected()));
+    }
+    ```
+
+    The total is the least interesting thing this produces. Commit `run` as a
+    file beside the prompt it was measured on, and the pull request shows a
+    diff — three case ids flipping from `true` to `false` — which is an
+    artefact a reviewer can act on. A total that moved from 41 to 39 tells
+    somebody to go and look. A list of which three tells them what happened.
+
+    Note that `Scorer` is per case, not per system. Exact match, a
+    contains-check and a call out to a marker model all satisfy the same
+    interface, and a real set mixes all three in one file.
+
+  </Fragment>
+  <Fragment slot="python">
+    ```python
+    run   = {c.id: score(answer(c.input), c.expected) for c in CASES}
+    broke = [i for i in run if baseline[i] and not run[i]]
+    ```
+
+    `broke` is the line that matters and `sum(run.values())` is the line that
+    gets pasted into the chat.
+
+    The other half of the job sits upstream of both, and it is the part most
+    sets get wrong: pin the model version and set the temperature to zero
+    before any of this means anything. A set run against a floating `latest`
+    alias re-baselines itself silently on the day the provider ships a new
+    model, and a set run above temperature zero reports its own noise as your
+    change. Neither of those surfaces as an error. Both surface as a number
+    that moved.
+
+  </Fragment>
+</DevAside>
+
+<Checkpoint question="A team has run a thirty-case set on every prompt change for six months and has never once shipped a change that made the score go down. The score is now 29 out of 30. Complaints from customers are exactly as frequent as they were in January. Nobody skipped a step. What has gone wrong, and what would you change?">
+  The set has stopped being a sample of what people actually send, in two
+  different ways at once.
+
+The cases were written six months ago, largely from imagination, and they have
+not moved since. So the file measures the system against January's idea of a
+customer, and whatever customers are doing in July was never in it. The 29 is
+honest about those thirty cases and silent about everything else, which is
+almost all of the traffic.
+
+And six months of keeping whichever change the set preferred has fitted the
+prompt to those thirty cases. Nothing leaked into the model — nothing is being
+trained. It leaked into the team. The set has quietly stopped measuring and
+started being the thing optimised against, which is what happens to any pile of
+examples somebody is allowed to look at over and over.
+
+Three changes. Refill it from real traffic, and make every reported failure a
+new row before anyone attempts a fix. Hold a slice back that is never used to
+choose between two versions, so there is one number left that nobody has been
+aiming at. And stop reading the total: the useful output of a run is not the
+score, it is the list of cases that changed since the last one.
+
+</Checkpoint>

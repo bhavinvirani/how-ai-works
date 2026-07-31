@@ -6,6 +6,8 @@ summary: A machine never sees where the good settings are. It feels which way th
 prerequisites:
   - loss-function
 connections:
+  - to: backpropagation
+    why: Feeling the slope is easy with two dials and impossible with seventy billion, so a real machine needs a way to get every slope at once — one backward sweep costing about what the forward one cost.
   - to: training-loop
     why: The nudge at the end of every pass round the loop is one step of this walk, which is why the loop has to run so many times before anything looks trained.
   - to: model-as-dials

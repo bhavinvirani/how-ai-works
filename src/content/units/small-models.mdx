@@ -1,0 +1,387 @@
+---
+title: The expensive way to do something easy
+part: small-fast-cheap
+order: 1
+summary: On a narrow job a small model you run yourself is usually not a compromise but the right tool — the data never leaves the building, the answer arrives fast enough to sit inside other software, and the bill is a fraction of what a giant charges for the same easy work.
+prerequisites:
+  - scaling-laws
+connections:
+  - to: distillation
+    why: Small models stopped being toys largely because large ones started teaching them — much of what a good small model trains on was written by a big one rather than scraped, and that is most of the reason the trade in this unit is now worth making.
+  - to: quantization
+    why: Running the model on your own hardware is where nearly everything this unit promises comes from, and rounding every dial to fewer binary digits is usually the step that makes it actually fit there.
+interactives: []
+status: published
+updated: 2026-07-31
+---
+
+import Aside from '../../components/blocks/Aside.astro';
+import Checkpoint from '../../components/blocks/Checkpoint.astro';
+import DevAside from '../../components/blocks/DevAside.astro';
+import Figure from '../../components/blocks/Figure.astro';
+import ThreeJobsThreeGaps from '../../components/diagrams/ThreeJobsThreeGaps.astro';
+import WhatTheGateSendsOn from '../../components/diagrams/WhatTheGateSendsOn.astro';
+
+Six emails came in overnight. Put each one in a box — billing, delivery,
+returns, technical, account, other.
+
+- _You charged my card twice on Tuesday._
+- _Tracking says delivered and it is not here._
+- _Wrong size, I need to send this back._
+- _The app closes itself when I open settings._
+- _Please change the email address on my login._
+- _Do you donate prizes to school raffles?_
+
+That took about eight seconds and you were not concentrating.
+
+Now notice what you did not use. Not a word of French. Nothing about mortgages,
+nothing about the offside rule, no opinion on the causes of the First World War.
+The job asked for one narrow thing and left the rest of everything you know
+sitting idle.
+
+Most of the work people actually hand these machines looks like that. Route the
+ticket. Pull the date out of the email. Decide whether this sentence is a
+complaint. Tag it, sort it, extract it, wave it through.
+
+And the machine most teams reach for to do it knows all the other things too,
+and charges for them.
+
+## The curves never said what people heard
+
+Everything so far has pointed one way. More dials, more text, more electricity,
+a better machine — measured, plotted, and straight enough to extend with a
+ruler.
+
+Read what was on the axis, though. One number, and it was how surprised a model
+is by the next chunk of text, averaged over an enormous pile of writing.
+Averaged over _everything_: legal drafting, physics, recipes, chat, source code,
+poetry. That average came down as machines grew, and most of the coming-down
+happened where there was somewhere to come down from.
+
+Which is the sentence worth slowing over. Improvement needs room, and room is a
+property of the job rather than of the machine.
+
+Take the six boxes. Suppose a small model gets the email into the right one
+ninety-one times in a hundred. Multiply its dials by a hundred and the very best
+machine anyone has built gets ninety-three. Two points. Not because the big one
+is not better — it is enormously better — but because it is better at things
+this job never asks about. Nothing can be more right than right.
+
+Now take a forty-page contract and the question of which two clauses contradict
+each other. A small model manages about a third of those. There are two thirds
+sitting on the table waiting for something, and that is where a hundred times
+the machine shows up in the numbers. That is where the curves were pointing all
+along.
+
+Bigger is better at the hardest tasks. Nobody ever showed that you need the
+hardest-task machine for an easy task, and it does not follow.
+
+<Figure
+  title="The same two machines, put to three jobs"
+  description="On the sorting job a small model has already run to the end of the track, so a machine a hundred times the size lands two points away and there is nothing left for it to win; on the contract job the small model stops a third of the way along and the gap is thirty-seven points wide — the room available is set by the difficulty of the job, not by either machine."
+>
+  <ThreeJobsThreeGaps />
+</Figure>
+
+The figures in that drawing are shaped rather than measured — your own job will
+give you different ones, and getting your own is the point. What is not
+illustrative is the shape. Easy jobs have narrow gaps. Hard jobs have wide ones.
+The gap is what you are buying when you pay for a bigger machine, and on a great
+many real jobs there is barely a gap to buy.
+
+## Small enough to keep
+
+The term is **small language model**, and in practice it means one thing: small
+enough to run on hardware you already have. A laptop, a phone, one ordinary
+server in a cupboard — rather than a rack of specialist chips in somebody else's
+building.
+
+In dials that is roughly a few hundred million to a few tens of billions,
+against hundreds of billions for the largest hosted models. The boundary moves
+every year and nobody defends it very hard. The test underneath it does not
+move: can you run the thing yourself?
+
+## Why they stopped being toys
+
+A small model from a few years ago was a demonstration. A small model now does
+work, and the change did not come from adding dials.
+
+Some of it is diet. Early training runs took roughly whatever text could be
+scraped. Current ones are far fussier — deduplicated, filtered, weighted towards
+writing that actually explains something — and a model shown better text for
+longer arrives somewhere that a larger model on worse text did not.
+
+The rest of it is that the big models taught them. You can have a large model
+produce a great many answers and train a small one on those instead of on raw
+text, and what comes out is far better than its size would suggest. That is the
+next unit's entire subject.
+
+## Three things that are not money
+
+The bill is what sends people looking. It is rarely what keeps them there.
+
+**The data never leaves.** A hosted model means your text goes over a wire into
+somebody else's building. For plenty of work that is fine. For medical notes,
+legal files, unreleased results, or anything covered by a rule that names which
+countries data may be processed in, it is not a preference — it is the thing
+that decides whether the project happens at all. A model running on your own
+machine turns the question off. There is no request to log, no retention policy
+to read, no region to check, and no conversation with your own lawyers about a
+supplier's subprocessors.
+
+**The answer arrives in a different amount of time.** A hosted call is a network
+round trip, plus a queue you are sharing with strangers, plus the generation
+itself. A small model on the machine doing the asking has none of the first two.
+The gap is usually the difference between something you wait for and something
+that happens while you type — and that changes what you can build rather than
+making the same thing nicer. At a fifth of a second you can put a model inside a
+loop: one call per row of a spreadsheet, one per pause in typing, one per field
+of a form as it is filled in. At two seconds you build a thing with a spinner in
+it, and every decision downstream of that is different.
+
+**It can be tuned for your job, cheaply.** This is the one people do not expect.
+Training a small model a little further on examples of one narrow task —
+**fine-tuning** — costs an amount that would not buy the team lunch, and the
+examples are usually already sitting in a database. Ten thousand support tickets
+that humans have been routing correctly for three years is a training set
+nobody had to build. What comes out has your product names in it, your
+abbreviations, the way your customers actually write. On that one job it will
+frequently beat a general model a hundred times its size which has seen none of
+that. Not because it is cleverer. Because the giant is working it out from the
+prompt every single time, and the small one has it in the dials.
+
+<Aside title="The version that stays where you put it">
+  There is a quieter benefit that only shows up months in. A hosted model is
+  updated by the people who host it, and the update arrives whether or not you
+  were ready for it. One morning the same prompt returns something differently
+  shaped, and your carefully measured accuracy has moved for reasons entirely
+  outside your building.
+
+A model you run yourself is a file on a disk. It does not change unless you
+change it, which means a result you measured in March still holds in November,
+and a regression is always something you did. For anything you have to certify,
+audit or defend, that is worth more than the price difference.
+
+</Aside>
+
+## What you give up, said plainly
+
+A small model is genuinely worse at some things, and the honest list is short.
+
+**It holds less of the world.** Facts thin out first, and the obscure ones go
+first of all. Ask about a small town, a minor statute or a mid-list novel and a
+small model has much less to draw on.
+
+**It holds fewer steps together.** Chains of reasoning come apart sooner. Three
+linked deductions are usually fine; eight are usually not.
+
+**It frays at the edges faster.** Long inputs, unusual formats, sloppy
+instructions, anything outside the shape it was tuned for — a small model
+degrades more sharply than a large one when conditions get strange, and the
+degradation starts earlier.
+
+And it will be exactly as confident about all of it. Nothing here repairs a
+machine that has no step for checking anything; a smaller one simply gives you
+more occasions to wish it had one.
+
+So the useful question was never small against large. It is which requests go
+where.
+
+## The arrangement production systems actually use
+
+Send everything to the small model first. Most of it stops there. Then have
+something read what came back and decide whether this particular request needs
+to go on to something larger.
+
+That is a **cascade** — or just routing, which is what most people call it. A
+great many shipped systems are doing it behind a single address that looks, from
+the outside, like one model answering everything.
+
+The arithmetic is worth writing down once, because there is a term in it that
+people leave out:
+
+$$
+\text{bill} \;=\; n \, c_{\text{small}} \;+\; m \, c_{\text{large}}
+$$
+
+In words: all $n$ requests pay the small model, and the $m$ that got sent on pay
+the large one on top. The small model's price appears once for the whole batch —
+including for the ones that ended up escalating anyway, which were run through it
+first and then run again.
+
+Put numbers on it. A hundred requests, and the large model costs fifty times the
+small one. If the gate sends twelve of them on, the hundred cost two units at the
+small model plus twelve at the large one — fourteen, against a hundred if
+everything had gone straight to the giant. Just over seven times cheaper, and
+that is before anything is said about where the data went.
+
+<Figure
+  title="One hundred requests through a cascade"
+  description="Every request runs through the small model first, so the small model is paid on all hundred and not only on the eighty-eight that stop there — fourteen units against a hundred — while the twelve that escalate now wait for both machines and arrive slower than if they had gone straight to the large one, and the ones the gate misjudges come back confident with nothing in the system to say so."
+>
+  <WhatTheGateSendsOn />
+</Figure>
+
+Read the two things that got worse, because they are not accidents and they do
+not go away with better engineering.
+
+The escalated twelve are now **slower**, not faster. They waited for the small
+model, failed, and then waited for the large one. Routing buys an enormous
+saving on the common case by making the rare case worse, and if the rare case is
+the one your most important customer is sitting in front of, that is a decision
+somebody should make on purpose rather than discover.
+
+And the gate is not perfect. Some of the eighty-eight were beyond the small
+model and were answered anyway. Nothing anywhere in that diagram raises a hand
+about it.
+
+## Everything rests on the gate
+
+Detecting "this one is beyond me" is itself a judgement, and the obvious way to
+make it does not work.
+
+The obvious way is to take the small model's own confidence and escalate
+anything below a threshold. But that number measures how strongly the model
+preferred what it said, given the text in front of it — not whether it was
+right. A small model can be entirely wrong and entirely confident, and those are
+precisely the cases the gate existed to catch.
+
+So a gate that works is built out of things you can actually check, and most of
+them never ask the model anything:
+
+- The **shape of the request** before it is answered. How long it is, whether it
+  contains a table, how many separate questions it asks, whether it is in a
+  language you tuned for.
+- Whether the answer **parses**. If you demanded four named fields and got three,
+  that is a fact about a string, and it is free.
+- Whether **two runs agree**. Ask twice and compare. Things with plenty of
+  material behind them come back the same way; things the model is filling in
+  wander.
+- A **held-out set of cases where you know the right answer**, scored on every
+  change to the gate. This is the only one that tells you whether the gate is
+  working at all, and it is what the unit on evaluation is entirely about.
+
+Get the threshold wrong in one direction and you escalate nearly everything,
+which is the large model plus the overhead of having asked the small one first.
+Get it wrong in the other and you have built a system that quietly answers the
+hard questions badly and reports that all is well. Both of those are cheap to
+detect with the last item on that list and impossible to detect without it.
+
+<Aside title="Running it yourself is not free" tone="caution">
+  "No bill" is the wrong summary and it catches people out at exactly the wrong
+  moment. There is no invoice per request, which is a real and large saving.
+  There is still hardware to buy, a machine to keep running at three in the
+  morning, models to update, and somebody whose job it now is.
+
+The sharper trap is that "runs on a laptop" and "serves four hundred people at
+once" are two different sentences. One model on one machine answers one request
+at a time reasonably quickly and a queue of forty very badly indeed. Serving is
+its own engineering problem, and it is the part that surprises teams who
+prototyped happily on a laptop and then met a Monday morning.
+
+The rule of thumb that survives contact with reality is that self-hosting wins
+on volume and on data that cannot leave, and loses on spiky, occasional traffic
+where somebody else's idle machines are cheaper than your own.
+
+</Aside>
+
+## Where this leaves the decision
+
+Start from the job rather than the model.
+
+Ask how much room the job leaves — how far a small model already gets, and how
+much is left above it. On the narrow, high-volume, well-defined work that makes
+up most of what anyone builds, the honest answer is: not much room, and the
+small model is already in it. Ask what the data is, because if it cannot leave
+the building the question is settled before cost is mentioned. Ask what the
+latency has to be, because a fifth of a second and two seconds are different
+products.
+
+Then, for whatever is genuinely hard, keep something large in reserve and route
+to it deliberately.
+
+The reflex worth breaking is reaching for the largest available model by
+default, on the grounds that it cannot hurt. It can. It costs fifty times as
+much, it answers ten times slower, it takes your data somewhere else, it changes
+under you without notice — and on an easy job it is right about two per cent
+more often.
+
+<DevAside>
+  <Fragment slot="java">
+    ```java
+    Answer answer = small.answer(request);          // every request, always
+
+    if (gate.beyondIt(request, answer)) {
+      answer = large.answer(request);               // paid for twice, by design
+    }
+    return answer;
+    ```
+
+    The line that decides whether any of this was a good idea is
+    `gate.beyondIt`, and the tempting implementation of it —
+    `answer.confidence() < 0.8` — is the one that fails silently. That number
+    says how strongly the model preferred what it produced, not whether it was
+    correct, and a small model that is out of its depth is frequently very sure.
+
+    Build the gate out of things you can assert on instead: whether the answer
+    deserialises into the record you demanded, whether a required field came
+    back empty, whether the label is one of the six you allow, whether the
+    request is longer than anything in your tuning set. Then fix the threshold
+    against a labelled holdout rather than by feel, and re-fix it whenever
+    either model changes.
+
+    Note also what the second call does to your timeout budget. The escalated
+    path costs `small + large`, so a timeout sized for the large model alone
+    will start failing the very requests you routed most carefully.
+
+  </Fragment>
+  <Fragment slot="python">
+    ```python
+    scored = sorted(holdout, key=lambda case: gate_score(case))
+    for cut in thresholds:
+        escalated = [c for c in scored if gate_score(c) < cut]
+        print(cut, len(escalated) / len(scored), accuracy(scored, cut))
+    ```
+
+    Three lines, and they are the whole of the work. You are not choosing a
+    threshold, you are reading a curve: what fraction gets escalated at each
+    cut, and what the end-to-end accuracy is once the escalations are answered
+    by the large model. The cut you want is where the accuracy curve flattens,
+    and it is almost never the round number somebody would have guessed.
+
+    Two things this makes visible that intuition does not. The escalation rate
+    at your chosen cut is your bill, directly — it is the `m` in the formula
+    above. And the accuracy at 100% escalation is the ceiling you are comparing
+    against, which is the large model's own score and not 100%.
+
+  </Fragment>
+</DevAside>
+
+<Checkpoint question="A team pays a large hosted model to do one job — read an incoming email and return which of eleven departments it belongs to. They measure 94% correct. Someone proposes a small model they would run themselves instead, and a colleague objects that a model a fiftieth of the size will obviously be worse, and that accuracy is the only thing that matters here. What is the cheapest thing the team can do to settle it, and what would each outcome actually mean?">
+  Run both over the same set of emails whose correct department is already
+  known. They have years of routed tickets, so the set costs nothing to build
+  and nobody has to argue from first principles. The colleague's claim is true
+  in general and it is not a claim about this job — how much room this
+  particular job leaves is a measurement, and it takes an afternoon.
+
+Say the small model comes back at 91%. That is three points, and the argument
+has changed shape completely: it is no longer whether a smaller model is worse
+but what three points of routing accuracy are worth against a fiftieth of the
+bill, an answer that arrives while the email is still being read, and customer
+correspondence that never leaves the building. Those are business questions with
+owners, and the technical dispute is over.
+
+Two things they should do before concluding anything. Compare like with like —
+the small model should be tuned on their own routed tickets first, because that
+is the version they would actually run, and it is the version most likely to
+pass 94%. And look at _which_ emails each one gets wrong. If the small model's
+mistakes are concentrated in one department that happens to be the expensive
+one, the headline number is hiding the thing that matters, and the fix is a
+gate that escalates that department rather than a bigger model for all eleven.
+
+Worth carrying beyond this unit. Whenever somebody argues from model size, the
+question that settles it is not how capable each model is. It is how much room
+the job leaves — and that is a property of the work, measurable on data you
+already have.
+
+</Checkpoint>

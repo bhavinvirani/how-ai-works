@@ -1,0 +1,143 @@
+---
+/**
+ * The move this unit turns on, drawn once: the question is put on the same map
+ * as the passages, and searching becomes measuring.
+ *
+ * Prose can state that and the reader will nod without believing it, because
+ * everybody's picture of searching is a word being looked for. So the picture
+ * has to be replaced rather than argued with. There are no words anywhere in
+ * this drawing — only spots and a distance — and the page that answers the
+ * question is the nearest spot despite having nothing in common with it that a
+ * search box could see.
+ *
+ * The question is a star and the passages are circles, because the difference
+ * between them is the whole idea and it cannot be carried by colour (hard rule
+ * 9). The neighbourhood is a tinted, dashed region AND a caption saying what it
+ * holds, for the same reason.
+ *
+ * The two error pages sit almost on top of each other on purpose. Nothing in
+ * this section depends on it, but it is where the second half of the unit
+ * starts, and a reader who noticed it here meets that section already half
+ * convinced.
+ *
+ * The eight pages are the eight in the instrument below, named shorter so the
+ * labels fit. Positions are schematic: a real space has hundreds of directions
+ * and does not flatten onto a page. Every flat picture of one is a shadow, and
+ * this one is no exception.
+ *
+ * Every run of text is interpolated from a constant so that no `<text>` element
+ * wraps across lines of markup: SVG strips newlines inside text content rather
+ * than collapsing them to spaces, so a wrapped label silently loses its spaces.
+ *
+ * Decorative on its own, so `aria-hidden` — `Figure` carries the accessible
+ * name and the plain-English description.
+ */
+
+const SAYS = {
+  head: 'The shelf, and one question, on the same map',
+  sub: 'eight help pages, placed months ago — and the question dropped in just now',
+
+  ring: 'the nearest few — the handful that gets passed on',
+  question: 'your question, as a position',
+
+  lockout: 'locked out',
+  bulkImport: 'adding people',
+  rateLimit: 'too many calls',
+  err4120: 'error E-4120',
+  err4102: 'error E-4102',
+  codesNote: 'a digit apart, and all but the same spot',
+  firmware: 'firmware',
+  refunds: 'refunds',
+  depot: 'faulty handset',
+
+  note1: 'Nothing here was compared word with word.',
+  note2:
+    'The question became a position, the pages nearest it came back, and the nearest of them all shares',
+  note3:
+    'not one word with the question. Being near is the only thing that was ever measured.',
+} as const;
+---
+
+<svg viewBox="0 0 600 392" class="w-full" aria-hidden="true">
+  <text
+    x="20"
+    y="26"
+    class="fill-ink font-display"
+    font-size="13"
+    font-weight="700">{SAYS.head}</text
+  >
+  <text x="20" y="42" class="fill-ink-muted" font-size="9.5">{SAYS.sub}</text>
+
+  <!-- ── The neighbourhood ────────────────────────────────────── -->
+
+  <text x="20" y="78" class="fill-ink-muted" font-size="8.5">{SAYS.ring}</text>
+
+  <circle
+    cx="150"
+    cy="168"
+    r="80"
+    class="fill-accent-2-soft stroke-accent-2"
+    stroke-width="1.25"
+    stroke-dasharray="4 3"></circle>
+
+  <!-- ── The three pages inside it ────────────────────────────── -->
+
+  <circle cx="100" cy="128" r="4" class="fill-ink-muted"></circle>
+  <text x="109" y="124" class="fill-ink" font-size="9">{SAYS.lockout}</text>
+
+  <circle cx="196" cy="132" r="4" class="fill-ink-muted"></circle>
+  <text x="196" y="148" text-anchor="middle" class="fill-ink" font-size="9"
+    >{SAYS.bulkImport}</text
+  >
+
+  <circle cx="128" cy="224" r="4" class="fill-ink-muted"></circle>
+  <text x="137" y="228" class="fill-ink" font-size="9">{SAYS.rateLimit}</text>
+
+  <!-- ── The question. A star, because it is not one of the pages. -->
+
+  <polygon
+    points="150,153 155,163 165,168 155,173 150,183 145,173 135,168 145,163"
+    class="fill-ink"></polygon>
+  <text
+    x="150"
+    y="200"
+    text-anchor="middle"
+    class="fill-ink"
+    font-size="9"
+    font-weight="600">{SAYS.question}</text
+  >
+
+  <!-- ── The five pages outside it ────────────────────────────── -->
+
+  <circle cx="352" cy="118" r="4" class="fill-ink-muted"></circle>
+  <text x="362" y="114" class="fill-ink" font-size="9">{SAYS.err4120}</text>
+
+  <circle cx="368" cy="134" r="4" class="fill-ink-muted"></circle>
+  <text x="378" y="138" class="fill-ink" font-size="9">{SAYS.err4102}</text>
+
+  <text x="352" y="162" class="fill-ink-faint font-mono" font-size="7.5"
+    >{SAYS.codesNote}</text
+  >
+
+  <circle cx="300" cy="216" r="4" class="fill-ink-muted"></circle>
+  <text x="310" y="220" class="fill-ink" font-size="9">{SAYS.firmware}</text>
+
+  <circle cx="400" cy="226" r="4" class="fill-ink-muted"></circle>
+  <text x="410" y="230" class="fill-ink" font-size="9">{SAYS.refunds}</text>
+
+  <circle cx="270" cy="276" r="4" class="fill-ink-muted"></circle>
+  <text x="280" y="280" class="fill-ink" font-size="9">{SAYS.depot}</text>
+
+  <!-- ── What the drawing says ────────────────────────────────── -->
+
+  <line x1="12" y1="316" x2="588" y2="316" class="stroke-rule" stroke-width="1"
+  ></line>
+
+  <text x="20" y="338" class="fill-ink" font-size="10" font-weight="700"
+    >{SAYS.note1}</text
+  >
+  <text x="20" y="356" class="fill-ink-muted" font-size="9.5">{SAYS.note2}</text
+  >
+  <text x="20" y="372" class="fill-ink-muted" font-size="9.5">{SAYS.note3}</text
+  >
+</svg>

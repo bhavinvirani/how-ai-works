@@ -1,0 +1,332 @@
+---
+/**
+ * Ordinary software drawn above an agent, so that the single difference between
+ * them is a shape on the page rather than a claim in a paragraph.
+ *
+ * The unit's whole argument is that nothing was added — same model, same tools,
+ * same relay as the unit before — and that one arrow moved from being drawn in
+ * advance to being chosen while the thing is running. That is hard to say and
+ * easy to draw: the top half is a row of arrows a person wrote, the bottom half
+ * is the same row with a fan where the next arrow should be.
+ *
+ * The fan carries its meaning three ways over, because it is the one thing here
+ * that has to survive being read in greyscale (hard rule 9): the taken branch is
+ * a solid line into a filled box, the two it passed over are dashed lines into
+ * empty ones, and all three say in words which they are.
+ *
+ * The return path is the other half of the point, and it is deliberately long
+ * and visible: whatever came back is added to the first box, so the next pass
+ * reads more than this one did and chooses from a different position.
+ *
+ * Every run of text is interpolated from a constant so that no `<text>` element
+ * wraps across lines of markup: SVG strips newlines inside text content rather
+ * than collapsing them to spaces, so a wrapped label silently loses its spaces.
+ *
+ * Decorative on its own, so `aria-hidden` — `Figure` carries the accessible name
+ * and the plain-English description.
+ */
+
+const SAYS = {
+  topHead: 'Software you wrote',
+  topSub: 'every arrow drawn before anything ran',
+
+  readBill: 'read the bill',
+  readMeter: 'read the meter',
+  compare: 'compare the two',
+  answer: 'write the answer',
+
+  topNote:
+    'You chose the order. It runs in that order every time, whatever the meter says.',
+
+  bottomHead: 'An agent',
+  bottomSub: 'the same model, the same tools, and one arrow nobody drew',
+
+  soFar: 'everything so far',
+  soFarSub: 'goal, tools, every result',
+  onePass: 'one pass of the model',
+
+  candidateA: 'readings(March–April)',
+  candidateB: 'tariff(history)',
+  candidateC: 'answer now, with what it has',
+
+  taken: 'taken',
+  notTaken: 'not taken',
+
+  ran: 'your code runs it, and what comes back is added to the box on the left',
+
+  note1:
+    'The fan is the whole difference. Everything else is the unit before this one.',
+  note2:
+    'Which of the three is taken is written down nowhere until the run reaches it.',
+} as const;
+---
+
+<svg viewBox="0 0 600 344" class="w-full" aria-hidden="true">
+  <defs>
+    <marker
+      id="choice-arrow"
+      viewBox="0 0 10 10"
+      refX="9"
+      refY="5"
+      markerWidth="5"
+      markerHeight="5"
+      orient="auto"
+    >
+      <path d="M0,0 L10,5 L0,10 z" class="fill-ink-muted"></path>
+    </marker>
+    <marker
+      id="choice-arrow-faint"
+      viewBox="0 0 10 10"
+      refX="9"
+      refY="5"
+      markerWidth="5"
+      markerHeight="5"
+      orient="auto"
+    >
+      <path d="M0,0 L10,5 L0,10 z" class="fill-ink-faint"></path>
+    </marker>
+  </defs>
+
+  <!-- ── Ordinary software ────────────────────────────────────── -->
+
+  <text
+    x="20"
+    y="26"
+    class="fill-ink font-display"
+    font-size="13"
+    font-weight="700">{SAYS.topHead}</text
+  >
+  <text x="20" y="42" class="fill-ink-muted" font-size="9.5">{SAYS.topSub}</text
+  >
+
+  <rect
+    x="20"
+    y="56"
+    width="124"
+    height="32"
+    rx="6"
+    class="fill-paper-sunken stroke-rule-strong"
+    stroke-width="1.25"></rect>
+  <text x="82" y="76" text-anchor="middle" class="fill-ink" font-size="9.5"
+    >{SAYS.readBill}</text
+  >
+
+  <line
+    x1="144"
+    y1="72"
+    x2="160"
+    y2="72"
+    class="stroke-ink-muted"
+    stroke-width="1.25"
+    marker-end="url(#choice-arrow)"></line>
+
+  <rect
+    x="164"
+    y="56"
+    width="124"
+    height="32"
+    rx="6"
+    class="fill-paper-sunken stroke-rule-strong"
+    stroke-width="1.25"></rect>
+  <text x="226" y="76" text-anchor="middle" class="fill-ink" font-size="9.5"
+    >{SAYS.readMeter}</text
+  >
+
+  <line
+    x1="288"
+    y1="72"
+    x2="304"
+    y2="72"
+    class="stroke-ink-muted"
+    stroke-width="1.25"
+    marker-end="url(#choice-arrow)"></line>
+
+  <rect
+    x="308"
+    y="56"
+    width="124"
+    height="32"
+    rx="6"
+    class="fill-paper-sunken stroke-rule-strong"
+    stroke-width="1.25"></rect>
+  <text x="370" y="76" text-anchor="middle" class="fill-ink" font-size="9.5"
+    >{SAYS.compare}</text
+  >
+
+  <line
+    x1="432"
+    y1="72"
+    x2="448"
+    y2="72"
+    class="stroke-ink-muted"
+    stroke-width="1.25"
+    marker-end="url(#choice-arrow)"></line>
+
+  <rect
+    x="452"
+    y="56"
+    width="124"
+    height="32"
+    rx="6"
+    class="fill-paper-sunken stroke-rule-strong"
+    stroke-width="1.25"></rect>
+  <text x="514" y="76" text-anchor="middle" class="fill-ink" font-size="9.5"
+    >{SAYS.answer}</text
+  >
+
+  <text x="20" y="110" class="fill-ink-muted" font-size="9.5"
+    >{SAYS.topNote}</text
+  >
+
+  <line x1="12" y1="128" x2="588" y2="128" class="stroke-rule" stroke-width="1"
+  ></line>
+
+  <!-- ── The agent ────────────────────────────────────────────── -->
+
+  <text
+    x="20"
+    y="154"
+    class="fill-ink font-display"
+    font-size="13"
+    font-weight="700">{SAYS.bottomHead}</text
+  >
+  <text x="20" y="170" class="fill-ink-muted" font-size="9.5"
+    >{SAYS.bottomSub}</text
+  >
+
+  <rect
+    x="20"
+    y="188"
+    width="118"
+    height="42"
+    rx="6"
+    class="fill-paper-sunken stroke-rule-strong"
+    stroke-width="1.25"></rect>
+  <text x="79" y="206" text-anchor="middle" class="fill-ink" font-size="9.5"
+    >{SAYS.soFar}</text
+  >
+  <text
+    x="79"
+    y="219"
+    text-anchor="middle"
+    class="fill-ink-faint"
+    font-size="7.5">{SAYS.soFarSub}</text
+  >
+
+  <line
+    x1="138"
+    y1="209"
+    x2="154"
+    y2="209"
+    class="stroke-ink-muted"
+    stroke-width="1.25"
+    marker-end="url(#choice-arrow)"></line>
+
+  <rect
+    x="158"
+    y="188"
+    width="118"
+    height="42"
+    rx="6"
+    class="fill-accent-soft stroke-accent"
+    stroke-width="1.25"></rect>
+  <text x="217" y="212" text-anchor="middle" class="fill-ink" font-size="9.5"
+    >{SAYS.onePass}</text
+  >
+
+  <!-- The fan. A solid line into a filled box for the one taken, dashed lines
+       into empty boxes for the two passed over, and a word on every one. -->
+
+  <path
+    d="M276,209 H296 V191 H312"
+    class="fill-none stroke-ink-muted"
+    stroke-width="1.5"
+    marker-end="url(#choice-arrow)"></path>
+
+  <rect
+    x="316"
+    y="178"
+    width="192"
+    height="26"
+    rx="5"
+    class="fill-paper-sunken stroke-rule-strong"
+    stroke-width="1.5"></rect>
+  <text x="324" y="195" class="fill-ink font-mono" font-size="8"
+    >{SAYS.candidateA}</text
+  >
+  <text
+    x="500"
+    y="195"
+    text-anchor="end"
+    class="fill-ink"
+    font-size="8"
+    font-weight="700">{SAYS.taken}</text
+  >
+
+  <path
+    d="M276,209 H296 V225 H312"
+    class="fill-none stroke-ink-faint"
+    stroke-width="1.25"
+    stroke-dasharray="3 3"
+    marker-end="url(#choice-arrow-faint)"></path>
+
+  <rect
+    x="316"
+    y="212"
+    width="192"
+    height="26"
+    rx="5"
+    class="fill-none stroke-rule"
+    stroke-width="1.25"
+    stroke-dasharray="3 3"></rect>
+  <text x="324" y="229" class="fill-ink-faint font-mono" font-size="8"
+    >{SAYS.candidateB}</text
+  >
+  <text x="500" y="229" text-anchor="end" class="fill-ink-faint" font-size="8"
+    >{SAYS.notTaken}</text
+  >
+
+  <path
+    d="M276,209 H296 V259 H312"
+    class="fill-none stroke-ink-faint"
+    stroke-width="1.25"
+    stroke-dasharray="3 3"
+    marker-end="url(#choice-arrow-faint)"></path>
+
+  <rect
+    x="316"
+    y="246"
+    width="192"
+    height="26"
+    rx="5"
+    class="fill-none stroke-rule"
+    stroke-width="1.25"
+    stroke-dasharray="3 3"></rect>
+  <text x="324" y="263" class="fill-ink-faint" font-size="8"
+    >{SAYS.candidateC}</text
+  >
+  <text x="500" y="263" text-anchor="end" class="fill-ink-faint" font-size="8"
+    >{SAYS.notTaken}</text
+  >
+
+  <!-- The return path: what came back is added, so the next pass reads more. -->
+
+  <path
+    d="M508,191 H548 V296 H79 V234"
+    class="fill-none stroke-ink-muted"
+    stroke-width="1.25"
+    marker-end="url(#choice-arrow)"></path>
+  <text
+    x="300"
+    y="290"
+    text-anchor="middle"
+    class="fill-ink-muted"
+    font-size="8.5">{SAYS.ran}</text
+  >
+
+  <text x="20" y="318" class="fill-ink" font-size="9.5" font-weight="600"
+    >{SAYS.note1}</text
+  >
+  <text x="20" y="334" class="fill-ink-muted" font-size="9.5">{SAYS.note2}</text
+  >
+</svg>

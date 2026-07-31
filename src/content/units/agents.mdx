@@ -1,0 +1,384 @@
+---
+title: The step nobody wrote down
+part: letting-it-act
+order: 3
+summary: An agent is the tool-use loop with one thing changed — the model picks the next step instead of following a sequence you wrote — and both what it can suddenly do and everything that goes wrong with it come out of that single move.
+prerequisites:
+  - tool-use
+  - context-engineering
+connections:
+  - to: evaluation
+    why: An agent takes a different route on every run, so watching one go well settles nothing; the only way to know whether it works is a fixed set of jobs scored on the whole path, which is the difference between a system that demonstrates well and one you would leave switched on.
+interactives:
+  - AgentTraceExplorer
+status: published
+updated: 2026-07-31
+---
+
+import Aside from '../../components/blocks/Aside.astro';
+import Checkpoint from '../../components/blocks/Checkpoint.astro';
+import DevAside from '../../components/blocks/DevAside.astro';
+import Figure from '../../components/blocks/Figure.astro';
+import WhereTheChoiceSits from '../../components/diagrams/WhereTheChoiceSits.astro';
+import { AgentTraceExplorer } from '../../components/interactives/AgentTraceExplorer';
+
+Two notes on the kitchen table for whoever is house-sitting.
+
+The first one you wrote a month ago, and it is a list. _Water the plants on
+Tuesday. Bins out on Thursday night. Lock the back door._ Nothing on it depends
+on anything else, and you knew every step of it before you left.
+
+The second is one line. _If anything goes wrong with the boiler, sort it out._
+
+You could not have turned the second note into a list, and it is not because you
+were in a hurry. The first thing to do is find out what has actually gone wrong,
+and everything after that depends on what the first thing turns up. A dead pilot
+light and a dripping valve have nothing in common except the ten seconds it
+takes to tell them apart. There is no sequence to write down, because the
+sequence does not exist until somebody is standing in front of the boiler.
+
+So the second note does something the first one does not. It hands over the
+decision.
+
+Give a model a goal, give it some tools, and let it choose its own next move,
+and what you have is an **agent**.
+
+## The mechanism is smaller than the word
+
+The word has picked up a great deal of weight. It gets used for things that
+plan, things that remember, things advertised as some distance along the road to
+a colleague. Underneath all of it is a loop with five steps, and you have already
+met four of them.
+
+1. The model is handed the goal, a description of every tool it may ask for, and
+   everything that has happened so far.
+2. It writes one thing: either the name of a tool with some arguments, or an
+   answer.
+3. If it named a tool, your code runs it — or refuses to.
+4. Whatever came back is added to the end of everything that has happened so
+   far.
+5. Go back to step one.
+
+The loop stops when step two produces an answer instead of a tool name, or when
+you stop it.
+
+That is the entire mechanism. There is no planner in there, no memory, no
+separate part that decides. Nothing whatever was added to the model: it is the
+same next-piece scorer from the units on large language models, doing the only
+thing it has ever done.
+
+## What actually changed
+
+Two units ago you were left with a relay. The model writes the name of a
+function, your code decides whether to run it, and the result comes back as
+text. Every one of the five steps above is that relay.
+
+Exactly one thing is different, and it is step two.
+
+In ordinary software you write the order the steps run in. Programmers call it
+the **control flow** — the path execution takes through your program. You wrote
+it, it is sitting in the file, and you can read it before anything runs.
+
+In an agent, the control flow does not exist until it runs. It is produced one
+step at a time, by a machine that scores the next chunk of text.
+
+That sentence is the unit. Everything below it is a consequence.
+
+<Figure
+  title="Who drew the arrow"
+  description="In ordinary software every arrow between the steps was drawn before anything ran, so the same order happens every time whatever the meter says. In an agent the arrow leaving the model is picked while it runs — one of several calls it could equally have made — and whatever comes back is added to what the next pass reads, so the choice after this one is made from a different position."
+>
+  <WhereTheChoiceSits />
+</Figure>
+
+## Why anyone hands the decision over
+
+It is worth being plain about what is bought here, because the answer is not
+intelligence.
+
+What you get is a system that can handle a job whose steps you could not have
+written down. Not a harder job — a job of an unknown shape. The bill
+investigation in the panel below is ordinary work that any competent person
+could do, and it is still not something you can write as a sequence, because the
+second step depends on what the first one found.
+
+You could write it as a sequence. It would be a decision tree, you would have to
+think of every branch in advance, and the day a meter turns out to be missing a
+reading you would discover which branch you forgot. That is the trade: an agent
+is what you reach for when enumerating the branches is harder than doing the job.
+
+And it is a trade with a sting in it. A machine that can take a step you did not
+think of can take a step you would not have allowed.
+
+## One goal, three runs
+
+The panel below holds one goal, one set of tools and one run. Step it through to
+the end. Then change the single line that says what the meter came back with,
+and read it again from the top.
+
+One thing to be straight about before you do. The trace is written down rather
+than produced by a model — a real run words things differently every time, and
+its context would be tens of thousands of tokens rather than hundreds. What is
+not simplified is the shape: one turn, one choice, one result, and the result
+going into the pile that the next turn has to read. The arithmetic between those
+numbers is the arithmetic of the real thing.
+
+<AgentTraceExplorer client:visible />
+
+Press the plus until the run stops. On the first setting — the meter says usage
+really did double — it takes five turns. It reads the bill, reads the meter,
+checks the equipment log, checks the daily pattern, and answers.
+
+The turn worth slowing down for is the fourth. Having found that a second
+freezer was delivered on the 3rd, it does not stop there. It goes and checks
+whether the extra use shows up on Sundays, when the shop is shut. Nobody wrote
+that step, and nobody could have: it exists because a delivery date on its own is
+not proof, and that is the kind of thing the writing it was scored on is full of.
+
+Now set the meter to _usage unchanged_.
+
+The first two turns are identical. Same reasoning, same tool, same call — because
+at that point nothing had come back for a plan to depend on. From the third turn
+the two runs have nothing in common at all. This one never opens the equipment
+log, because there is nothing in the shop to look for. It goes to the tariff,
+finds the fixed deal ended on 31 March, checks what else is on offer, checks
+whether leaving the current rate costs anything, and asks to switch the account.
+Six turns instead of five, and it ends by stopping instead of by answering.
+
+It stops because `switch` is on a list of tools your code will not run without a
+person saying yes. Read that carefully, because it is easy to give the model
+credit for it. The model did not decide a tariff change was serious. It asked for
+the switch in exactly the way it asked for everything else, and something outside
+it declined.
+
+### The run where nothing looks wrong
+
+Set the meter to _no reading_.
+
+What comes back is not an error. It is an ordinary, well-formed sentence: there
+is no reading recorded for April, and the April bill is an estimate.
+
+Watch what the third turn does with it. The reasoning is sound — with no April
+figure it cannot compare the two months, so it will fetch the nearest actual
+figure there is, which is March. Any of us would do that.
+
+Read the fourth turn and it has quietly become something else. _March is what I
+have, and nothing suggests April was any different._
+
+Nothing suggests April was any different because nothing was ever looked at. An
+absence has been read as evidence, in one clause, in the middle of a chain of
+otherwise good reasoning. From that point the run is not investigating. It is
+building a case.
+
+So it sends an email, and the panel breaks the letter into its three separate
+statements. _March usage was 1,940 kWh_ rests on something that came back.
+_April's usage was no different from March's_ rests on nothing. _The April
+estimate of £838 is far too high_ rests on nothing.
+
+Two out of three, in a letter that has gone.
+
+Notice what did not happen. Nothing paused. `email` is not on the held list;
+`switch` is. A person was asked before a tariff change that could have been
+changed straight back, and nobody was asked before an accusation went to the
+supplier. That list is not a judgement about what is serious — it is a list, and
+this one has the wrong thing on it.
+
+Now hold the three runs beside each other. Same goal, same tools, same first two
+turns to the word. Five turns, six turns, four turns. Answered, stopped, acted.
+And one conclusion in three with nothing under it. Nothing chose between those
+three futures except one line of text that came back on turn two.
+
+## Every result is another thing to re-read
+
+Look at the number printed against each turn: how much text the model has to
+read on that pass.
+
+It goes up every turn and never down, because nothing is ever taken out. The
+model's own line goes in, the tool result goes in, and the next pass reads the
+lot from the beginning — for the same reason a model re-reads everything it has
+written before adding one more word.
+
+The six-turn run starts at 320 tokens on the first turn and reaches 875 on the
+sixth, with 1,005 sitting there when it stops. That is the context window from
+the previous unit, being spent by something that decides for itself how many
+times to spend it.
+
+Add the turns up and the number that surprises people appears. Across that one
+run the model read 3,580 tokens — about eleven times what the same goal would
+have cost asked once and answered once. Six turns, eleven times the reading,
+because every turn re-reads everything the turns before it produced.
+
+That is the honest shape of what an agent costs. It is not that the answers are
+longer. It is that the same growing pile gets read over and over, and how many
+times is decided at run time, by the thing doing the reading.
+
+<Aside title="It did not decide anything, in the sense you mean">
+  It is very hard to read that trace without hearing somebody think. The lines
+  are in the first person, they give reasons, they change course.
+
+Every one of them is the next-piece loop. The model was handed a pile of text
+ending in a tool result and produced the most plausible continuation, which —
+because of how it was tuned — is a short line of reasoning followed by a tool
+name. It is writing what a competent person's next line would look like.
+
+That is not nothing. Writing the plausible next line is exactly how it gets the
+Sunday check right. But the word _decide_ is doing work here that it does not do
+anywhere else. Nothing weighed the options. Nothing considered whether sending
+the email was wise. A continuation scored highest, and your code ran it.
+
+</Aside>
+
+## Small mistakes do not stay small
+
+One more consequence, and it is the one that settles whether an agent is a good
+idea for a particular job.
+
+Suppose each turn goes right nine times in ten, which is generous for anything
+with a model in it. Six turns of that, and the run as a whole is right about half
+the time:
+
+$$
+0.9^{6} \approx 0.53
+$$
+
+Nine chances in ten, six times over, comes out barely better than a coin. Real
+runs are longer than six turns, and it gets worse fast — twenty turns at the same
+rate is about one run in eight.
+
+That arithmetic is the optimistic version, and it is worth knowing why. It treats
+the turns as independent, like six separate coins. They are not. Every result
+goes into the pile the next turn reads, so a turn that goes wrong does not merely
+fail — it changes what the next turn is choosing between. The third run in the
+panel is precisely this. Turn three was a sensible move. Turn four is where it
+becomes a mistake, and turn four is also the one that puts it in the post.
+
+That is the difference between an agent going wrong and ordinary software going
+wrong. Buggy software does the wrong thing, and then does the next thing from the
+same place regardless. An agent that goes wrong builds on it.
+
+## What makes one workable
+
+None of this makes agents a bad idea. It makes them a thing with a known shape,
+and every practice that works comes from the same place: the trouble is the
+choice, so the answer is always to hand over less of it.
+
+**Give it fewer tools, and narrower ones.** Every tool is one more thing that can
+be chosen on every turn. A tool that can read one table is a tool that cannot
+delete a different one. Most of what an agent needs is reading, and reading has
+no incident attached to it.
+
+**Cap the turns.** The loop has no natural end — step five goes back to step one,
+and nothing inside it notices that it is going round. A run that hits the cap has
+failed, which is fine and cheap. A run with no cap has a bill and a blast radius
+that nobody can state in advance.
+
+**Refuse to run anything you cannot undo.** Not flag it, not log it. Refuse it,
+in your code, against a list you wrote, until a person says yes. And spend real
+time on that list, because the panel shows you what a wrong one looks like. It is
+not enough for the gate to exist. It has to have the right tools behind it, and
+the model will not tell you which those are.
+
+**Make a failed run loud.** An agent that goes wrong does not crash. It produces
+a confident, well-written account of what it did, in which every intermediate
+step reads exactly like the steps of a run that worked. If nothing in your system
+compares what it claimed against what actually came back, nothing will notice.
+
+And one question before any of that. Which parts of this job do you genuinely not
+know the shape of in advance? Usually it is one or two, and the rest is a
+sequence you could write out this afternoon. A program that runs a fixed sequence
+and calls a model at the two points needing judgement is cheaper, easier to test
+and far easier to reason about than a loop that decides everything. Hand the
+decision over where you have to, and not an inch further.
+
+<DevAside>
+  <Fragment slot="java">
+    ```java
+    List<Message> context = List.of(goal, toolCatalogue);
+
+    for (int turn = 0; turn < MAX_TURNS; turn++) {   // the cap is not optional
+      Reply reply = model.next(context);             // one pass over ALL of it
+
+      if (reply.isAnswer()) return reply.text();
+
+      ToolCall call = reply.call();
+      if (HELD.contains(call.name())) {              // your list, written first
+        return Result.awaitingApproval(call);
+      }
+
+      context = append(context, reply, tools.run(call));
+    }
+    ```
+
+    A dozen lines, and nothing is missing. Everything people attribute to "the
+    agent" is either `model.next` — the same call you would make for a one-shot
+    question — or the loop around it.
+
+    Two of those lines are the whole of your control. `MAX_TURNS` is the only
+    thing standing between you and an unbounded bill, and it belongs in the
+    `for` rather than in a check somewhere inside. `HELD` is a list a person
+    wrote before the run started: nothing in `reply` tells you how consequential
+    a call is, and asking the model to rate its own call is asking the same
+    next-piece scorer that produced it.
+
+  </Fragment>
+  <Fragment slot="python">
+    ```python
+    context = [goal, tool_catalogue]
+
+    for _ in range(MAX_TURNS):
+        reply = model.next(context)
+
+        if reply.answer is not None:
+            return reply.answer
+        if reply.call.name in HELD:
+            return awaiting_approval(reply.call)
+
+        context += [reply, tools.run(reply.call)]
+    ```
+
+    `context += ...` is where the cost lives. The list only ever grows, and
+    `model.next` reads all of it every time round the loop, so the bill for a
+    run goes up faster than the number of turns does. Providers cache the
+    unchanged front of that pile and charge less for it, which helps a great
+    deal and changes none of the shape.
+
+    `tools.run` is the other line worth staring at. Every permission the agent
+    has is a permission that function has — a database handle, an API key, an
+    outbox. The model holds none of its own. Whatever you would not give a
+    stranger with a plausible manner, do not put behind that call.
+
+  </Fragment>
+</DevAside>
+
+<Checkpoint question="A team ships an agent that handles billing questions. It has five read-only tools and one that issues a refund, and any refund over £50 is held for a person to approve. It tests beautifully. In its first live week it issues four hundred refunds of under £50 to customers who were owed nothing, each with a short and plausible explanation attached, and nothing anywhere errors. Explain how a system with a working approval gate produced that, and say what you would change.">
+  The gate worked exactly as written, and it was never the protection anybody
+  thought it was. It is a rule about an amount, not about whether a refund is
+  deserved — and nothing in the loop ever asks whether a refund is deserved,
+  because there is nothing in the loop capable of asking. Every refund the model
+  reached for under the threshold was, as far as the system was concerned,
+  authorised in advance.
+
+The four hundred is the compounding. Somewhere early in each run a turn read
+something ambiguous and produced a line concluding that the customer was owed
+money. That line then went into the context, and the turn after it was not
+judging the case afresh — it was continuing a chain in which the matter was
+already settled. The refund is not the mistake. It is the fourth or fifth thing
+built on the mistake.
+
+"Nothing anywhere errors" is not reassurance, it is the symptom. A failed agent
+run produces a confident account of itself, and four hundred plausible
+explanations is precisely what four hundred failures look like from the outside.
+
+What to change, in order of how much it buys. Take the refund out of the loop
+entirely: let the model do the judgement and have ordinary software issue the
+money, once, against a rule you wrote and a record you can check. Cap the turns.
+Move the gate from the amount to the action, because the thing you cannot undo is
+paying out, not paying out more than fifty pounds. And stop deciding it works by
+reading traces — score it against a fixed set of past cases where you already
+know who was owed what.
+
+Worth carrying beyond this unit. An approval gate is a claim about tools, never
+about intentions. If the outcome you are afraid of is reachable through a call
+that is on nobody's list, the gate is decoration.
+
+</Checkpoint>

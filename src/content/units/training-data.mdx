@@ -6,6 +6,8 @@ summary: Everything a machine learns from is a table of examples and measurement
 prerequisites:
   - model-as-dials
 connections:
+  - to: embeddings
+    why: A column of words is the awkward case here, because there is no obvious number to put in it — and the answer, learning a position for every word from the company it keeps, is one of the field's better ideas.
   - to: model-as-dials
     why: The wrongness score compares each guess against one column of this table, so choosing that column is choosing what the dials are being tuned to do.
   - to: why-rules-fail

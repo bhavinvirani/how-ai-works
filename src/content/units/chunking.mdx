@@ -1,0 +1,377 @@
+---
+title: The answer is in there, and nothing can find it
+part: your-own-documents
+order: 2
+summary: A document has to be cut into passages before anything can search it, and a passage that never says what it is about is invisible — no matter how good the model reading it afterwards.
+prerequisites:
+  - rag
+  - embeddings
+connections:
+  - to: vector-search
+    why: Meaning-search can only put in order the passages it was handed, so the cut decides what is even in the running and the search only decides which of those comes first — which is why a disappointing system is far more often badly cut than badly searched.
+interactives:
+  - ChunkCutter
+status: published
+updated: 2026-07-31
+---
+
+import Aside from '../../components/blocks/Aside.astro';
+import Checkpoint from '../../components/blocks/Checkpoint.astro';
+import DevAside from '../../components/blocks/DevAside.astro';
+import Figure from '../../components/blocks/Figure.astro';
+import CutAwayFromItsHeading from '../../components/diagrams/CutAwayFromItsHeading.astro';
+import { ChunkCutter } from '../../components/interactives/ChunkCutter';
+
+Somebody asks the new assistant whether they can keep a hamper a supplier has
+sent over, and it answers in about a second. Anything worth more than twenty
+pounds goes in the register within five working days. Log it and enjoy it.
+
+That is wrong, and everything needed to make it right is in the handbook it just
+searched. The very next line of the same section reads:
+
+_While a tender is live the whole of the above is suspended, whatever the value
+involved, and no manager may waive it._
+
+There is a live tender. The answer was no.
+
+Now read that sentence on its own, the way the machine met it, and notice what is
+not in it. No hamper. No gift. No supplier. It is a sentence about something
+being suspended, and the something is named three lines earlier, in a heading
+this sentence does not contain.
+
+Nothing was going to find that passage. Not because the search is weak — because
+that run of words, standing by itself, is not about hampers in any way anything
+could detect. It never says so.
+
+## The document is not the thing that gets searched
+
+The unit before this one gave the shape of the fix for a machine that has nothing
+to consult. Look the answer up first, put what you found in front of the model,
+and have it answer from that. It left one step unexamined, and everything else
+stands on top of it.
+
+You cannot look up a two-hundred-page manual. Not because it is too long to
+read — because looking something up here means turning text into a position on a
+map of meaning and asking what sits near it, and a two-hundred-page manual has no
+useful position. It is about hiring, and fire doors, and mileage, and parental
+leave. Average all of that together and you land in the middle of everything,
+near nothing.
+
+So before any of it can be searched, the document is cut into passages, and each
+passage gets a position of its own. It is the passages that are stored, the
+passages that are compared against the question, and passages that come back. A
+search never returns your document. It returns three or four fragments of it.
+
+Cutting a document up this way is called **chunking**, and each passage is a
+**chunk** — an ugly word for the least glamorous step in the whole business, and
+the one that decides more than any other step in it.
+
+## What a passage has to do to be findable
+
+Here is the rule, and it is short enough to carry around.
+
+**A passage can be found only if it says what it is about.**
+
+Not "is about" — _says_. The position that gets stored for a passage is computed
+from the words in that passage and from nothing else. Not from where it sat in
+the file. Not from the sentence before it. Not from the heading three paragraphs
+up. All of that was structure, and the cut threw it away.
+
+Picture copying a policy onto index cards, one paragraph per card, and handing the
+stack to somebody who has never seen the original. Ask them for the card about
+gifts. They are not being stupid or lazy when they hand you the wrong one; they
+have exactly what is printed on each card and nothing else, and the card that
+says _while a tender is live the whole of the above is suspended_ does not say
+gifts. That is not an analogy for the mechanism. It is the mechanism.
+
+Three shapes of the same failure turn up constantly in real documents, and none
+of them looks like a mistake while you are writing it.
+
+**The orphaned reference.** _It must be renewed annually. This does not apply
+overseas. The above is suspended._ Ordinary prose leans backwards on words like
+_it_, _this_ and _the above_, because in a document you are reading top to bottom
+those are perfectly clear. Cut the document up and they point at nothing.
+
+**The missing heading.** A section is headed _Client entertainment_ and then
+never uses the phrase again, because it does not need to — you know what section
+you are in. Every passage under that heading, except the first, is now silent
+about its own subject.
+
+**The table split down the middle.** Half a table is not half an answer. It is
+two columns of numbers with no idea what they count.
+
+<Figure
+  title="The same three passages, cut twice"
+  description="Cut a section at a fixed length and the heading stays in the first passage, so the passages after it never name their own subject and cannot be retrieved by it — while stamping that one heading line onto every passage brings all of them back, with no cut moved and nothing else changed."
+>
+  <CutAwayFromItsHeading />
+</Figure>
+
+## Why there is no correct size
+
+The obvious response to all this is to cut bigger pieces, so more context stays
+together. It works, and it costs you something, and knowing what it costs is
+most of what this unit is for.
+
+A passage's position is the average of the positions of the things in it:
+
+$$
+p_{\text{passage}} \;=\; \frac{p_1 + p_2 + \dots + p_n}{n}
+$$
+
+Read out loud: put every sentence of the passage on the map, then stand at the
+point in the middle of them. That is where the passage lives, and it is the only
+place it lives.
+
+Which gives the whole trade-off in one line. Every sentence you add to a passage
+pulls its position towards whatever that sentence is about.
+
+A passage holding one rule about spending limits sits squarely on spending
+limits. Add four sentences about expense forms, hospitality codes and client
+names and the rule is still in there, word for word — but it is now one voice in
+five deciding where the passage stands, and somewhere else in the document
+something is standing closer to a question about spending limits than it is.
+
+So:
+
+**Cut small** and every passage is sharply about one thing, and matching is
+precise. But a passage may be too thin to answer anything, and the sentences that
+gave it its context are now in a different passage that will not be retrieved with
+it.
+
+**Cut large** and every passage carries its context. But its position is a blurry
+average across several subjects, so it matches everything a bit and nothing well,
+and it eats more of the space in front of the model when it does come back.
+
+There is no correct size. There is a size that happens to suit this document and
+these questions, found by trying, and it will be wrong for the next document.
+
+## Cut it up yourself
+
+The panel below holds four sections of an internal handbook and cuts them into
+passages in front of you. The slider sets how many words a passage may hold; the
+two switches are the two things people actually do about all this. Whichever
+passage answers the question is labelled where it sits, so you never have to
+wonder where it went — only whether it came back.
+
+Before drawing conclusions, be clear which parts are the real thing.
+
+Real: passages are cut by walking the document and starting a new one when the
+next line would take it over the size; each passage gets one position, which is
+the average of what is in it; the search hands back the closest few and nothing
+else; the score is a closeness between zero and one, which is what real systems
+compute. All of that is what happens.
+
+Hand-written: what each line is about. Fifteen subjects are typed into a table
+here, so a whole document's worth of positions fits on a screen. A real system
+reads the subjects out of the words themselves, across hundreds or thousands of
+dimensions rather than fifteen, and would draw finer distinctions than this can.
+Take the averaging and the zero. Do not take the fifteen subjects as a claim
+about anything.
+
+<ChunkCutter client:visible />
+
+It opens on the client dinner question, cut at fifty-five words, and it works.
+The closest passage holds the forty-five pound limit and the sentence about going
+over it, and both came back. Worth glancing at the runner-up before moving on: a
+passage of travel rules that happens to have swallowed the _Client entertainment_
+heading at its bottom edge, scoring 0.41 against the winner's 0.41. They differ
+in the third decimal place. Which of them was ranked first came down to an amount
+too small to print, and one of them is about hotels.
+
+Now drag the slider down to thirty words. The winner improves — 0.62, because it
+is now just the two sentences about client meals rather than three sentences and
+a stray heading — and the answer breaks. The cut has fallen between the limit and
+the sentence about going over it. That second sentence now sits in a passage
+which says only that something over something is settled personally, and which
+picked up the _Gifts from suppliers_ heading on the way, and it is nowhere in the
+three that came back.
+
+Keep dragging. At twenty-five it comes back. At twenty it is gone again. Run the
+whole slider and the answer is complete at four settings out of the eight, and
+they are not the four anyone would predict: twenty-five, then forty-five, fifty
+and fifty-five. Nothing is improving or degrading. A cut boundary is landing in a
+different gap each time.
+
+That is the honest version of "there is no correct size", and it is worth sitting
+with, because the instinct is always to tune the number. Now turn on the first
+switch — repeating the last line of each passage at the top of the next one — and
+the answer is complete at all eight. Overlap does not choose a better size. It
+makes the size matter less, which is the same thing as making the boundary matter
+less, which is what was actually wrong.
+
+### The one that cannot be fixed by cutting
+
+Switch the question to the hamper.
+
+Three passages come back, scoring 0.50, 0.20 and 0.15. The line that suspends
+everything during a tender is not among them, and the number to look at is not
+any of those three. It is the score on the passage that holds it: **0.00**.
+
+Not low. Zero. Zero does not mean the search considered it and preferred
+something else. It means that passage and that question have nothing whatever in
+common, so it was never in the running, and there is no depth of list you could
+have gone to. Ask for eight passages instead of three and you get more of the
+handbook, in order, and still not that one.
+
+Now run the whole slider again and watch that number. It stays at 0.00 at every
+setting.
+
+Longer passages do not help. Covering both the tender line and the nearest line
+that so much as mentions gifts would take a passage of sixty words, and the
+widest on offer holds fifty-five. That gap is not a quirk of this handbook. It is
+the ordinary case, at a small scale: sections are longer than passages, always,
+because if a passage could hold a whole section nobody would be cutting anything
+up in the first place.
+
+Shorter passages do not help either, for a reason worth saying out loud —
+shortening a passage cannot add words to it.
+
+Turn on overlap and it comes back at two settings out of eight — the two where
+the cut happens to fall so that the line above is dragged along. That is luck.
+Overlap widens the window around a boundary; it does not put a subject into a
+sentence that never had one.
+
+Then throw the second switch, which stamps the section heading onto the top of
+every passage, and it comes back at every setting on the slider. At the widest
+cut it is the second-closest passage in the document, at 0.41. One line of text
+per passage, no cut moved, and a rule that was unreachable is now routinely
+retrieved.
+
+That is the entire lesson, and you can see it in one number going from 0.00 to
+0.41.
+
+<Aside title="Why this is the unit people skip" tone="caution">
+  Chunking sounds like plumbing. It has no interesting choices in it, the code is
+  forty lines, and everyone would rather be tuning the prompt.
+
+So here is what actually happens. A team's document assistant is disappointing.
+They try a bigger model. They rewrite the system prompt three times. They compare
+two providers, argue about temperature, add a re-ranking step, and lose a fortnight.
+The whole time, the passage that answers the failing question is not being
+returned, was never being returned, and everything they changed was downstream of
+that.
+
+The first move, always, is to take a question the system gets wrong and look at
+what the search handed back for it. Not the answer — the passages. It takes two
+minutes and it usually ends the investigation, because you can see immediately
+whether the model was working from the right material or making the best of the
+wrong material. Nothing downstream of retrieval can fix a passage that never
+arrived.
+
+</Aside>
+
+## What actually helps
+
+Everything on this list does one of two things: it puts more of a passage's
+context into the passage's own words, or it stops a cut landing somewhere
+destructive.
+
+**Stamp the document title and the section headings onto every passage.** The
+single highest-value thing on the list, it costs a line or two per passage, and
+it is what the panel above demonstrates. A passage that begins _Larkfield Mutual
+handbook — Section 5, Gifts from suppliers_ can be found by somebody asking about
+gifts even when the rule itself says only _the above_.
+
+**Overlap neighbouring passages.** Repeat the last sentence or two of each
+passage at the top of the next one, so a boundary never falls cleanly between a
+statement and its qualifier. It is cheap, it is nearly free to implement, and it
+is the standard defence against the one failure that is purely bad luck.
+
+**Cut on structure, not on a word count.** Split at headings, sections and
+paragraph breaks — the places the author already decided were breaks — and fall
+back on length only inside a section that is too long. A fixed word count is
+cutting a document with your eyes closed.
+
+**Keep tables and lists whole**, even when that makes them awkwardly big, because
+half of either one is not half an answer.
+
+**Rewrite the source when you can.** Not always possible, and it beats everything
+else when it is. A handbook written so that each rule names its own subject is a
+handbook that retrieves well, and the same edit makes it better for the humans
+who read it.
+
+**Check what came back before you change anything else.** The list of passages
+returned for a failing question is the single most informative thing in a
+retrieval system, and it is the thing nobody looks at.
+
+<DevAside>
+  <Fragment slot="java">
+    ```java
+    for (Section section : doc.sections()) {
+      for (String body : split(section.text(), MAX_WORDS, OVERLAP_WORDS)) {
+        index.add(doc.title() + " — " + section.heading() + "\n\n" + body);
+      }
+    }
+    ```
+
+    The line people spend their time on is `split`, and the line that decides
+    whether the thing works is the concatenation under it. What gets embedded is
+    the whole string, heading included, so those few words are part of every
+    comparison the search ever makes against that passage.
+
+    One trap worth knowing: the text you index and the text you show the model
+    do not have to be the same string, and some libraries make it easy to
+    accidentally index the bare body while displaying the decorated version. If
+    retrieval is missing things that "obviously" mention the subject, print the
+    exact string that went into the index and check the heading is in it.
+
+  </Fragment>
+  <Fragment slot="python">
+    ```python
+    passages = [
+        f"{doc.title} — {heading}\n\n{body}"
+        for heading, text in doc.sections
+        for body in split(text, max_words=MAX_WORDS, overlap=OVERLAP_WORDS)
+    ]
+    ```
+
+    Every splitter you will meet takes a size and an overlap and gives you back
+    strings. That is the easy half and it is where the tuning instinct goes. The
+    f-string is the half that decides what can ever be retrieved.
+
+    The most useful twenty lines you can write next are not part of the pipeline
+    at all: a script that takes a question, runs only the retrieval step, and
+    prints the passages with their scores. Keep a handful of questions the system
+    gets wrong and run it against them after every change. Almost every real
+    fault in a document assistant is visible in that output, and almost none of
+    it is visible in the answer.
+
+  </Fragment>
+</DevAside>
+
+<Checkpoint question="A team's assistant answers from a four-hundred-page compliance manual. It is right about most things and confidently wrong about a handful, and the failures all have the same shape — it gives the general rule and misses the exception that overrides it. They have tried a stronger model, a much firmer system prompt, and returning eight passages instead of three. None of it moved the needle. Say why, and say what you would look at first.">
+  Exceptions are written the way exceptions are always written. _This does not
+  apply during a tender. The above is suspended in that case. Such items are
+  excluded._ They lean backwards onto the rule they modify and almost never
+  restate its subject, because in a document read top to bottom there is no
+  reason to. Cut the manual into passages and those sentences are about
+  suspension and exclusion, and about nothing else. Their position on the map is
+  nowhere near a question about the subject, because the subject is not in them.
+
+That explains all three failed attempts at once, and it is the same explanation
+each time. A stronger model reads what it is given better; it was given the
+general rule. A firmer prompt changes what the model does with the passages; it
+cannot conjure a passage that did not arrive. And eight passages instead of three
+goes further down a ranked list that these passages are at the very bottom of, or
+off entirely — you would have to return most of the manual to reach them, which
+is the thing chunking exists to avoid, and you would spend the model's whole
+reading budget doing it.
+
+What to look at first is not the answer. Take one failing question, run the
+retrieval step on its own, and read the passages that come back with their
+scores. Two minutes, and you will see whether the exception was ranked low or was
+never in the running at all.
+
+Then the fix is at the cut, not downstream of it. Stamp the document title and
+the section heading onto every passage, overlap neighbours so a qualifier is
+never orphaned from its rule, split on the manual's own structure rather than on
+a word count, and re-index. The rule that changes the answer was in the document
+the entire time.
+
+Worth carrying beyond this unit. Anywhere a system reads from documents, the
+first question is not "is the model good enough" but "what did it actually get
+handed", and the second is "could the thing it needed ever have been handed to
+it".
+
+</Checkpoint>

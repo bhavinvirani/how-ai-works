@@ -6,7 +6,9 @@ summary: No step anywhere in a language model consults a fact, so an answer it i
 prerequisites:
   - llm
   - rlhf
-connections: []
+connections:
+  - to: rag
+    why: The standard answer to a machine that never checks anything is to stop asking it to remember — look the passage up first and let it answer from what it was handed, which moves the problem to the search without making it disappear.
 interactives:
   - SpotTheFabrication
 status: published

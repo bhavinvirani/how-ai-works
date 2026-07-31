@@ -10,8 +10,13 @@ import DevAside from '../components/blocks/DevAside.astro';
 import ConnectionsFooter from '../components/blocks/ConnectionsFooter.astro';
 import Figure from '../components/blocks/Figure.astro';
 import { UnitProgress } from '../components/blocks/UnitProgress';
+import { AgentTraceExplorer } from '../components/interactives/AgentTraceExplorer';
 import { AttentionMap } from '../components/interactives/AttentionMap';
 import { BlameFlow } from '../components/interactives/BlameFlow';
+import { ChunkCutter } from '../components/interactives/ChunkCutter';
+import { EvalScoreboard } from '../components/interactives/EvalScoreboard';
+import { MeaningVsKeywordSearch } from '../components/interactives/MeaningVsKeywordSearch';
+import { PrecisionDial } from '../components/interactives/PrecisionDial';
 import { ClusterFinder } from '../components/interactives/ClusterFinder';
 import { ContextBudget } from '../components/interactives/ContextBudget';
 import { DialTuner } from '../components/interactives/DialTuner';
@@ -270,6 +275,40 @@ what a plausible continuation looks like.
 Three easy examples teach the format. The awkward one teaches the boundary.
 
 <ExampleSetBuilder client:visible />
+
+### Cut the document up
+
+There is no correct size — and one passage stays unreachable at every setting,
+because it never says what it is about.
+
+<ChunkCutter client:visible />
+
+### Search the same shelf two ways
+
+Meaning-search finds a passage sharing no words with the question, then loses to
+plain keyword search on an exact product code.
+
+<MeaningVsKeywordSearch client:visible />
+
+### Let it choose its own next step
+
+Change one result and the whole plan goes somewhere else. That dependence is the
+power and the danger together.
+
+<AgentTraceExplorer client:visible />
+
+### Fix one case, then check the rest
+
+You improved the failing case. Read the other nine before deciding it worked.
+
+<EvalScoreboard client:visible />
+
+### Spend fewer digits on each dial
+
+It holds up far longer than anyone expects, and then it does not hold up
+gradually.
+
+<PrecisionDial client:visible />
 
 ## Instrument panel
 

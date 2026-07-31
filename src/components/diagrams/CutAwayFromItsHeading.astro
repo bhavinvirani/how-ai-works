@@ -1,0 +1,272 @@
+---
+/**
+ * One section of a document, cut the same way twice, so the difference between
+ * the two rows is one line of text per piece and nothing else.
+ *
+ * The unit's claim is about an absence — a piece that never says what it is
+ * about — and an absence is only visible beside the thing it is an absence of.
+ * So the top row shows the ordinary cut, where the heading lands in the first
+ * piece and stays there, and the bottom row shows the same three pieces with
+ * the heading stamped on each. The reader can put a finger on the third box in
+ * each row and read the difference off the page.
+ *
+ * The verdict under each piece is a whole phrase — "names gifts — found",
+ * "names nothing — not found" — rather than a tick or a tint, because the
+ * finding is WHY a piece was found, and a colour cannot carry a why (hard rule
+ * 9). The tint and the dashed edge are second and third cues on top of the
+ * words, never the only one.
+ *
+ * The lines in the boxes are the same lines the instrument uses, word for word.
+ * Two of the three passages fail rather than one, which is truer than a single
+ * villain would be: the register rule is silent about its own subject too, and
+ * only the last one is silent about a subject that changes the answer.
+ *
+ * Every run of text is interpolated from a constant so that no `<text>` element
+ * wraps across lines of markup: SVG strips newlines inside text content rather
+ * than collapsing them to spaces, so a wrapped label silently loses its spaces.
+ *
+ * Decorative on its own, so `aria-hidden` — `Figure` carries the accessible
+ * name and the plain-English description.
+ */
+
+const SAYS = {
+  question: 'Somebody asks: may I keep a hamper a supplier has sent?',
+
+  topHead: 'Cut every N words, which is what most systems do',
+  topSub: 'the heading falls in the first piece and stays there',
+
+  bottomHead: 'The same cuts, with the section heading stamped on each piece',
+  bottomSub: 'no cut has moved — one line has been added to every piece',
+
+  heading: 'Section 5 — Gifts from suppliers',
+
+  one: ['A card or calendar may be', 'accepted at any time.'],
+  two: ['Anything worth more than', 'twenty pounds goes in the', 'register.'],
+  three: [
+    'While a tender is live the',
+    'whole of the above is',
+    'suspended, whatever the value.',
+  ],
+
+  foundOne: 'names gifts — found',
+  lostTwo: 'names nothing — not found',
+  lostThree: 'names nothing — not found,',
+  lostThreeTwo: 'and it is the one that matters',
+  nowFound: 'now names gifts — found',
+
+  footer:
+    'The rule that changes the answer is in the document either way. Only the second cut can return it.',
+} as const;
+
+const BOX_X = [20, 216, 412] as const;
+const BOX_W = 168;
+---
+
+<svg viewBox="0 0 600 366" class="w-full" aria-hidden="true">
+  <text
+    x="20"
+    y="20"
+    class="fill-ink font-display"
+    font-size="11.5"
+    font-weight="700">{SAYS.question}</text
+  >
+
+  <line x1="12" y1="32" x2="588" y2="32" class="stroke-rule" stroke-width="1"
+  ></line>
+
+  <!-- ── The ordinary cut ─────────────────────────────────────── -->
+
+  <text
+    x="20"
+    y="52"
+    class="fill-ink font-display"
+    font-size="11"
+    font-weight="700">{SAYS.topHead}</text
+  >
+  <text x="20" y="66" class="fill-ink-muted" font-size="9">{SAYS.topSub}</text>
+
+  <rect
+    x={BOX_X[0]}
+    y="76"
+    width={BOX_W}
+    height="74"
+    rx="6"
+    class="fill-accent-2-soft stroke-accent-2"
+    stroke-width="1.25"></rect>
+  <text
+    x={BOX_X[0] + 10}
+    y="94"
+    class="fill-ink font-display"
+    font-size="8"
+    font-weight="700">{SAYS.heading}</text
+  >
+  <text x={BOX_X[0] + 10} y="112" class="fill-ink" font-size="8.5"
+    >{SAYS.one[0]}</text
+  >
+  <text x={BOX_X[0] + 10} y="126" class="fill-ink" font-size="8.5"
+    >{SAYS.one[1]}</text
+  >
+
+  <rect
+    x={BOX_X[1]}
+    y="76"
+    width={BOX_W}
+    height="74"
+    rx="6"
+    class="fill-paper-sunken stroke-rule-strong"
+    stroke-width="1.25"
+    stroke-dasharray="4 3"></rect>
+  <text x={BOX_X[1] + 10} y="98" class="fill-ink" font-size="8.5"
+    >{SAYS.two[0]}</text
+  >
+  <text x={BOX_X[1] + 10} y="112" class="fill-ink" font-size="8.5"
+    >{SAYS.two[1]}</text
+  >
+  <text x={BOX_X[1] + 10} y="126" class="fill-ink" font-size="8.5"
+    >{SAYS.two[2]}</text
+  >
+
+  <rect
+    x={BOX_X[2]}
+    y="76"
+    width={BOX_W}
+    height="74"
+    rx="6"
+    class="fill-paper-sunken stroke-rule-strong"
+    stroke-width="1.25"
+    stroke-dasharray="4 3"></rect>
+  <text x={BOX_X[2] + 10} y="98" class="fill-ink" font-size="8.5"
+    >{SAYS.three[0]}</text
+  >
+  <text x={BOX_X[2] + 10} y="112" class="fill-ink" font-size="8.5"
+    >{SAYS.three[1]}</text
+  >
+  <text x={BOX_X[2] + 10} y="126" class="fill-ink" font-size="8.5"
+    >{SAYS.three[2]}</text
+  >
+
+  <text x={BOX_X[0]} y="166" class="fill-ink-muted font-mono" font-size="8"
+    >{SAYS.foundOne}</text
+  >
+  <text x={BOX_X[1]} y="166" class="fill-ink font-mono" font-size="8"
+    >{SAYS.lostTwo}</text
+  >
+  <text x={BOX_X[2]} y="166" class="fill-ink font-mono" font-size="8"
+    >{SAYS.lostThree}</text
+  >
+  <text
+    x={BOX_X[2]}
+    y="178"
+    class="fill-ink font-mono"
+    font-size="8"
+    font-weight="700">{SAYS.lostThreeTwo}</text
+  >
+
+  <line x1="12" y1="196" x2="588" y2="196" class="stroke-rule" stroke-width="1"
+  ></line>
+
+  <!-- ── The same cuts, with the heading stamped on ───────────── -->
+
+  <text
+    x="20"
+    y="216"
+    class="fill-ink font-display"
+    font-size="11"
+    font-weight="700">{SAYS.bottomHead}</text
+  >
+  <text x="20" y="230" class="fill-ink-muted" font-size="9"
+    >{SAYS.bottomSub}</text
+  >
+
+  {
+    BOX_X.map((x) => (
+      <rect
+        x={x}
+        y="240"
+        width={BOX_W}
+        height="82"
+        rx="6"
+        class="fill-accent-2-soft stroke-accent-2"
+        stroke-width="1.25"
+      />
+    ))
+  }
+
+  {
+    BOX_X.map((x) => (
+      <text
+        x={x + 10}
+        y="258"
+        class="fill-ink font-display"
+        font-size="8"
+        font-weight="700"
+      >
+        {SAYS.heading}
+      </text>
+    ))
+  }
+
+  {
+    BOX_X.map((x) => (
+      <line
+        x1={x + 10}
+        y1="264"
+        x2={x + BOX_W - 10}
+        y2="264"
+        class="stroke-rule-strong"
+        stroke-width="0.75"
+      />
+    ))
+  }
+
+  <text x={BOX_X[0] + 10} y="280" class="fill-ink" font-size="8.5"
+    >{SAYS.one[0]}</text
+  >
+  <text x={BOX_X[0] + 10} y="294" class="fill-ink" font-size="8.5"
+    >{SAYS.one[1]}</text
+  >
+
+  <text x={BOX_X[1] + 10} y="280" class="fill-ink" font-size="8.5"
+    >{SAYS.two[0]}</text
+  >
+  <text x={BOX_X[1] + 10} y="294" class="fill-ink" font-size="8.5"
+    >{SAYS.two[1]}</text
+  >
+  <text x={BOX_X[1] + 10} y="308" class="fill-ink" font-size="8.5"
+    >{SAYS.two[2]}</text
+  >
+
+  <text x={BOX_X[2] + 10} y="280" class="fill-ink" font-size="8.5"
+    >{SAYS.three[0]}</text
+  >
+  <text x={BOX_X[2] + 10} y="294" class="fill-ink" font-size="8.5"
+    >{SAYS.three[1]}</text
+  >
+  <text x={BOX_X[2] + 10} y="308" class="fill-ink" font-size="8.5"
+    >{SAYS.three[2]}</text
+  >
+
+  <text x={BOX_X[0]} y="338" class="fill-ink-muted font-mono" font-size="8"
+    >{SAYS.foundOne}</text
+  >
+  <text
+    x={BOX_X[1]}
+    y="338"
+    class="fill-ink font-mono"
+    font-size="8"
+    font-weight="700">{SAYS.nowFound}</text
+  >
+  <text
+    x={BOX_X[2]}
+    y="338"
+    class="fill-ink font-mono"
+    font-size="8"
+    font-weight="700">{SAYS.nowFound}</text
+  >
+
+  <line x1="12" y1="348" x2="588" y2="348" class="stroke-rule" stroke-width="1"
+  ></line>
+  <text x="20" y="362" class="fill-ink" font-size="9.5" font-weight="700"
+    >{SAYS.footer}</text
+  >
+</svg>

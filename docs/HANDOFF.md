@@ -15,14 +15,14 @@ true right now.
 
 ## Where things stand
 
-**Last updated:** curriculum signed off; porting unblocked (2026-07-31).
+**Last updated:** Parts 1–4 ported and live; 15 of 60 units (2026-07-31).
 
-| Phase                    | State                                                                |
-| ------------------------ | -------------------------------------------------------------------- |
-| 0 — Foundation           | Merged (#1)                                                          |
-| 1 — Component system     | Merged (#2), **except** the pilot unit                               |
-| 2 — Curriculum port      | `docs/CURRICULUM.md` written and signed off (#6, open); no units yet |
-| 3 — Community launch kit | Not started                                                          |
+| Phase                    | State                                                  |
+| ------------------------ | ------------------------------------------------------ |
+| 0 — Foundation           | Merged (#1)                                            |
+| 1 — Component system     | Merged (#2), **except** the pilot unit                 |
+| 2 — Curriculum port      | **In progress.** 15/60 units, 4/16 Parts, `2-nav` done |
+| 3 — Community launch kit | Not started                                            |
 
 Built and merged: design tokens, the primitive control set, MDX content blocks,
 the content collection + unit graph, the progress store and `/progress`,
@@ -57,14 +57,41 @@ preview` are deployment steps, and `Remove preview` only runs on close, so
 
 **Nothing is blocked. The curriculum is signed off, so porting can start.**
 
-### Still true
+### Where Phase 2 actually is
 
-- `src/pages/units/[...slug].astro` and `ConnectionsFooter` are wired and
-  typechecked but **never rendered end to end** — there are still no units. The
-  pilot is their first real exercise, and it has to be **two units**: the footer
-  gates its whole body on having at least one link, so a single unit with empty
-  `prerequisites`/`connections` renders no footer markup at all and leaves this
-  bullet exactly as true as it found it.
+**Done and live:** Parts 1–4 — `why-this-exists`, `the-learning-loop`,
+`kinds-of-learning`, `when-scores-lie`. Fifteen units, thirteen instruments,
+twenty diagrams. `2-nav` (generated sidebar) is in.
+
+**Not started:** the remaining twelve Parts, 45 units — `inside-the-machine`
+onwards. Plus `2-meta` (`/map`, Pagefind, sitemap).
+
+**Ready for the next slice:** `src/components/diagrams/LayerStackDiagram.astro`
+is built and typechecked but **not yet used by anything**. It exists because
+four units in `inside-the-machine` need to draw the same network (`layers`
+counts its connections, `forward-pass` lights a path, `backpropagation` reverses
+it, `feature-hierarchy` labels the levels). Use it rather than drawing four
+networks.
+
+### How the porting actually works
+
+Units are drafted by parallel agents, one per unit, and integrated centrally.
+What makes that work:
+
+- Agents write **only** their unit MDX, their diagrams, and their own
+  interactive folder. They never touch `src/copy/en.ts`, `gallery.mdx` or
+  `content.config.ts` — those are integrator-owned, and concurrent edits to them
+  is the one thing that actually conflicts.
+- Each agent gets the **shipped units as the reference implementation**, not a
+  written spec. Quality tracks whatever is already in the repo.
+- Agents are given an explicit list of **units that already exist**. A
+  `reference('units')` to anything else fails the build, so forward links get
+  trimmed on the way in and backfilled by the slice that lands the target.
+- Every instrument carries a `describe('the lesson the instrument exists to
+deliver')` block asserting the pedagogical claim, so a dataset edit that
+  quietly falsifies the surrounding prose fails the build.
+- Integration is: add the `ui.interactives` entries, add the `/gallery` entries,
+  `pnpm format`, then run every gate by exit code.
 - **The Parts live in `src/lib/units/parts.ts`, not in `content.config.ts`**, and
   that is deliberate: `scripts/new-unit.mjs` used to keep its own hardcoded copy,
   so changing the schema alone would have left the generator rejecting every
@@ -212,7 +239,22 @@ document.fonts.ready)`.
     for exactly this reason.
 12. **lychee needs `--root-dir` with an absolute path**, not `--base`, to
     resolve root-relative links in local files.
-13. **`pnpm check` is two commands, and the first one's output looks like the
+13. **Scrolling without a paint between steps never hydrates the middle of a
+    page.** `IntersectionObserver` reports intersection changes the browser
+    actually observed, so a tight `scrollTo` loop — or pressing `End` to leap to
+    the bottom — can collapse into ONE observed position. Every island passed
+    over stays unhydrated, and a wait on "no island still `ssr`" then hangs
+    forever. `a11y.spec.ts` pressed `End` from Phase 1 and was fine only because
+    the gallery was short enough to have no middle; it broke the moment five
+    instruments were added. Use `tests/e2e/support/settle.ts`, which forces a
+    frame with a double `requestAnimationFrame` and re-sweeps while the page is
+    still growing. **This failure appears as the site grows, not when the code
+    changes.**
+14. **An unquoted YAML scalar containing `": "` fails the content parse.** A
+    connection `why` like `from its first afternoon: a real invoice` is
+    ambiguous YAML. It fails at `astro build` with a js-yaml error pointing at a
+    line and column, which is clear enough once you know — quote the value.
+15. **`pnpm check` is two commands, and the first one's output looks like the
     verdict.** It runs `astro check && tsc --noEmit -p tsconfig.node.json`.
     `astro check` prints a friendly `0 errors / 0 warnings / 0 hints` summary
     and `tsc` prints nothing at all when it passes — so reading the tail of the

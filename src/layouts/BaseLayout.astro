@@ -18,11 +18,29 @@ import 'katex/dist/katex.min.css';
 import '../styles/global.css';
 
 import SiteHeader from '../components/nav/SiteHeader.astro';
-import { withBase } from '../lib/paths';
+import SeoHead from '../components/seo/SeoHead.astro';
+import type { SchemaNode } from '../lib/seo/schema';
+import { site } from '../seo/site';
+
+/**
+ * Everything a page can tell a crawler about itself beyond its title and
+ * description. Optional throughout: a page that says nothing here gets an
+ * indexable `website` with the shared social card, which is right for all but
+ * the lessons and the utility pages.
+ */
+interface SeoOptions {
+  type?: 'website' | 'article';
+  noindex?: boolean;
+  modified?: Date;
+  image?: string;
+  imageAlt?: string;
+  jsonLd?: SchemaNode[];
+}
 
 interface PageMeta {
   title: string;
   description: string;
+  seo?: SeoOptions;
 }
 
 /**
@@ -50,9 +68,25 @@ interface Props extends Partial<PageMeta> {
 }
 
 const { frontmatter, searchable, ...direct } = Astro.props;
-const { title, description } = frontmatter ?? (direct as PageMeta);
+const { title, description, seo } = frontmatter ?? (direct as PageMeta);
 
-const canonical = new URL(Astro.url.pathname, Astro.site);
+/**
+ * Whether to load the visit counter.
+ *
+ * Opt-in through an environment variable that ONLY `deploy.yml` sets, rather
+ * than the `import.meta.env.PROD` check that suggests itself. `PROD` is true
+ * for every `astro build`, which includes the one the e2e suite runs against —
+ * so the obvious version puts a third-party request from `gc.zgo.at` into every
+ * CI run on every push. That is a network dependency in a suite that has none,
+ * and `smoke.spec.ts` fails the build on any response ≥ 400, which would hand
+ * GoatCounter's uptime a veto over ours.
+ *
+ * The cost of this choice is that the counter is one unset variable away from
+ * silently never running. `docs/SEO.md` carries the check for it, and the
+ * e2e suite asserts the script is absent from a normal build so that the two
+ * halves of the switch cannot both quietly become false.
+ */
+const analyticsEnabled = Boolean(process.env.ENABLE_ANALYTICS);
 
 /**
  * Pages that supply a `nav` slot get a two-column shell; everything else keeps
@@ -67,10 +101,7 @@ const hasNav = Astro.slots.has('nav');
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>{title}</title>
-    <meta name="description" content={description} />
-    <link rel="canonical" href={canonical} />
-    <link rel="icon" type="image/svg+xml" href={withBase('/favicon.svg')} />
+    <SeoHead title={title} description={description} {...seo ?? {}} />
     <meta name="generator" content={Astro.generator} />
   </head>
   <body class="min-h-dvh">
@@ -110,6 +141,34 @@ const hasNav = Astro.slots.has('nav');
         >
           <slot />
         </main>
+      )
+    }
+
+    {
+      /*
+      GoatCounter: a cookieless visit count. It stores nothing on the reader's
+      device, sets no identifier, and sends a page path, a referrer and a coarse
+      browser and country — which is why the site needs no consent banner and
+      why /progress can still say your progress never leaves the browser. It
+      does not, and this does not carry it.
+
+      `is:inline` is required rather than stylistic: without it Astro takes
+      ownership of the tag, bundles it, and drops the `data-goatcounter`
+      attribute the script reads its own configuration from.
+
+      Loaded last and `async`, so it cannot delay anything a reader is waiting
+      for. GoatCounter's own script declines to count localhost, so a local
+      production build with the variable set will load it and record nothing.
+    */
+    }
+    {
+      analyticsEnabled && (
+        <script
+          is:inline
+          async
+          data-goatcounter={site.analytics.goatcounter}
+          src="https://gc.zgo.at/count.js"
+        />
       )
     }
   </body>

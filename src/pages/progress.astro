@@ -32,7 +32,11 @@ const parts: PartSummary[] = PARTS.map((part) => ({
 const copy = ui.progress.page;
 ---
 
-<BaseLayout title={copy.title} description={copy.lead}>
+{
+  /* Not indexed: everything on it is read from the reader's own browser, so to
+     a crawler it is a permanently empty page. */
+}
+<BaseLayout title={copy.title} description={copy.lead} seo={{ noindex: true }}>
   <h1>{copy.title}</h1>
   <p>{copy.lead}</p>
 

@@ -31,7 +31,16 @@ jobs:
           cache: pnpm
 
       - run: pnpm install --frozen-lockfile
+
+      # ENABLE_ANALYTICS is what puts the GoatCounter tag in the page, and this
+      # is the ONLY place it is set — deliberately not `import.meta.env.PROD`,
+      # which is also true for the build the e2e suite runs against and would
+      # put a third-party request into every CI run. See BaseLayout.astro.
+      #
+      # If the visit count ever stops recording, check this line first.
       - run: pnpm build
+        env:
+          ENABLE_ANALYTICS: '1'
 
       # Pages serves the gh-pages BRANCH rather than an Actions artifact, on
       # purpose: artifact-based deploys cannot host /pr-preview/<n>/ alongside

@@ -26,6 +26,7 @@
     "test:watch": "vitest",
     "test:e2e": "pnpm build && playwright test",
     "budgets": "pnpm build && node scripts/check-budgets.mjs",
+    "icons": "node scripts/make-icons.mjs",
     "new:interactive": "node scripts/new-interactive.mjs",
     "new:unit": "node scripts/new-unit.mjs"
   },

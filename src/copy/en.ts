@@ -122,6 +122,25 @@ export const ui = {
     current: 'Current page',
   },
 
+  /**
+   * The breadcrumb trail on a lesson, which exists only as structured data.
+   *
+   * Nothing on the page renders these — they are the `BreadcrumbList` a search
+   * engine shows in place of a raw URL under the result. They live here anyway
+   * because they are words a person reads, which is what hard rule 10 is about;
+   * where a string is displayed is not the test.
+   *
+   * `lessons` labels `/map`, which really is the full index of the curriculum:
+   * every unit, grouped by Part, server-rendered. Deliberately not the site
+   * header's "Lessons", which is a way *in* and points at the first unit —
+   * a breadcrumb whose middle step jumped to one particular lesson would be
+   * a lie about where the reader had been.
+   */
+  breadcrumb: {
+    home: 'Home',
+    lessons: 'All lessons',
+  },
+
   nav: {
     /** Names the curriculum navigation landmark. */
     label: 'Curriculum',
@@ -307,6 +326,19 @@ export const ui = {
       privacyHeading: 'This stays on your device',
       privacyBody:
         'Your progress is stored in this browser and never sent anywhere. There is no account and no server holding it — which also means clearing your browser data clears this, and another device will not know about it unless you move the file yourself.',
+
+      /**
+       * The site does collect one thing, and this says so.
+       *
+       * It is here because the paragraph above makes a strong claim, and a
+       * strong claim with an unmentioned exception is the kind of thing this
+       * site exists to argue against. What GoatCounter receives is a page path,
+       * a referrer, and a coarse browser and country; it sets nothing on the
+       * device and cannot join two visits together. None of which is a reason
+       * not to mention it.
+       */
+      privacyAnalytics:
+        'The site does count visits, so it is possible to see which lessons get read. That count is anonymous: no cookies, no accounts, nothing stored on your device, and no way to tell one reader from another — or to connect a visit to anything you have marked complete here.',
 
       empty:
         'Nothing recorded yet. Progress appears here once there are units to finish.',

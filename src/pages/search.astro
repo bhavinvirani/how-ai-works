@@ -45,7 +45,15 @@ const copy = {
 };
 ---
 
-<BaseLayout title={copy.title} description={copy.description}>
+{
+  /* Not indexed: with no query it has no content, and every result it can show
+     is a lesson that is already indexed on its own page. */
+}
+<BaseLayout
+  title={copy.title}
+  description={copy.description}
+  seo={{ noindex: true }}
+>
   <h1>{copy.heading}</h1>
   <p>{copy.intro}</p>
 

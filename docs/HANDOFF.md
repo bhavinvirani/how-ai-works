@@ -15,8 +15,9 @@ true right now.
 
 ## Where things stand
 
-**Last updated:** Phase 2 complete — 60 of 60 units, 16 of 16 Parts, `/map`,
-search and sitemap all live (2026-07-31).
+**Last updated:** discovery pass — full metadata, generated brand marks and a
+cookieless visit count (2026-07-31). Phase 2 complete before that: 60 of 60
+units, 16 of 16 Parts, `/map`, search and sitemap all live.
 
 | Phase                    | State                                                  |
 | ------------------------ | ------------------------------------------------------ |
@@ -324,6 +325,22 @@ document.fonts.ready)`.
 answer' })`, which was correct while exactly one reveal existed and became a
     strict-mode violation the moment an instrument adopted one. Same class as
     trap 13: it fails on growth, not on change.
+24. **The visit counter is one unset environment variable from never running,
+    and nothing goes red.** It is gated on `ENABLE_ANALYTICS`, which ONLY
+    `deploy.yml` sets. That gate is deliberate — `import.meta.env.PROD` is also
+    true for the build `test:e2e` runs against, so the obvious version puts a
+    request to `gc.zgo.at` into every CI run, and `smoke.spec.ts` fails the
+    build on any response ≥ 400, handing a third party a veto over our CI. The
+    trade is that a lost `env:` block disables analytics silently. `seo.spec.ts`
+    can only assert the script is _absent_ from a normal build. **After touching
+    `deploy.yml` or `BaseLayout.astro`, check the count at
+    <https://bhavinvirani01.goatcounter.com>.**
+25. **`JSON.stringify(…, null, 2)` and Prettier disagree about single-element
+    arrays.** Prettier collapses `["education"]` onto one line; `JSON.stringify`
+    expands it. A generated JSON file containing one therefore passes `pnpm
+icons` and fails `pnpm format:check` immediately afterwards. The manifest's
+    `categories` key was dropped rather than worked around — it does nothing for
+    a website — but any future generated JSON has the same edge.
 
 ---
 
@@ -431,6 +448,39 @@ it by comparing the frontmatter against the artifact's `add({...})` graph.
 - **The sitemap is skipped on PR previews** (`BASE_PATH` set), because previews
   are served from the same origin as the live site and a preview sitemap would
   claim throwaway URLs are canonical.
+- **It now filters and stamps.** `scripts/sitemap.mjs` drops the four
+  `noindex` pages and gives each lesson a `lastmod` read from its own `updated`
+  frontmatter. `NOINDEXED` there MUST agree with the pages' own `seo:` props —
+  a sitemap entry is a request to index, so listing a `noindex` page is an
+  error reported against the whole site.
+
+### Discovery, brand marks, and the visit count
+
+Full detail in **`docs/SEO.md`**; the parts a fresh session cannot infer:
+
+- **Skipping the sitemap on previews was only ever half the defence.** A
+  crawler that arrives by following a link never reads one. A preview build now
+  also emits `noindex, nofollow` site-wide and no canonical, off the same
+  `BASE_PATH` switch. Before this, every open PR was a crawlable duplicate of
+  all sixty-six pages on the live site's own origin.
+- **`public/robots.txt` is inert and that is not a bug.** On a project Pages
+  site it lands at `/how-ai-works/robots.txt`, and robots.txt is only honoured
+  at the origin root — `bhavinvirani.github.io/robots.txt`, which belongs to a
+  repository that does not exist and answers 404. Per-page `<meta name=robots>`
+  is what actually governs indexing. The file becomes real under a custom
+  domain.
+- **Everything in `public/` except nothing is generated.** `favicon.svg`,
+  `favicon.ico`, the four PNG icons, `og.png`, `site.webmanifest` and
+  `robots.txt` all come from `pnpm icons`. Hand-editing any of them is undone
+  by the next run. Colours are parsed out of `tokens.css` at generation time, so
+  hard rule 1 holds in files ESLint cannot see.
+- **`pnpm icons` uses the Playwright Chromium the e2e suite already installs**
+  — no new dependency for rasterising SVG, and no browser needed in CI, which
+  is why the output is committed.
+- **The 16px favicon has to be looked at.** `pnpm icons --preview` writes
+  `preview-{16,32,48}.png` (gitignored) for exactly that. Three redesigns went
+  into the current glyph; the reasons are recorded above `NODES` in
+  `scripts/brand.mjs`.
 
 ### Still open, for whoever wants it
 

@@ -1,0 +1,46 @@
+---
+import { ui } from '../../copy/en';
+
+/**
+ * A question the reader answers before seeing the answer (§2.2 step 6).
+ *
+ * Built on `<details>`, so it ships zero JavaScript and works before (or
+ * without) hydration. The `RevealButton` primitive does the same job inside an
+ * already-hydrated instrument; a static lesson page has no reason to pay for
+ * React to hide a paragraph.
+ *
+ * The answer stays in the HTML, which means a determined reader can find it in
+ * the page source. That is a deliberate trade: `<details>` keeps the content
+ * findable by in-page search and reachable without JavaScript, and someone
+ * committed enough to read the source has already opted out of the exercise.
+ */
+
+interface Props {
+  /** The question. Should be answerable from the unit alone. */
+  question: string;
+}
+
+const { question } = Astro.props;
+---
+
+<section class="my-8 rounded-lg border border-rule bg-paper-raised px-4 py-4">
+  <p class="font-mono text-2xs tracking-wide text-ink-faint uppercase">
+    {ui.unit.checkpoint}
+  </p>
+
+  <p class="mt-1 font-medium text-ink">{question}</p>
+
+  <details class="group mt-3">
+    <summary
+      class="inline-flex cursor-pointer list-none items-center rounded-md border border-rule-strong bg-paper-raised px-3 py-1.5 text-sm text-ink transition-colors duration-[var(--duration-fast)] ease-out-soft hover:bg-paper-sunken"
+    >
+      {/* Two labels swapped by CSS on the parent's open state — no JS. */}
+      <span class="group-open:hidden">{ui.reveal.show}</span>
+      <span class="hidden group-open:inline">{ui.reveal.hide}</span>
+    </summary>
+
+    <div class="mt-3 border-l-2 border-accent pl-4 text-ink-muted [&>*+*]:mt-2">
+      <slot />
+    </div>
+  </details>
+</section>

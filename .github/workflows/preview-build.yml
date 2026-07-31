@@ -37,14 +37,18 @@ jobs:
 
       - run: pnpm install --frozen-lockfile
 
-      # The preview is served from /how-ai-works/pr-preview/<n>/, not from the
-      # site root, so it has to be BUILT for that path. Without this override
-      # every asset URL points at the production base and the preview 404s
-      # while the live site looks fine.
+      # The preview is served from a subdirectory, not the site root, so it has
+      # to be BUILT for that path. Without this override every asset URL points
+      # at the production base and the preview 404s while the live site looks
+      # fine.
+      #
+      # The directory is `pr-<number>`, not `<number>`: rossjrw/pr-preview-action
+      # prefixes the umbrella directory entry. Getting this wrong deploys
+      # successfully and still 404s every asset, which is how it was caught.
       - name: Build for the preview path
         run: pnpm build
         env:
-          BASE_PATH: /how-ai-works/pr-preview/${{ github.event.number }}
+          BASE_PATH: /how-ai-works/pr-preview/pr-${{ github.event.number }}
 
       # The deploy half runs on `workflow_run`, where the PR number is not
       # reliably available for forks — so pass it along explicitly.

@@ -1,0 +1,53 @@
+---
+import { ui } from '../../copy/en';
+
+/**
+ * Wrapper for every diagram.
+ *
+ * `description` is a REQUIRED prop, deliberately (§3.2). A diagram carrying an
+ * accessible name but no explanation of what it teaches is the most common
+ * failure on a site this visual, and it is one automated tooling cannot catch:
+ * axe will not flag an unlabelled `<svg>` full of `<path>` elements. Making the
+ * prop required is the only gate that actually holds.
+ *
+ * The description is shown to everyone rather than hidden for screen readers. A
+ * plain sentence saying what a diagram is for helps a reader who skims past it
+ * just as much as one who cannot see it.
+ *
+ * No generated ids here: `<figcaption>` is associated with its `<figure>`
+ * automatically, and the graphic takes its name from `aria-label`. Minting ids
+ * would mean either a random value (which changes every build) or a counter
+ * (which depends on render order).
+ *
+ * The SVG passed in should be `aria-hidden="true"` — this wrapper already
+ * carries the name and description, so an inner graphic announcing itself again
+ * is just noise.
+ */
+
+interface Props {
+  /** Short accessible name — what this diagram IS. */
+  title: string;
+  /** Plain English: what this diagram TEACHES. Required, and it must earn it. */
+  description: string;
+}
+
+const { title, description } = Astro.props;
+---
+
+<figure class="my-8 flex flex-col gap-3">
+  <div
+    role="img"
+    aria-label={title}
+    class="overflow-x-auto rounded-lg border border-rule bg-paper-raised p-4"
+  >
+    <slot />
+  </div>
+
+  <figcaption class="flex flex-col gap-1 text-sm">
+    <span class="font-medium text-ink">{title}</span>
+    <span class="text-ink-muted">
+      <span class="text-ink-faint">{ui.figure.describes}:</span>
+      {description}
+    </span>
+  </figcaption>
+</figure>

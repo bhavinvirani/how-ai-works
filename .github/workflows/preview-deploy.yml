@@ -66,7 +66,14 @@ jobs:
 
       # `auto` resolves to "do nothing" outside a pull_request event, so the
       # action has to be told explicitly what to do and which PR it is for.
+      #
+      # `comment: false` because its built-in comment silently posts nothing
+      # here: the sticky-comment step it wraps reads the PR number from the
+      # event context, which a `workflow_run` event does not carry. It reports
+      # success either way. The explicit step below does it with a number we
+      # actually have.
       - name: Deploy preview
+        id: preview
         uses: rossjrw/pr-preview-action@ffa7509e91a3ec8dfc2e5536c4d5c1acdf7a6de9 # v1.8.1
         with:
           source-dir: preview
@@ -74,7 +81,21 @@ jobs:
           umbrella-dir: pr-preview
           pr-number: ${{ steps.pr.outputs.number }}
           action: deploy
+          comment: false
           pages-base-url: bhavinvirani.github.io/how-ai-works
+
+      - name: Comment the preview URL
+        uses: marocchino/sticky-pull-request-comment@5770ad5eb8f42dd2c4f34da00c94c5381e49af88 # v3.0.5
+        with:
+          header: pr-preview
+          number: ${{ steps.pr.outputs.number }}
+          message: |
+            ### Preview
+
+            ${{ steps.preview.outputs.preview-url }}
+
+            Built from ${{ github.event.workflow_run.head_sha }}. Updates on
+            every push to this pull request, and is removed when it closes.
 
   remove:
     name: Remove preview
@@ -92,4 +113,17 @@ jobs:
           umbrella-dir: pr-preview
           pr-number: ${{ github.event.number }}
           action: remove
+          # Commented below instead, so the deploy and removal notices share one
+          # sticky header and the second replaces the first rather than stacking.
+          comment: false
           pages-base-url: bhavinvirani.github.io/how-ai-works
+
+      - name: Note that the preview is gone
+        uses: marocchino/sticky-pull-request-comment@5770ad5eb8f42dd2c4f34da00c94c5381e49af88 # v3.0.5
+        with:
+          header: pr-preview
+          number: ${{ github.event.number }}
+          message: |
+            ### Preview
+
+            Removed, now that this pull request is closed.

@@ -1,0 +1,255 @@
+---
+layout: ../layouts/BaseLayout.astro
+title: Gallery — How AI Actually Works
+description: Every control and instrument on this site, live, with its knobs — the working style guide.
+---
+
+import Aside from '../components/blocks/Aside.astro';
+import Checkpoint from '../components/blocks/Checkpoint.astro';
+import DevAside from '../components/blocks/DevAside.astro';
+import ConnectionsFooter from '../components/blocks/ConnectionsFooter.astro';
+import Figure from '../components/blocks/Figure.astro';
+import { UnitProgress } from '../components/blocks/UnitProgress';
+import {
+  InstrumentPanelDemo,
+  RevealButtonDemo,
+  SegmentedControlDemo,
+  SliderDemo,
+  StaticFallbackDemo,
+  StepperDemo,
+  TabsDemo,
+  ToggleDemo,
+} from '../components/gallery/demos';
+
+# Gallery
+
+Every control on this site, live and operable. This page is the style guide, the
+review surface for changes, and the place to check that a new instrument still
+looks like it belongs.
+
+Try it with the keyboard. Everything here works without a mouse, and anything
+that stops working is a bug.
+
+## Instrument panel
+
+The standard shell around every interactive: a title, one line telling you what
+to try, and a way back to the starting state.
+
+<InstrumentPanelDemo
+  client:visible
+  title="Sampling"
+  lead="Turn the temperature up and watch how much the model wanders."
+  sliderLabel="Temperature"
+  toggleLabel="Show alternatives"
+  stepperLabel="Candidates"
+/>
+
+## Slider
+
+For a quantity that varies smoothly. The value is always visible, because
+watching a number change while something else changes is the entire lesson.
+
+Drag it, or focus it and use the arrow keys.
+
+<SliderDemo
+  client:visible
+  label="Temperature"
+  description="Higher values make the model wander further from the obvious next word."
+/>
+
+## Toggle
+
+For something that is either on or off. It reports itself as a switch rather
+than a checkbox — a checkbox says "include this when you submit", a switch says
+"this is on right now".
+
+<ToggleDemo
+  client:visible
+  label="Show attention weights"
+  description="Draws a line from each word to the words the model leaned on."
+/>
+
+## Segmented control
+
+For picking one of a few named options, when seeing all the choices at once
+matters more than saving space.
+
+<SegmentedControlDemo
+  client:visible
+  label="Tokenizer"
+  options={[
+    { value: 'char', label: 'Characters' },
+    { value: 'word', label: 'Words' },
+    { value: 'bpe', label: 'Subwords' },
+  ]}
+/>
+
+## Stepper
+
+For a small countable quantity. Pressing a button once to land on "4" beats
+dragging a track until you hit it.
+
+<StepperDemo client:visible label="Layers" />
+
+## Reveal
+
+Hides an answer until you have had a go at it yourself. The content is not in
+the page until you press the button, so searching for it will not spoil it.
+
+<RevealButtonDemo
+  client:visible
+  body="Because the model has never seen the word before, so it has to build it out of smaller pieces it does know."
+/>
+
+## Tabs
+
+For the same idea shown more than one way — most often the same code in
+different languages.
+
+<TabsDemo
+  client:visible
+  label="Language"
+  tabs={[
+    { id: 'java', label: 'Java', body: 'var tokens = tokenizer.encode(text);' },
+    { id: 'python', label: 'Python', body: 'tokens = tokenizer.encode(text)' },
+  ]}
+/>
+
+## Static fallback
+
+Some instruments need a pointer to be worth using. Below the medium breakpoint
+those swap to a captioned still, which has to teach the same thing rather than
+apologise for itself.
+
+Narrow this window past the breakpoint to see it change.
+
+<StaticFallbackDemo
+  client:visible
+  title="Attention map"
+  lead="Hover a word to see what the model looked at."
+  caption="Each word is scored against every other word; the brightest cells are the pairs the model leaned on most."
+  interactiveLabel="Layer"
+/>
+
+## Content blocks
+
+These go straight into a lesson. None of them ships any JavaScript — a page of
+prose should not need React to hide a paragraph.
+
+### Figure
+
+Wraps every diagram. The description is a required prop, because a diagram
+nobody explains is the easiest thing on a visual site to get wrong, and no
+automated check can catch it.
+
+<Figure
+  title="A word split into three tokens"
+  description="Rare words get broken into familiar fragments, so the model can spell out something it has never seen before."
+>
+  <svg viewBox="0 0 320 60" class="w-full max-w-md" aria-hidden="true">
+    <g fill="none" stroke="currentColor" stroke-width="1.5">
+      <rect x="4" y="16" width="86" height="28" rx="4" />
+      <rect x="100" y="16" width="70" height="28" rx="4" />
+      <rect x="180" y="16" width="90" height="28" rx="4" />
+    </g>
+    <g fill="currentColor" font-family="monospace" font-size="13">
+      <text x="20" y="35">
+        token
+      </text>
+      <text x="116" y="35">
+        isa
+      </text>
+      <text x="196" y="35">
+        tion
+      </text>
+    </g>
+  </svg>
+</Figure>
+
+### Aside
+
+A short detour: a caveat, a bit of history, a misconception worth naming. Tone
+changes the edge colour and the title together, never colour on its own.
+
+<Aside title="This is not how it worked originally">
+  Early systems split on spaces and punctuation. That falls apart on languages
+  that do not put spaces between words, which is a large share of them.
+</Aside>
+
+<Aside tone="caution" title="Easy to get backwards">
+  More tokens does not mean more meaning. A long word split into six pieces
+  carries the same idea it always did — it just costs more to process.
+</Aside>
+
+### Checkpoint
+
+Closes each unit. The question comes first, the answer stays folded until the
+reader has had a go.
+
+<Checkpoint question="Why would a model split an unfamiliar word into pieces rather than treat it as one new word?">
+  Because its vocabulary is fixed and finite. A word it has never seen has no
+  entry to look up — but the pieces do, so it can build a meaning out of parts
+  it already knows.
+</Checkpoint>
+
+### Connections footer
+
+Generated from unit frontmatter, so the web of links is data rather than
+hand-maintained cross-references that quietly rot. Each link carries a written
+reason, because "see also" teaches nothing.
+
+<ConnectionsFooter
+  prerequisites={[
+    {
+      href: '#',
+      title: 'What a model actually is',
+      why: 'Tokens only make sense once you know what is consuming them.',
+    },
+  ]}
+  connections={[
+    {
+      href: '#',
+      title: 'Embeddings',
+      why: 'Tokens are the units that embeddings turn into positions in space.',
+    },
+    {
+      href: '#',
+      title: 'Context windows',
+      why: 'A context limit is counted in tokens, not words — which is why the two keep getting confused.',
+    },
+  ]}
+/>
+
+### Developer aside
+
+Collapsed by default, because a general reader should never need to open it.
+Tabs appear only for the languages an aside actually provides, and picking one
+picks it everywhere else on the site too.
+
+<DevAside>
+  <Fragment slot="java">
+    ```java
+    var tokens = tokenizer.encode("tokenisation");
+    // [1417, 5983, 367]
+    ```
+
+    The encoder returns ints, not strings — the model never sees the text again.
+
+  </Fragment>
+  <Fragment slot="python">
+    ```python
+    tokens = tokenizer.encode("tokenisation")
+    # [1417, 5983, 367]
+    ```
+
+    Same idea: from here on, the model is working with numbers.
+
+  </Fragment>
+</DevAside>
+
+### Unit progress
+
+Sits at the end of every unit. It is the only thing that writes progress, and
+it is deliberately plain — nobody is being graded.
+
+<UnitProgress client:visible unitId="gallery-example" />

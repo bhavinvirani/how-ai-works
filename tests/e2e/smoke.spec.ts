@@ -79,6 +79,8 @@ test('maths renders at build time via KaTeX', async ({ page }) => {
   expect(await page.locator('.katex-display').count()).toBeGreaterThan(0);
 
   // KaTeX ships its own woff2 files, which are a classic base-path 404.
+  // Fonts load lazily, so wait for them rather than racing the check.
+  await page.evaluate(() => document.fonts.ready);
   const katexFontLoaded = await page.evaluate(() =>
     document.fonts.check('1em KaTeX_Math'),
   );

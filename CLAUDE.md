@@ -4,6 +4,8 @@
 
 An open-source static website that teaches AI/ML from first principles to a general audience — plain English, custom SVG diagrams, hands-on interactive "instruments." Astro + MDX content + React islands, deployed to GitHub Pages. No backend, no auth, no database at MVP — by design. Full plan: `PLAN.md`.
 
+**Read `docs/HANDOFF.md` before starting a phase.** It carries what neither this file nor `PLAN.md` can: current state, what is blocked and on whom, version pins that are load-bearing, deliberate deviations from the plan, and the traps that produce a green build that is wrong. Update it at the end of a phase.
+
 **Current stage: solo build (Phases 0–2).** Everything contributor-facing — CONTRIBUTING.md, issue forms, PR template, CODE_OF_CONDUCT, SECURITY.md, devcontainer/Codespaces, CODEOWNERS, fork-preview verification — is deliberately deferred to Phase 3 (`PLAN.md` §8.0). Don't build it early, and don't treat its absence as a gap. The exceptions that land in Phase 1 are `docs/QUALITY_BAR.md` and `docs/DEPENDENCIES.md`, which are gates for the build itself.
 
 ## Commands

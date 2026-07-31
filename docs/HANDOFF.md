@@ -378,6 +378,60 @@ and several agents running `astro build` in one working directory clash. They
 verify with the binaries directly and report; integration is where it gets
 proven.
 
+### Going faster without lowering the bar
+
+The first 15 units took two batches and a lot of integration round-trips. Most
+of that was avoidable. Apply these before the next batch — none of them touches
+what makes the units good, and each removes a step that produced rework:
+
+1. **Pre-compute the frontmatter and hand it to the agent.** Prerequisites and
+   connections are derivable from the artifact's own link graph
+   (`builds on` / `back to` → prerequisites, everything else → connections),
+   filtered to units that already exist. Agents currently guess this, and then
+   report which links they trimmed. Generating the exact frontmatter block per
+   unit removes both the guesswork and the trimming report — and removes the
+   class of build failure where an agent references a unit that does not exist.
+2. **Pre-write the `ui.interactives` entries before the batch runs.** The
+   instrument names come from the budget allocation above, which is decided
+   before any agent starts. Writing the copy entries up front removes an
+   integration step _and_ removes the runtime-throw risk when an entry is
+   missed — which every batch so far has had to be reminded about.
+3. **Batch two or three whole Parts at once.** The concurrency cap runs ~10
+   agents at a time regardless, so a 15-agent batch costs roughly what a 7-agent
+   batch costs in wall-clock, and halves the number of integrate-and-verify
+   cycles.
+4. **Name the shared components in the brief.** `LayerStackDiagram` exists
+   because four units needed it; nobody discovered that from the brief, it came
+   out of reading the source first. Before each batch, scan the Part for repeats
+   — the attention chip view, the probability-bar view, the context-budget board
+   are the known ones — and either build them first or name the agent that owns
+   them.
+5. **Run the gates once per batch, not per unit.** Integration is cheap; it is
+   the round-trips that are not.
+
+**What must NOT be traded for speed**, because these are what have actually been
+catching things:
+
+- Every instrument keeps its `describe('the lesson the instrument exists to
+deliver')` block. This is the single highest-value convention in the port.
+- Every gate is run **by exit code**, never by reading output (trap 15).
+- The instrument cap per Part is a cap, not a target to grow into.
+- The shipped units stay the reference implementation. Quality tracks the repo,
+  so it degrades the moment a weaker unit is allowed to land as the new example.
+
+### Suggested session plan
+
+Three sessions, one substantial PR each, each ending mergeable and live.
+
+| Session | Parts                                                                                                          | Units | Instruments |
+| ------- | -------------------------------------------------------------------------------------------------------------- | ----- | ----------- |
+| A       | `inside-the-machine`, `language-problem`, `the-transformer`                                                    | 15    | 8           |
+| B       | `large-models`, `building-an-assistant`, `assistant-behaviour`, `asking-well`                                  | 15    | 9           |
+| C       | `your-own-documents`, `letting-it-act`, `does-it-work`, `small-fast-cheap`, `the-whole-picture`, plus `2-meta` | 15    | 5           |
+
+Session C carries `2-meta` (`/map`, Pagefind, sitemap) because it is the lightest
+on instruments — and `/map` needs the colour question settled first.
+
 ### Remaining units, with artifact line ranges
 
 **`inside-the-machine`** — 7 units

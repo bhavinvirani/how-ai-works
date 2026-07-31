@@ -1,0 +1,299 @@
+---
+/**
+ * The machine people are carrying in their heads, drawn above the machine that
+ * exists, so that the missing part is a shape on the page rather than a claim in
+ * a paragraph.
+ *
+ * The unit's argument is an absence, and absences are the hardest thing to
+ * teach. Saying "there is no fact-checking step" invites the reader to assume
+ * one is hiding somewhere they have not been shown. Drawing the imagined machine
+ * first — with its lookup, its branch, and its route to "I have nothing" — gives
+ * the absence something to be an absence OF. The reader goes looking for the
+ * diamond in the lower half and finds that there is nowhere to put it.
+ *
+ * The branch is a diamond rather than a differently-coloured box on purpose: it
+ * is the one element with no counterpart below, so it has to be identifiable by
+ * shape alone (hard rule 9). Everything else is separated by position, by its
+ * own heading, and by the note that states the relationship in words.
+ *
+ * The lower row is deliberately the same four boxes the reader has already met —
+ * text in, one pass, a column of scores, take one and glue it on — plus the
+ * return arrow that makes it a loop. Nothing new is introduced here, because the
+ * point is that nothing new is available.
+ *
+ * Every run of text is interpolated from a constant so that no `<text>` element
+ * wraps across lines of markup: SVG strips newlines inside text content rather
+ * than collapsing them to spaces, so a wrapped label silently loses its spaces.
+ *
+ * Decorative on its own, so `aria-hidden` — `Figure` carries the accessible name
+ * and the plain-English description.
+ */
+
+const SAYS = {
+  topHead: 'What people picture',
+  topSub: 'a machine that can come back empty-handed',
+
+  question: 'a question',
+  lookUp: 'look it up',
+  branch: 'found it?',
+  yes: 'yes',
+  no: 'no',
+  foundIt: 'the thing it found',
+  foundNothing: 'that it has nothing on this',
+
+  bottomHead: 'What is actually there',
+  bottomSub: 'the whole inventory, from the unit before this one',
+
+  textSoFar: 'the text so far',
+  onePass: 'one pass of the model',
+  column: 'a number on every entry',
+  glue: 'take one, glue it on',
+  loop: 'and again, for the next piece',
+
+  note1: 'No lookup. No branch. No route that ends in having nothing.',
+  note2:
+    'There is nowhere in this loop for the question above it to be asked, let alone answered no.',
+
+  footer:
+    'A true answer and an invented one both come out of the loop below, and it runs the same way for each.',
+} as const;
+---
+
+<svg viewBox="0 0 600 344" class="w-full" aria-hidden="true">
+  <defs>
+    <marker
+      id="nostep-arrow"
+      viewBox="0 0 10 10"
+      refX="9"
+      refY="5"
+      markerWidth="5"
+      markerHeight="5"
+      orient="auto"
+    >
+      <path d="M0,0 L10,5 L0,10 z" class="fill-ink-muted"></path>
+    </marker>
+  </defs>
+
+  <!-- ── The machine people imagine ───────────────────────────── -->
+
+  <text
+    x="20"
+    y="26"
+    class="fill-ink font-display"
+    font-size="13"
+    font-weight="700">{SAYS.topHead}</text
+  >
+  <text x="20" y="42" class="fill-ink-muted" font-size="9.5">{SAYS.topSub}</text
+  >
+
+  <rect
+    x="20"
+    y="58"
+    width="104"
+    height="32"
+    rx="6"
+    class="fill-paper-sunken stroke-rule-strong"
+    stroke-width="1.25"></rect>
+  <text x="72" y="78" text-anchor="middle" class="fill-ink" font-size="9.5"
+    >{SAYS.question}</text
+  >
+
+  <line
+    x1="124"
+    y1="74"
+    x2="140"
+    y2="74"
+    class="stroke-ink-muted"
+    stroke-width="1.25"
+    marker-end="url(#nostep-arrow)"></line>
+
+  <rect
+    x="140"
+    y="58"
+    width="104"
+    height="32"
+    rx="6"
+    class="fill-paper-sunken stroke-rule-strong"
+    stroke-width="1.25"></rect>
+  <text x="192" y="78" text-anchor="middle" class="fill-ink" font-size="9.5"
+    >{SAYS.lookUp}</text
+  >
+
+  <line
+    x1="244"
+    y1="74"
+    x2="256"
+    y2="74"
+    class="stroke-ink-muted"
+    stroke-width="1.25"
+    marker-end="url(#nostep-arrow)"></line>
+
+  <!-- The one element with no counterpart below. Shape, not colour. -->
+  <polygon
+    points="300,50 348,74 300,98 252,74"
+    class="fill-paper-sunken stroke-rule-strong"
+    stroke-width="1.25"></polygon>
+  <text x="300" y="77" text-anchor="middle" class="fill-ink" font-size="8.5"
+    >{SAYS.branch}</text
+  >
+
+  <path
+    d="M348,74 H376 V60 H392"
+    class="fill-none stroke-ink-muted"
+    stroke-width="1.25"
+    marker-end="url(#nostep-arrow)"></path>
+  <text x="352" y="66" class="fill-ink-faint font-mono" font-size="7.5"
+    >{SAYS.yes}</text
+  >
+
+  <path
+    d="M348,74 H376 V96 H392"
+    class="fill-none stroke-ink-muted"
+    stroke-width="1.25"
+    marker-end="url(#nostep-arrow)"></path>
+  <text x="352" y="90" class="fill-ink-faint font-mono" font-size="7.5"
+    >{SAYS.no}</text
+  >
+
+  <rect
+    x="394"
+    y="46"
+    width="178"
+    height="28"
+    rx="6"
+    class="fill-paper-sunken stroke-rule-strong"
+    stroke-width="1.25"></rect>
+  <text x="483" y="64" text-anchor="middle" class="fill-ink" font-size="9.5"
+    >{SAYS.foundIt}</text
+  >
+
+  <rect
+    x="394"
+    y="82"
+    width="178"
+    height="28"
+    rx="6"
+    class="fill-paper-sunken stroke-rule-strong"
+    stroke-width="1.25"></rect>
+  <text x="483" y="100" text-anchor="middle" class="fill-ink" font-size="9.5"
+    >{SAYS.foundNothing}</text
+  >
+
+  <line x1="12" y1="130" x2="588" y2="130" class="stroke-rule" stroke-width="1"
+  ></line>
+
+  <!-- ── The machine that exists ──────────────────────────────── -->
+
+  <text
+    x="20"
+    y="156"
+    class="fill-ink font-display"
+    font-size="13"
+    font-weight="700">{SAYS.bottomHead}</text
+  >
+  <text x="20" y="172" class="fill-ink-muted" font-size="9.5"
+    >{SAYS.bottomSub}</text
+  >
+
+  <rect
+    x="20"
+    y="190"
+    width="112"
+    height="32"
+    rx="6"
+    class="fill-paper-sunken stroke-rule-strong"
+    stroke-width="1.25"></rect>
+  <text x="76" y="210" text-anchor="middle" class="fill-ink" font-size="9.5"
+    >{SAYS.textSoFar}</text
+  >
+
+  <line
+    x1="132"
+    y1="206"
+    x2="148"
+    y2="206"
+    class="stroke-ink-muted"
+    stroke-width="1.25"
+    marker-end="url(#nostep-arrow)"></line>
+
+  <rect
+    x="148"
+    y="190"
+    width="132"
+    height="32"
+    rx="6"
+    class="fill-accent-soft stroke-accent"
+    stroke-width="1.25"></rect>
+  <text x="214" y="210" text-anchor="middle" class="fill-ink" font-size="9.5"
+    >{SAYS.onePass}</text
+  >
+
+  <line
+    x1="280"
+    y1="206"
+    x2="296"
+    y2="206"
+    class="stroke-ink-muted"
+    stroke-width="1.25"
+    marker-end="url(#nostep-arrow)"></line>
+
+  <rect
+    x="296"
+    y="190"
+    width="158"
+    height="32"
+    rx="6"
+    class="fill-paper-sunken stroke-rule-strong"
+    stroke-width="1.25"></rect>
+  <text x="375" y="210" text-anchor="middle" class="fill-ink" font-size="9.5"
+    >{SAYS.column}</text
+  >
+
+  <line
+    x1="454"
+    y1="206"
+    x2="470"
+    y2="206"
+    class="stroke-ink-muted"
+    stroke-width="1.25"
+    marker-end="url(#nostep-arrow)"></line>
+
+  <rect
+    x="470"
+    y="190"
+    width="110"
+    height="32"
+    rx="6"
+    class="fill-paper-sunken stroke-rule-strong"
+    stroke-width="1.25"></rect>
+  <text x="525" y="210" text-anchor="middle" class="fill-ink" font-size="9.5"
+    >{SAYS.glue}</text
+  >
+
+  <path
+    d="M525,222 V252 H76 V226"
+    class="fill-none stroke-ink-muted"
+    stroke-width="1.25"
+    marker-end="url(#nostep-arrow)"></path>
+  <text
+    x="300"
+    y="247"
+    text-anchor="middle"
+    class="fill-ink-faint"
+    font-size="8.5">{SAYS.loop}</text
+  >
+
+  <text x="20" y="280" class="fill-ink" font-size="9.5" font-weight="600"
+    >{SAYS.note1}</text
+  >
+  <text x="20" y="296" class="fill-ink-muted" font-size="9.5">{SAYS.note2}</text
+  >
+
+  <!-- ── What the two halves say to each other ────────────────── -->
+
+  <line x1="12" y1="312" x2="588" y2="312" class="stroke-rule" stroke-width="1"
+  ></line>
+  <text x="20" y="332" class="fill-ink" font-size="10" font-weight="700"
+    >{SAYS.footer}</text
+  >
+</svg>

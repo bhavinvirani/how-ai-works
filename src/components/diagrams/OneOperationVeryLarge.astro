@@ -1,0 +1,284 @@
+---
+/**
+ * The whole of what a large language model does, and the whole of what it costs
+ * to do it, drawn at the same size on the same page.
+ *
+ * The unit's claim is deflation, and deflation is an argument about proportion:
+ * the operation is one sentence long, the machine that performs it is the
+ * largest artefact anybody has built. Neither half lands on its own. Stated
+ * alone, "it just scores the next piece" reads as a cheap dismissal; stated
+ * alone, "175 billion adjustable numbers" reads as a claim that something
+ * enormous must be going on in there. Side by side they are the lesson, which
+ * is why this is one drawing with a rule down the middle rather than two
+ * figures the reader meets a paragraph apart.
+ *
+ * The left panel is deliberately the busier of the two even though it is the
+ * smaller idea. A column of scored entries is what the operation actually
+ * produces, and readers arrive expecting a word to come out; showing the column
+ * — with the absurd candidate still in it, still carrying a number — does more
+ * than any label saying "a table, not a word".
+ *
+ * `although` is in the list on purpose. The obviously-impossible candidates are
+ * not exotic vocabulary, they are ordinary function words, and a reader who
+ * sees that stops imagining a shortlist being drawn up somewhere.
+ *
+ * Nothing is carried by colour. The two halves are separated by position and by
+ * their own headings; every bar has its percentage printed beside it, so the
+ * bar lengths are a convenience rather than the data; the footer states the
+ * relationship between the panels in words.
+ *
+ * The bars are scaled against the largest share rather than against 100, or the
+ * top row would be a third of its box and the drawing would understate the gap
+ * it exists to show. Anything under one per cent is clamped to a visible sliver
+ * — the printed number is what carries those rows, and a bar of literally zero
+ * width reads as a rendering fault.
+ *
+ * Every run of text is interpolated from a constant so that no `<text>` element
+ * wraps across lines of markup: SVG strips newlines inside text content rather
+ * than collapsing them to spaces, so a wrapped label silently loses its spaces.
+ *
+ * Decorative on its own, so `aria-hidden` — `Figure` carries the accessible
+ * name and the plain-English description.
+ */
+
+interface Row {
+  readonly piece: string;
+  readonly pct: string;
+  readonly share: number;
+}
+
+interface Ledger {
+  readonly label: string;
+  readonly value: string;
+}
+
+const ROW_TOP = 196;
+const ROW_STEP = 20;
+const BAR_X = 108;
+const BAR_MAX = 100;
+
+/** Scored against the top row, not against 100 — see the note above. */
+const TOP_SHARE = 58;
+
+const ROWS: readonly Row[] = [
+  { piece: 'tea', pct: '58%', share: 58 },
+  { piece: 'coffee', pct: '21%', share: 21 },
+  { piece: 'bed', pct: '4%', share: 4 },
+  { piece: 'effort', pct: '2%', share: 2 },
+  { piece: 'although', pct: '0.00002%', share: 0.00002 },
+];
+
+const LEDGER: readonly Ledger[] = [
+  { label: 'adjustable numbers', value: '175,000,000,000' },
+  { label: 'blocks stacked, every time', value: '96' },
+  { label: 'pieces of text it was tuned on', value: '300,000,000,000' },
+  { label: 'arithmetic steps per piece produced', value: '~350,000,000,000' },
+];
+
+const LEDGER_TOP = 76;
+const LEDGER_STEP = 44;
+
+const SAYS = {
+  leftHead: 'One operation',
+  leftSub: 'everything the machine does, once',
+  inputLabel: 'the text so far',
+  input1: 'The kettle had boiled but nobody',
+  input2: 'had made the',
+  machine: 'the model, one pass',
+  columnLabel: 'one number for every entry in the list',
+  rest: '… and 99,995 more entries, every one of them scored',
+  leftClaim: 'What leaves is the column. Not a word.',
+  rightHead: 'Its size',
+  rightSub: 'one published model, so these are real',
+  note1: 'GPT-3, 2020. Recent models are tuned on',
+  note2: 'more than ten trillion pieces.',
+  rightClaim: 'None of it buys a second operation.',
+  footer: 'Everything on the right exists to produce the column on the left.',
+} as const;
+---
+
+<svg viewBox="0 0 600 376" class="w-full" aria-hidden="true">
+  <defs>
+    <marker
+      id="onemove-arrow"
+      viewBox="0 0 10 10"
+      refX="9"
+      refY="5"
+      markerWidth="5"
+      markerHeight="5"
+      orient="auto"
+    >
+      <path d="M0,0 L10,5 L0,10 z" class="fill-ink-muted"></path>
+    </marker>
+  </defs>
+
+  <!-- The rule that makes this one drawing rather than two -->
+  <line x1="300" y1="16" x2="300" y2="332" class="stroke-rule" stroke-width="1"
+  ></line>
+
+  <!-- ── Left: the operation ──────────────────────────────────── -->
+
+  <text
+    x="20"
+    y="28"
+    class="fill-ink font-display"
+    font-size="13"
+    font-weight="700">{SAYS.leftHead}</text
+  >
+  <text x="20" y="44" class="fill-ink-muted" font-size="9.5"
+    >{SAYS.leftSub}</text
+  >
+
+  <text x="20" y="66" class="fill-ink-faint font-mono" font-size="8.5"
+    >{SAYS.inputLabel}</text
+  >
+  <rect
+    x="20"
+    y="72"
+    width="264"
+    height="38"
+    rx="6"
+    class="fill-paper-sunken stroke-rule-strong"
+    stroke-width="1.25"></rect>
+  <text x="32" y="90" class="fill-ink font-mono" font-size="9"
+    >{SAYS.input1}</text
+  >
+  <text x="32" y="103" class="fill-ink font-mono" font-size="9"
+    >{SAYS.input2}</text
+  >
+
+  <line
+    x1="152"
+    y1="110"
+    x2="152"
+    y2="126"
+    class="stroke-ink-muted"
+    stroke-width="1.25"
+    marker-end="url(#onemove-arrow)"></line>
+
+  <rect
+    x="52"
+    y="126"
+    width="200"
+    height="30"
+    rx="6"
+    class="fill-accent-soft stroke-accent"
+    stroke-width="1.25"></rect>
+  <text x="152" y="145" text-anchor="middle" class="fill-ink" font-size="9.5"
+    >{SAYS.machine}</text
+  >
+
+  <line
+    x1="152"
+    y1="156"
+    x2="152"
+    y2="176"
+    class="stroke-ink-muted"
+    stroke-width="1.25"
+    marker-end="url(#onemove-arrow)"></line>
+
+  <text x="20" y="190" class="fill-ink" font-size="9">{SAYS.columnLabel}</text>
+
+  {
+    ROWS.map((row, i) => {
+      const top = ROW_TOP + i * ROW_STEP;
+      const width = Math.max(1.5, (row.share / TOP_SHARE) * BAR_MAX);
+
+      return (
+        <>
+          <text
+            x="100"
+            y={top + 13}
+            text-anchor="end"
+            class="fill-ink font-mono"
+            font-size="9"
+          >
+            {row.piece}
+          </text>
+          <rect
+            x={BAR_X}
+            y={top + 4}
+            width={width}
+            height="11"
+            rx="2"
+            class="fill-accent"
+          />
+          <text
+            x="218"
+            y={top + 13}
+            class="fill-ink-muted font-mono"
+            font-size="8.5"
+          >
+            {row.pct}
+          </text>
+        </>
+      );
+    })
+  }
+
+  <text x="20" y="312" class="fill-ink-muted" font-size="9">{SAYS.rest}</text>
+  <text x="20" y="330" class="fill-ink" font-size="9.5" font-weight="600"
+    >{SAYS.leftClaim}</text
+  >
+
+  <!-- ── Right: what it takes ─────────────────────────────────── -->
+
+  <text
+    x="316"
+    y="28"
+    class="fill-ink font-display"
+    font-size="13"
+    font-weight="700">{SAYS.rightHead}</text
+  >
+  <text x="316" y="44" class="fill-ink-muted" font-size="9.5"
+    >{SAYS.rightSub}</text
+  >
+
+  {
+    LEDGER.map((entry, i) => {
+      const top = LEDGER_TOP + i * LEDGER_STEP;
+
+      return (
+        <>
+          <text x="316" y={top} class="fill-ink-muted" font-size="8.5">
+            {entry.label}
+          </text>
+          <text
+            x="316"
+            y={top + 18}
+            class="fill-ink font-mono"
+            font-size="12"
+            font-weight="700"
+          >
+            {entry.value}
+          </text>
+          {i < LEDGER.length - 1 && (
+            <line
+              x1="316"
+              y1={top + 30}
+              x2="588"
+              y2={top + 30}
+              class="stroke-rule"
+              stroke-width="1"
+            />
+          )}
+        </>
+      );
+    })
+  }
+
+  <text x="316" y="264" class="fill-ink-faint" font-size="9">{SAYS.note1}</text>
+  <text x="316" y="278" class="fill-ink-faint" font-size="9">{SAYS.note2}</text>
+
+  <text x="316" y="308" class="fill-ink" font-size="9.5" font-weight="600"
+    >{SAYS.rightClaim}</text
+  >
+
+  <!-- ── The relationship between the two halves, in words ────── -->
+
+  <line x1="12" y1="346" x2="588" y2="346" class="stroke-rule" stroke-width="1"
+  ></line>
+  <text x="20" y="366" class="fill-ink" font-size="10" font-weight="700"
+    >{SAYS.footer}</text
+  >
+</svg>

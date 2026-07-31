@@ -1,0 +1,375 @@
+---
+title: Nothing in there ever checked
+part: assistant-behaviour
+order: 2
+summary: No step anywhere in a language model consults a fact, so an answer it invented comes out of the same arithmetic, at the same cost, as one that is true — and arrives written just as well.
+prerequisites:
+  - llm
+  - rlhf
+connections: []
+interactives:
+  - SpotTheFabrication
+status: published
+updated: 2026-07-31
+---
+
+import Aside from '../../components/blocks/Aside.astro';
+import Checkpoint from '../../components/blocks/Checkpoint.astro';
+import DevAside from '../../components/blocks/DevAside.astro';
+import Figure from '../../components/blocks/Figure.astro';
+import NoStepThatChecks from '../../components/diagrams/NoStepThatChecks.astro';
+import { SpotTheFabrication } from '../../components/interactives/SpotTheFabrication';
+
+A form comes back across the desk with one box still empty, and the person
+holding it asks whether you happen to know the reference number.
+
+You have never seen this document. But you have seen a hundred like it, so if
+you had to put something in that box you would put `HB-4417/22` — two letters, a
+dash, four digits, a slash, a year — you would do it without pausing, and it
+would look exactly right.
+
+Producing the _shape_ of an answer and producing the answer are two different
+jobs, and the first one is enormously easier. You have just done it, at speed,
+on a document you have never read.
+
+The machine only ever does the first job. Not usually, and not when it is
+struggling. Always — including every single time it happens to be right.
+
+## What those numbers are a score of
+
+The unit on large language models ended with one sentence and no second half.
+Give the model some text; it produces one number for every entry in its
+vocabulary, saying how well that entry would follow.
+
+Sit for a moment with what those numbers are _about_.
+
+"How well it would follow" is a relationship between a candidate chunk and the
+text in front of it, worked out from an enormous pile of writing. It is a claim
+about text. Nothing in it reaches past the text to the thing the text is about,
+and nothing in it could: there is no store of facts to consult, no index, no
+field anywhere marked true. Truth was never one of the inputs to that score, so
+it cannot be one of the outputs.
+
+Which gives the sentence this unit exists for, and it is easier to say than to
+believe. A true answer and an invented one are not two things the machine does.
+They are one thing the machine does, meeting two different worlds.
+
+There is no shortcut taken on the invented one and no extra care taken on the
+true one. Same chunks, same stack, same column of scores, same arithmetic, same
+electricity bill, same tenth of a second.
+
+## How an invention gets committed to
+
+Type this at an assistant:
+
+_What did the Ferrers review conclude about school starting ages?_
+
+There is no Ferrers review. You invented it while reading the line.
+
+Nothing in the machine registers that, because registering it is not an
+operation it has. Your sentence is cut into chunks, the chunks fetch their
+positions, the stack runs, and a column of scores comes out — the same column,
+at the same cost, as for a question about something that exists.
+
+Now ask what sits at the top of that column. In the writing the machine was
+tuned on, a well-formed question about a named review is followed, overwhelmingly,
+by the opening of an answer. So the highest-scoring piece is the beginning of
+one. Something in the shape of _The review found_.
+
+And then that piece is glued on and the machine is run again, and this is the
+part worth slowing down for.
+
+On the second pass, the text in front of it includes its own first three words.
+It is no longer scoring the opening of an answer about a review that may not
+exist. It is scoring the continuation of an answer already under way. The most
+plausible continuation of _The review found_ is a finding. The most plausible
+continuation of a finding is a figure. Within a dozen pieces there is a review,
+a conclusion and a percentage, and every one of them was the most reasonable
+thing to write given everything written before it.
+
+Nobody decided to invent anything. There was no moment of decision to have. What
+there was is a ratchet: the first plausible piece makes the second plausible
+piece more plausible still, and by the fourth the machine is being consistent —
+with itself.
+
+## The name is the worst thing about it
+
+The behaviour is called **hallucination**, and the word gets two things wrong at
+once.
+
+It implies a fault: a machine that normally perceives the world correctly and
+has, for a moment, stopped. And it implies a perceiver — something in there with
+a view of the world that has slipped. Neither is present. Nothing malfunctioned,
+nothing was misperceived, and the arithmetic that produced the Ferrers review is
+the arithmetic that produces everything else, running exactly as built.
+
+Some people prefer **confabulation**, borrowed from neurology, where it means
+filling a gap with something plausible and not noticing. That is closer, because
+it drops the idea of a glitch, but it still smuggles in somebody doing the not
+noticing. The dull and accurate description is that the machine scored the next
+piece, which is the only thing it has ever done.
+
+Keep the word if you like — everyone uses it, and you will be understood. Just
+do not let it carry the suggestion that somewhere there is a working version of
+this that has stopped working.
+
+## The branch that is not there
+
+Most of the trouble people have here comes from a picture they are carrying
+without having chosen it. It is worth drawing, because once you can see it beside
+the real thing the argument is over in about four seconds.
+
+<Figure
+  title="The machine people imagine, and the machine that exists"
+  description="The imagined machine has a step where it looks something up and a branch where it can come back empty-handed, so a check has an obvious home — right after the lookup. The machine that exists has neither: the same four boxes run for an answer that is true and for one that is invented, and there is nowhere in that loop to put the question did I find it."
+>
+  <NoStepThatChecks />
+</Figure>
+
+The top half is the machine nearly everyone pictures. It has a lookup, and the
+lookup can fail, and failing has somewhere to go. A check has an obvious home in
+that drawing: straight after the lookup, before anything is said out loud.
+
+The bottom half is the complete inventory, and you have already been shown every
+box in it. Text in. One pass. A number on every entry. Take one, glue it on. Run
+again.
+
+Now go looking for the place to put the check. There is no lookup to put it
+after. There is no branch for it to sit on. The question _did I find it?_ is not
+answered no anywhere in that loop; it is never asked, because there is nothing in
+the loop capable of asking it.
+
+That is the whole unit, and it is why this is not a bug that anyone is going to
+fix with a better version. It is not a defect in the mechanism. It is the
+mechanism.
+
+<Aside title="The number people mistake for confidence" tone="caution">
+  There is a number, and it is the wrong number.
+
+Every piece the machine produces comes out of a column that has been turned into
+shares adding to one, so the piece it settled on has a share attached: 0.9, 0.4,
+whatever it happens to be. Providers will hand you that number, and it is very
+tempting to read it as how sure the machine is.
+
+What it measures is how strongly this machine preferred this chunk given the text
+in front of it. Halfway through a fabricated review, the text in front of it _is_
+a fabricated review, and the next word of a sentence already under way is highly
+predictable. So the shares are high, and they climb as the invention gets more
+fluent — the exact opposite of what you wanted the number for.
+
+It is a real measurement of a real thing. The thing is commitment, not
+correctness.
+
+</Aside>
+
+## Why the invented ones sound so sure
+
+Being unable to check is one problem. Sounding certain while not checking is a
+second one, and it was installed separately, in two stages, by people who were
+not aiming at it.
+
+The first stage is the pile of text. Writing published on the internet is
+overwhelmingly written in a confident voice. Reference pages do not hedge,
+product descriptions do not hedge, and someone who does not know the answer
+mostly does not write the page at all. So "I am not sure" is a rare continuation
+in that material, and a rare continuation gets a low score. Hedging was
+statistically discouraged before anyone tuned anything on purpose.
+
+The second stage is preference training, which is where it gets sharper. People
+are shown two answers to the same request and asked which is better. Set a clean,
+direct answer next to a hedged one that declines to commit, and the direct one
+wins — not because anybody was rewarding overconfidence, but because it reads as
+more helpful, and helpful is the thing being judged. Millions of those
+comparisons, and the dials move that way.
+
+So confidence is not a readout from anywhere inside. It is a manner, and it is a
+manner the machine was rewarded for. Which lands badly, because manner is exactly
+what you had left to judge by.
+
+## Four answers, and one clause with nothing behind it
+
+So far the machine has been answering out of nothing. The version you will
+actually meet is the other one, where somebody has put a document in front of it
+and asked it to answer from that. It is the single most effective thing anyone
+does about this problem. The panel below is what it still leaves you with.
+
+Five lines about a furniture workshop that does not exist, and four answers built
+from them. Three are made entirely out of what those lines say. One has a clause
+in it the passage never mentions.
+
+Read all four, commit to one, and only then check. Most people get it wrong, and
+getting it wrong is not a failure of attention.
+
+<SpotTheFabrication client:visible />
+
+The invented clause is _the second Fenner Street workshop to take the award and
+the first for about twenty years_. Every part of it is made of material that is
+genuinely there — the award is in the passage, Fenner Street is in the passage,
+a span of years is the kind of thing that belongs in a sentence like that one.
+The only missing ingredient is the fact.
+
+Then the panel does the thing prose cannot, and measures the writing, because the
+writing is what you were reading it with. Hedging, figures, length, taken from
+both ends: six ways of picking the odd one out, and all six of them accuse an
+answer that is true. The invented one is not the most certain of the four, not
+the most specific and not the longest. It sits in the middle of all three, which
+is what four sentences produced by the same process look like, because they were.
+
+Notice which answer the measures do land on. The one about the building is the
+most hedged and the most figure-laden at once — the two things readers treat as
+opposite giveaways — and it is entirely sound. Its 1930 is not written in the
+passage, but the passage gives 1971 and forty years, and 1930 is what you get by
+subtracting. An answer can go past its source by arithmetic without leaving it.
+Reading for a suspicious surface catches that one and walks straight past the
+other.
+
+There is one honest limit on the exercise. Here you had the passage in front of
+you, which is the good case. Most of the time nobody has put a passage in front
+of anything, and then the comparison you would need is not merely tedious — it
+does not exist.
+
+## Where it concentrates
+
+Four places, and they are all the same place seen from different angles: text
+where the pattern is strong and the material is thin.
+
+**Anything with a format.** Citations, case numbers, page references, quotations,
+identifiers, URLs. The shape of a reference is one of the most learnable things
+in the language, and the contents of any particular reference are among the
+least. Producing something citation-shaped is nearly free; producing the right
+one is a lookup, and there is no lookup.
+
+**Anything rare or recent.** Where the material is thin, no continuation
+dominates the column, so the machine takes whatever fits best — and something
+always fits best. Thin evidence does not produce hesitation. It produces a
+confident answer assembled from adjacent material.
+
+**Anything with a well-shaped wrong answer.** If a false answer sits in the place
+a true one would, it scores like a true one. That is the whole of the selection
+criterion.
+
+**Anything you asserted yourself.** Put a false premise in your question and the
+machine will usually build on it, because your text is text: there is no step at
+which what you wrote gets held up against anything. This one is worth watching
+for, because it is the failure you cause.
+
+## What helps, and what only feels like it
+
+Everything on the working side has the same shape: it either narrows what counts
+as a plausible continuation, or it puts a comparison outside the machine. Nothing
+puts a check inside, because there is nowhere to put one.
+
+### The things that work
+
+**Give it the source, and keep the question inside the source.** Paste the actual
+passage and ask for an answer from that alone. The machine does not become
+truthful; the field of plausible continuations narrows to things the passage
+says. As the panel above showed, that is a large improvement and not a guarantee.
+
+**Ask for the quote, then check the quote.** Not because a quotation is evidence
+— it is produced by the same operation as everything else — but because a
+fabricated quotation fails a search against the source in about a second. The
+value is in the search, which happens outside the model.
+
+**Ask again in a fresh conversation.** Things with a lot of material behind them
+come back the same way twice. Things being filled in wander. This is a smoke
+test, not a proof, and it is nearly free.
+
+**Reduce the number of questions it has nothing for.** The highest-risk question
+in any system is one the supplied material does not answer, because there is no
+outcome in which the machine declines by default.
+
+### The things that do not
+
+**Telling it not to make things up.** That instruction is text, added to the text.
+It shifts which continuations score well, slightly and genuinely — and it does
+not install a step that does not exist. A model that has just been told to be
+accurate produces exactly the same kind of column it produced before.
+
+**Asking whether it is sure.** This one actively misleads, and the mechanism is
+worth having. You have appended text in which somebody expresses doubt about the
+previous answer. What most plausibly follows text like that? An apology and a
+revision. So it will often "correct" an answer that was right, and agree with you
+when you push back on a true statement. You are not querying a belief. You are
+continuing a conversation in which someone has raised an eyebrow.
+
+**Turning the randomness down.** Making the machine take the top of the column
+every time makes the same fabrication come out reliably. Consistent is not true.
+
+**Trusting how it sounds.** Covered above, and it bears one more line: fluency is
+the one thing this machine is guaranteed to have, and confidence is a manner it
+was trained towards. Those are the two worst possible signals to judge it by, and
+they are the two most available.
+
+<DevAside>
+  <Fragment slot="java">
+    ```java
+    String answer = model.answerFrom(passage, question);
+    String quote  = extractQuote(answer);
+
+    if (!passage.contains(quote)) {
+      return Result.notGrounded(question);   // the only real check here
+    }
+    ```
+
+    The load-bearing call is `passage.contains`, and what makes it a check is
+    that it is a string search over your own text. It never asks the model
+    anything. Any "verification" implemented by sending the answer back with
+    *are you sure?* is not a second opinion — it is the same next-piece scorer,
+    now scoring a conversation in which doubt has been expressed, which is a
+    known way to make it retract something correct.
+
+    Worth knowing what this does not catch: a real quotation with an
+    unsupported conclusion hung off it. The quote check proves the sentence is
+    in the document. It proves nothing about the claim built on top of it.
+
+  </Fragment>
+  <Fragment slot="python">
+    ```python
+    quote = extract_quote(answer)
+    if quote not in passage:
+        raise NotGrounded(question)
+    ```
+
+    `in` is an operation the model does not have and your program does. That
+    asymmetry is the whole design: every reliable defence against this lives on
+    your side of the call, working on finished text, comparing it against
+    something you control.
+
+    The other half of the job is the prompt that asks for a quotable span in the
+    first place, and it has to survive the case where the passage does not
+    answer the question. If nothing in your pipeline makes "the passage does not
+    say" a cheap and acceptable output, the model has no route to it — and it
+    will write you something instead, because writing something is the only
+    thing in the loop.
+
+  </Fragment>
+</DevAside>
+
+<Checkpoint question="A team ships an assistant over their own staff handbook. It answers from the handbook and cites a clause number every time, and a spot-check finds that the clauses are real. A month later it tells a customer something the handbook does not contain, citing a clause that it does. The team's fix is to add a line to the instructions telling it to answer only from the handbook and to say so when it cannot. Say why that will help without solving it — and name the one thing in their system that was ever doing real work.">
+  The instruction is text added to text. It genuinely shifts which continuations
+  score well, so fewer answers will drift off the handbook — that is a real
+  effect and worth having. What it cannot do is add a step. There is still no
+  moment in the machine at which a claim exists and gets held up against the
+  handbook, so the decline they asked for is not a route the machine has. It is
+  a phrasing that now scores a little better than it did.
+
+The clause number is the sharper half of the question. Nobody looked a clause up.
+The citation and the claim came out of the same operation, separately, one piece
+at a time — a clause-shaped run of characters that scored well, followed by a
+sentence that scored well after it. A real clause number is not evidence that the
+answer came from that clause. It is evidence that the machine has seen a lot of
+clause numbers.
+
+The only thing doing real work was the spot-check, because it happened outside
+the machine, on finished text, against the handbook. And it was checking the
+wrong half: that the clauses exist, rather than that the clauses say what the
+answers claim. Move the comparison to the claim and it becomes a check. Leave it
+on the citation and it is a check that a fabrication passes.
+
+Worth carrying beyond this unit. Whenever someone proposes making a model verify
+itself, the question that settles it is: at the moment of verification, where
+does the thing being verified live, and what is it being compared against? If
+both answers are "inside the model", nothing is being verified.
+
+</Checkpoint>

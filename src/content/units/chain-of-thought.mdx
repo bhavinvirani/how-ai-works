@@ -1,0 +1,276 @@
+---
+title: The steps are not a report — they are the work
+part: asking-well
+order: 3
+summary: Asking a model to write its working out buys it a fresh pass through the machine for every piece it writes, and leaves each finished step sitting in the text where every later step can read it.
+prerequisites:
+  - reasoning-models
+  - text-generation
+connections: []
+interactives: []
+status: published
+updated: 2026-07-31
+---
+
+import Aside from '../../components/blocks/Aside.astro';
+import Checkpoint from '../../components/blocks/Checkpoint.astro';
+import DevAside from '../../components/blocks/DevAside.astro';
+import Figure from '../../components/blocks/Figure.astro';
+import WhatTheLastPassReads from '../../components/diagrams/WhatTheLastPassReads.astro';
+
+At the end of dinner, a friend at the far end of the table works out the bill in
+her head. Four of us, a voucher off the total, service added to whatever is left
+afterwards — and she says a number before the card machine has finished waking
+up.
+
+She is wrong by about three pounds. Nobody says anything, because arguing with
+someone who has just done that in their head feels ungracious.
+
+An hour later, at home, you do the same sum on the back of the receipt. It takes
+ninety seconds and it comes out right.
+
+Nothing about you improved in that hour. You did not get better at arithmetic,
+or sharper, or less tired — you were more tired. What you got was somewhere to
+put the middle of the problem down.
+
+A language model is at that table, doing it in its head, every single time you
+ask it something. It has no back of a receipt unless you ask for one. This unit
+is about what happens when you do.
+
+## Every piece is another pass
+
+You know the loop already. A model writes one piece, glues it onto the end of
+what it has written, and reads the whole thing back before writing the next.
+Every piece is one complete pass through the machine.
+
+A pass is a fixed amount of arithmetic. The same amount, every time, whether the
+piece it produces is _the_ or the answer to something hard. There is no dial
+anywhere in the machine marked _this one is difficult, take longer_.
+
+So ask for an answer and nothing else, and the answer got one pass' worth of
+work. Ask for a few lines of working first, and the answer arrives on the far
+side of fifty passes instead of one.
+
+That is the half of this that most people have heard, and it is true. It is also
+the less interesting half.
+
+## And every pass starts from nothing but the text
+
+Here is the part that gets left out.
+
+A pass computes a staggering amount — hundreds of millions of intermediate
+numbers, every one of them a partial result of something. And when the pass
+ends, none of it survives. The next pass begins from the text, reads it from the
+top, and works everything out again. Nothing carries across that could not be
+recomputed from the words on the page.
+
+Which means the working-out has exactly one place it can live. Not in the
+machine — there is nowhere in the machine for it to be. In the output.
+
+Write _Friday = 200_ and that number has stopped being a fleeting internal
+quantity and become text. It sits at a position in the input. Every later pass
+reads it, at no cost and no risk, the same way it reads any other word. It will
+never have to be worked out a second time, and it cannot quietly go missing.
+
+Write nothing, and whatever the machine half-worked-out about Fridays and fifths
+is simply gone.
+
+This is where the friend at the table and the machine part company. She could
+hold a number in her head for a second or two while she reached for the next
+step — badly, which is why she was three pounds out, but she could hold it. The
+machine cannot hold anything at all. Between one piece and the next it has the
+page, and it has nothing else.
+
+This is why writing the steps is not a longer way of saying the same thing. The
+page is not a transcript of the thinking. The page is the only surface the
+thinking has.
+
+The technique has a name — **chain of thought** — which is a good deal grander
+than what it describes. What it describes is: ask for the steps before the
+answer.
+
+## Four lines, and a number that is fourteen out
+
+Take a small problem with parts that depend on each other.
+
+_A café sold 240 pastries on Saturday — 20% more than Friday. Sunday was a
+quarter down on Friday. How many over the three days?_
+
+Answered on the spot, a model can easily land on **576**. That is not a random
+number, and it is not a stupid one. It is what you get by taking 20% off 240 to
+find Friday, then a quarter off that to find Sunday. The move is tempting
+because _20% more than Friday_ and _20% less than Saturday_ feel like the same
+distance, and they are not: Friday is 200, and a fifth of 200 is 40, not 48.
+
+Now ask for the steps first, and four short lines come out — three of working,
+then the total.
+
+The second line is the one to look at. It begins with 200 — a number that did
+not exist anywhere until the first line put it there. The third line goes back
+and checks that same 200 against the question. The last line adds three figures
+together, two of which it can only have got by reading upwards.
+
+None of that is a model recalling what it decided. It is a model reading text,
+because text is all there is to read.
+
+<Figure
+  title="The same question, answered from an empty page and from a written one"
+  description="Answered straight away, the arithmetic happens inside one pass and vanishes with it, so the total is produced with nothing to consult and comes out fourteen short; asked for the steps first, every working line leaves its result as text in the input, and the pass that writes the total reads all three of them straight off the page."
+>
+  <WhatTheLastPassReads />
+</Figure>
+
+Those four lines are written short so that they fit on a screen. A real model
+given this would produce something baggier — full sentences, a restatement of
+the question, quite possibly the same check twice. Take the shape of it, not the
+tidiness.
+
+## Where it earns its money
+
+The mechanism tells you exactly when to expect a difference, which is more
+useful than a list.
+
+Writing helps when a later part of the answer needs a number, a fact or a
+decision that the earlier part had to produce. Arithmetic with more than one
+stage. Logic where the third constraint only bites once you have applied the
+first two. Tracing a process to find where it goes wrong. Planning something
+where the order of the steps is itself the problem.
+
+Writing does nothing when there is no intermediate result to keep. Looking a
+fact up, pulling a date out of an email, changing the tone of a paragraph,
+translating a sentence — none of these have a middle. There is nothing for the
+scratchpad to hold, so a scratchpad costs you and returns nothing. On creative
+writing it can actively hurt, because a model that has just written four
+paragraphs analysing what makes an opening line good then has four paragraphs of
+analysis in front of it, and tends to write the line those paragraphs described
+rather than a good one.
+
+The test worth carrying: **does the answer depend on something the question does
+not contain?** If yes, there is something to write down. If no, you are buying
+passes you have no use for.
+
+And you are buying them. Every piece of working is an output piece, output is
+the sequential half of the loop and the dear half of the bill, and a person is
+usually sitting there watching it arrive one piece at a time. Fifty pieces of
+working against a three-piece answer is more than ten times the wait and more
+than ten times the output cost — on a question that may not have needed either.
+
+## You may not have to ask any more
+
+For a few years the practical advice was to type the request. Adding _work
+through this step by step before you answer_ to a prompt was, for the money, the
+single most reliable improvement available on any model.
+
+It matters much less now, and it is worth being precise about why, because the
+easy conclusion is wrong.
+
+The mechanism did not go away. It moved. Reasoning models have the habit trained
+in: they write out a long working-out before answering whether you ask or not,
+usually behind a fold in the interface so you never see most of it. Asking such
+a model to think step by step is asking it to do the thing it was already doing.
+
+So the residue is small but real. On a plain, fast model the instruction still
+works and still costs. On a reasoning model it changes nothing except your
+token bill. And when somebody tells you a reasoning model is slow and expensive,
+you now know precisely what you are paying for: it is the same passes, on the
+same page, requested by the model's training rather than by you.
+
+<Aside title="The working is not a transcript" tone="caution">
+  The temptation, once a model shows its steps, is to read them as an account of
+  how the answer was reached — and to trust the answer more because the account
+  looks sound. That goes one step past what the evidence supports.
+
+Models have been shown reaching a conclusion by one route and then writing a
+clean, plausible derivation of it by another. In the sharpest experiments a hint
+was planted in the question, the hint clearly determined the answer, and the
+written reasoning never mentioned it once.
+
+What the working genuinely gives you is two things. Better answers, for the
+mechanical reasons on this page. And a set of intermediate claims you can check
+on their own merits — if a line says 240 ÷ 1.2 = 200, that is either true or it
+is not, and you can settle it without knowing anything about the machine.
+
+What it does not give you is testimony. Read the steps as work to be checked,
+never as a report of what happened.
+
+</Aside>
+
+<DevAside>
+  <Fragment slot="java">
+    ```java
+    // The order of these fields is not a style choice.
+    record Verdict(String working, String answer) { }
+    ```
+
+    Structured output constrains the model to produce valid JSON for a schema,
+    and it produces it the only way it produces anything — one piece at a time,
+    left to right. So a field declared before `answer` is written before
+    `answer` exists, and is therefore in the input when `answer` is computed.
+    A field declared after it is written from an answer that has already been
+    fixed.
+
+    Swap the two here and nothing fails. The schema still validates, the tests
+    still pass, the JSON still parses, and the accuracy quietly drops back to
+    where it was before anyone added the field — because `working` is now a
+    justification rather than a route.
+
+  </Fragment>
+  <Fragment slot="python">
+    ```python
+    class Verdict(BaseModel):
+        working: str   # produced first, so `answer` is written with it in view
+        answer: str
+    ```
+
+    `model_fields` preserves declaration order, and the constrained-decoding
+    layer generates in that order. Which makes this the most expensive tidying-up
+    in the business: sort a schema's fields alphabetically and `answer` now comes
+    before `working`, the diff looks like formatting, and the change of behaviour
+    shows up as a metric drifting a week later.
+
+    Worth a comment on the class saying so. Nobody rereading this file will
+    otherwise guess that field order is load-bearing.
+
+  </Fragment>
+</DevAside>
+
+## One lever, and this is the last of it
+
+Everything in this part has been the same move. You cannot reach inside the
+model. There is no setting to turn up, no memory to prime, nothing to configure.
+The only thing you have is the text you put in front of it, and each technique
+here has been a different use of that one lever.
+
+What makes this the right place to stop is that it is where the lever stops
+being about phrasing at all. Asking for the working does not describe your
+request more precisely, or supply a better example, or set a tone. It changes
+how much arithmetic happens, and it puts the results of that arithmetic
+somewhere the machine can reach.
+
+You are not wording the question better. You are handing it a receipt to work
+on.
+
+<Checkpoint question="A team adds “think through this step by step” to the prompt for a pricing tool. Because the figure has to go straight into a spreadsheet cell, they also add “reply with the final number only, no explanation”. The bill is unchanged, the accuracy is unchanged, and they conclude that chain of thought is overrated. What actually happened, and what should they have done instead?">
+  The two instructions cancel, and the second one wins — because there is no
+  thinking anywhere except in what gets written. Told to reply with a number and
+  nothing else, the model wrote a number and nothing else: a handful of pieces,
+  a handful of passes, and no intermediate result anywhere in the text for a
+  later pass to read. The prompt asked for the steps and then removed the only
+  place a step could exist.
+
+The unchanged bill is the proof, and it is the detail worth noticing. They were
+charged for the same tiny number of output pieces as before. On an invoice, that
+is what "no extra computation happened" looks like.
+
+The fix is to let the model write the working and throw it away in their own
+code — after generation, never before. Ask for the steps, then the figure on a
+line of its own, and strip everything above that line before it reaches the
+spreadsheet. The clutter was never the cost of the technique. The clutter was
+the technique.
+
+Worth carrying out of this part. Anything you type is only ever text in the
+input, so the useful question about any prompting advice is not "does this sound
+more like what I want?" but "what does this put on the page, and what gets to
+read it afterwards?"
+
+</Checkpoint>

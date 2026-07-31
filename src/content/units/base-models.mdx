@@ -1,0 +1,242 @@
+---
+title: Answering was never part of the deal
+part: building-an-assistant
+order: 2
+summary: A freshly pretrained model can do exactly one thing — continue whatever text is in front of it — so a question typed at it gets continued rather than answered, and the knowledge it would have needed was in there the whole time.
+prerequisites:
+  - pretraining
+connections:
+  - to: fine-tuning
+    why: That is the stage where the missing habit gets installed, by showing the model tens of thousands of worked examples in which the text following a request happens to be a good response to it.
+  - to: rlhf
+    why: Getting a model to answer at all is one problem and getting it to answer well is a separate one, because nobody can write down what a good answer is — it has to be collected from people picking between real ones.
+interactives: []
+status: published
+updated: 2026-07-31
+---
+
+import Aside from '../../components/blocks/Aside.astro';
+import Checkpoint from '../../components/blocks/Checkpoint.astro';
+import DevAside from '../../components/blocks/DevAside.astro';
+import Figure from '../../components/blocks/Figure.astro';
+import ContinueOrAnswer from '../../components/diagrams/ContinueOrAnswer.astro';
+
+A screenshot lands in the group chat. Somebody has cropped a baking forum down
+to a single post, and the post is a question.
+
+_why does dough need to rest before you shape it?_
+
+Underneath it, the screenshot stops.
+
+Nobody types the answer. What somebody types is _and then four people argued
+about hydration for six pages_ — because that is what happens under a question
+on a forum, and everyone in the chat knows it.
+
+You knew the answer too, near enough. Leave dough alone for half an hour and it
+stops fighting you.
+
+You did not offer it, because nobody had asked you. What you had been handed was
+a page, and pages have shapes; asked what came next on one, you predicted a
+page.
+
+That reflex — finish the document rather than answer the line — is the whole of
+what a language model can do when it comes out of the stage before this one.
+
+## Everything it will ever know, and one thing it cannot do
+
+The previous unit followed a model through pretraining: months of machinery, a
+filtered mountain of text, and one game played from the first day to the last —
+here is some text with the next piece hidden, guess the piece.
+
+What comes out of that has a name. A **base model** is a model that has finished
+pretraining and has had nothing done to it since. Grammar, dozens of languages,
+an enormous quantity of fact, the shape of an argument, the shape of a recipe,
+the shape of a legal disclaimer.
+
+By cost, that is very nearly the whole machine. Everything done to it afterwards
+is a rounding error beside it.
+
+Ask it a question and it will not answer you.
+
+Not because it does not know. Because answering is not a thing it does.
+
+## What it does instead
+
+Type that forum question into a base model, exactly as it stands. Here are four
+continuations, all of them the kind of thing real base models produce:
+
+- two more questions, this time about flour
+- a line reading _Posted 3 years ago · 14 replies · Report_
+- a chapter heading — _Chapter 4: Shaping and proving_
+- the same question again, in Spanish
+
+Every one of those is correct. That is the part worth slowing down for. The
+machine is not confused, not broken and not too small. It is doing the single
+thing it has ever been scored on, and doing it well.
+
+The mismatch is entirely on your side of the screen. You believe you asked
+something. Inside the machine nothing was asked, because there is nobody in
+there to ask. A run of characters arrived carrying the shape of a question, and
+in the pile it learned from, that shape is followed by all sorts of things.
+
+## The same model, one small change
+
+Now stop asking. Start the sentence for it instead:
+
+_Dough is rested before shaping because_
+
+And it finishes: _the gluten relaxes, so it stops springing back when you try to
+stretch it._
+
+Correct, fluent, first attempt, no hesitation. Same model, same dials, nothing
+trained in between, no clever instruction and no example. The only thing that
+changed is that continuing the text and telling you the answer became the same
+act.
+
+So the fact was in there the whole time, about a quarter of a second below the
+surface. It was never the knowledge that was missing.
+
+That pulls apart two things which feel like one thing when the only machine you
+have ever used is a chat assistant. There is what a model **knows**. And there
+is whether anything in it registers that it has been **addressed**. Pretraining
+delivers the first in industrial quantity and the second not at all.
+
+<Figure
+  title="The same two prompts, before and after the habit"
+  description="Asked a question, a freshly pretrained model produces the rest of a forum page instead of an answer — but hand the same machine half a sentence and it finishes it correctly, which is how you can tell the fact was already in there and only the habit of answering was missing."
+>
+  <ContinueOrAnswer />
+</Figure>
+
+## Nothing in the pile ever said "you"
+
+It is tempting to file this under an oversight — a gap somebody will get round
+to patching. It is not. It falls out of the arrangement, and it could not have
+come out any other way.
+
+Think about where answers actually sit in text. Under a question on a forum:
+more questions, a moderator note, a link, three replies that miss the point.
+Under a question in a textbook: four options labelled (a) to (d), with the
+answer forty pages away at the back. Under a question in a list of search
+results: a title, a date, an advertisement. Answers do follow questions, often —
+but they are one branch among many, and nothing in training ever marked that
+branch as the one that counts.
+
+There is a sharper version of the same point. To the model, pretraining is one
+undivided document. No part of it is labelled as coming _from_ anybody, and no
+part is labelled as being directed _at_ the model. There is no second party
+anywhere in the arrangement, so there is nobody to be helpful towards. Being
+asked is a relationship, and the training had no room in it for one.
+
+## Helpfulness is a habit, and it is a thin one
+
+Being an assistant, then, is not knowledge and it is not intelligence. It is a
+**habit** — a learned tendency about which shape of text follows which shape of
+text. Somebody has to put it there deliberately, afterwards, and putting it
+there is what the next two units are about.
+
+Now hold that against the thing you actually use. The assistant you talk to is a
+base model with a habit painted over the top. The continuer underneath did not
+go anywhere and was not replaced. At every step, including the one it is taking
+right now, the machine is producing the most plausible next piece of text; the
+later stages changed which continuations it finds plausible, not what it is
+doing.
+
+Two consequences fall out of that, and each gets a unit of its own further on.
+The first is that plausible and true are different properties, and only one of
+them was ever trained for. The second is that a habit is a strong tendency
+rather than a wall — which is most of what there is to say about why an
+assistant's good behaviour can sometimes be talked out of it, and why nobody has
+managed to make that airtight.
+
+## Where this stops being trivia
+
+Two places, and both of them have cost people a day.
+
+**The download page.** Open models are usually published twice, under names that
+differ only by a suffix — one plain, one carrying `instruct`, `chat` or `it`.
+The plain one is the base model. The suffixed one is that same model with the
+habit trained in. If you want something that answers, you want the suffixed one,
+and the symptom of getting it wrong is exactly the screenshot at the top of this
+page: replies that read like a page torn out of the internet. The natural
+diagnosis is that the model is broken, or too small, or that the download went
+wrong. It is none of those.
+
+**The two endpoints.** Hosted models are typically offered in two shapes: one
+that takes a lump of text and continues it, and one that takes a list of
+messages and replies to the last of them. It is easy to read those as two
+different machines. They are one machine and a wrapper. Your list of messages is
+flattened into a single document, with markers written in to say whose turn each
+part is, and that document is handed to the continuer, which is asked for the
+next bit.
+
+Read that again, because it is the honest description of every conversation you
+have ever had with an assistant. The transcript is a document. The reply is a
+continuation of it. What the two stages after this one buy is a machine for
+which, once that document runs out at the marker where its own turn starts, the
+most plausible continuation is something useful.
+
+<Aside title="Why anybody would want the base version">
+  Base models are not rough drafts that got superseded. They are raw material,
+  and people download them on purpose.
+
+If you intend to shape a model's behaviour yourself — for one profession, one
+house style, one language — then starting from a model already trained into
+somebody else's idea of helpfulness means fighting that first. A habit is far
+easier to install than to remove.
+
+They are also the only honest measure of what pretraining alone bought. Any
+claim about what scale by itself produces has to be a claim about base models,
+because every stage after pretraining is another variable in the experiment.
+
+</Aside>
+
+<DevAside>
+  <Fragment slot="java">
+    ```java
+    String document = chatTemplate.render(messages) + ASSISTANT_TURN_MARKER;
+    String reply = model.complete(document);
+    ```
+
+    Two lines, and the second half of the first one is the part people forget
+    exists. The moment you want a prompt shape your provider does not offer,
+    you end up building that document yourself — and leaving off the marker
+    that opens the assistant's turn raises no error at all. The model simply
+    continues the wrong turn and writes the user's next message for them.
+
+  </Fragment>
+  <Fragment slot="python">
+    ```python
+    prompt = tokenizer.apply_chat_template(
+        messages, tokenize=False, add_generation_prompt=True
+    )
+    ```
+
+    `add_generation_prompt=True` is that marker, and it defaults to `False`.
+    Omit it and you get a model that finishes your own message, or that holds
+    both sides of the conversation by itself — output which reads like a bug in
+    your code and is in fact a continuer doing precisely what a continuer does.
+    Worth checking which template you were handed, too: the base and instruct
+    versions of the same model do not ship the same one, and the base version
+    may ship none at all.
+
+  </Fragment>
+</DevAside>
+
+<Checkpoint question="A team wires an open model into their support tool. Every reply comes back as a handful of further questions, or as something that reads like the bottom of a web page. One person says the model is too small; another wants to spend a fortnight training it on the company's support history. Both are guesses. What is the one-minute check that settles it, and what would the result tell you?">
+  Stop asking it things. Hand it the opening of a sentence instead — _A parcel
+  marked as delivered that has not arrived is usually_ — and read what comes
+  back.
+
+If it finishes that fluently and sensibly, the model is fine and so is its
+knowledge. What is missing is the habit of treating a question aimed at it as
+something to answer, and no amount of extra size or extra data supplies that.
+They have downloaded the base version and they want the instruct one. The fix is
+a different file, not a fortnight.
+
+Worth keeping as a shape. Knowing something and being willing to hand it over on
+request are separate properties, acquired at separate stages and for separate
+reasons — and a surprising number of confusing things a model does get easier to
+place the moment you stop treating them as one property.
+
+</Checkpoint>

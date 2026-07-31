@@ -1,0 +1,305 @@
+---
+title: The example you would not have written down
+part: asking-well
+order: 2
+summary: A few finished examples pin the format and the house vocabulary far harder than any description of them, and the one worth the most is the awkward case nobody thinks to write down — the ambiguous request, the empty field, the thing that should be handed back rather than answered.
+prerequisites:
+  - prompting
+connections:
+  - to: fine-tuning
+    why: Examples in the prompt and a second training run buy much the same behaviour by different means, and choosing between them is mostly a question of how easily you want to change your mind — an example set sits in the request where anyone can read it, takes a minute to edit, and is charged on every single call, while moving the dials costs nothing per call afterwards and is a great deal harder to undo.
+interactives:
+  - ExampleSetBuilder
+status: published
+updated: 2026-07-31
+---
+
+import Aside from '../../components/blocks/Aside.astro';
+import Checkpoint from '../../components/blocks/Checkpoint.astro';
+import DevAside from '../../components/blocks/DevAside.astro';
+import Figure from '../../components/blocks/Figure.astro';
+import DescribedOrDemonstrated from '../../components/diagrams/DescribedOrDemonstrated.astro';
+import { ExampleSetBuilder } from '../../components/interactives/ExampleSetBuilder';
+
+The form on the counter has eleven columns and no instructions printed anywhere
+on it. There is a pen on a string and a queue behind you.
+
+Somebody ahead of you has filled in the first two rows, and their handwriting is
+sitting right there under the headings. Dates the short way round. Surname
+first, in capitals. A dash in the column you would have left empty.
+
+You fill in row three without asking anyone anything.
+
+Nobody described that form to you, and nobody could have. Try it now — write
+down, in one sentence, everything you just copied. The date order. The capitals.
+The dash. The fact that the fourth column is a running total and not a price,
+and the last one is initials and not a name. It takes a paragraph, it is dull to
+read, and you will still leave something out.
+
+Two finished rows did it in about a second.
+
+## What the two rows actually did
+
+The unit before this one changed what a prompt is. It is not a request the model
+is answering. It is the opening of a document the model is finishing, and the
+whole craft is arranging that opening so that the thing you want is the natural
+way to finish it.
+
+Two worked examples are the most direct arrangement there is.
+
+They do not describe the format. They make the document _be_ a list of finished
+examples — and once a document is unmistakably that, the most plausible
+continuation is not a paragraph, or an apology, or an answer in some other
+shape. It is a third one, in the same shape as the first two. The pattern is not
+something the model has been told about. It is something the document has.
+
+That is the mechanism, and it has a name. Putting worked examples in the prompt
+is **few-shot prompting** — _shot_ meaning example, so three examples is
+three-shot, one is one-shot, and a prompt with none at all is zero-shot, which
+is what you have been writing until now.
+
+It also gets called **in-context learning**, which is grander than the thing
+deserves. Nothing is learned. No number inside the model moves. The examples sit
+in your message as ordinary text, exactly like the rest of it, and all of them
+are gone the instant the reply is finished. Send the same request tomorrow
+without them and you have the model you always had, behaving the way it always
+did.
+
+<Figure
+  title="One format, described once and demonstrated once"
+  description="A described format comes back in a different shape every time it is asked, because a sentence is a poor way to pin down a pattern; two finished rows come back in the same shape every time, because by then the shape belongs to the document rather than to anybody's interpretation of a sentence."
+>
+  <DescribedOrDemonstrated />
+</Figure>
+
+## Build the set yourself
+
+The panel below is a community centre's booking inbox. Requests arrive as
+ordinary messages and somebody has to turn each one into a line the room diary
+can read. The instruction is the one a person writes first — _take each booking
+request and put it in our usual format_ — and it is exactly as useless as it
+looks, because a format is a shape and that is a sentence.
+
+Start where it opens, with no examples at all, and step between the three
+requests — plain, unusual, unanswerable — without changing anything else.
+
+The yoga class comes back as `Room: Small Room | Day: Wednesday | Time: 7pm–8pm`.
+The choir comes back as `Big room, Friday 19:30–21:00`. The christening gets a
+polite question. Three requests, three different shapes, one instruction — and
+the model has not made a single mistake about any of the bookings. It simply has
+no idea what your format is, and neither would a new volunteer.
+
+<ExampleSetBuilder client:visible />
+
+Now add one example and step through the three requests again. Every one of them
+snaps into the same shape: a room code, a middle dot, a three-letter day,
+another middle dot, a span on the 24-hour clock.
+
+The yoga line is right in every detail, including the one nobody could have
+guessed — that the small room is called `BACK` in this diary, because it is at
+the back. One finished example carried the separators, the order, the
+capitalisation, the clock and a piece of private vocabulary at the same time,
+and none of it had to be written out in prose.
+
+That is the first half of this unit, and you have it. Descriptions
+under-specify. Examples cannot.
+
+### Where the trouble starts
+
+Keep the single example and choose the choir's request. It asks for the big room
+on Friday, half seven till nine, and what comes back is
+`hall · Fri · 19:00–21:00`.
+
+Two mistakes, and both are copies. The model has never seen the big room, so it
+guessed a code for it — lowercase, and not the one the diary uses. And every
+time it has ever been shown landed on a whole hour, so half seven quietly became
+seven.
+
+Neither of those is a failure of understanding. The model reproduced the span of
+values it had been shown, and where the request stepped outside that span it
+guessed plausibly. Your examples were never only a demonstration of the format.
+They were also, silently, a demonstration of what the values look like.
+
+This is the expensive kind of wrong. `hall` is nearly right. Half past seven
+recorded as seven o'clock is nearly right. Nothing downstream will catch either,
+because both arrive as perfectly well-formed lines — and a system that validates
+the shape of its input is checking precisely the part that is fine.
+
+Add the second example, which is the first one containing the big room, and the
+code corrects itself. The half hour is still gone. Add the third, which is the
+first one containing a half hour, and the line is finally right.
+
+Three examples, and each of them fixed exactly what was in it. An example does
+not teach the format twice.
+
+### The request that cannot be answered
+
+Now the third request, and this is the part worth the unit.
+
+_Do you have anything free next month? It's for a christening._ There is no day
+in that message, no room and no time. There is nothing to put in a line.
+
+Wind the examples back to none and read what comes back. It asks. _Do you know
+which date you are after, and roughly how many people?_ — which is what the
+person on the desk would say, and it is the correct answer.
+
+Then put the examples back one at a time and watch that ability disappear. At
+one example: `BACK · Mon · 19:00–21:00`. At two: `HALL · Mon · 19:00–21:00`. At
+three, read what comes back against the third example in the prompt above it. It
+is the same line, copied out word for word.
+
+Nothing in the request produced any of that. The document is now unmistakably a
+list of finished lines, so a finished line is the most plausible way to end it,
+and you have shown it no other way to end. Every one of those bookings is
+fictional. Every one of them is flawlessly formatted. Somebody turns up on a
+Saturday.
+
+Now add the fourth example. Its request is one that cannot be answered — _any
+chance of a room next week? It's for a birthday do_ — and the line beneath it is
+`ASK · day and time missing`.
+
+The christening comes back as `ASK · day and time missing`. The model is the
+same, the instruction is the same, the other three examples are the same. The
+only thing that changed is that the document now contains one row showing what
+an unanswerable request looks like when it is finished properly.
+
+## The example nobody writes down
+
+Sit down to write an example set and you will reach for your clearest cases.
+Everybody does, and the instinct is not stupid: you are trying to show what
+right looks like, so you pick the ones where right is obvious.
+
+The result is a set that is unanimous about something you never meant to say.
+
+Every one of your examples has an answer. Nowhere in that document is there a
+row where the answer was _I cannot tell from this_. And the model has no way to
+distinguish "they never showed me one of those" from "there are none of those",
+because both look identical from inside the document. Your examples are not a
+description of the format. They are a sample, and the sample is treated as the
+world.
+
+So the examples worth their tokens are the ones you would not have written down.
+The ambiguous request. The empty field. The message that belongs to two
+categories at once, or to none. The one that should be refused. The one where
+the honest output is a question. Each of those marks a boundary, and a boundary
+that has not been demonstrated does not exist as far as the document is
+concerned.
+
+It is also, precisely, where systems fail once they are live. Your clean cases
+were clean because you chose them. Real traffic is not chosen — it is whatever
+turns up, and what turns up includes the person who typed one word, the person
+who asked three questions in one message, and the person who is not asking about
+bookings at all. Three tidy examples teach a model to be fluent about all of
+them.
+
+<Aside title="Writing a set that earns its place" tone="note">
+  Four things, in the order they go wrong.
+
+**Keep the shape identical.** Same separators, same order, same capitalisation,
+in every example, character for character. The model is matching a pattern, and
+two examples that disagree by a single space have shown it two patterns.
+
+**Watch the proportions.** Five examples of one outcome and one of another is
+not a neutral set; it is a thumb on the scale, and the model reads the
+proportions along with everything else.
+
+**Stop at a handful for the format.** Two to five is usually where the shape
+stops improving, and it is sooner than that for something simple — in the panel
+above it happens at one, because that line has only three fields. Past the point
+where the shape has settled, another example is only worth its tokens if it
+carries something the others did not.
+
+**Put the awkward case in the list, not in the instruction.** A sentence saying
+"if the request is ambiguous, reply ASK" sitting above four examples that are
+all answerable is one sentence against four demonstrations. The demonstrations
+win.
+
+</Aside>
+
+## What an example set costs, on every call
+
+Examples are not free, and they are not paid for once.
+
+A model keeps nothing between calls, so everything it needs has to be sent again
+every single time — instruction, examples, request, all of it, on every request
+for as long as that prompt is in service. The panel counts this as you go. With
+no examples at all, the yoga prompt is about 26 tokens. With all four it is 102.
+Four times the bill, for ever, and 76 of those tokens are doing nothing but
+being examples.
+
+They cost space as well as money. Everything you send has to fit inside one
+window alongside the reply, so an example set is room you have spent in advance
+— room that is no longer available for the document the user actually wants
+read.
+
+That is why "a handful is usually enough" is not stinginess. Past the point
+where the format has locked, another tidy example buys you almost nothing and
+charges you for it on every call from now on. The awkward one is the exception,
+and it is the exception precisely because it is not tidy: it is the only kind of
+example that is still buying something the others did not.
+
+<DevAside>
+  <Fragment slot="java">
+    ```java
+    var block = examples.stream()
+        .map(e -> e.request() + "\n" + e.line())
+        .collect(joining("\n\n"));
+
+    var prompt = INSTRUCTION + "\n\n" + block + "\n\n" + incoming;
+    ```
+
+    The separator between your examples and the separator before the live
+    request have to be identical, character for character. A trailing space on
+    one of them, or a `\r\n` that arrived when somebody edited the file on
+    Windows, is invisible in a diff and perfectly visible in the output — you
+    have shown the model two patterns and asked it to pick.
+
+    Which is the argument for keeping examples as data with a single formatter,
+    rather than as a text block somebody will eventually reindent.
+
+  </Fragment>
+  <Fragment slot="python">
+    ```python
+    messages = []
+    for example in EXAMPLES:
+        messages += [
+            {"role": "user", "content": example.request},
+            {"role": "assistant", "content": example.line},
+        ]
+    messages.append({"role": "user", "content": incoming})
+    ```
+
+    Chat APIs want the examples as alternating turns rather than pasted into
+    one blob, and it is worth doing it their way — the turn structure is
+    already the strongest "this is a list of finished exchanges" signal
+    available.
+
+    Note where the awkward example goes: in this list, like every other one, as
+    a user turn and an assistant turn that declines. Putting it in the system
+    prompt as a rule instead leaves a sentence competing with a demonstration,
+    and the demonstration is the one shaped like the thing being asked for.
+
+  </Fragment>
+</DevAside>
+
+<Checkpoint question="A team ships a message classifier built on four examples in the prompt. It is right on every case they tried while building it, and in its first week live it produces a steady stream of confident, perfectly formatted nonsense on the messages that do not fit any category. The model, the code and the prompt are all unchanged since testing. What went wrong — and why did testing not catch it?">
+  All four examples were cases with a clean answer, because those are the cases
+  anybody reaches for. That set says something nobody intended: every message
+  can be answered. The model cannot tell "they never showed me one of those"
+  from "there are none of those" — from inside the document, those look
+  identical.
+
+So when a message with no answer arrives, the prompt is still a list of finished
+lines, and the only plausible way to finish it is another finished line. The
+model makes one up. And because the very first example fixed the format
+perfectly, the fabrication comes out perfectly formatted, so nothing watching
+for malformed output ever sees it.
+
+Testing missed it because the test cases came from the same instinct as the
+examples — the team chose clear ones for both. The example set and the test set
+share a blind spot, and it is the same blind spot.
+
+The repair is one more example: a message that cannot be answered, sitting in
+the list beside the right way to say so.
+
+</Checkpoint>

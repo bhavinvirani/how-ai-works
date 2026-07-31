@@ -1,0 +1,301 @@
+---
+title: The dial that cannot make it cleverer
+part: large-models
+order: 3
+summary: The model hands over a row of percentages, and one dial decides how sharply those percentages are treated before a piece is drawn from them — stretching or squashing the gaps, and changing nothing whatever about what the model rated best.
+prerequisites:
+  - text-generation
+connections:
+  - to: hallucination
+    why: Turning this dial to the bottom is the most popular suggested cure for a model making things up, and it cures nothing — the favourite is still the favourite at every setting, so all a low temperature buys is the same wrong answer every time, delivered with total steadiness.
+interactives:
+  - TemperatureDial
+status: published
+updated: 2026-07-31
+---
+
+import Aside from '../../components/blocks/Aside.astro';
+import Checkpoint from '../../components/blocks/Checkpoint.astro';
+import DevAside from '../../components/blocks/DevAside.astro';
+import Figure from '../../components/blocks/Figure.astro';
+import GapsNotOpinions from '../../components/diagrams/GapsNotOpinions.astro';
+import { TemperatureDial } from '../../components/interactives/TemperatureDial';
+
+A colleague sends you a screenshot. They asked the assistant for the three
+biggest risks in a supplier contract, and it came back with a clean, sensible
+list. You paste the same question into the same assistant four minutes later.
+Same words. Same document.
+
+You get a different list. Two of the three match. The third is something else
+entirely, and it is worse.
+
+Nothing changed in between. Not the question, not the document, not the model.
+Nobody deployed anything.
+
+The natural conclusion is that it thought about it again and came out somewhere
+else. It did not. Run that question a thousand times and the machine works out
+the same opinion a thousand times — it is the same arithmetic over the same
+numbers, and arithmetic does not have moods.
+
+What differs is one step that happens **after** the opinion, and there is a
+single dial controlling it.
+
+## Something still has to choose
+
+The unit before this one ended on a row rather than a word. At every step the
+model does not produce the next piece of text; it produces every piece that
+could come next, each with a share of the probability, all of them adding up to
+one.
+
+A row of percentages is not text. Something downstream has to turn it into one
+piece, and there are only two honest ways to do that.
+
+**Always take the largest.** Straightforward, and completely repeatable: the
+same question produces the same answer today, tomorrow and next year. It also
+has a specific failure that anyone who has tried it will recognise. Text written
+this way has a habit of getting stuck — repeating a clause, then repeating it
+again — because the piece that most often follows a phrase is sometimes the
+piece that starts the phrase over, and a machine that always takes the largest
+has no way to break out. The deeper problem is that such a model has exactly one
+answer to any question, for ever. Ask it for a subject line ten times and you
+get the same subject line ten times.
+
+**Draw one at random, in proportion to the shares.** A piece holding 55% of the
+row gets picked 55% of the time, one holding 5% gets picked 5% of the time.
+Variety comes free, several attempts at the same question are genuinely
+different attempts — and every so often something from the bottom of the row
+gets through.
+
+Neither is right for everything, which is why the choice was never made for you.
+It was left on a dial.
+
+## The dial is not where you think it is
+
+Here is the part almost every explanation gets wrong, so it is worth being
+slow about.
+
+What the model hands over is not percentages. It is a **raw score** for each
+piece — an unbounded number, higher meaning "more like what usually comes next
+here". Those scores are turned into percentages by one standard step called
+**softmax**, which takes any row of numbers and returns a row of shares: all
+positive, the largest still the largest, adding to exactly one.
+
+There is one number in the request that acts on all this, and it does exactly
+one thing. Every raw score is divided by it, before softmax runs.
+
+That is the whole mechanism. The number is called the **temperature**, borrowed
+from physics, where a hotter substance jostles about more — an analogy worth
+exactly that much and no more.
+
+Divide by something small and the scores are pulled further apart, so the leader
+runs away with the row. Divide by something large and they are squeezed closer
+together, so the row flattens out towards giving every piece an equal chance.
+
+Now notice what dividing cannot do. Divide every number in a list by the same
+amount and the biggest is still the biggest, the smallest is still the smallest,
+nothing has been added and nothing has been removed. **The order is identical at
+every setting of the dial.** A piece the model rated third best is third best at
+0.1 and third best at 2.
+
+So "turn the temperature up to make it more creative" is describing something
+other than what it sounds like. Nothing in the machine has become more
+imaginative, more knowledgeable or better. The model's opinion was finished
+before the dial was consulted. All that changes is how much of the row is left
+over for the pieces it did not rate first.
+
+$$
+p_i = \frac{e^{s_i / T}}{\sum_j e^{s_j / T}}
+$$
+
+Read in the words above: a piece's share $p_i$ is its own raw score $s_i$
+divided by the temperature $T$, run through the exponential, and then divided by
+that same quantity added up across every piece so the row comes to exactly one.
+$T$ appears in one place only, and it is the same $T$ for every piece — which is
+precisely why it cannot promote anything.
+
+Divide one piece's share by another's and everything except the difference
+between their two raw scores cancels out, leaving $e^{(s_1 - s_2)/T}$. The odds
+between any two pieces are the gap between their scores, divided by the
+temperature. That is the entire effect of this dial, in one expression.
+
+Put numbers on it. In the panel further down, the model scores _mild_ at 3.1 and
+_cold_ at 2.4 — a gap of 0.7 that it produced once and never revisits. At a
+setting of 1, _mild_ is twice as likely as _cold_. At 2, 1.4 times as likely. At
+the very bottom of the dial, about eleven hundred times as likely. The same two
+scores in all three cases.
+
+<Figure
+  title="One row of scores, read three ways"
+  description="The five raw scores along the top are produced once and never touched again; underneath, the same five pieces sit in the same order at three settings of the dial, so the only thing changing down the page is how much of the row is left over for the pieces the model did not rate first — the same gap between the top two scores is worth four times at the low setting and 1.4 times at the high one."
+>
+  <GapsNotOpinions />
+</Figure>
+
+## Turn it yourself
+
+Everything in the panel below is the real arithmetic: raw scores, divided by the
+temperature, through softmax, drawn in proportion. What is staged is where the
+raw scores come from, and the previous unit said so plainly — a real model works
+them out by running the whole machine over everything written so far, across a
+vocabulary of about a hundred thousand pieces. This table is written by hand so
+that one whole row fits on the page.
+
+<TemperatureDial client:visible />
+
+It opens midway, with the model continuing _The weather today is_. Five pieces:
+_mild_ at 55%, _cold_ at 27%, _unsettled_ at 12%, _glorious_ at 5%, and
+_aubergine_, printed as 0.
+
+**Take the slider to the bottom first.** Four bars vanish and _mild_ goes to
+100%. Now run it four times. The same sentence four times — _The weather today
+is mild and dry_. Nothing has been switched off; the machine is still drawing at
+random, exactly as before. There is simply nothing left to draw.
+
+This end of the dial stops at 0.1 rather than 0, because dividing by zero is not
+a thing a dial can do. Interfaces that offer you a 0 are not dividing by it
+either — they quietly switch to always taking the largest, which is what this
+end is doing anyway. Either way it is where anything that has to be reproducible
+gets run.
+
+**Leave it on four runs and slide back to the middle.** Four different
+sentences. These four draws happen to walk straight down the row — the first
+takes _mild_, the second _cold_, the third _unsettled_, the fourth _glorious_ —
+which is what a row of percentages looks like when it is genuinely being
+sampled. One opinion, four outcomes, and not a single number in that row changed
+between them.
+
+**Now push the dial up to 1.1 or beyond.** The fourth run opens with
+_aubergine_. At 1.2 the model rated that piece at 0.8%, and 0.8% of the time is
+0.8% of the time. Watch what it does next: it does not stop, apologise or start
+the sentence again. It writes _aubergine coloured and…_, because continuing is
+the only operation it has.
+
+Two honest caveats about that. The four runs are four fixed rolls of the dice,
+so that this page can point at them and so that you see what the sentences above
+describe; four is not a survey, and at the top of the dial the model is giving
+that piece about three chances in a hundred. And the row prints whole
+percentages, so at the middle setting _aubergine_ shows as 0 — it is 0.4%, which
+is not never. It is about once in every two hundred and seventy presses.
+
+## What the two ends are actually for
+
+**Turn it down** for anything with one right answer and a fixed shape. Pulling
+fields out of an invoice, classifying a ticket, converting a date, writing code
+where one wrong token stops the file compiling. Two reasons, and the second one
+matters more than it looks. Where there is a single correct answer, the
+second-best piece is not a pleasant variation, it is simply wrong. And a system
+that returns the same output for the same input is a system you can test; one
+that does not is a system where every failed test might be bad luck.
+
+**Turn it up** for anything you are going to sift through yourself. Names,
+subject lines, opening paragraphs, ten different angles on a brief. Here a dud
+costs you nothing but the second it takes to skip it, and the whole value is in
+the spread. If you want six genuinely different attempts, this dial is how you
+get them; asking the same question six times at the bottom of the range will
+hand you the same answer six times.
+
+The dial has no idea which of these you are doing. It is set per request, and
+most chat interfaces set it once, on your behalf, for everything you will ever
+ask.
+
+## Turning it down does not make it true
+
+At the bottom of the range the model always takes its top-scored piece. If the
+top-scored piece is wrong, you now get the same wrong answer every single time,
+delivered with total steadiness. Consistency is not accuracy. Nothing anywhere
+in this dial has access to whether the favourite is correct; it only knows which
+score was largest, and it was going to know that at every setting.
+
+The other direction fails for the same reason. Turning the dial up cannot make
+the model reach a fact that was not in the row, because temperature never adds
+anything to the row. It only makes it likelier to pick something it already
+rated badly.
+
+There is one genuinely useful thing to do with all this. Because the variation
+comes from the draw and not from the model reconsidering, running the same
+question three times tells you something real about the row underneath. Where
+the three answers agree, the row was sharply peaked and the model was confident.
+Where they wander off in different directions, the row was flat — no strong
+opinion, and what you are reading is a guess wearing the same fluent prose as
+everything else. It is not proof: three agreeing answers can be three samples of
+one confident mistake. But as a thirty-second check on whether you are looking
+at knowledge or at a guess, nothing else is that cheap.
+
+<Aside title="The other control, which does something different" tone="note">
+  Alongside temperature, most APIs and playgrounds offer a second control,
+  usually called **top-p** (or nucleus sampling) and sometimes **top-k**. It is
+  easy to assume it is a variant of this one. It is not, and the difference is
+  the distinction this whole unit turns on.
+
+Top-p sorts the row, keeps adding pieces from the top until their shares reach
+some total — 90%, say — and throws everything below that away. Then it draws
+from what is left. That is not a change to the gaps. It is a change to the list.
+
+Which makes the two complementary rather than redundant. A high temperature with
+a tight top-p gives you variety among the plausible options while making the
+piece rated at four in a thousand strictly unreachable rather than merely
+unlikely. If you want adventurous prose without the occasional _aubergine_, that
+combination is how it is done.
+
+</Aside>
+
+<DevAside>
+  <Fragment slot="java">
+    ```java
+    var reply = model.complete(prompt, Options.temperature(0.0));
+    ```
+
+    Temperature belongs to the request, not to the model, so two callers of the
+    same deployment can be running at different settings and neither can see the
+    other's. It is worth logging next to the output; a bug report that says "it
+    gave a different answer" is unanswerable without it.
+
+    And zero is not the guarantee it looks like — this is the one place the
+    page above simplifies. Hosted models batch requests together and
+    floating-point addition is not associative, so the raw scores can come out
+    fractionally different depending on who else happened to be in the batch,
+    which is occasionally enough to swap the top two. If you need the exact
+    bytes again, store them rather than planning to regenerate them.
+
+  </Fragment>
+  <Fragment slot="python">
+    ```python
+    reply = model.complete(prompt, temperature=0)
+    ```
+
+    The trap this sets is in the test suite. An assertion comparing the reply to
+    a fixed string will pass on your machine for a fortnight and then fail on a
+    run where nothing changed. Assert on properties the answer has to have — it
+    parses as JSON, it contains these three keys, the total matches the invoice
+    — not on the exact sentence.
+
+    The mirror-image trap is asking for variety *across* requests while leaving
+    the dial at zero. Within one reply the model can still vary, because every
+    piece is chosen knowing what it has just written — but five separate calls
+    asking for a different angle each time will hand back the same angle five
+    times, because two identical requests at zero have nothing to differ with.
+
+  </Fragment>
+</DevAside>
+
+<Checkpoint question="An extraction tool occasionally pulls the wrong field out of an invoice. Someone proposes setting temperature to 0 so that it stops making mistakes. What will that actually change, what will it definitely not change, and what would you have to look at to find out whether it helped?">
+  It changes the variability and nothing else. The same invoice will now always
+  produce the same extraction, which removes one whole source of error — the
+  runs where the tool drew the second-best field instead of the best one.
+
+What it cannot change is which field the model scored highest, because that was
+decided before the dial was consulted and is the same at every setting. Every
+mistake where the wrong field was the favourite survives untouched, and now
+arrives identically every time, which makes it look considered rather than
+accidental.
+
+So the only way to know is to compare against invoices whose correct answers you
+already have, before and after. If the errors were coming from the draw, they
+disappear. If they were coming from the row, the score does not move at all.
+
+Worth keeping as a shape. Consistency and correctness are separate axes, and a
+change that improves one says nothing about the other — with the extra sting
+that making a system consistent can make its remaining errors harder to notice,
+because they stop looking like noise and start looking like a decision.
+
+</Checkpoint>

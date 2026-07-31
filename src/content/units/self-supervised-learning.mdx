@@ -10,6 +10,10 @@ connections:
     why: Covering a word hands the score something to compare against, so "how far off was the missing piece" becomes the single number the whole machine is tuned to shrink.
   - to: training-loop
     why: The loop stops being limited by how many marked examples exist — every sentence anybody has written is another turn round it, with the comparison step already paid for.
+  - to: pretraining
+    why: This idea run once, at enormous size, over most of the written internet. Everything a large model knows arrives in that single pass, and nothing after it adds to the store.
+  - to: llm
+    why: Cover a piece and guess it back, at that scale, and what you end up holding is a machine that scores every possible next piece — which is the whole of what a large language model does.
 interactives:
   - FreeLabelMaker
 status: published

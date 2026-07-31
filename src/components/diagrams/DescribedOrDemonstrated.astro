@@ -1,0 +1,210 @@
+---
+/**
+ * The same format, told once and shown once.
+ *
+ * The teaching load sits entirely on cell geometry. In the top half the three
+ * replies have different numbers of cells at different widths — three shapes
+ * out of one instruction. In the bottom half every row has the same three cells
+ * in the same three places, including the row nobody has filled in yet, so the
+ * empty slots are the answer to the question "what shape does this go in".
+ *
+ * Nothing is carried by colour: filled rows are solid and the unfinished row is
+ * dashed and empty, both halves are labelled, and the two captions say what the
+ * geometry is doing. Decorative on its own, so `aria-hidden` — `Figure` supplies
+ * the accessible name and the description.
+ */
+
+interface Cell {
+  readonly text: string;
+  readonly width: number;
+}
+
+const GAP = 3;
+const HEIGHT = 22;
+
+/** Lays a row of cells out left to right from a starting x. */
+const laid = (cells: readonly Cell[], startX: number) => {
+  let x = startX;
+
+  return cells.map((cell) => {
+    const placed = { ...cell, x };
+    x += cell.width + GAP;
+    return placed;
+  });
+};
+
+/** Three replies to three requests, under one instruction and no examples. */
+const described = [
+  {
+    y: 64,
+    cells: laid(
+      [
+        { text: 'Room: Small Room', width: 146 },
+        { text: 'Day: Wednesday', width: 128 },
+        { text: 'Time: 7pm–8pm', width: 132 },
+      ],
+      16,
+    ),
+  },
+  {
+    y: 92,
+    cells: laid([{ text: 'Big room, Friday 19:30–21:00', width: 230 }], 16),
+  },
+  {
+    y: 120,
+    cells: laid(
+      [
+        {
+          text: 'Next month is fairly open — which date were you after?',
+          width: 400,
+        },
+      ],
+      16,
+    ),
+  },
+];
+
+/** The house format is three cells wide, and the widths never move. */
+const SHAPE = [58, 46, 106];
+const LINE_X = 272;
+
+const shaped = (values: readonly string[]) =>
+  laid(
+    SHAPE.map((width, index) => ({ text: values[index], width })),
+    LINE_X,
+  );
+
+const demonstrated = [
+  {
+    y: 200,
+    request: 'Can we have the small room Tuesday, 6 till 8?',
+    cells: shaped(['BACK', 'Tue', '18:00–20:00']),
+    finished: true,
+  },
+  {
+    y: 230,
+    request: 'Choir in the big room Thursday, 7 to 9.',
+    cells: shaped(['HALL', 'Thu', '19:00–21:00']),
+    finished: true,
+  },
+  {
+    y: 260,
+    request: 'Yoga class, small room, Wednesday 7 till 8.',
+    cells: shaped(['', '', '']),
+    finished: false,
+  },
+];
+---
+
+<svg viewBox="0 0 640 320" class="w-full" aria-hidden="true">
+  <!-- ============ told ============ -->
+  <text
+    x="16"
+    y="14"
+    class="fill-ink font-display"
+    font-size="12"
+    font-weight="700">the format, described</text
+  >
+
+  <rect
+    x="16"
+    y="22"
+    width="608"
+    height="24"
+    rx="3"
+    class="fill-paper-sunken stroke-rule-strong"
+    stroke-width="1"></rect>
+  <text x="26" y="38" class="fill-ink font-mono" font-size="11"
+    >Take each booking request and put it in our usual format.</text
+  >
+
+  {
+    described.map((row) =>
+      row.cells.map((cell) => (
+        <g>
+          <rect
+            x={cell.x}
+            y={row.y}
+            width={cell.width}
+            height={HEIGHT}
+            rx="3"
+            class="fill-paper-raised stroke-rule-strong"
+            stroke-width="1"
+          />
+          <text
+            x={cell.x + 8}
+            y={row.y + 15}
+            class="fill-ink-muted font-mono"
+            font-size="9"
+          >
+            {cell.text}
+          </text>
+        </g>
+      )),
+    )
+  }
+
+  <text x="16" y="158" class="fill-ink-muted font-mono" font-size="9"
+    >Three requests, three shapes. A format is a pattern, and a sentence is a
+    poor way to hand one over.</text
+  >
+
+  <!-- ============ shown ============ -->
+  <text
+    x="16"
+    y="188"
+    class="fill-ink font-display"
+    font-size="12"
+    font-weight="700">the format, demonstrated</text
+  >
+
+  {
+    demonstrated.map((row) => (
+      <g>
+        <text
+          x="16"
+          y={row.y + 15}
+          class="fill-ink-muted font-mono"
+          font-size="9"
+        >
+          {row.request}
+        </text>
+
+        {row.cells.map((cell) => (
+          <g>
+            <rect
+              x={cell.x}
+              y={row.y}
+              width={cell.width}
+              height={HEIGHT}
+              rx="3"
+              class={
+                row.finished
+                  ? 'fill-paper-raised stroke-accent'
+                  : 'fill-paper-sunken stroke-accent'
+              }
+              stroke-width="1.5"
+              stroke-dasharray={row.finished ? undefined : '4 3'}
+            />
+            <text
+              x={cell.x + 8}
+              y={row.y + 15}
+              class="fill-ink font-mono"
+              font-size="9"
+            >
+              {cell.text}
+            </text>
+          </g>
+        ))}
+      </g>
+    ))
+  }
+
+  <text x="16" y="298" class="fill-ink-muted font-mono" font-size="9"
+    >Two rows finished, and the third row's shape has stopped being a decision.</text
+  >
+  <text x="16" y="310" class="fill-ink-muted font-mono" font-size="9"
+    >Nothing described it. The document simply has a shape now, and only one way
+    to end.</text
+  >
+</svg>

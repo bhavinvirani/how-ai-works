@@ -1,0 +1,140 @@
+---
+/**
+ * Four passes of the loop, stacked, so the input to each one is visible next to
+ * the input to the last.
+ *
+ * The teaching load sits on the left edge lining up. Every row begins with the
+ * same four pieces in the same order, and each row is exactly one box longer
+ * than the one above it — which is the whole of "it re-reads everything and
+ * appends one piece", drawn rather than asserted. A reader can check the claim
+ * by running a finger down the column.
+ *
+ * Nothing is carried by colour: the newly written piece is separated by a wider
+ * gap and introduced by a `+`, the pass is numbered, and the count of pieces
+ * read is printed at the end of each row. Decorative on its own, so
+ * `aria-hidden`: `Figure` supplies the accessible name and description.
+ */
+
+const CHAR = 6.2;
+const PAD = 12;
+const GAP = 3;
+const BOX_HEIGHT = 22;
+
+const boxWidth = (text: string): number => Math.round(text.length * CHAR + PAD);
+
+/** The opening the model is given, and the four pieces it goes on to write. */
+const OPENING = ['The', 'weather', 'today', 'is'];
+const WRITTEN = ['mild', 'and', 'dry', 'again'];
+
+const LEFT = 50;
+const TOP = 10;
+const STEP = 34;
+const NOTE_X = 396;
+
+const rows = WRITTEN.map((piece, index) => {
+  const read = [...OPENING, ...WRITTEN.slice(0, index)];
+
+  let x = LEFT;
+  const boxes = read.map((text) => {
+    const box = { text, x, width: boxWidth(text) };
+    x += box.width + GAP;
+    return box;
+  });
+
+  return {
+    pass: index + 1,
+    y: TOP + index * STEP,
+    boxes,
+    plusX: x + 5,
+    piece: { text: piece, x: x + 16, width: boxWidth(piece) },
+    read: read.length,
+  };
+});
+---
+
+<svg viewBox="0 0 460 176" class="w-full" aria-hidden="true">
+  {
+    rows.map((row) => (
+      <g>
+        <text
+          x="8"
+          y={row.y + 15}
+          class="fill-ink-muted font-mono"
+          font-size="9"
+        >
+          pass {row.pass}
+        </text>
+
+        {row.boxes.map((box) => (
+          <g>
+            <rect
+              x={box.x}
+              y={row.y}
+              width={box.width}
+              height={BOX_HEIGHT}
+              rx="3"
+              class="fill-paper-raised stroke-rule-strong"
+              stroke-width="1"
+            />
+            <text
+              x={box.x + box.width / 2}
+              y={row.y + 15}
+              text-anchor="middle"
+              class="fill-ink font-mono"
+              font-size="10"
+            >
+              {box.text}
+            </text>
+          </g>
+        ))}
+
+        {/* The piece this pass wrote. A wider gap and a plus sign carry that,
+            so the row still reads correctly with no colour at all. */}
+        <text
+          x={row.plusX}
+          y={row.y + 15}
+          class="fill-ink-muted font-mono"
+          font-size="10"
+        >
+          +
+        </text>
+        <rect
+          x={row.piece.x}
+          y={row.y}
+          width={row.piece.width}
+          height={BOX_HEIGHT}
+          rx="3"
+          class="fill-paper-raised stroke-accent"
+          stroke-width="1.5"
+        />
+        <text
+          x={row.piece.x + row.piece.width / 2}
+          y={row.y + 15}
+          text-anchor="middle"
+          class="fill-ink font-mono"
+          font-size="10"
+          font-weight="600"
+        >
+          {row.piece.text}
+        </text>
+
+        <text
+          x={NOTE_X}
+          y={row.y + 15}
+          class="fill-ink-faint font-mono"
+          font-size="8.5"
+        >
+          reads {row.read}
+        </text>
+      </g>
+    ))
+  }
+
+  <text x="8" y="152" class="fill-ink-muted font-mono" font-size="8.5"
+    >Each pass reads one more piece than the last — the whole of what came
+    before,</text
+  >
+  <text x="8" y="165" class="fill-ink-muted font-mono" font-size="8.5"
+    >never any less of it. Nothing sits above pass 1: no plan, no draft.</text
+  >
+</svg>

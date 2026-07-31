@@ -1,0 +1,304 @@
+---
+/**
+ * One sentence — a company's refund window — taken into a model two ways.
+ *
+ * The teaching load sits on what is missing from the top row. After the
+ * training run there is no box anywhere holding the sentence; it has become a
+ * hair's tilt on every dial, which is why nothing in that row can be corrected,
+ * quoted or pointed at, and why the answer comes back as the internet's average
+ * refund policy rather than this company's. The bottom row is the same fact and
+ * the same machine, with the sentence still intact and still a sentence.
+ *
+ * Nothing is carried by colour. The two routes are separated by position (top
+ * row, bottom row) and by heading; the state of the dials is carried by the
+ * tilt of every needle and spelled out in the label under each bank; and the
+ * fact that a cited answer has something to cite is drawn as a dashed line that
+ * exists in one row and not the other.
+ *
+ * Decorative on its own, so `aria-hidden`: `Figure` supplies the accessible
+ * name and the description that teaches.
+ */
+
+const DIAL_RADIUS = 8;
+
+/** Where a needle's tip lands, measured from straight up. */
+const needle = (cx: number, cy: number, degrees: number) => {
+  const radians = ((degrees - 90) * Math.PI) / 180;
+  return {
+    x2: cx + DIAL_RADIUS * Math.cos(radians),
+    y2: cy + DIAL_RADIUS * Math.sin(radians),
+  };
+};
+
+const COLUMNS = [234, 257, 280, 303, 326, 349, 372, 395];
+
+/**
+ * Small on purpose. "A hair's movement" is the claim in the prose, so a needle
+ * swung a quarter turn would be a different and less honest picture.
+ */
+const NUDGED = [
+  -16, 11, -7, 18, -22, 5, 13, -10, 7, -19, 14, -5, 21, -12, 9, -17,
+];
+
+const bank = (topRow: number, bottomRow: number, tilts: readonly number[]) =>
+  [topRow, bottomRow].flatMap((cy, row) =>
+    COLUMNS.map((cx, column) => {
+      const degrees = tilts[row * COLUMNS.length + column];
+      return { cx, cy, ...needle(cx, cy, degrees) };
+    }),
+  );
+
+const upright = COLUMNS.flatMap(() => [0, 0]);
+
+const trainedDials = bank(48, 74, NUDGED);
+const untouchedDials = bank(200, 226, upright);
+
+/** Arrowheads are drawn, not marker-referenced, so there is no id to collide. */
+const rightHead = (x: number, y: number): string =>
+  `M${String(x - 6)} ${String(y - 4)} L${String(x)} ${String(y)} L${String(x - 6)} ${String(y + 4)} Z`;
+
+const upHead = (x: number, y: number): string =>
+  `M${String(x - 4)} ${String(y + 6)} L${String(x)} ${String(y)} L${String(x + 4)} ${String(y + 6)} Z`;
+---
+
+<svg viewBox="0 0 640 336" class="w-full" aria-hidden="true">
+  <!-- ================= the fact, put through a training run ================= -->
+  <text
+    x="16"
+    y="20"
+    class="fill-ink font-display"
+    font-size="12"
+    font-weight="700">the fact goes in through a training run</text
+  >
+
+  <rect
+    x="16"
+    y="32"
+    width="134"
+    height="32"
+    rx="3"
+    class="fill-paper-raised stroke-rule-strong"
+    stroke-width="1"></rect>
+  <text
+    x="83"
+    y="52"
+    text-anchor="middle"
+    class="fill-ink font-mono"
+    font-size="10">14-day refund window</text
+  >
+
+  <line
+    x1="162"
+    y1="48"
+    x2="206"
+    y2="48"
+    class="stroke-rule-strong"
+    stroke-width="1"></line>
+  <path d={rightHead(206, 48)} class="fill-ink-faint"></path>
+  <text
+    x="184"
+    y="40"
+    text-anchor="middle"
+    class="fill-ink-faint font-mono"
+    font-size="8">one training run</text
+  >
+
+  <rect
+    x="220"
+    y="28"
+    width="194"
+    height="60"
+    rx="4"
+    class="fill-paper-sunken stroke-rule"
+    stroke-width="1"></rect>
+  {
+    trainedDials.map((dial) => (
+      <g class="stroke-rule-strong" stroke-width="1.5">
+        <circle
+          cx={dial.cx}
+          cy={dial.cy}
+          r={DIAL_RADIUS}
+          class="fill-paper-raised stroke-rule-strong"
+          stroke-width="1"
+        />
+        <line x1={dial.cx} y1={dial.cy} x2={dial.x2} y2={dial.y2} />
+      </g>
+    ))
+  }
+  <text
+    x="317"
+    y="102"
+    text-anchor="middle"
+    class="fill-ink-muted font-mono"
+    font-size="9">every needle moved a hair</text
+  >
+
+  <line
+    x1="420"
+    y1="58"
+    x2="458"
+    y2="58"
+    class="stroke-rule-strong"
+    stroke-width="1"></line>
+  <path d={rightHead(458, 58)} class="fill-ink-faint"></path>
+  <text
+    x="439"
+    y="50"
+    text-anchor="middle"
+    class="fill-ink-faint font-mono"
+    font-size="8">then you ask</text
+  >
+
+  <rect
+    x="466"
+    y="40"
+    width="158"
+    height="36"
+    rx="3"
+    class="fill-paper-raised stroke-rule-strong"
+    stroke-width="1"></rect>
+  <text
+    x="545"
+    y="62"
+    text-anchor="middle"
+    class="fill-ink font-mono"
+    font-size="10">&#8220;&#8230;within 30 days.&#8221;</text
+  >
+
+  <text x="16" y="126" class="fill-ink-muted font-mono" font-size="10"
+    >The sentence itself is nowhere. What is left is a hair&#8217;s movement on
+    several million</text
+  >
+  <text x="16" y="140" class="fill-ink-muted font-mono" font-size="10"
+    >dials, mixed with every refund policy it ever read. Nothing to edit,
+    nothing to quote.</text
+  >
+
+  <!-- ================= the fact, handed over with the question ================= -->
+  <text
+    x="16"
+    y="172"
+    class="fill-ink font-display"
+    font-size="12"
+    font-weight="700">the fact goes in with the question</text
+  >
+
+  <rect
+    x="16"
+    y="184"
+    width="134"
+    height="32"
+    rx="3"
+    class="fill-paper-raised stroke-accent"
+    stroke-width="1.5"></rect>
+  <text
+    x="83"
+    y="204"
+    text-anchor="middle"
+    class="fill-ink font-mono"
+    font-size="10">14-day refund window</text
+  >
+
+  <line
+    x1="162"
+    y1="200"
+    x2="206"
+    y2="200"
+    class="stroke-rule-strong"
+    stroke-width="1"></line>
+  <path d={rightHead(206, 200)} class="fill-ink-faint"></path>
+  <text
+    x="184"
+    y="192"
+    text-anchor="middle"
+    class="fill-ink-faint font-mono"
+    font-size="8">handed over now</text
+  >
+
+  <rect
+    x="220"
+    y="180"
+    width="194"
+    height="60"
+    rx="4"
+    class="fill-paper-sunken stroke-rule"
+    stroke-width="1"></rect>
+  {
+    untouchedDials.map((dial) => (
+      <g class="stroke-rule-strong" stroke-width="1.5">
+        <circle
+          cx={dial.cx}
+          cy={dial.cy}
+          r={DIAL_RADIUS}
+          class="fill-paper-raised stroke-rule-strong"
+          stroke-width="1"
+        />
+        <line x1={dial.cx} y1={dial.cy} x2={dial.x2} y2={dial.y2} />
+      </g>
+    ))
+  }
+  <text
+    x="317"
+    y="254"
+    text-anchor="middle"
+    class="fill-ink-muted font-mono"
+    font-size="9">not one needle moved</text
+  >
+
+  <line
+    x1="420"
+    y1="210"
+    x2="458"
+    y2="210"
+    class="stroke-rule-strong"
+    stroke-width="1"></line>
+  <path d={rightHead(458, 210)} class="fill-ink-faint"></path>
+  <text
+    x="439"
+    y="202"
+    text-anchor="middle"
+    class="fill-ink-faint font-mono"
+    font-size="8">then you ask</text
+  >
+
+  <rect
+    x="466"
+    y="192"
+    width="158"
+    height="36"
+    rx="3"
+    class="fill-paper-raised stroke-rule-strong"
+    stroke-width="1"></rect>
+  <text
+    x="545"
+    y="214"
+    text-anchor="middle"
+    class="fill-ink font-mono"
+    font-size="10">&#8220;&#8230;within 14 days.&#8221;</text
+  >
+
+  <!-- The citation, drawn as the thing it is: a line back to a document that
+       still exists. There is no equivalent line anywhere in the top row. -->
+  <path
+    d="M83 216 L83 268 L546 268 L546 236"
+    class="fill-none stroke-accent"
+    stroke-width="1.5"
+    stroke-dasharray="4 3"></path>
+  <path d={upHead(546, 230)} class="fill-accent"></path>
+  <text
+    x="317"
+    y="282"
+    text-anchor="middle"
+    class="fill-ink-muted font-mono"
+    font-size="9">and the answer can point back at the card it came from</text
+  >
+
+  <text x="16" y="306" class="fill-ink-muted font-mono" font-size="10"
+    >The sentence is still a sentence. Correct it and the next answer changes.
+    Delete it and</text
+  >
+  <text x="16" y="320" class="fill-ink-muted font-mono" font-size="10"
+    >the model knows nothing about your returns again. Nothing was installed,
+    nothing to undo.</text
+  >
+</svg>

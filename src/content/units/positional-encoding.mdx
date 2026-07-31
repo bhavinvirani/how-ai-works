@@ -8,6 +8,8 @@ prerequisites:
 connections:
   - to: transformers
     why: Every transformer stamps position into the words once, right at the bottom of the stack, before the first attention layer sees anything — it is one of the small pieces of plumbing that make an attention block usable on real language.
+  - to: context-window
+    why: How far a model can usefully read depends on position stamps still meaning something at lengths it never met in training, which is why extending a window is a harder problem than finding more memory.
 interactives:
   - OrderBlindness
 status: published

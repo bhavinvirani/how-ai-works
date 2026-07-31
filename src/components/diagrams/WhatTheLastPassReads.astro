@@ -1,0 +1,259 @@
+---
+/**
+ * The same question answered two ways, drawn so the difference is *where the
+ * intermediate numbers ended up* rather than how long the output is.
+ *
+ * The top panel is the straight answer. The working is drawn as a dashed,
+ * open-ended box sitting inside the pass, explicitly labelled as never written
+ * down — that is the only way to picture something that happened and then
+ * stopped existing. The answer it produces, 576, is the arithmetic you get by
+ * taking 20% off 240 (192) and then a quarter off that (144): 240 + 192 + 144.
+ *
+ * The bottom panel is the same question with the steps written first. Every
+ * number in it is one step from the one above: 240 ÷ 1.2 = 200, then
+ * 200 × 0.75 = 150, then the check 200 + a fifth = 240, then
+ * 240 + 200 + 150 = 590. Change any of those and the prose in
+ * `chain-of-thought.mdx` is wrong — it quotes 576, 590 and the 14 between them.
+ *
+ * The teaching load sits on the bracket, not on the row count. A reader can see
+ * that step 2 uses the 200 that step 1 produced, that step 3 re-checks it, and
+ * that the answer row is reached by an arrow drawn *out of the three rows above
+ * it* — which is the claim the unit exists to make: the working is not only
+ * extra passes, it is text that later passes can read.
+ *
+ * Nothing is carried by colour (hard rule 9). Discarded working is dashed, open
+ * and set in faint ink; written working is a solid box with a step number; the
+ * two verdicts are the words "wrong" and "correct"; and the bracket is a shape
+ * with a written label next to it. Strip every colour out and the figure still
+ * reads.
+ *
+ * Decorative on its own, so `aria-hidden`: `Figure` supplies the accessible
+ * name and the description.
+ */
+
+/** The written working. Each row's number is used by the row beneath it. */
+const STEPS = [
+  { label: 'step 1', text: 'Friday = 240 ÷ 1.2 = 200' },
+  { label: 'step 2', text: 'Sunday = 200 × 0.75 = 150' },
+  { label: 'step 3', text: 'check: 200 + a fifth = 240' },
+];
+
+const ROW_TOP = 246;
+const ROW_STEP = 36;
+const ROW_HEIGHT = 28;
+const BOX_X = 76;
+const BOX_W = 250;
+
+const rows = STEPS.map((step, index) => ({
+  ...step,
+  y: ROW_TOP + index * ROW_STEP,
+}));
+
+const ANSWER_Y = ROW_TOP + STEPS.length * ROW_STEP;
+
+/** The bracket hugs the middle of the first and last written rows. */
+const BRACKET_TOP = ROW_TOP + ROW_HEIGHT / 2;
+const BRACKET_BOTTOM = rows[rows.length - 1].y + ROW_HEIGHT / 2;
+const BRACKET_MID = (BRACKET_TOP + BRACKET_BOTTOM) / 2;
+---
+
+<svg viewBox="0 0 600 452" class="w-full" aria-hidden="true">
+  <!-- The question, once, above both panels. -->
+  <rect
+    x="8"
+    y="8"
+    width="584"
+    height="62"
+    rx="8"
+    class="fill-paper-sunken stroke-rule-strong"
+    stroke-width="1.25"></rect>
+  <text x="24" y="27" class="fill-ink-faint font-mono" font-size="9"
+    >the same question, both times</text
+  >
+  <g class="fill-ink font-mono" font-size="10.5">
+    <text x="24" y="46"
+      >A café sold 240 pastries on Saturday — 20% more than Friday.</text
+    >
+    <text x="24" y="61"
+      >Sunday was a quarter down on Friday. How many over the three days?</text
+    >
+  </g>
+
+  <!-- ── Straight answer ─────────────────────────────────────────────── -->
+  <rect
+    x="8"
+    y="82"
+    width="584"
+    height="112"
+    rx="8"
+    class="fill-none stroke-rule-strong"
+    stroke-width="1.25"></rect>
+  <text
+    x="24"
+    y="104"
+    class="fill-ink font-display"
+    font-size="12.5"
+    font-weight="700">Answer straight away</text
+  >
+
+  <!-- Dashed and open: work that happened and was never written down. -->
+  <rect
+    x="24"
+    y="114"
+    width="286"
+    height="52"
+    rx="5"
+    class="fill-paper stroke-rule"
+    stroke-width="1.25"
+    stroke-dasharray="4 3"></rect>
+  <g class="fill-ink-faint font-mono" font-size="9">
+    <text x="34" y="131">worked out inside the pass, if at all:</text>
+    <text x="34" y="145">240 ÷ 1.2? 240 × 0.8? a quarter of which one?</text>
+  </g>
+  <text x="34" y="159" class="fill-ink-faint font-mono" font-size="8.5"
+    >never written, so gone the moment the pass ends</text
+  >
+
+  <g class="stroke-rule-strong" stroke-width="2">
+    <line x1="318" y1="140" x2="356" y2="140"></line>
+    <path d="M350 135 L358 140 L350 145" class="fill-none"></path>
+  </g>
+  <text x="320" y="132" class="fill-ink-faint font-mono" font-size="8.5"
+    >writes</text
+  >
+
+  <rect
+    x="366"
+    y="124"
+    width="84"
+    height="32"
+    rx="4"
+    class="fill-paper-raised stroke-rule-strong"
+    stroke-width="1.25"></rect>
+  <text
+    x="408"
+    y="146"
+    text-anchor="middle"
+    class="fill-ink font-mono"
+    font-size="14">576</text
+  >
+
+  <text
+    x="462"
+    y="138"
+    class="fill-ink font-display"
+    font-size="11.5"
+    font-weight="700">wrong</text
+  >
+  <text x="462" y="152" class="fill-ink-muted font-mono" font-size="9"
+    >by 14 pastries</text
+  >
+
+  <text x="24" y="184" class="fill-ink-muted font-mono" font-size="9"
+    >A pass or two of arithmetic, and the page stayed empty.</text
+  >
+
+  <!-- ── Steps first ─────────────────────────────────────────────────── -->
+  <rect
+    x="8"
+    y="210"
+    width="584"
+    height="234"
+    rx="8"
+    class="fill-none stroke-rule-strong"
+    stroke-width="1.25"></rect>
+  <text
+    x="24"
+    y="232"
+    class="fill-ink font-display"
+    font-size="12.5"
+    font-weight="700">Ask for the steps first</text
+  >
+
+  {
+    rows.map((row) => (
+      <g>
+        <text
+          x="24"
+          y={row.y + 19}
+          class="fill-ink-faint font-mono"
+          font-size="9"
+        >
+          {row.label}
+        </text>
+        <rect
+          x={BOX_X}
+          y={row.y}
+          width={BOX_W}
+          height={ROW_HEIGHT}
+          rx="3"
+          class="fill-paper-raised stroke-rule-strong"
+          stroke-width="1.25"
+        />
+        <text
+          x={BOX_X + 12}
+          y={row.y + 19}
+          class="fill-ink font-mono"
+          font-size="10.5"
+        >
+          {row.text}
+        </text>
+      </g>
+    ))
+  }
+
+  <!-- The bracket: everything above is still text, and still readable. -->
+  <path
+    d={`M336 ${BRACKET_TOP} L344 ${BRACKET_TOP} L344 ${BRACKET_BOTTOM} L336 ${BRACKET_BOTTOM}`}
+    class="fill-none stroke-rule-strong"
+    stroke-width="1.5"></path>
+  <g class="fill-ink-muted font-mono" font-size="9">
+    <text x="366" y="288">three finished numbers,</text>
+    <text x="366" y="301">still sitting in the input</text>
+  </g>
+
+  <!-- …and the pass that writes the answer reads all of them. -->
+  <g class="stroke-accent" stroke-width="1.75">
+    <path
+      d={`M344 ${BRACKET_MID} L354 ${BRACKET_MID} L354 ${ANSWER_Y - 8}`}
+      class="fill-none"></path>
+    <path
+      d={`M349 ${ANSWER_Y - 10} L354 ${ANSWER_Y - 2} L359 ${ANSWER_Y - 10}`}
+      class="fill-none"></path>
+  </g>
+
+  <text x="24" y={ANSWER_Y + 19} class="fill-ink-faint font-mono" font-size="9"
+    >answer</text
+  >
+  <rect
+    x={BOX_X}
+    y={ANSWER_Y}
+    width="290"
+    height={ROW_HEIGHT}
+    rx="3"
+    class="fill-paper-raised stroke-accent"
+    stroke-width="1.75"></rect>
+  <text
+    x={BOX_X + 12}
+    y={ANSWER_Y + 19}
+    class="fill-ink font-mono"
+    font-size="10.5"
+    font-weight="600">240 + 200 + 150 = 590</text
+  >
+  <text
+    x="380"
+    y={ANSWER_Y + 19}
+    class="fill-ink font-display"
+    font-size="11.5"
+    font-weight="700">correct</text
+  >
+
+  <g class="fill-ink-muted font-mono" font-size="9">
+    <text x="24" y="410"
+      >Around fifty pieces written, so around fifty passes of arithmetic —</text
+    >
+    <text x="24" y="424"
+      >and every finished number left where the next pass can read it.</text
+    >
+  </g>
+</svg>

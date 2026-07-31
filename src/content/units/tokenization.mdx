@@ -8,6 +8,8 @@ prerequisites:
 connections:
   - to: recurrent-networks
     why: The machines on that page read one piece at a time, so what gets cut up here is exactly what they queue through — and the length that overwhelmed their memory was always counted in pieces, never in words.
+  - to: context-window
+    why: The hard limit on how much a model can hold at once is counted in these pieces, which is why the same paragraph fits comfortably in one language and overflows in another.
 interactives:
   - TokenSplitter
 status: published

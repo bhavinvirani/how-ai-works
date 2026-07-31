@@ -1,0 +1,168 @@
+---
+/**
+ * The freeze, drawn as a timeline that stops.
+ *
+ * Three things have to survive being skimmed. The band of collected text ENDS
+ * — it does not fade, it terminates at the thickest line on the page. The band
+ * also thins before it ends, because the last stretch before a cutoff really is
+ * thinner: the world had not finished writing about it yet. And the arrows
+ * coming up from later conversations stop short of the timeline with a flat cap
+ * instead of an arrowhead, which is the whole of "no amount of talking to it
+ * changes what it knows".
+ *
+ * Nothing is carried by colour. The cutoff is the heaviest stroke; the void is
+ * the only dashed outline and the only empty region; the blocked arrows are the
+ * only lines that terminate in a bar rather than a point; and all four are
+ * labelled in words.
+ *
+ * No date appears anywhere. A drawing with "2024" in it is wrong within the
+ * year, and the lesson is about the existence of the line rather than where it
+ * currently falls.
+ *
+ * Every run of text is interpolated from a constant so that no `<text>` element
+ * has to wrap across lines of markup — SVG strips newlines inside text content
+ * rather than collapsing them to spaces.
+ *
+ * Decorative on its own, so `aria-hidden`: `Figure` carries the accessible name
+ * and the plain-English description.
+ */
+
+const AXIS_Y = 132;
+const CUT_X = 300;
+
+/** Where the conversations that happen after the cutoff sit. */
+const LATER = [310, 352, 394];
+const BOX_W = 34;
+const BOX_Y = 186;
+const BOX_H = 20;
+
+const SAYS = {
+  heading: 'Time runs left to right. What the model knows does not.',
+  cutoff: 'the training cutoff',
+  thin1: 'the last stretch is thin —',
+  thin2: 'the world had not finished writing about it',
+  band1: 'text collected for training',
+  band2: 'trillions of words, filtered hard',
+  void1: 'nothing here',
+  void2: 'is in the model',
+  time: 'time',
+  after1:
+    'Every conversation since. You can correct it, argue, tell it the news —',
+  after2:
+    'none of it crosses that line. The next one starts from the same model.',
+} as const;
+---
+
+<svg viewBox="0 0 448 244" class="w-full" aria-hidden="true">
+  <g class="fill-ink" font-size="9.5" font-weight="700">
+    <text x="16" y="24">{SAYS.heading}</text>
+  </g>
+
+  <!-- What was collected, thinning towards the end -->
+  <polygon
+    points="24,132 24,86 250,86 300,118 300,132"
+    class="fill-accent-2-soft stroke-accent-2"
+    stroke-width="1.5"></polygon>
+
+  <g class="fill-ink" font-size="9.5">
+    <text x="34" y="106">{SAYS.band1}</text>
+  </g>
+
+  <g class="fill-ink-muted" font-size="8">
+    <text x="34" y="120">{SAYS.band2}</text>
+  </g>
+
+  <g class="fill-ink-faint" font-size="8" text-anchor="end">
+    <text x="296" y="54">{SAYS.thin1}</text>
+    <text x="296" y="66">{SAYS.thin2}</text>
+  </g>
+
+  <!-- Nothing after the line -->
+  <rect
+    x="300"
+    y="86"
+    width="128"
+    height="46"
+    class="fill-none stroke-rule-strong"
+    stroke-width="1.25"
+    stroke-dasharray="5 4"></rect>
+
+  <g class="fill-ink-muted" font-size="9" text-anchor="middle">
+    <text x="364" y="105">{SAYS.void1}</text>
+    <text x="364" y="119">{SAYS.void2}</text>
+  </g>
+
+  <line
+    x1="24"
+    y1={AXIS_Y}
+    x2="428"
+    y2={AXIS_Y}
+    class="stroke-rule"
+    stroke-width="1"></line>
+  <path d="M428,127 L438,132 L428,137 z" class="fill-ink-faint"></path>
+
+  <g class="fill-ink-faint" font-size="8" text-anchor="end">
+    <text x="438" y="148">{SAYS.time}</text>
+  </g>
+
+  <!-- The heaviest stroke on the page, because it is the whole lesson -->
+  <line
+    x1={CUT_X}
+    y1="46"
+    x2={CUT_X}
+    y2="152"
+    class="stroke-ink"
+    stroke-width="3"></line>
+
+  <g class="fill-ink" font-size="9.5" font-weight="700" text-anchor="middle">
+    <text x={CUT_X} y="40">{SAYS.cutoff}</text>
+  </g>
+
+  <!-- Conversations after the cutoff, and where each one gets to -->
+  {
+    LATER.map((x) => (
+      <>
+        <rect
+          x={x}
+          y={BOX_Y}
+          width={BOX_W}
+          height={BOX_H}
+          rx="4"
+          class="fill-paper-raised stroke-rule-strong"
+          stroke-width="1.25"
+        />
+        <line
+          x1={x + BOX_W / 2}
+          y1={BOX_Y}
+          x2={x + BOX_W / 2}
+          y2="150"
+          class="stroke-ink-muted"
+          stroke-width="1.5"
+        />
+        <line
+          x1={x + BOX_W / 2 - 8}
+          y1="150"
+          x2={x + BOX_W / 2 + 8}
+          y2="150"
+          class="stroke-accent"
+          stroke-width="2.5"
+        />
+      </>
+    ))
+  }
+
+  <g class="fill-ink-muted" font-size="11" text-anchor="middle">
+    {
+      LATER.map((x) => (
+        <text x={x + BOX_W / 2} y={BOX_Y + 14}>
+          …
+        </text>
+      ))
+    }
+  </g>
+
+  <g class="fill-ink" font-size="9.5">
+    <text x="16" y="218">{SAYS.after1}</text>
+    <text x="16" y="232">{SAYS.after2}</text>
+  </g>
+</svg>

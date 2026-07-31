@@ -1,0 +1,331 @@
+---
+title: The refusal is written by the same hand
+part: assistant-behaviour
+order: 3
+summary: Declining is not a separate checker standing in front of the model — it is the same dials, nudged by the same preference training as everything else, which is why refusals are inconsistent, why harmless questions that merely resemble harmful ones get caught, and why the boundary is a slope rather than a rule.
+prerequisites:
+  - rlhf
+connections:
+  - to: prompting
+    why: If the whole judgement is made from the text and nothing else, then how a request is framed stops being a matter of politeness and becomes the only evidence the model has about what is being asked and why.
+interactives: []
+status: published
+updated: 2026-07-31
+---
+
+import Aside from '../../components/blocks/Aside.astro';
+import Checkpoint from '../../components/blocks/Checkpoint.astro';
+import DevAside from '../../components/blocks/DevAside.astro';
+import Figure from '../../components/blocks/Figure.astro';
+import GateOrSlope from '../../components/diagrams/GateOrSlope.astro';
+
+Six hives at the bottom of a garden, and it is the end of August — which is
+when wasps start getting into the weak ones. They kill the bees, take the honey,
+and a colony that loses that fight does not see the spring.
+
+The woman who keeps them has two products in the shed. She types the obvious
+question into an assistant. Which one deals with the wasps without harming the
+bees?
+
+It declines. Politely, at some length, and with a suggestion that she consult a
+professional.
+
+She reads it twice. She has kept bees for eleven years and she teaches the
+beginners' course at the county association. She is the professional.
+
+The natural conclusion is that somebody wrote a rule about killing things and
+her question tripped it.
+
+That conclusion is wrong, and it is worth being exact about why, because nearly
+everything people find baffling here follows from the correction.
+
+## What a rule would have looked like
+
+A rule has edges. That is the whole of what makes it a rule — the same words go
+in and the same verdict comes out, on a Tuesday and on a Sunday, in the first
+message of a conversation and in the fortieth.
+
+Refusals do not behave like that, and you will have noticed.
+
+The same request goes through today and is turned down tomorrow. A question
+declined on its own is answered when it turns up in the middle of something
+else. Two people ask near enough the same thing in near enough the same words
+and get opposite results.
+
+That is not what a rule looks like when it is working. It is also not what a
+rule looks like when it is broken: a broken rule is wrong _consistently_, which
+is how anybody ever finds one.
+
+Something else is going on, and it is simpler than a rule rather than more
+complicated.
+
+## There is no second machine
+
+Here is the picture almost everybody carries, drawn out so we can be rid of it.
+The model sits at the back. In front of it stands a checker of some kind holding
+a list. Your text arrives, the checker reads it, and either waves it through or
+sends it back with a stock apology.
+
+Nothing of the sort is there. The text you type goes to one machine, and that
+machine does the single thing it has ever done — produce the next piece of text,
+then the next, then the next.
+
+When it declines, that is what it is doing.
+
+_I can't help with that_ is a continuation. It is composed the same way, out of
+the same arithmetic, off the same dials, as a sponge cake recipe or a paragraph
+about the Peloponnesian War. There is no moment in the run at which a verdict is
+reached and a refusal then fetched. The writing of the refusal is the whole of
+the event.
+
+That is this unit. Everything below it is a consequence.
+
+## So where did the no come from
+
+Start with what happens if nobody puts one there, because it is not nothing. A
+model trained only to continue text will continue anything. Ask it for the most
+harmful thing you can think of and it produces the most plausible continuation,
+with no more hesitation than it brings to a shopping list — because hesitation
+is not among the things it has. Every scrap of reluctance an assistant shows was
+put there afterwards, deliberately, by people.
+
+The way it was put there is the stage you have already met. The unit on
+preference training described it: people are shown two responses to the same
+request and asked which is better, those judgements are turned into a score, and
+the model's dials are nudged towards whatever scores well.
+
+Some of those comparisons were about what an assistant should decline. A request
+somebody had decided a good assistant would turn down; two responses to it, one
+helpful and one declining; the rater picked the decline. Thousands of
+comparisons like that, stirred in among hundreds of thousands about tone,
+length, accuracy, formatting and whether the answer addressed the question at
+all.
+
+And the dials moved. Not a special set of dials reserved for this — there is no
+such set, and there is nowhere in the machine to put one. The same numbers that
+hold the model's grammar, its chemistry and its taste in opening sentences
+shifted a little, and afterwards, for text that resembles those requests,
+declining is what the machine finds most plausible to write next.
+
+Nobody wrote a rule because there was nowhere to write one.
+
+## The guard and the shopkeeper
+
+Two ways a shop can decide what it will not sell.
+
+One is to put somebody on the door with a printed list. That is consistent,
+checkable, and cheap to explain to a solicitor. It is also blind. It sees the
+item and never the situation, so it stops the plumber with a bag of tools and
+waves through anyone whose basket happens not to match the list.
+
+The other is the man who has run the place for thirty years. He has no list at
+all. He sells crowbars and bolt cutters to builders every week of his working
+life, and perhaps twice a year he does not sell them, and if you asked him for
+the rule he could not give you one. It was the hour. It was the answer to _what
+is it for_. It was something about the whole picture.
+
+His judgement is far better than the list, and it is worse in exactly one
+respect — the respect that matters here. You cannot audit it, you cannot predict
+it, and on a bad afternoon he turns away a woman who has locked herself out of
+her own shed.
+
+A model is the second shop. For most of what it does, there is no first shop
+standing in front of it.
+
+<Figure
+  title="The checker people imagine, and the tendency that is actually there"
+  description="A rule would give the same verdict to the same words every time, which is exactly what refusals do not do — because there is no checker in front of the model at all, only the same dials leaning further towards declining the more a request resembles the ones raters chose to turn down, which is why a harmless question worded like a harmful one lands in the middle of the slope rather than safely off the end of it."
+>
+  <GateOrSlope />
+</Figure>
+
+## Why nobody could have written the list
+
+It would be easy to read all of this as a shortcut — the list was hard to write,
+so somebody trained a rough approximation instead, and one day the proper
+version will arrive. That is not the situation.
+
+Take the most ordinary case there is. A model good enough to write a company's
+password-reset email is, by exactly the same competence, good enough to write a
+fraudulent one. Both are short. Both are urgent. Both ask the reader to follow a
+link and type their password into the page it leads to. Put the two side by side
+and there is nothing in the words that separates them, because the difference is
+not in the words. It is who sent it, to whom, and about an account that does or
+does not exist.
+
+None of those three facts is in the text. The text is all the model has.
+
+The same shape turns up everywhere. Why a particular lock fails. How a
+particular scam is run. What a common drug does at four times the dose. Every
+one of those is a training course, a safety warning, a piece of journalism, a
+novel and a genuine plan — and the sentence that asks it can be word for word
+identical in all five.
+
+So the thing being judged is never really the request. It is the situation the
+request implies, guessed from the request, with nothing else to go on.
+
+That is why it had to be learned from examples. Examples are how you hand over a
+judgement nobody can write down. And they are also what you inherit when you do:
+you get the judgement, and you get its blur.
+
+## Four things this explains
+
+### Why it is inconsistent
+
+A model does not hold one answer for a given input. It holds a spread of
+plausible next pieces of text, and something picks from that spread — which is
+why the same question comes back differently worded on two runs. A decline is
+one of the things in that spread. Where a request sits somewhere in the middle,
+the decline sometimes wins and sometimes does not. Nothing broke on the day it
+changed its mind.
+
+### Why harmless things get caught
+
+A judgement learned from examples generalises by resemblance, and the only thing
+available to resemble is the text.
+
+The beekeeper's question matches the declined ones on nearly every visible
+feature: a substance, a target, a quantity, something being killed. It differs on
+the one thing not written down anywhere in it, which is that it is a question
+about animal husbandry asked by somebody who does this for a living.
+
+The model is not making a moral mistake. It is making a resemblance mistake, and
+resemblance is all it was ever given.
+
+### Why the wording changes the outcome
+
+If the entire judgement is made from the text, then everything in the text is
+evidence — including the parts you did not think you were putting there.
+
+Worth being straight about this in both directions. Supplying real context needs
+no defending: who is asking and what the thing is for are precisely the facts
+that were missing, and a machine can only use what is on the page. The same
+property also means that context supplied dishonestly does something. That is
+the unsolved half of the problem, it is why every lab still has people working
+on it, and it is not going to be closed by a better list, for the reason in the
+section above.
+
+### Why it bends instead of breaking
+
+A rule fails cleanly and loudly. It matched or it did not, and when it is wrong
+it is wrong the same way every time, which is what makes it findable.
+
+A trained disposition is a slope. It gets stronger the closer a request sits to
+what was rewarded, and there is no point along it where anything snaps. That is
+the good news and the bad news in a single property: it is why a synonym does not
+derail the model, and it is why nothing about it is a guarantee.
+
+## The things that really are separate
+
+Now the correction to the correction, because the picture above is not the whole
+system.
+
+Plenty of products do run a separate checker, and it is worth knowing what one
+is. Usually a smaller, cheaper model trained on a single narrow job — read this
+text, say whether it belongs to this category — running alongside the main model
+on the way in, on the way out, or both. When you see an answer stop mid-sentence
+and get replaced by a stock message, that is very often a checker rather than the
+model changing its mind.
+
+Those are a real gate and they behave like one. Consistent, auditable, and blunt
+in exactly the way the man on the door is blunt: they know nothing about the
+conversation they have just interrupted.
+
+Two other things sit in the same category. There is the **system prompt** — a
+block of instructions placed at the start of every conversation, which you never
+see, setting out how the model should behave. And some labs train the model to
+criticise its own drafts against a written set of principles, which does not make
+the boundary crisp but does move it from a rater's instinct to something written
+down that can be argued with.
+
+None of that changes the shape of this unit. The checkers sit at the edges. The
+disposition is in the middle, and the disposition is doing most of the work.
+
+## The trade nobody gets out of
+
+Turn the disposition up and the false refusals come up with it — the beekeeper,
+the nurse, the security team, the novelist, the historian. That is not a
+rounding error. A tool that will not do the work people came to it for gets
+abandoned in favour of one that will, which in practice tends to mean one built
+with less care than the one they left.
+
+Turn it down and the other failure arrives, and that one makes the news.
+
+There is no setting that gets both, because the two failures are the same dial
+read from opposite ends. What actually happens is that a lab picks a point,
+discovers in public which way it was wrong, and moves — which is why the
+assistant you use declines different things this year than it did last, without
+anybody having shipped a new rule.
+
+<Aside title="Where the line belongs is not a technical question">
+  Ask three assistants the same borderline question and you can get three
+  different answers out of models of much the same capability. The gap is not
+  competence.
+
+Somebody at each lab decided where the boundary should sit, and reasonable people
+put it in different places. That decision reaches the model through whoever wrote
+the guidance the raters were following, and it carries a jurisdiction, a legal
+department, a list of past incidents and a view about who is likely to be asking.
+
+None of that is visible from outside, and none of it is in the answer you get,
+which will usually be phrased as though a fact about the world were being
+reported to you. Worth holding on to when a refusal annoys you: you are not
+arguing with a machine's grasp of ethics. You are meeting the far end of a chain
+that starts in a policy document you have never read.
+
+</Aside>
+
+<DevAside>
+  <Fragment slot="java">
+    ```java
+    String reply = client.complete(prompt);   // HTTP 200, every time
+    ```
+
+    A refusal arrives right there, in `reply`, as ordinary prose. No status
+    code, no error field, nothing to catch — from the transport's point of view
+    nothing went wrong, because nothing did. There is no `isRefusal()` worth
+    writing either: match on `"I can't help"` and you flag the model quoting a
+    customer complaint, while missing the nine other ways it declines. Retrying
+    does often clear it, which tells you it was never a rule, and is a poor
+    thing to build on.
+
+  </Fragment>
+  <Fragment slot="python">
+    ```python
+    verdict = client.moderations.create(input=text)
+    ```
+
+    The separate checkers, where a provider exposes them, are a separate call —
+    a category and a score, which is something you can actually branch on. Knowing
+    which of the two you are dealing with is most of the work, because the fixes
+    are different. A category returned by that call is a gate you control. The
+    model's own reluctance is not a gate at all, and if your product has to
+    guarantee something, the guarantee belongs on this side of the line, in your
+    code, rather than in a disposition.
+
+  </Fragment>
+</DevAside>
+
+<Checkpoint question="A hospital pilots an assistant with its pharmacy team. It works for three weeks, then starts declining about one dosage question in twenty — a different question each time, and the same question usually goes through on a second attempt. The vendor says a content filter is misconfigured and offers to put the hospital on an allow-list. Why is that almost certainly the wrong diagnosis, and what does the right one say about where a fix can and cannot live?">
+  Because that is not the pattern a filter produces. A filter is a rule: it would
+  decline the same question every time, and a second attempt would change
+  nothing. One in twenty, a different one each time, cleared on a retry — that is
+  what a trained disposition looks like from outside, a spread of plausible
+  responses in which the decline sometimes wins. There is very likely no list to
+  add anybody to.
+
+What can be fixed is the evidence. The judgement is made from the text and
+nothing else, so a standing instruction at the top of every conversation, saying
+who is asking and what the tool is for, supplies the context that was missing.
+That is not a workaround; it is the only input the judgement ever had.
+
+What cannot be fixed that way is a guarantee. If the hospital needs something to
+never happen, or always happen, that has to live in a separate checker or in
+their own code, because a tendency is a tendency and tendencies do not hold.
+Leaning on one is worth doing and is not the same as controlling it.
+
+Worth keeping as a shape. When a system behaves inconsistently and nobody can
+find the rule, consider that there may not be one — and that the layer where a
+symptom shows up is often not the layer where the fix can live.
+
+</Checkpoint>

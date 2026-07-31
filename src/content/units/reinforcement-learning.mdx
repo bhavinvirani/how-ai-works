@@ -10,6 +10,10 @@ connections:
     why: That cycle needs a correct answer at the compare step. Take the answer away and this is what is left — the same nudging, driven by a number that turns up afterwards instead.
   - to: why-rules-fail
     why: Nobody can write down the right reply to a question either, so the same escape route reappears here — stop trying to specify the behaviour, and score it instead.
+  - to: rlhf
+    why: This is where acting-and-being-scored grew up. The learner is a language model, the actions are answers, and the score comes from people saying which of two they preferred.
+  - to: reasoning-models
+    why: Scoring the answer and letting the machine find its own route there is also how a model learns to write its working out first — nobody demonstrates the thinking, it is just what earned better marks.
 interactives:
   - ExploreExploitBandit
 status: published

@@ -1,0 +1,194 @@
+---
+/**
+ * The same request twice: once on its own, once with three lines around it.
+ *
+ * The teaching load sits on two things. First, the width of the fan — a bare
+ * opening leads to a great many different documents, and the picture has to
+ * make that a shape rather than a claim. Second, and more easily missed, the
+ * fact that the model does not pick among them at random: the ending it writes
+ * is marked, and in the top panel it is the blandest one on the list. A wide
+ * fan does not buy variety. It buys the average.
+ *
+ * The bottom panel is the same seven words, unedited, with three lines written
+ * underneath them, and one arrow left.
+ *
+ * Nothing is carried by colour (hard rule 9). Many endings are drawn as many
+ * dashed arrows and one ending as a single solid one; the ending that actually
+ * gets written carries a ▸ and is called out in words underneath; every count
+ * is written out. Decorative on its own, so `aria-hidden`: `Figure` supplies
+ * the accessible name and the description.
+ */
+
+const FAN_ORIGIN = { x: 302, y: 105 };
+
+/** Five of the twenty-seven, drawn; the caption owns up to the other 22. */
+const endings = [
+  { y: 51, label: '▸ a paragraph for nobody in particular', written: true },
+  { y: 79, label: 'three numbered steps for a trainee', written: false },
+  { y: 107, label: 'a question and answer for a child', written: false },
+  { y: 135, label: 'a fault-finding checklist', written: false },
+  { y: 163, label: 'a paragraph a child could retell', written: false },
+];
+---
+
+<svg viewBox="0 0 640 436" class="w-full" aria-hidden="true">
+  <g class="fill-none stroke-rule-strong" stroke-width="1.25">
+    <rect x="8" y="8" width="624" height="200" rx="8"></rect>
+    <rect x="8" y="224" width="624" height="204" rx="8"></rect>
+  </g>
+
+  <!-- ============ a bare opening ============ -->
+  <text
+    x="24"
+    y="30"
+    class="fill-ink font-display"
+    font-size="13"
+    font-weight="700">A bare opening</text
+  >
+  <text x="24" y="46" class="fill-ink-faint font-mono" font-size="10"
+    >nothing said about who, what shape, or what for</text
+  >
+
+  <text x="24" y="82" class="fill-ink-faint font-mono" font-size="9"
+    >you type</text
+  >
+  <rect
+    x="24"
+    y="92"
+    width="272"
+    height="26"
+    rx="4"
+    class="fill-paper-sunken stroke-rule-strong"
+    stroke-width="1"></rect>
+  <text x="34" y="109" class="fill-ink font-mono" font-size="10"
+    >Explain how a fridge makes things cold.</text
+  >
+
+  <text x="24" y="140" class="fill-ink-muted font-mono" font-size="9"
+    >All 27 endings still fit these seven words.</text
+  >
+  <text x="24" y="156" class="fill-ink-faint font-mono" font-size="9"
+    >So it writes the middle of them, marked ▸.</text
+  >
+
+  <!-- Many endings, drawn as many dashed arrows. -->
+  {
+    endings.map((ending) => (
+      <g class="stroke-rule-strong" stroke-width="1.25">
+        <line
+          x1={FAN_ORIGIN.x}
+          y1={FAN_ORIGIN.y}
+          x2={339}
+          y2={ending.y}
+          stroke-dasharray="3 4"
+        />
+        <path
+          d={`M339 ${String(ending.y - 4)} L345 ${String(ending.y)} L339 ${String(ending.y + 4)}`}
+          class="fill-none"
+        />
+      </g>
+    ))
+  }
+
+  {
+    endings.map((ending) => (
+      <g>
+        <rect
+          x="348"
+          y={ending.y - 11}
+          width="272"
+          height="22"
+          rx="3"
+          class={
+            ending.written
+              ? 'fill-paper-raised stroke-accent'
+              : 'fill-paper-raised stroke-rule-strong'
+          }
+          stroke-width={ending.written ? '1.5' : '1'}
+        />
+        <text
+          x="358"
+          y={ending.y + 4}
+          class="fill-ink font-mono"
+          font-size="10"
+          font-weight={ending.written ? '700' : '400'}
+        >
+          {ending.label}
+        </text>
+      </g>
+    ))
+  }
+
+  <text x="348" y="190" class="fill-ink-faint font-mono" font-size="9"
+    >&hellip;and 22 more endings, not drawn.</text
+  >
+
+  <!-- ============ the same request, surrounded ============ -->
+  <text
+    x="24"
+    y="246"
+    class="fill-ink font-display"
+    font-size="13"
+    font-weight="700">The same request, with three lines added</text
+  >
+  <text x="24" y="262" class="fill-ink-faint font-mono" font-size="10"
+    >who it is for, what shape it takes, what it is for</text
+  >
+
+  <rect
+    x="24"
+    y="278"
+    width="272"
+    height="76"
+    rx="4"
+    class="fill-paper-sunken stroke-rule-strong"
+    stroke-width="1"></rect>
+  <text x="34" y="296" class="fill-ink font-mono" font-size="10"
+    >Explain how a fridge makes things cold.</text
+  >
+  <text x="34" y="312" class="fill-ink-muted font-mono" font-size="10"
+    >You are explaining it to a nine-year-old.</text
+  >
+  <text x="34" y="328" class="fill-ink-muted font-mono" font-size="10"
+    >Write it as three numbered steps.</text
+  >
+  <text x="34" y="344" class="fill-ink-muted font-mono" font-size="10"
+    >They must explain it to their class.</text
+  >
+
+  <!-- One ending, drawn as one solid arrow. -->
+  <g class="stroke-accent" stroke-width="2">
+    <line x1="302" y1="316" x2="339" y2="316"></line>
+    <path d="M339 312 L345 316 L339 320" class="fill-none"></path>
+  </g>
+
+  <rect
+    x="348"
+    y="298"
+    width="272"
+    height="40"
+    rx="3"
+    class="fill-paper-raised stroke-accent"
+    stroke-width="1.5"></rect>
+  <text
+    x="358"
+    y="316"
+    class="fill-ink font-mono"
+    font-size="10"
+    font-weight="700">▸ three numbered steps a nine-year-old</text
+  >
+  <text x="368" y="330" class="fill-ink font-mono" font-size="10"
+    >can retell tomorrow</text
+  >
+
+  <text x="348" y="356" class="fill-ink-faint font-mono" font-size="9"
+    >The other 26 have stopped being plausible.</text
+  >
+
+  <text x="24" y="378" class="fill-ink-muted font-mono" font-size="9"
+    >The seven words at the top did not change.</text
+  >
+  <text x="24" y="394" class="fill-ink-faint font-mono" font-size="9"
+    >Only the document they now sit in did.</text
+  >
+</svg>

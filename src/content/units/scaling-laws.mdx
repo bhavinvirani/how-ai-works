@@ -1,0 +1,323 @@
+---
+title: Knowing how good it would be before building it
+part: large-models
+order: 5
+summary: Quality improved so smoothly with size, data and computing that it could be forecast before the machine existed — while some abilities looked as though they switched on all at once, which is either a real threshold or an artefact of all-or-nothing scoring, and is still argued about.
+prerequisites:
+  - llm
+connections:
+  - to: pretraining
+    why: These curves are a claim about what a fixed pile of text and a fixed electricity bill will buy, and pretraining is where the whole of that budget is spent — one continuous run, months long, planned in advance on exactly this arithmetic.
+interactives: []
+status: published
+updated: 2026-07-31
+---
+
+import Aside from '../../components/blocks/Aside.astro';
+import Checkpoint from '../../components/blocks/Checkpoint.astro';
+import DevAside from '../../components/blocks/DevAside.astro';
+import Figure from '../../components/blocks/Figure.astro';
+import ReadingTheLineForwards from '../../components/diagrams/ReadingTheLineForwards.astro';
+import TwoWaysToCount from '../../components/diagrams/TwoWaysToCount.astro';
+
+Somebody is in the room asking you for a few hundred million pounds.
+
+The money is for a machine that does not exist yet. Building it will take
+months, and enough electricity that the site had to be picked with a particular
+substation in mind. When it is finished, nobody in the room can tell you what it
+will be able to do. Not approximately — at all. The strongest sentence anyone
+can offer is that the last few have come out better than the ones before them.
+
+That is a bet, and nobody places it twice.
+
+So the question that mattered was never whether bigger machines are better. It
+was whether anyone could say **how much** better, and say it before the money
+went out of the door. Around 2020 several groups went looking, and what they
+came back with is most of the reason the last few years happened.
+
+Start with what they measured, because it is narrower than it sounds. Not
+intelligence, and not usefulness. One number: how surprised the model is by the
+next chunk of text in a document it has never seen. Cover the next token, ask
+for a guess, and score how much probability it put on the piece that actually
+came. That is the same wrongness score training runs on, taken on held-back
+text — and it is the only quantity in this unit that anybody can measure
+cleanly.
+
+Three things were varied against it. How many dials the model has. How much text
+it was shown. How much computing time went into the run. Push any of the three
+up and the number comes down, which surprises nobody.
+
+What was worth an announcement is the shape.
+
+## Multiplying, not adding
+
+Add ten per cent more dials and essentially nothing happens. The number twitches
+in the fourth decimal place, and you would struggle to tell it from noise.
+
+Multiply the dials by ten, and it drops by a definite amount. Multiply by ten
+again — a hundred times the machine you started with — and it drops by very
+nearly the same amount a second time. Then a third.
+
+That is a different claim from "bigger is better". It says the return is not
+tied to how much you add but to how many times you multiply, and that equal
+multiplications buy equal improvements all the way along. A relationship of that
+shape is called a **power law**, and it has one property worth all the rest:
+draw it on a graph whose axes multiply rather than add, and it comes out as a
+straight line.
+
+A straight line is the only shape in the world you can extend with a ruler.
+
+Fitted to real models and real piles of text, those lines are what the field
+calls its **scaling laws** — a rather grand name for a handful of measured
+curves which turned out to hold over four or five multiplications, and which
+nobody has a first-principles explanation for even now.
+
+$$
+\text{wrongness} \;\approx\; \text{floor} \;+\; \frac{c}{\text{size}^{\,\alpha}}
+$$
+
+In words: how wrong the machine is comes to a floor it will never get under,
+plus a second part that shrinks as the machine grows. The $\alpha$ tucked in the
+corner is the exchange rate — it says how much of that shrinking part one
+multiplication of size buys you, and $c$ is just the scale the whole thing is
+measured in. Neither was derived from anything. They were read off real runs,
+the way you would measure the stretch of a spring.
+
+The floor has earned a paragraph of its own. Some of what comes next in a piece
+of text is genuinely unguessable: the name of a person you have not met, the
+figure on somebody's receipt, which of two equally good words a writer happened
+to reach for. A flawless machine would still be wrong about all of it. The curve
+is heading somewhere, and that somewhere is not zero.
+
+<Figure
+  title="Four small models, and a line read forwards"
+  description="Four cheap models were built and measured, and their points sat on a straight line once the bottom axis multiplied rather than added — so the line could be extended with a ruler to a size nobody had built, and the machine eventually built at that size landed on the prediction, which is what made the cheque a calculation rather than a leap of faith."
+>
+  <ReadingTheLineForwards />
+</Figure>
+
+## Nobody builds the big one first
+
+Here is how that line is actually used, and it is more mundane than the numbers
+around it suggest.
+
+You do not start with the expensive thing. You build a ladder of cheap ones —
+four or five models, each deliberately small, each finishing in hours rather
+than months — and you measure every one. Then you plot the points, check that
+they sit on a line, and read the line forwards to the size somebody is thinking
+of paying for.
+
+That is the whole method, and it is also what keeps it honest. If the points do
+not fall on a line, you have found that out before spending anything, which is
+the cheapest bad news on the market.
+
+And it works. The final wrongness score of at least one frontier model was
+published as a prediction before the expensive run began — worked out from small
+models using something like a ten-thousandth of the computing — and the finished
+machine came in on the figure.
+
+The line settles a second argument too, and this is the one that decides
+budgets. Computing time is what you are really buying, and there are two things
+to spend it on: a bigger model, or more text through a smaller one. The two
+trade directly against each other, because a larger model reads fewer words in
+the same hour.
+
+For about two years the field got that trade wrong. The early work leaned
+towards size, so models were built enormous and fed comparatively little. Then
+the same measurements, done more carefully, said the split had been badly off: a
+model four times smaller, shown more than four times as much text, on an
+identical bill, came out better. Nobody had built a worse machine through bad
+luck. They had spent the money in the wrong proportions, and the correction was
+worth more than a great deal of extra hardware.
+
+The rule of thumb that came out of it was roughly twenty tokens of text for
+every dial in the model. It has moved again since, for a reason worth carrying:
+that rule makes _training_ as cheap as possible, and training happens once.
+Answering happens every time anybody asks a question, and a smaller model
+answers cheaper for ever. So the habit now is to overshoot deliberately — take a
+smaller model and pour far more text through it than the training-optimal split
+calls for — because paying extra once beats paying a little extra a billion
+times.
+
+## The part the line said nothing about
+
+Now the awkward half.
+
+That curve is about one number, and the number is how surprised a machine is by
+text. Nobody wants that. What people want is a list of things the machine can
+do — and when the field went and checked those, the tidiness fell apart.
+
+Some abilities did not creep in. They were missing at one size and present at
+the next, with nothing in between. Adding two three-digit numbers and getting
+the whole answer right. Carrying out a task in a notation that was invented in
+the prompt itself, three lines earlier. Transliterating a name from one alphabet
+into another. On each of these, model after model scored nothing at all — and
+then one scored.
+
+The name for that is **emergence**: an ability that is absent below a certain
+scale and present above it, with no gentle fade in the middle.
+
+It left the field in a strange position. The forecast worked beautifully for the
+one number nobody cared about, and said nothing whatsoever about the things
+everybody cared about. You could promise a lower wrongness score at a given size
+and mean it. What the machine would be able to _do_ at that size was not
+something anyone could work out on paper, and the only instrument that could
+answer the question was the machine itself.
+
+A floor you could guarantee, and a ceiling nobody could see. That is a fairly
+precise description of why so much money moved so quickly.
+
+## Or is it the way we count?
+
+Here is the argument against, and it is a good one.
+
+A child does not learn to walk on a Tuesday. What happens on the Tuesday is that
+she crosses the room, and crossing the room is the thing somebody writes in a
+book. The six weeks before it — hauling herself up on the sofa, sidestepping
+along it, letting go for a second and sitting down hard — were the ability
+arriving, at an entirely ordinary speed. The date in the book is a threshold in
+the record-keeping.
+
+Now make that precise. Take a task with five steps in it, where the answer only
+counts if all five are right, which describes an enormous number of the tests
+these models are scored on. Suppose that across five sizes of model the chance
+of getting any one step right climbs perfectly steadily: 20%, 36%, 52%, 68%,
+84%. Sixteen points at every size. There is nothing sudden anywhere in that
+sequence.
+
+Now mark the whole answer instead. If the steps are roughly independent of one
+another, the chance of all five surviving is that figure multiplied by itself
+five times — which gives 0%, 1%, 4%, 15% and then 42%.
+
+Three sizes of nothing, and then a cliff. Same models, same answers, same
+afternoon. The only thing that changed is where the marks came from.
+
+<Figure
+  title="One climb, two scoreboards"
+  description="Marking each step separately gives a perfectly steady rise of sixteen points per size, while demanding all five steps at once turns the same five models into 0, 1, 4, 15 and 42 per cent — so whether an ability looks like it appeared suddenly can depend entirely on where the marks come from rather than on anything the machine did."
+>
+  <TwoWaysToCount />
+</Figure>
+
+So the sceptical case is that a fair number of reported emergent abilities are
+manufactured this way — the ability climbing smoothly all along, and an
+all-or-nothing score converting a slope into a step. Re-score several of the
+famous examples with partial credit and the suddenness does soften.
+
+The case on the other side has two halves. Not every example softens: some
+capabilities still show a sharp change when they are measured with graded
+scores, and nobody has explained those away. And there is a fair objection to
+the whole framing, which is that an all-or-nothing score is not a measurement
+error when the job itself is all-or-nothing. If your system needs the entire
+answer right, then the size at which entire answers start arriving is a real
+event in your life, whatever was happening smoothly underneath it.
+
+Where that leaves you is not a verdict, and you should be wary of anyone
+offering one. The wrongness curve moves smoothly; that half is not in dispute.
+Whether anything else does is genuinely unresolved, and it is quoted with total
+confidence in both directions by people who know that it is.
+
+The transferable part is smaller than the debate and more useful than either
+side of it. A threshold in the measuring turns a slope in the world into a cliff
+on the chart, and it does it silently — it appears nowhere in the numbers,
+nobody consciously chose it, and it stays invisible until somebody goes and
+looks at what is being counted.
+
+## What scaling did not fix
+
+Worth being specific about, because "bigger models are better" gets used to
+imply that everything about them got better.
+
+**It did not make them truthful.** The thing being improved was the ability to
+guess what text comes next. Text that sounds right and text that is right are
+two different targets, and only one of them was ever on the scoreboard. Bigger
+models did become more accurate about the world — there is more of the world in
+more text — but they became fluent faster than they became correct, which means
+the gap between how right an answer sounds and how right it is got wider rather
+than narrower.
+
+**It did not give them a source.** Nothing in the training ever asked a model to
+keep a note of where anything came from, so no amount of size produced a machine
+that can tell you which page a fact is on. What size produced instead is a
+confident-looking citation, composed on the spot in exactly the manner of every
+other plausible continuation.
+
+**It did not teach them where their knowledge stops.** A machine that has never
+been asked to notice the edge of what it knows does not pick up the habit by
+getting larger.
+
+**And it did not make them usable.** A model straight out of a big training run
+is a machine that continues text. Hand it your question and it will cheerfully
+continue with five more questions, because a page containing one question
+usually contains several. Everything that turns that into something you can talk
+to happens afterwards, and none of it is scale.
+
+<Aside title="Where the curve ran out" tone="caution">
+  Everything above describes a period rather than a law of nature, and the
+  period has largely closed.
+
+The text ran short first. The curves want ten times more of it at every step,
+and there is not ten times more good writing to be had — the supply of careful,
+edited, non-duplicated text is finite, and it was already being scraped hard.
+
+The bill did the rest. A power law with a small exponent is a polite way of
+saying that each further multiplication costs ten times as much for the same
+sized drop, and sooner or later the drop stops being worth the cheque.
+
+Most of the improvement of the last couple of years has come from somewhere
+else: better and better-filtered text rather than simply more of it, better
+training methods, and getting a model to do more work on each question it is
+asked instead of building a bigger machine to answer it. The curves are still
+true. They are just no longer the cheapest thing to buy.
+
+</Aside>
+
+<DevAside>
+  <Fragment slot="java">
+    ```java
+    boolean pass = expected.equals(actual);   // 1 or 0, and nothing between
+    ```
+
+    A suite built out of that line produces a number that can sit flat at zero
+    while the model behind it improves steadily, and then move all at once. It
+    is the artefact from this unit, arriving in your own test report. Requiring
+    the whole answer is often correct — plenty of software cannot use a
+    near-miss — but reading the flat stretch as "no progress" is not. Log one
+    graded measure alongside it, such as how many of the required fields came
+    back right, and you can tell "nowhere near" apart from "one field short".
+
+  </Fragment>
+  <Fragment slot="python">
+    ```python
+    exact   = sum(p == g for p, g in zip(preds, golds)) / len(golds)
+    partial = sum(field_overlap(p, g) for p, g in zip(preds, golds)) / len(golds)
+    ```
+
+    Two lines, and the second is the one that tells you whether to keep going.
+    A team logging only the first spends months unable to distinguish a model
+    that is hopeless from one that is a single field away — and then reports
+    the week it suddenly started working.
+
+  </Fragment>
+</DevAside>
+
+<Checkpoint question="A team swaps in a model ten times the size, and their score on a benchmark goes from 4% to 42%. Someone says the larger model has unlocked an ability the smaller one did not have. Before you agree, what is the cheapest thing you could check — and what would each result mean?">
+  Re-mark what you already have, with partial credit. Nothing needs retraining
+  and nothing needs rerunning; the smaller models' answers are still on disk.
+  Score them per step rather than whole, and look at the shape.
+
+If the graded score was climbing steadily the whole way — roughly the same
+amount at every size — then the ability had been growing all along, and the jump
+happened in the marking rather than in the machine. If the graded score is flat
+and then jumps too, the sudden reading has survived its cheapest test and is
+worth taking seriously.
+
+Either way the team's own experience really did jump, because their benchmark
+demands whole answers and so does whatever they are building. That is the part
+worth keeping separate: how the ability moved is a claim about the model, and
+when it became useful is a claim about the threshold somebody set.
+
+Worth keeping, because the shape recurs everywhere. When something appears to
+switch on all at once, ask what is being counted before you ask what changed.
+
+</Checkpoint>

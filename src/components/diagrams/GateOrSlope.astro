@@ -1,0 +1,379 @@
+---
+/**
+ * The wrong picture of refusal and the right one, stacked.
+ *
+ * The top block draws the model people carry around: a checker standing in
+ * front of the machine holding a list. Its defining property is drawn rather
+ * than asserted — the same request appears twice and gets the same verdict
+ * both times, which is what a rule *is*.
+ *
+ * The bottom block removes it. Same request, same machine, and a dashed empty
+ * outline where the checker used to be, so the absence is visible rather than
+ * merely stated. Underneath, the thing that is actually there: a tendency that
+ * rises, with no step anywhere in it.
+ *
+ * The two pinned requests are the payoff. An ordinary question sits far left;
+ * the beekeeper's question from the prose sits in the middle band — not
+ * because it is halfway harmful, but because resemblance is measured over
+ * words and hers resembles the declined ones on every visible feature.
+ *
+ * Nothing is carried by colour (hard rule 9). Strength of tendency is bar
+ * HEIGHT. The blocked request is a drawn cross plus the word "blocked". The
+ * missing checker is a dashed outline plus the words "no checker here". The
+ * two pinned requests are different SHAPES — circle and diamond — and both are
+ * labelled in full. The horizontal axis is captioned at both ends in words.
+ *
+ * The axis is deliberately labelled as a way of picturing something, not as a
+ * measurement: no such number exists anywhere in a real model, and the prose
+ * says so too.
+ *
+ * Decorative on its own, so `aria-hidden`: `Figure` carries the accessible
+ * name and the description.
+ */
+
+const BAR_COUNT = 26;
+const BAR_WIDTH = 15;
+const BAR_STEP = 21;
+const BAR_LEFT = 44;
+const BASELINE = 452;
+const BAR_MIN = 3;
+const BAR_RANGE = 53;
+
+/** A ramp with no step in it anywhere — that is the entire point of the shape. */
+const bars = Array.from({ length: BAR_COUNT }, (_, index) => {
+  const along = index / (BAR_COUNT - 1);
+  const height = BAR_MIN + BAR_RANGE * Math.pow(along, 1.7);
+
+  return {
+    x: BAR_LEFT + index * BAR_STEP,
+    y: BASELINE - height,
+    height,
+  };
+});
+
+/** Five dials inside the model, each left at a different angle. */
+const DIAL_ANGLES = [-104, -48, -142, -22, -78];
+
+const dials = DIAL_ANGLES.map((degrees, index) => {
+  const cx = 430 + index * 35;
+  const cy = 294;
+  const radians = (degrees * Math.PI) / 180;
+
+  return {
+    cx,
+    cy,
+    x2: cx + 5 * Math.cos(radians),
+    y2: cy + 5 * Math.sin(radians),
+  };
+});
+---
+
+<svg viewBox="0 0 640 512" class="w-full" aria-hidden="true">
+  <!-- ================= the picture in most people's heads ================= -->
+  <rect
+    x="8"
+    y="8"
+    width="624"
+    height="186"
+    rx="8"
+    class="fill-none stroke-rule-strong"
+    stroke-width="1.25"></rect>
+
+  <text
+    x="28"
+    y="32"
+    class="fill-ink font-display"
+    font-size="13"
+    font-weight="700">What people picture</text
+  >
+  <text x="28" y="48" class="fill-ink-faint font-mono" font-size="10"
+    >a checker in front of the machine, holding a list</text
+  >
+
+  <!-- The same request arrives twice, on purpose. -->
+  <g class="fill-paper-sunken stroke-rule-strong">
+    <rect x="28" y="66" width="112" height="22" rx="4"></rect>
+    <rect x="28" y="100" width="112" height="22" rx="4"></rect>
+    <rect x="28" y="134" width="112" height="22" rx="4"></rect>
+  </g>
+
+  <g class="fill-ink font-mono" font-size="10">
+    <text x="36" y="81">request A</text>
+    <text x="36" y="115">request B</text>
+    <text x="36" y="149">request A again</text>
+  </g>
+
+  <!-- Into the checker. -->
+  <g class="stroke-rule-strong" stroke-width="1.5">
+    <line x1="142" y1="77" x2="192" y2="77"></line>
+    <line x1="142" y1="111" x2="192" y2="111"></line>
+    <line x1="142" y1="145" x2="192" y2="145"></line>
+  </g>
+  <g class="fill-none stroke-rule-strong" stroke-width="1.5">
+    <path d="M193 72 L199 77 L193 82"></path>
+    <path d="M193 106 L199 111 L193 116"></path>
+    <path d="M193 140 L199 145 L193 150"></path>
+  </g>
+
+  <rect
+    x="200"
+    y="58"
+    width="120"
+    height="104"
+    rx="4"
+    class="fill-paper-sunken stroke-rule-strong"
+    stroke-width="1.25"></rect>
+
+  <text
+    x="210"
+    y="78"
+    class="fill-ink font-display"
+    font-size="10"
+    font-weight="700">the list</text
+  >
+  <g class="fill-ink-muted font-mono" font-size="9">
+    <text x="210" y="98">no · category one</text>
+    <text x="210" y="114">no · category two</text>
+    <text x="210" y="130">yes · the rest</text>
+  </g>
+
+  <!-- Out the other side: A twice, B never. -->
+  <g class="stroke-rule-strong" stroke-width="1.5">
+    <line x1="322" y1="77" x2="392" y2="77"></line>
+    <line x1="322" y1="145" x2="392" y2="145"></line>
+  </g>
+  <g class="fill-none stroke-rule-strong" stroke-width="1.5">
+    <path d="M393 72 L399 77 L393 82"></path>
+    <path d="M393 140 L399 145 L393 150"></path>
+  </g>
+
+  <!-- B stops here. A cross, and the word, because a colour would say nothing. -->
+  <g class="stroke-rule-strong" stroke-width="2">
+    <line x1="337" y1="103" x2="353" y2="119"></line>
+    <line x1="353" y1="103" x2="337" y2="119"></line>
+  </g>
+
+  <g class="fill-ink-faint font-mono" font-size="9">
+    <text x="340" y="70">passes</text>
+    <text x="358" y="115">blocked</text>
+    <text x="340" y="138">passes</text>
+  </g>
+
+  <rect
+    x="400"
+    y="58"
+    width="200"
+    height="104"
+    rx="6"
+    class="fill-paper-raised stroke-rule-strong"
+    stroke-width="1.25"></rect>
+  <text
+    x="500"
+    y="115"
+    text-anchor="middle"
+    class="fill-ink font-display"
+    font-size="12"
+    font-weight="700">the model</text
+  >
+
+  <text x="28" y="180" class="fill-ink-muted font-mono" font-size="10"
+    >A rule matches or it does not. The same words get the same verdict every
+    time.</text
+  >
+
+  <!-- ===================== what is actually there ===================== -->
+  <rect
+    x="8"
+    y="202"
+    width="624"
+    height="300"
+    rx="8"
+    class="fill-none stroke-rule-strong"
+    stroke-width="1.25"></rect>
+
+  <text
+    x="28"
+    y="226"
+    class="fill-ink font-display"
+    font-size="13"
+    font-weight="700">What is actually there</text
+  >
+  <text x="28" y="242" class="fill-ink-faint font-mono" font-size="10"
+    >one machine, and nothing standing in front of it</text
+  >
+
+  <rect
+    x="28"
+    y="270"
+    width="112"
+    height="22"
+    rx="4"
+    class="fill-paper-sunken stroke-rule-strong"></rect>
+  <text x="36" y="285" class="fill-ink font-mono" font-size="10"
+    >any request</text
+  >
+
+  <!-- The absence, drawn as an absence. -->
+  <rect
+    x="200"
+    y="252"
+    width="120"
+    height="60"
+    rx="4"
+    class="fill-none stroke-rule"
+    stroke-width="1.25"
+    stroke-dasharray="4 4"></rect>
+  <text
+    x="260"
+    y="304"
+    text-anchor="middle"
+    class="fill-ink-faint font-mono"
+    font-size="9">no checker here</text
+  >
+
+  <line
+    x1="142"
+    y1="281"
+    x2="392"
+    y2="281"
+    class="stroke-rule-strong"
+    stroke-width="1.5"></line>
+  <path
+    d="M393 276 L399 281 L393 286"
+    class="fill-none stroke-rule-strong"
+    stroke-width="1.5"></path>
+
+  <rect
+    x="400"
+    y="252"
+    width="200"
+    height="60"
+    rx="6"
+    class="fill-paper-raised stroke-rule-strong"
+    stroke-width="1.25"></rect>
+  <text
+    x="500"
+    y="272"
+    text-anchor="middle"
+    class="fill-ink font-display"
+    font-size="12"
+    font-weight="700">the model</text
+  >
+
+  {
+    dials.map((dial) => (
+      <g>
+        <circle
+          cx={dial.cx}
+          cy={dial.cy}
+          r="7"
+          class="fill-paper stroke-rule-strong"
+          stroke-width="1.25"
+        />
+        <line
+          x1={dial.cx}
+          y1={dial.cy}
+          x2={dial.x2}
+          y2={dial.y2}
+          class="stroke-accent"
+          stroke-width="1.5"
+        />
+      </g>
+    ))
+  }
+
+  <text x="400" y="328" class="fill-ink-faint font-mono" font-size="9"
+    >same dials as everything else</text
+  >
+
+  <!-- The tendency, drawn out. -->
+  <text
+    x="28"
+    y="352"
+    class="fill-ink font-display"
+    font-size="12"
+    font-weight="700">the same dials, drawn as a tendency</text
+  >
+  <text x="28" y="368" class="fill-ink-faint font-mono" font-size="9"
+    >not a measurement — a way of picturing what preference training left behind</text
+  >
+
+  <g class="stroke-rule" stroke-width="1" stroke-dasharray="3 4">
+    <line x1="230" y1="384" x2="230" y2={BASELINE}></line>
+    <line x1="419" y1="384" x2="419" y2={BASELINE}></line>
+  </g>
+
+  <g class="fill-ink-muted font-mono" font-size="10">
+    <text x="48" y="390">helps, nearly always</text>
+    <text x="240" y="390">could go either way</text>
+    <text x="428" y="390">declines, nearly always</text>
+  </g>
+
+  {
+    bars.map((bar) => (
+      <rect
+        x={bar.x}
+        y={bar.y}
+        width={BAR_WIDTH}
+        height={bar.height}
+        class="fill-paper-sunken stroke-rule-strong"
+        stroke-width="1"
+      />
+    ))
+  }
+
+  <line
+    x1="40"
+    y1={BASELINE}
+    x2="600"
+    y2={BASELINE}
+    class="stroke-rule-strong"
+    stroke-width="1.25"></line>
+
+  <!-- Two pinned requests. Circle and diamond, both spelled out. -->
+  <g class="stroke-rule-strong" stroke-width="1" stroke-dasharray="2 3">
+    <line x1="120" y1="421" x2="120" y2="450"></line>
+    <line x1="310" y1="418" x2="310" y2="450"></line>
+  </g>
+
+  <circle
+    cx="120"
+    cy="416"
+    r="5"
+    class="fill-paper stroke-rule-strong"
+    stroke-width="1.5"></circle>
+  <text x="132" y="419" class="fill-ink-muted font-mono" font-size="9"
+    >an ordinary question</text
+  >
+
+  <path
+    d="M310 406 L318 412 L310 418 L302 412 Z"
+    class="fill-paper stroke-accent"
+    stroke-width="1.75"></path>
+  <text x="324" y="409" class="fill-ink font-mono" font-size="9"
+    >the beekeeper's question</text
+  >
+  <text x="324" y="421" class="fill-ink-muted font-mono" font-size="9"
+    >harmless, and worded like the ones that were declined</text
+  >
+
+  <text x="44" y="468" class="fill-ink-faint font-mono" font-size="9"
+    >less like the requests raters declined</text
+  >
+  <text
+    x="590"
+    y="468"
+    text-anchor="end"
+    class="fill-ink-faint font-mono"
+    font-size="9">much more like them</text
+  >
+
+  <text
+    x="28"
+    y="490"
+    class="fill-ink font-display"
+    font-size="11"
+    font-weight="700"
+    >No line anywhere. Nothing inside knows which band a request landed in.</text
+  >
+</svg>

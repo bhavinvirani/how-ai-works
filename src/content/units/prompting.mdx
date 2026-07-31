@@ -1,0 +1,321 @@
+---
+title: There are no magic words, only narrower openings
+part: asking-well
+order: 1
+summary: Your prompt is not a request but the opening of a document the model has to finish, so everything that reliably works — naming the reader, naming the shape, naming the purpose — works by cutting down what could plausibly come next.
+prerequisites:
+  - text-generation
+connections:
+  - to: few-shot-prompting
+    why: Describing the document you want is one way to narrow what could plausibly follow it, and putting two finished ones on the page in front of the model is a far blunter one — same mechanism, applied with a pattern instead of a description of a pattern.
+interactives:
+  - PromptLeverBoard
+status: published
+updated: 2026-07-31
+---
+
+import Aside from '../../components/blocks/Aside.astro';
+import Checkpoint from '../../components/blocks/Checkpoint.astro';
+import DevAside from '../../components/blocks/DevAside.astro';
+import Figure from '../../components/blocks/Figure.astro';
+import NarrowingWhatFits from '../../components/diagrams/NarrowingWhatFits.astro';
+import { PromptLeverBoard } from '../../components/interactives/PromptLeverBoard';
+
+Somebody in the team chat pastes a screenshot with six words highlighted in
+yellow.
+
+_You are a world-class expert in_
+
+Put that at the top, they say. The answers get better. They cannot tell you why,
+and they are a little embarrassed to be recommending it — but they left it off
+once, the answer was worse, and they have not left it off since.
+
+This is roughly where people are with lucky socks.
+
+The awkward part is that they are not wrong. It does often help, and you can
+measure that it helps. So either these machines have a weakness for flattery, or
+something a great deal duller is going on.
+
+Something a great deal duller is going on. And once you have it, every piece of
+prompting advice you will ever be handed stops being a list to memorise and
+turns into something you could have worked out yourself.
+
+## You never asked it a question
+
+An earlier Part left you with a machine that does exactly one thing: read
+everything in front of it, and produce the most plausible next piece of text.
+Then read the whole lot again, one piece longer, and do it once more. Nothing
+else happens in there — no plan, no intention, no moment where it registers that
+somebody is waiting.
+
+Now look at what that machine actually receives when you type at it.
+
+Not a question. A run of text that has stopped. And the only move the machine
+has is to carry on from where it stopped.
+
+So here is the sentence to carry through the rest of this Part, and it is worth
+reading twice: **your prompt is the opening of a document, and the reply is the
+rest of that document.**
+
+Not a request that gets fulfilled. An opening that gets finished. That is not a
+figure of speech, either. The unit on models straight out of pretraining put a
+question into one and got back the rest of a forum page, and a chat app is a
+wrapper around that same machine — your messages and its messages flattened into
+one transcript, with its own turn just started, handed over with the only
+question anybody ever asks it: what comes next.
+
+## Why a vague request gets you the average
+
+Type _explain how a fridge makes things cold_ into an assistant and something
+perfectly decent comes back. Heat is moved rather than made. A refrigerant goes
+round a sealed loop. The coils at the back are where the heat is let go.
+Correct, fluent, and completely flavourless.
+
+It is tempting to read that as the machine hedging. It is not hedging. Those
+seven words are the opening of a physics textbook, a children's encyclopedia, a
+repair manual, a quiz answer, a lecture, a bedtime explanation and the first
+paragraph of an article nobody finished. The same seven words could begin any of
+them, and nothing you typed says which.
+
+So what does a machine do when the opening it has been handed fits a thousand
+documents? Not toss a coin. It does the only thing it has ever done, which is
+produce the most plausible continuation — and the most plausible continuation of
+an opening that fits a thousand documents is whatever those documents have in
+common. The middle of the pile. Encyclopedic, addressed to nobody, one paragraph
+long, for no stated purpose.
+
+That is the correction worth making before any advice arrives. **A vague prompt
+does not get you a random answer. It gets you the average one, reliably.**
+People describe model output as bland as though blandness were a personality
+trait. It is arithmetic.
+
+## Four pieces of advice you can now derive
+
+Here is the standard list. You have met it in a hundred blog posts as a set of
+things that work, and a set of things that work has to be memorised, which is
+why nobody remembers it. Derive it instead. All four are doing the same job:
+removing endings.
+
+**Say who is speaking, and to whom.** A page written for a nine-year-old and a
+page written for a trainee engineer are not the same page — different words,
+different length, different amount left out — and both are in the pile the model
+learned from. Write _you are explaining this to a nine-year-old_ at the top, and
+every ending of the second kind stops being plausible, because documents do not
+usually announce their reader and then carry on in the register of a service
+manual. Nothing was granted to the machine. Something was excluded.
+
+**Say what shape you want.** A document that promises three numbered steps and
+then stops has almost no plausible continuation that is not three numbered
+steps. This is the bluntest lever there is, and the reason is worth naming: a
+heading is a promise about what comes underneath it, and keeping promises like
+that is most of what the machine spent its training doing.
+
+**Say what it is for.** Purpose decides content, and it decides more of it than
+register does. An explanation for somebody who has to retell it tomorrow opens
+with the one sentence worth remembering. An explanation for somebody whose
+fridge has stopped opens with the compressor. Same subject, same reader, barely
+any overlap.
+
+**Be specific** — and this is the one that always gets listed alongside the
+other three as though it were a fourth technique. It is not a technique. It is
+the name for doing the first three at all. _Specific_ means nothing more than:
+an opening that few documents could plausibly follow.
+
+Which gives you one move to carry instead of a list. Stop wording a request.
+Start writing the top of the page the answer belongs on.
+
+<Figure
+  title="One request, two documents"
+  description="A bare request is the opening of a great many different documents at once, and the machine does not pick among them at random — it writes the blandest one, because that is what they have in common; add three lines around the identical seven words and all but one of the endings stops being a plausible continuation."
+>
+  <NarrowingWhatFits />
+</Figure>
+
+## What is real here, and what is drawn small
+
+The panel below holds one request, fixed, and three levers. Each lever writes
+one more line underneath the request, and nothing in the panel can edit the
+request itself. That constraint is the whole point of the instrument: if the
+answers change, the only thing that could have changed them is the document
+those seven words are now sitting in.
+
+Real: the mechanism. Naming one thing about a document removes every ending that
+disagrees with it. The removal is not a rule being enforced anywhere — those
+endings simply stop being plausible continuations of the text as it now stands.
+And what gets written is always the commonest of whatever is left, which is why
+the machine's answer changes without anything about the machine changing.
+
+Drawn small: the counting. The panel treats the space of endings as three
+questions with three answers each, twenty-seven documents in all, so that
+narrowing is something you can watch as a number. A real space of continuations
+has no number attached to it and no edges, and a real line of framing does not
+divide it neatly into thirds — it re-weights it, and some endings that ought to
+have gone stay stubbornly plausible. Take the shape of what happens here. Do not
+take the arithmetic as a measurement.
+
+## Pull the levers
+
+Nothing is pulled to begin with, and the answer sitting there is worth reading
+properly before you touch anything. It is correct. It is well written. It
+mentions the refrigerant, the condenser coils and the set point. It is also
+addressed to nobody, in a shape nothing asked for, for a purpose nobody stated —
+and it is very close to what these tools have been handing you for months.
+
+All twenty-seven endings still fit, so it wrote the middle of them.
+
+<PromptLeverBoard client:visible />
+
+Now pull the first lever, which writes one line: _You are explaining it to a
+nine-year-old._ Twenty-seven becomes nine. Watch the top row of the board — the
+other two readers go out, and they go out for no reason except that a document
+does not name its reader and then ignore it.
+
+Then notice what happened to the words. _Refrigerant_ is gone. Nobody says
+_refrigerant_ to a nine-year-old, so every ending containing it stopped being a
+plausible continuation of that line. Nothing translated anything. A different
+set of endings survived.
+
+Pull the second: _Write it as three numbered steps, one line each._ Nine becomes
+three, and one paragraph becomes three numbered lines. The most literal lever on
+the board, and the most reliable one.
+
+Pull the third: _They have to explain it to their class tomorrow._ Three becomes
+one. This is the lever people leave off, and it is the only one that changes the
+content rather than the packaging. The answer now opens with the sentence worth
+remembering — a fridge does not make cold, it steals heat — and ends by sending
+the child to feel the back of the fridge, because a proof you can perform is the
+part that survives until tomorrow.
+
+Then look back at the top of the panel. The request is the same seven words it
+was three levers ago. You never asked a different question. You wrote a
+different document.
+
+One more thing to notice, and it is the honest one. Pull a lever and **two**
+settings on that row are struck out, not one. The board holds a trainee
+engineer, a question-and-answer shape and a fault-finding purpose that no lever
+on it ever selects — they are there so you can see that naming a thing removes
+several alternatives rather than choosing between two. It is also why prompting
+has such steep diminishing returns. The first line you add throws away eighteen
+of the twenty-seven endings. The third is deciding among three.
+
+## Two things it cannot do
+
+Everything above is steering, and it is worth being exact about what steering is
+not — because the most expensive mistakes people make with these tools are made
+by prompting harder at a problem no prompt can reach.
+
+**It cannot add knowledge.** Narrowing the plausible endings can only ever pick
+among endings the machine could already have produced. If what you want was
+never in the pile it learned from — your company's refund policy, what happened
+last Tuesday, a paper published after training stopped — then no opening you
+write will conjure it, because there is no ending containing it to narrow
+towards. What a good prompt _can_ do is reach something the machine holds but
+was not otherwise going to reach, and from outside the two are indistinguishable
+right up until the answer is confidently wrong.
+
+**It cannot make it check.** There is no step in the loop where the machine goes
+and looks something up, and no line you write adds one. _Are you sure?_ does
+something real, but not the thing you were hoping for: it produces a document in
+which somebody is being challenged, and the plausible continuations of that are
+a confident correction or a confident defence. Both are available regardless of
+whether the original answer was right. You narrowed towards the shape of
+checking, and the shape of checking is not checking.
+
+<Aside title="About those six words" tone="caution">
+  Back to the screenshot at the top. _You are a world-class expert in_ does do
+  something, and it is not what it sounds like.
+
+It cannot make the machine more expert. There is no reserve of expertise being
+unlocked, and nothing whatsoever about the machine changed between one prompt
+and the next. What the line does is narrow towards documents written by
+confident experts — which are, on average, better organised, more specific and
+less padded than documents written by nobody in particular. That is a real gain,
+and it is why the trick has survived years of people rolling their eyes at it.
+
+The cost is rarely mentioned in the same breath. Documents written by confident
+experts also state wrong things confidently. You narrowed towards a register,
+and visible uncertainty was part of the register you removed.
+
+</Aside>
+
+## Where you are already doing this
+
+Two places, and you are in both of them today.
+
+Every assistant you use has a prompt of its own, written before yours arrives
+and sitting above it in the same document: who it is, what it will not do, how
+long its answers should run. Your words continue that. It is most of why the
+same underlying model behaves like a different product in two different apps.
+
+And any tool that puts a model behind a form is gluing your input into a
+template somebody wrote. The template is the top of the page; whatever a user
+typed is the middle of it. That is worth knowing for a reason well beyond
+prompting: by the time the model sees it, there is one document, and nothing in
+it marks which parts came from the people who built the tool and which arrived
+from a stranger.
+
+<DevAside>
+  <Fragment slot="java">
+    ```java
+    String opening = """
+        You are explaining it to a nine-year-old.
+        Write it as three numbered steps, one line each.
+
+        Explain how a fridge makes things cold.
+        """;
+
+    String reply = model.complete(opening + "1.");
+    ```
+
+    The interesting part is the `+ "1."`. You are not describing the document
+    you want; you have started writing it, and the model has no way to continue
+    except underneath a line that begins with a numeral. It is the strongest
+    form of everything on this page, and it costs two characters.
+
+    The uncomfortable part is the concatenation above it. Framing and request
+    are the same kind of thing to whatever reads this — one string, no field
+    marking one half as yours.
+
+  </Fragment>
+  <Fragment slot="python">
+    ```python
+    messages = [
+        {"role": "user", "content": opening},
+        {"role": "assistant", "content": "1."},   # its turn, already begun
+    ]
+    ```
+
+    That second message is not something the model said. It is the opening of
+    the model's own turn, written by you, and it is the reason this technique
+    is usually called prefill. Providers differ on whether they allow it, and
+    the ones that do tend to reject a trailing space — because the whole
+    conversation is one run of text, and a stray space at the end is a piece
+    the model then has to continue from.
+
+    Worth knowing that `role` is not a permission. It decides which markers get
+    written into the transcript, nothing more.
+
+  </Fragment>
+</DevAside>
+
+<Checkpoint question="A team adds one line to the top of every prompt in their product: be thorough and accurate, and do not make anything up. Answers get longer, read more authoritatively, and complaints about vagueness drop. Then somebody notices that a wrong answer which used to arrive hedged now arrives flat and certain. What did that line actually do, and what would have helped?">
+  It narrowed towards documents that read as thorough and accurate. Every word
+  in that description is a property of the writing: longer, more assured, fewer
+  hedges, no visible doubt. The line worked exactly the way this unit says lines
+  work, which is why the vagueness complaints dropped — that part was real.
+
+What it could not do is narrow towards true. Truth is a property of the world,
+and the opening of a document does not touch the world. And the side effect was
+not bad luck: hedging was part of what got removed, so the wrong answer did not
+get wronger, it lost the signals that used to give it away.
+
+What would have helped is anything that narrows the content rather than the
+tone — saying who the answer is for and what they have to do with it, and above
+all putting the material the answer depends on into the document, so the ending
+they want is a continuation of text that already contains the facts.
+
+Worth keeping as a shape. Whenever a prompt asks for a quality, ask whether that
+quality belongs to the writing or to the world. Only the first kind is something
+an opening can narrow towards.
+
+</Checkpoint>

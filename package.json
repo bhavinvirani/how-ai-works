@@ -18,7 +18,7 @@
     "build": "astro build",
     "preview": "astro preview",
     "check": "astro check && tsc --noEmit -p tsconfig.node.json",
-    "lint": "eslint . && node scripts/check-raw-colors.mjs",
+    "lint": "astro sync && eslint . && node scripts/check-raw-colors.mjs",
     "lint:fix": "eslint . --fix",
     "format": "prettier --write .",
     "format:check": "prettier --check .",

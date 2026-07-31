@@ -1,0 +1,98 @@
+---
+import { ui } from '../../copy/en';
+import { withBase } from '../../lib/paths';
+
+/**
+ * The site header — the only navigation present on every page.
+ *
+ * WHY IT EXISTS. Until this was added there was no global navigation at all.
+ * `BaseLayout` rendered no header, and the only nav on the site was the
+ * curriculum rail, which is rendered by the unit route alone and links to units
+ * alone. So `/map`, `/search`, `/gallery` and `/progress` were reachable only by
+ * typing the URL, and from any of them there was no way back to anywhere —
+ * including the home page. Sixty lessons behind three links on one page.
+ *
+ * Zero JavaScript, like the curriculum rail: this is a list of links and
+ * `aria-current`, so a lesson page still ships nothing to hydrate and the whole
+ * site stays navigable with scripting off.
+ *
+ * Every href goes through `withBase` (hard rule 7). The site is served from
+ * `/how-ai-works/`, and a root-absolute href here would work in dev and 404 on
+ * every page in production at once.
+ *
+ * No English lives in this file (hard rule 10) — it all comes from
+ * `ui.siteNav`.
+ */
+
+interface Props {
+  /** Pathname of the current page, for marking the active link. */
+  pathname: string;
+}
+
+const { pathname } = Astro.props;
+
+const copy = ui.siteNav;
+
+const LINKS = [
+  { href: '/units/why-rules-fail', label: copy.lessons, match: '/units/' },
+  { href: '/map', label: copy.map, match: '/map' },
+  { href: '/search', label: copy.search, match: '/search' },
+  { href: '/gallery', label: copy.gallery, match: '/gallery' },
+  { href: '/progress', label: copy.progress, match: '/progress' },
+];
+
+/**
+ * Compared against the base-prefixed path, because `Astro.url.pathname` carries
+ * the base in the built output. Trailing slashes vary by route, so both ends are
+ * normalised rather than compared literally.
+ */
+const strip = (value: string) => value.replace(/\/+$/, '');
+const here = strip(pathname);
+
+const isCurrent = (match: string) => {
+  const target = strip(withBase(match));
+  // `/units/` marks every lesson, not one of them — the "Lessons" link is a way
+  // in, not a link to a particular unit.
+  return match === '/units/' ? here.startsWith(target) : here === target;
+};
+
+const LINK_BASE =
+  'rounded-sm px-1.5 py-1 text-sm text-ink-muted transition-colors duration-[var(--duration-fast)] ease-out-soft hover:text-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus aria-[current=page]:font-medium aria-[current=page]:text-accent';
+---
+
+<header class="border-b border-rule bg-paper-raised">
+  <nav
+    aria-label={copy.label}
+    class="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-x-6 gap-y-2 px-6 py-3"
+  >
+    <a
+      href={withBase('/')}
+      aria-current={strip(withBase('/')) === here ? 'page' : undefined}
+      class="rounded-sm font-display text-base font-semibold text-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus"
+    >
+      {
+        /* The full title is the wordmark; the short one keeps the row on one
+          line on a phone. Only one is in the accessibility tree at a time,
+          because the other is `display: none`. */
+      }
+      <span class="max-sm:hidden">{copy.home}</span>
+      <span class="sm:hidden">{copy.homeShort}</span>
+    </a>
+
+    <ul class="flex list-none flex-wrap items-center gap-x-1 gap-y-1 p-0">
+      {
+        LINKS.map((link) => (
+          <li>
+            <a
+              href={withBase(link.href)}
+              aria-current={isCurrent(link.match) ? 'page' : undefined}
+              class={LINK_BASE}
+            >
+              {link.label}
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </nav>
+</header>

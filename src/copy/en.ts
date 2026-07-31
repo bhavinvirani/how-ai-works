@@ -63,6 +63,63 @@ export const ui = {
     readFirst: 'Read this first',
     /** Heading above a checkpoint question. */
     checkpoint: 'Checkpoint',
+
+    /**
+     * Marks a linked unit the reader has already finished.
+     *
+     * Deliberately the same word the button on every unit uses
+     * (`progress.markComplete` / `progress.complete`), because these are the
+     * same state seen from two places — calling it "read" here and "complete"
+     * there would imply the site was tracking two different things.
+     */
+    linkComplete: 'Complete',
+
+    /**
+     * How much of the required reading is already done.
+     *
+     * Written as whole sentences per case rather than assembled from fragments,
+     * so translating it means rewriting sentences rather than reverse
+     * engineering a template. It says "marked complete" rather than "read"
+     * because that is what is actually known — the site cannot tell whether
+     * anybody read anything, only what they ticked.
+     */
+    prerequisiteSummary: (done: number, total: number): string => {
+      if (total === 0) return '';
+      if (done === 0) {
+        return total === 1
+          ? 'You have not marked this one complete yet.'
+          : `You have not marked any of these ${String(total)} complete yet.`;
+      }
+      if (done === total) {
+        return total === 1
+          ? 'You have marked this one complete.'
+          : 'You have marked all of these complete.';
+      }
+      return `You have marked ${String(done)} of these ${String(total)} complete.`;
+    },
+  },
+
+  /**
+   * The site header — the only navigation that appears on every page.
+   *
+   * Separate from `nav` below, which is the per-lesson curriculum rail. Until
+   * this existed, `/map`, `/search`, `/gallery` and `/progress` were reachable
+   * only by typing the URL: nothing on any of them linked anywhere else.
+   */
+  siteNav: {
+    /** Names the landmark. Not shown. */
+    label: 'Site',
+    /** The wordmark, which doubles as the link home. */
+    home: 'How AI Actually Works',
+    /** Short form, for the narrow layout where the full title will not fit. */
+    homeShort: 'How AI Works',
+    lessons: 'Lessons',
+    map: 'Map',
+    search: 'Search',
+    gallery: 'Gallery',
+    progress: 'Progress',
+    /** Marks the page currently being viewed, for screen readers. */
+    current: 'Current page',
   },
 
   nav: {

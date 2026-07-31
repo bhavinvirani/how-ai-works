@@ -36,6 +36,22 @@ const ROUTES: Route[] = [
     },
   },
   {
+    name: 'search',
+    path: './search/',
+  },
+  {
+    name: 'map',
+    path: './map/',
+    // The map island is `client:visible`, so without this axe scans the
+    // pre-hydration Part chain instead of the canvas — passing for the wrong
+    // reason. The canvas is deliberately `aria-hidden` with nothing inside it
+    // focusable, and that is precisely the claim worth checking, since a
+    // focusable element inside an aria-hidden region is an axe violation.
+    settle: async (page) => {
+      await expect(page.locator('astro-island[ssr]')).toHaveCount(0);
+    },
+  },
+  {
     name: 'gallery',
     path: './gallery/',
     // Pressing `End` used to be enough here and silently stopped being enough

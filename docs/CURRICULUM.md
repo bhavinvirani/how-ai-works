@@ -442,11 +442,31 @@ cut both.
 
 ---
 
-## Still open
+## Still open — RESOLVED 2026-07-31, both as proposed
 
-Two placement questions, deliberately not settled at sign-off. Both are local,
-both are cheap to change while their Part is unwritten, and both are worth
-deciding with the actual prose in front of you rather than in the abstract.
+Both were settled when their Part was written, which is what this section asked
+for. The reasoning is kept because a future contributor checking the port
+against the artifact will find the disagreements and should not "fix" them.
+
+**1. `embeddings` stays** at the end of _What the machine is made of_. The cycle
+trap below is the deciding argument, and it is real rather than theoretical. The
+"small unlearn" objection was turned into a feature instead: `embeddings` now
+promises in an aside that "word" is about to get more precise, and
+`tokenization` opens two units later by cashing that promise by name. **Do not
+re-point the `tokenization builds on embeddings` edge.**
+
+**2. `multi-head-attention` stays ahead of `positional-encoding`.** Genuinely
+close, as predicted. The deciding argument was adjacency to the CONSUMER:
+positional encoding is a correction applied during assembly, and `transformers`
+is the assembly unit, so it belongs immediately before it. Teaching multi-head
+first does not compound order-blindness — that flaw is equally true of one head
+or twelve.
+
+A third question, recorded under _Two findings that affect the build_ below, is
+also now closed: **`/map` encodes Part by label and cluster position, never
+colour**, and is built that way.
+
+The original framing of the two placement questions follows.
 
 **1. Does `embeddings` stay in _What the machine is made of_, or move into the
 language Part after `tokenization`?**

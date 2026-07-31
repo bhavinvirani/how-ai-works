@@ -98,7 +98,11 @@ const navUnits = units.map((entry) => ({
 }));
 ---
 
-<BaseLayout title={unit.data.title} description={unit.data.summary}>
+{
+  /* `searchable` makes this the only kind of page Pagefind indexes — the
+    lessons, not the gallery, the progress page or the map. See BaseLayout. */
+}
+<BaseLayout title={unit.data.title} description={unit.data.summary} searchable>
   <CurriculumNav
     slot="nav"
     variant="rail"

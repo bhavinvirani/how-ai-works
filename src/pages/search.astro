@@ -1,0 +1,214 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { withBase } from '../lib/paths';
+
+/**
+ * Search, over the lesson prose only.
+ *
+ * Pagefind builds its index from `dist/` AFTER `astro build` — see the `build`
+ * script — so nothing here runs at build time and nothing is imported from the
+ * `pagefind` package. Importing it would be a build-time dependency on an index
+ * that does not exist yet.
+ *
+ * THE BASE PATH IS THE WHOLE DIFFICULTY. Pagefind's client defaults to fetching
+ * `/pagefind/pagefind.js`, which is correct only for a site served from the root
+ * of its origin. This one is served from `/how-ai-works/`, so the default 404s in
+ * production while working perfectly in `astro dev` — the exact failure mode
+ * CLAUDE.md names for KaTeX and Pagefind. The bundle path is therefore computed
+ * with `withBase` and handed to the browser rather than assumed.
+ *
+ * This page is deliberately NOT marked `searchable`: it must not appear in its
+ * own results, and more importantly `data-pagefind-body` is site-wide in effect
+ * — once any page carries it, only pages carrying it are indexed at all.
+ */
+
+const bundlePath = withBase('/pagefind/');
+
+const copy = {
+  title: 'Search',
+  description: 'Find a topic anywhere in the sixty lessons.',
+  heading: 'Search the lessons',
+  intro:
+    'Searches the text of all sixty lessons. It runs entirely in your browser — the index is downloaded with the page, and nothing you type is sent anywhere.',
+  label: 'What are you looking for?',
+  placeholder: 'attention, overfitting, why models refuse…',
+  submit: 'Search',
+  noscript:
+    'Search needs JavaScript, because the index is downloaded and queried in your browser rather than on a server. Every lesson is reachable without it from the contents list on any lesson page.',
+  searching: 'Searching…',
+  empty: 'Nothing matched that. Try a single word, or a plainer one.',
+  failed:
+    'The search index could not be loaded. It is built with the site, so this usually means an incomplete deployment rather than a problem with what you typed.',
+  countOne: 'One lesson matches.',
+  countMany: (n: number) => `${String(n)} lessons match.`,
+  results: 'Search results',
+};
+---
+
+<BaseLayout title={copy.title} description={copy.description}>
+  <h1>{copy.heading}</h1>
+  <p>{copy.intro}</p>
+
+  <form
+    id="search-form"
+    role="search"
+    class="not-content my-8 flex flex-col gap-2"
+  >
+    <label for="search-input" class="text-sm font-medium text-ink-muted">
+      {copy.label}
+    </label>
+
+    <div class="flex gap-2">
+      <input
+        id="search-input"
+        type="search"
+        name="q"
+        autocomplete="off"
+        placeholder={copy.placeholder}
+        class="min-w-0 flex-1 rounded-md border border-rule-strong bg-paper-raised px-3 py-2 text-ink placeholder:text-ink-faint focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus"
+      />
+      <button
+        type="submit"
+        class="shrink-0 rounded-md border border-rule-strong bg-paper-raised px-3 py-2 text-sm text-ink hover:bg-paper-sunken focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus"
+      >
+        {copy.submit}
+      </button>
+    </div>
+  </form>
+
+  <noscript>
+    <p>{copy.noscript}</p>
+  </noscript>
+
+  {
+    /* Announced rather than merely rendered: results replace each other in place,
+      which is silent for anyone not looking at the page. */
+  }
+  <p id="search-status" aria-live="polite" class="text-sm text-ink-muted"></p>
+
+  <ol
+    id="search-results"
+    aria-label={copy.results}
+    class="not-content flex list-none flex-col gap-6 p-0"
+  >
+  </ol>
+</BaseLayout>
+
+<script
+  is:inline
+  define:vars={{
+    bundlePath,
+    strings: {
+      searching: copy.searching,
+      empty: copy.empty,
+      failed: copy.failed,
+      countOne: copy.countOne,
+      results: copy.results,
+    },
+  }}
+>
+  // Inline and untyped on purpose: `define:vars` is what carries the
+  // base-aware bundle path from the server into the browser, and it only works
+  // on an inline script. The alternative — hardcoding '/pagefind/' — is the bug
+  // this whole file exists to avoid.
+  const form = document.querySelector('#search-form');
+  const input = document.querySelector('#search-input');
+  const status = document.querySelector('#search-status');
+  const list = document.querySelector('#search-results');
+
+  let pagefind = null;
+
+  async function loadPagefind() {
+    if (pagefind) return pagefind;
+    // Concatenated so the bundler leaves it alone: this module is generated
+    // after the build and does not exist at bundle time.
+    pagefind = await import(/* @vite-ignore */ `${bundlePath}pagefind.js`);
+    await pagefind.options({ baseUrl: bundlePath.replace(/pagefind\/$/, '') });
+    return pagefind;
+  }
+
+  function clear() {
+    while (list.firstChild) list.removeChild(list.firstChild);
+  }
+
+  function render(results) {
+    clear();
+
+    for (const result of results) {
+      const item = document.createElement('li');
+      item.className = 'flex flex-col gap-1';
+
+      const heading = document.createElement('a');
+      heading.href = result.url;
+      heading.textContent = result.meta?.title ?? result.url;
+      heading.className =
+        'font-display text-lg font-semibold text-ink underline decoration-accent underline-offset-4';
+
+      const excerpt = document.createElement('p');
+      excerpt.className = 'text-sm text-ink-muted';
+      // Pagefind's excerpt marks the matched words with <mark>, which is the
+      // one piece of markup worth keeping — it is a semantic element, and the
+      // string comes from our own indexed pages rather than from user input.
+      excerpt.innerHTML = result.excerpt;
+
+      item.append(heading, excerpt);
+      list.append(item);
+    }
+  }
+
+  async function run(query) {
+    if (!query.trim()) {
+      clear();
+      status.textContent = '';
+      return;
+    }
+
+    status.textContent = strings.searching;
+
+    let search;
+    try {
+      const api = await loadPagefind();
+      search = await api.search(query);
+    } catch {
+      clear();
+      status.textContent = strings.failed;
+      return;
+    }
+
+    const found = await Promise.all(
+      search.results.slice(0, 20).map((result) => result.data()),
+    );
+
+    if (found.length === 0) {
+      clear();
+      status.textContent = strings.empty;
+      return;
+    }
+
+    status.textContent =
+      found.length === 1
+        ? strings.countOne
+        : `${String(found.length)} lessons match.`;
+    render(found);
+  }
+
+  form.addEventListener('submit', (event) => {
+    event.preventDefault();
+    void run(input.value);
+  });
+
+  let pending;
+  input.addEventListener('input', () => {
+    clearTimeout(pending);
+    pending = setTimeout(() => {
+      void run(input.value);
+    }, 200);
+  });
+
+  // Deep links: /search?q=attention should arrive already searched.
+  const initial = new URLSearchParams(window.location.search).get('q');
+  if (initial) {
+    input.value = initial;
+    void run(initial);
+  }
+</script>

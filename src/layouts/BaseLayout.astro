@@ -31,9 +31,24 @@ interface PageMeta {
  */
 interface Props extends Partial<PageMeta> {
   frontmatter?: PageMeta;
+  /**
+   * Marks this page's `<main>` as the part Pagefind should index.
+   *
+   * Opt-in rather than automatic, because once ANY page on the site carries
+   * `data-pagefind-body`, Pagefind indexes only pages that carry it — so the
+   * attribute silently decides what is searchable site-wide. Lessons are the
+   * content; `/gallery`, `/progress` and `/map` are furniture, and having them
+   * compete with lessons in the results would make search worse, not better.
+   *
+   * It sits on the existing `<main>` rather than on a wrapper element on
+   * purpose: `.content > *` in global.css uses direct child combinators, so
+   * introducing a wrapper would silently break the prose spacing on all sixty
+   * unit pages while every gate stayed green.
+   */
+  searchable?: boolean;
 }
 
-const { frontmatter, ...direct } = Astro.props;
+const { frontmatter, searchable, ...direct } = Astro.props;
 const { title, description } = frontmatter ?? (direct as PageMeta);
 
 const canonical = new URL(Astro.url.pathname, Astro.site);
@@ -64,7 +79,10 @@ const hasNav = Astro.slots.has('nav');
           <div class="w-56 shrink-0 max-lg:hidden">
             <slot name="nav" />
           </div>
-          <main class="content max-w-3xl min-w-0 flex-1 py-16">
+          <main
+            class="content max-w-3xl min-w-0 flex-1 py-16"
+            data-pagefind-body={searchable ? true : undefined}
+          >
             {/* The disclosure copy of the nav rides above the lesson on small
                 screens, where the rail is hidden. */}
             <div class="lg:hidden">
@@ -74,7 +92,10 @@ const hasNav = Astro.slots.has('nav');
           </main>
         </div>
       ) : (
-        <main class="content mx-auto max-w-3xl px-6 py-16">
+        <main
+          class="content mx-auto max-w-3xl px-6 py-16"
+          data-pagefind-body={searchable ? true : undefined}
+        >
           <slot />
         </main>
       )

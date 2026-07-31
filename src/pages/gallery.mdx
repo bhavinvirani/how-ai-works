@@ -45,6 +45,7 @@ import { ScoringRulePicker } from '../components/interactives/ScoringRulePicker'
 import { SpamRuleWriter } from '../components/interactives/SpamRuleWriter';
 import { StepSizeRace } from '../components/interactives/StepSizeRace';
 import { TrainingLoopRunner } from '../components/interactives/TrainingLoopRunner';
+import { withBase } from '../lib/paths';
 import {
   InstrumentPanelDemo,
   RevealButtonDemo,
@@ -309,6 +310,15 @@ It holds up far longer than anyone expects, and then it does not hold up
 gradually.
 
 <PrecisionDial client:visible />
+
+### The whole site as one picture
+
+The one instrument that is **not** shown here, deliberately. `ConceptMap` is
+built from the content collection, and MDX frontmatter cannot `await
+getCollection` — so an instance on this page would render its empty state,
+which is worse than an honest absence. It is live, with real data, on{' '}
+
+<a href={withBase('/map')}>the map</a>.
 
 ## Instrument panel
 

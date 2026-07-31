@@ -230,6 +230,10 @@ export const ui = {
       title: 'Spend fewer digits on each dial',
       lead: 'Drop the precision and watch the model shrink. Find where it is still the same model — and the step just after that.',
     },
+    ConceptMap: {
+      title: 'The whole site as one picture',
+      lead: 'Find where you are, then follow the arrows backwards to see what a lesson is standing on.',
+    },
     // new:interactive inserts above this line — do not remove.
   } as Record<string, { title: string; lead: string }>,
 

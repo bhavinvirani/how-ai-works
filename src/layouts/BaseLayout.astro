@@ -1,0 +1,58 @@
+---
+/**
+ * The one page shell.
+ *
+ * These four stylesheet imports are deliberately here rather than inside
+ * global.css. Importing them from frontmatter routes the font and KaTeX woff2
+ * files through Vite's asset pipeline, which rewrites their url() references to
+ * base-path-aware hashed URLs. A bare-specifier @import in CSS is the version
+ * that looks right in dev and 404s under /how-ai-works/.
+ *
+ * No user-facing English lives in this file (CLAUDE.md hard rule 10) — every
+ * string a reader sees arrives as a prop from MDX frontmatter.
+ */
+import '@fontsource-variable/bricolage-grotesque';
+import '@fontsource-variable/public-sans';
+import '@fontsource-variable/jetbrains-mono';
+import 'katex/dist/katex.min.css';
+import '../styles/global.css';
+
+import { withBase } from '../lib/paths';
+
+interface PageMeta {
+  title: string;
+  description: string;
+}
+
+/**
+ * An MDX page using `layout:` receives its frontmatter under a `frontmatter`
+ * prop; an .astro page passes the same fields directly. Accept both so pages
+ * can be written in either format.
+ */
+interface Props extends Partial<PageMeta> {
+  frontmatter?: PageMeta;
+}
+
+const { frontmatter, ...direct } = Astro.props;
+const { title, description } = frontmatter ?? (direct as PageMeta);
+
+const canonical = new URL(Astro.url.pathname, Astro.site);
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <link rel="icon" type="image/svg+xml" href={withBase('/favicon.svg')} />
+    <meta name="generator" content={Astro.generator} />
+  </head>
+  <body class="min-h-dvh">
+    <main class="content mx-auto max-w-3xl px-6 py-16">
+      <slot />
+    </main>
+  </body>
+</html>

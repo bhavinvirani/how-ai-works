@@ -1,0 +1,59 @@
+name: Preview build
+
+# Half one of the two-workflow preview split.
+#
+# This half runs `on: pull_request`, which for a PR from a FORK gets a
+# read-only GITHUB_TOKEN — so it deliberately does no publishing at all. It
+# only builds and hands the result to preview-deploy.yml via an artifact.
+#
+# A single-workflow preview works fine for the maintainer and fails silently
+# for every external contributor, and external contributions are exactly what
+# the GitHub web editor produces (it always forks first). Building the split
+# now costs the same as the naive version and avoids a rewrite later.
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+# Read-only, explicitly. Nothing here should be able to write to the repo.
+permissions:
+  contents: read
+
+concurrency:
+  group: preview-build-${{ github.event.number }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: Build preview
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - uses: pnpm/action-setup@0ebf47130e4866e96fce0953f49152a61190b271 # v6.0.9
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      # The preview is served from /how-ai-works/pr-preview/<n>/, not from the
+      # site root, so it has to be BUILT for that path. Without this override
+      # every asset URL points at the production base and the preview 404s
+      # while the live site looks fine.
+      - name: Build for the preview path
+        run: pnpm build
+        env:
+          BASE_PATH: /how-ai-works/pr-preview/${{ github.event.number }}
+
+      # The deploy half runs on `workflow_run`, where the PR number is not
+      # reliably available for forks — so pass it along explicitly.
+      - name: Record PR number
+        run: echo "${{ github.event.number }}" > dist/.pr-number
+
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: preview-dist
+          path: dist/
+          retention-days: 3
+          include-hidden-files: true

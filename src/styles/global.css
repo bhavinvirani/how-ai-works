@@ -1,0 +1,172 @@
+/**
+ * Global stylesheet — the single CSS entry point.
+ *
+ * Font and KaTeX stylesheets are imported from the layout's frontmatter rather
+ * than with a bare-specifier `@import` here, on purpose: the JS route sends
+ * their woff2 files through Vite's asset pipeline, which rewrites every url()
+ * to a hashed, base-path-aware URL. That is what stops them 404ing under
+ * /how-ai-works/ while looking perfect in dev.
+ */
+
+@import 'tailwindcss';
+@import './tokens.css';
+
+/**
+ * Tailwind scans from the current working directory, not from src/ and not
+ * from the git root. `reference/how-ai-works.html` is a vendored artifact whose
+ * Tailwind-shaped class names would otherwise emit real, unused CSS into our
+ * bundle. Paths in @source resolve relative to THIS stylesheet.
+ */
+@source not '../../reference';
+
+@layer base {
+  html {
+    /* Anchor links land below any future sticky header rather than under it. */
+    scroll-padding-block-start: --spacing(16);
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    background-color: var(--color-paper);
+    color: var(--color-ink);
+    font-family: var(--font-body);
+    font-size: var(--text-base);
+    line-height: 1.7;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-family: var(--font-display);
+    color: var(--color-ink);
+    letter-spacing: var(--tracking-tight);
+    text-wrap: balance;
+  }
+
+  /* Long-form reading: keep paragraphs from going ragged at the edges. */
+  p {
+    text-wrap: pretty;
+  }
+
+  code,
+  kbd,
+  samp,
+  pre {
+    font-family: var(--font-mono);
+    font-size: 0.9em;
+  }
+
+  :not(pre) > code {
+    background-color: var(--color-paper-sunken);
+    border-radius: var(--radius-sm);
+    padding-inline: --spacing(1);
+    padding-block: --spacing(0.5);
+  }
+
+  a {
+    color: var(--color-accent);
+    text-underline-offset: 0.2em;
+  }
+
+  /* One visible, high-contrast focus style for everything. The ring colour
+   * clears 3:1 against both paper and raised surfaces. */
+  :focus-visible {
+    outline: 2px solid var(--color-focus);
+    outline-offset: 2px;
+    border-radius: var(--radius-xs);
+  }
+
+  hr {
+    border: 0;
+    border-block-start: 1px solid var(--color-rule);
+  }
+
+  /* Display maths can be wider than the measure; let it scroll rather than
+   * pushing the page sideways on a phone. */
+  .katex-display {
+    overflow-x: auto;
+    overflow-y: hidden;
+    padding-block: --spacing(1);
+  }
+}
+
+/**
+ * Vertical rhythm for MDX prose.
+ *
+ * Tailwind's preflight strips element margins, and @tailwindcss/typography is
+ * not on the dependency allowlist — so lesson content needs its own flow
+ * rules. Scoped to `.content` rather than applied to bare elements so that
+ * diagrams, instrument panels, and specimens can opt out simply by not being
+ * direct children.
+ */
+@layer components {
+  .content > * + * {
+    margin-block-start: --spacing(5);
+  }
+
+  .content > h2 {
+    margin-block-start: --spacing(12);
+    font-size: var(--text-2xl);
+  }
+
+  .content > h3 {
+    margin-block-start: --spacing(9);
+    font-size: var(--text-xl);
+  }
+
+  .content > h1 {
+    font-size: var(--text-4xl);
+    margin-block-end: --spacing(2);
+  }
+
+  .content > ul,
+  .content > ol {
+    padding-inline-start: --spacing(6);
+  }
+
+  .content > ul {
+    list-style: disc;
+  }
+
+  .content > ol {
+    list-style: decimal;
+  }
+
+  .content li + li {
+    margin-block-start: --spacing(2);
+  }
+
+  /* A lead paragraph directly after the page title. */
+  .content > h1 + p {
+    font-size: var(--text-lg);
+    color: var(--color-ink-muted);
+  }
+}
+
+/**
+ * Reduced motion degrades animation to an INSTANT state change, never to a
+ * slow one (CLAUDE.md hard rule 3). Two layers: the duration tokens collapse
+ * to zero so token-driven transitions stop, and a blanket net catches anything
+ * that hardcoded its own timing.
+ */
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --duration-fast: 0ms;
+    --duration-base: 0ms;
+    --duration-slow: 0ms;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

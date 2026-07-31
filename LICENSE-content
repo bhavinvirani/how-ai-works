@@ -1,0 +1,53 @@
+# Content License — Creative Commons Attribution 4.0 International (CC BY 4.0)
+
+Copyright (c) 2026 Bhavin Virani and contributors
+
+## What this file covers
+
+This repository is **dual licensed**. This file governs the *learning content*;
+the separate [`LICENSE`](./LICENSE) file (MIT) governs the *code*.
+
+**Covered by CC BY 4.0 (this file):**
+
+- `src/content/**` — all lesson prose and unit frontmatter
+- `docs/**` — curriculum, quality bar, and other written documentation
+- The textual copy inside diagram and page components
+- Any images, illustrations, or media committed to this repository
+
+**Covered by MIT ([`LICENSE`](./LICENSE)):**
+
+- Everything else — `src/components/**`, `src/layouts/**`, `src/lib/**`,
+  `src/pages/**`, `src/styles/**`, `scripts/**`, configuration, and workflows
+
+Where a single file mixes the two (an `.mdx` unit is prose inside a code
+wrapper), the prose is CC BY 4.0 and the surrounding code is MIT.
+
+## The license
+
+The content is licensed under the Creative Commons Attribution 4.0
+International License.
+
+- Human-readable summary: <https://creativecommons.org/licenses/by/4.0/>
+- Full legal code: <https://creativecommons.org/licenses/by/4.0/legalcode>
+
+SPDX identifier: `CC-BY-4.0`
+
+You are free to **share** (copy and redistribute in any medium or format) and
+**adapt** (remix, transform, and build upon the material) for any purpose,
+including commercially, so long as you give appropriate credit.
+
+## How to attribute
+
+Include a credit line such as:
+
+> "How AI Actually Works" by Bhavin Virani and contributors, licensed under
+> CC BY 4.0. Source: https://github.com/bhavinvirani/how-ai-works
+
+Indicate if you made changes, and do not suggest the licensor endorses you or
+your use.
+
+## Contributions
+
+Contributions are inbound = outbound: by submitting a contribution you agree it
+is licensed to this project under MIT (code) and CC BY 4.0 (content), matching
+the terms above.

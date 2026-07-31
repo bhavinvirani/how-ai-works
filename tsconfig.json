@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json.schemastore.org/tsconfig",
+  "extends": "astro/tsconfigs/strict",
+  "compilerOptions": {
+    // React islands are type-checked as JSX; Astro's base preset leaves jsx as
+    // "preserve", which is not enough to check .tsx component code.
+    "jsx": "react-jsx",
+    "jsxImportSource": "react",
+
+    // playwright.config.ts reads process.env.CI, and Astro's preset does not
+    // pull in Node's types. Without this, `pnpm check` fails on TS2591.
+    "types": ["node"],
+
+    // Beyond `strict`: catch dead code and accidental override/fallthrough.
+    // Deliberately NOT enabling exactOptionalPropertyTypes or
+    // noUncheckedIndexedAccess — both fight React prop spreading and array
+    // maths in the interactives without catching bugs this project has.
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noImplicitOverride": true,
+    "noFallthroughCasesInSwitch": true
+  },
+  "exclude": ["dist", "node_modules", "reference"]
+}

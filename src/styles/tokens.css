@@ -1,0 +1,153 @@
+/**
+ * THE design token source of truth — the only file in this repo allowed to
+ * declare a raw colour value (CLAUDE.md hard rule 1, enforced by
+ * `eslint-rules/no-raw-color.js` and `scripts/check-raw-colors.mjs`).
+ *
+ * These are Tailwind v4 `@theme` entries, which means each one is emitted as a
+ * real CSS custom property AND generates matching utilities. `--color-ink`
+ * gives you both `text-ink` and `var(--color-ink)`, so components, diagrams,
+ * and hand-written CSS all draw from one place.
+ *
+ * The palette is the "bench notes" system: sage paper, navy ink, magenta and
+ * teal accents. Every ink-on-surface pair below is checked against WCAG 2.1
+ * contrast; the ratio is noted so it is obvious when an edit breaks one.
+ *
+ * `@theme static` (not plain `@theme`) on purpose: by default Tailwind only
+ * emits the theme variables it can see used in scanned source. Diagrams and
+ * interactives will reach for tokens through `var(--color-*)` inside inline
+ * styles and SVG attributes, which the scanner does not resolve — so a token
+ * could silently vanish from `:root`. `static` guarantees every token ships.
+ */
+
+@theme static {
+  /* ---------------------------------------------------------------------
+   * Surfaces — sage paper, lightest to deepest
+   * ------------------------------------------------------------------- */
+  --color-paper: #e9ede4; /* page background */
+  --color-paper-raised: #f4f6ef; /* panels, cards, instrument chrome */
+  --color-paper-sunken: #dce2d3; /* insets, code blocks, wells */
+
+  /* ---------------------------------------------------------------------
+   * Ink — navy, in three weights.
+   *
+   * Each weight clears WCAG AA (4.5:1) against EVERY surface token below, not
+   * just against --color-paper. That stricter rule exists because an earlier
+   * --color-ink-faint passed on paper (4.77) but failed on paper-sunken (4.27),
+   * which is where small `code` labels actually sit — the axe gate caught it.
+   * Worst-case ratios across all surfaces: 11.88 / 6.36 / 4.80.
+   * ------------------------------------------------------------------- */
+  --color-ink: #15233b; /* body text, headings */
+  --color-ink-muted: #3d4e69; /* secondary text, labels */
+  --color-ink-faint: #526078; /* captions, metadata */
+
+  /* ---------------------------------------------------------------------
+   * Rules — hairlines and control borders
+   * `--color-rule` is decorative only (1.41 on paper). Anything that outlines
+   * an interactive control must use `--color-rule-strong` (3.22), which meets
+   * WCAG 1.4.11 non-text contrast.
+   * ------------------------------------------------------------------- */
+  --color-rule: #c2cbb6;
+  --color-rule-strong: #78876e;
+
+  /* ---------------------------------------------------------------------
+   * Accents — magenta (primary) and teal (secondary)
+   * Contrast on paper: 5.94 and 5.81 (both AA for text)
+   * ------------------------------------------------------------------- */
+  --color-accent: #a81b5d;
+  --color-accent-soft: #f7e3ec; /* tinted background; accent-on-soft = 5.76 */
+  --color-accent-2: #0b6560;
+  --color-accent-2-soft: #dceae8; /* accent-2-on-soft = 5.58 */
+
+  /* ---------------------------------------------------------------------
+   * Semantic state — all AA on paper. Never the only signal: pair with an
+   * icon or label, because meaning is never carried by colour alone
+   * (CLAUDE.md hard rule 9).
+   * ------------------------------------------------------------------- */
+  --color-success: #2f6b34;
+  --color-success-soft: #e2eee1;
+  --color-warning: #8a5a00;
+  --color-warning-soft: #f5ead5;
+  --color-danger: #a32219;
+  --color-danger-soft: #f7e2e0;
+
+  /* Focus ring — accent magenta, 5.94 on paper and 6.47 on raised. */
+  --color-focus: #a81b5d;
+
+  /* ---------------------------------------------------------------------
+   * Typography — self-hosted variable fonts (@fontsource-variable)
+   * ------------------------------------------------------------------- */
+  --font-display:
+    'Bricolage Grotesque Variable', ui-sans-serif, system-ui, sans-serif;
+  --font-body: 'Public Sans Variable', ui-sans-serif, system-ui, sans-serif;
+  --font-mono:
+    'JetBrains Mono Variable', ui-monospace, SFMono-Regular, Menlo, monospace;
+
+  /* Remapped so a bare `font-sans` utility is the body face, not system UI.
+   * Written as a literal stack rather than `var(--font-body)` deliberately:
+   * a theme token whose value is another `var()` has to live in `@theme inline`
+   * or the generated utility resolves against the wrong scope. Repeating the
+   * stack once is cheaper than that footgun. */
+  --font-sans: 'Public Sans Variable', ui-sans-serif, system-ui, sans-serif;
+
+  /* Type scale. Body copy sits at --text-base; the display sizes are for
+   * headings set in Bricolage Grotesque. */
+  --text-2xs: 0.6875rem;
+  --text-2xs--line-height: 1.45;
+  --text-xs: 0.75rem;
+  --text-xs--line-height: 1.5;
+  --text-sm: 0.875rem;
+  --text-sm--line-height: 1.55;
+  --text-base: 1.0625rem; /* 17px — long-form reading comfort */
+  --text-base--line-height: 1.7;
+  --text-lg: 1.1875rem;
+  --text-lg--line-height: 1.65;
+  --text-xl: 1.375rem;
+  --text-xl--line-height: 1.45;
+  --text-2xl: 1.75rem;
+  --text-2xl--line-height: 1.3;
+  --text-3xl: 2.25rem;
+  --text-3xl--line-height: 1.2;
+  --text-4xl: 3rem;
+  --text-4xl--line-height: 1.1;
+  --text-5xl: 3.75rem;
+  --text-5xl--line-height: 1.05;
+
+  --tracking-tight: -0.02em;
+  --tracking-normal: 0em;
+  --tracking-wide: 0.06em;
+
+  /* ---------------------------------------------------------------------
+   * Space, shape, depth
+   * ------------------------------------------------------------------- */
+  --spacing: 0.25rem; /* base step; utilities scale from this */
+
+  --radius-xs: 0.125rem;
+  --radius-sm: 0.25rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 0.75rem;
+  --radius-xl: 1.125rem;
+  --radius-2xl: 1.625rem;
+
+  /* Paper-like depth: low, soft, navy-tinted rather than neutral grey. */
+  --shadow-sheet: 0 1px 2px rgb(21 35 59 / 0.06);
+  --shadow-raised: 0 2px 6px rgb(21 35 59 / 0.08);
+  --shadow-lifted: 0 8px 24px rgb(21 35 59 / 0.1);
+
+  /* ---------------------------------------------------------------------
+   * Motion — every animation must degrade to an instant state change under
+   * `prefers-reduced-motion`, never to a slow one (CLAUDE.md hard rule 3).
+   * The reduced-motion override lives in global.css.
+   * ------------------------------------------------------------------- */
+  --duration-instant: 0ms;
+  --duration-fast: 120ms;
+  --duration-base: 220ms;
+  --duration-slow: 400ms;
+
+  --ease-out-soft: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-in-out-soft: cubic-bezier(0.65, 0, 0.35, 1);
+
+  /* ---------------------------------------------------------------------
+   * Layout — measure is deliberately narrow; this is a reading site.
+   * ------------------------------------------------------------------- */
+  --container-prose: 68ch;
+}

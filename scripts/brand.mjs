@@ -369,6 +369,198 @@ function cardArt(tokens) {
 }
 
 /**
+ * Escape text destined for the card markup.
+ *
+ * Unit titles are prose written by whoever wrote the lesson. None of the sixty
+ * currently contains a character that needs this, which is exactly why it is
+ * here — the first one that does would otherwise produce a silently broken card
+ * that nobody looks at, because nobody looks at a social card.
+ *
+ * @param {string} text
+ * @returns {string}
+ */
+function escapeHtml(text) {
+  return text
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;');
+}
+
+/**
+ * Headline size for a title, in pixels.
+ *
+ * Unit titles are sentences rather than nouns — they run from 15 to 52
+ * characters, median 34 — so one fixed size either wastes the canvas on the
+ * short ones or overflows on the long ones. The steps below are chosen so that
+ * every real title lands on two lines or fewer.
+ *
+ * @param {number} length
+ * @returns {number}
+ */
+function headlineSize(length) {
+  if (length <= 24) return 88;
+  if (length <= 38) return 76;
+  if (length <= 50) return 66;
+  return 58;
+}
+
+/**
+ * A lesson's own social card.
+ *
+ * WHAT IT IS FOR. The shared card says what the site is, which is the right
+ * answer when somebody posts the home page and the wrong one when they post a
+ * lesson: sixty different links all unfurling into the same picture tells a
+ * reader nothing about which one they are being handed. This one leads with the
+ * lesson's title and names the Part it belongs to, so the card answers "what is
+ * this specific link" without anyone having to click it.
+ *
+ * The site's own identity moves to the footer, next to the mark — small, but
+ * the mark is the same glyph as the favicon, so the card is still visibly ours.
+ *
+ * @param {object} options
+ * @param {Record<string, string>} options.tokens
+ * @param {string} options.display base64 woff2 for the display face
+ * @param {string} options.body base64 woff2 for the body face
+ * @param {string} options.mono base64 woff2 for the mono face
+ * @param {string} options.title the unit's title
+ * @param {string} options.part the human-facing Part label
+ * @param {number} options.width
+ * @param {number} options.height
+ * @returns {string}
+ */
+export function unitCardHtml({
+  tokens,
+  display,
+  body,
+  mono,
+  title,
+  part,
+  width,
+  height,
+}) {
+  const homeUrl = `${site.origin}${site.base}`.replace(/^https?:\/\//, '');
+
+  return `<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <style>
+      @font-face {
+        font-family: 'Display';
+        src: url(data:font/woff2;base64,${display}) format('woff2');
+        font-weight: 200 800;
+      }
+      @font-face {
+        font-family: 'Body';
+        src: url(data:font/woff2;base64,${body}) format('woff2');
+        font-weight: 100 900;
+      }
+      @font-face {
+        font-family: 'Mono';
+        src: url(data:font/woff2;base64,${mono}) format('woff2');
+        font-weight: 100 800;
+      }
+
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+
+      body {
+        width: ${width}px;
+        height: ${height}px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        padding: 74px 84px 66px;
+        background: ${tokens.paper};
+        color: ${tokens.ink};
+        font-family: 'Body', sans-serif;
+        overflow: hidden;
+      }
+
+      /* The same magenta spine as the shared card, so a lesson link and a home
+         link are recognisably from one site. */
+      body::before {
+        content: '';
+        position: fixed;
+        inset: 0 auto 0 0;
+        width: 14px;
+        background: ${tokens.accent};
+      }
+
+      .part {
+        font-family: 'Mono', monospace;
+        font-size: 22px;
+        font-weight: 500;
+        letter-spacing: 0.13em;
+        text-transform: uppercase;
+        color: ${tokens.accent};
+        margin-bottom: 30px;
+      }
+
+      h1 {
+        font-family: 'Display', sans-serif;
+        font-size: ${headlineSize(title.length)}px;
+        font-weight: 700;
+        line-height: 1.06;
+        letter-spacing: -0.03em;
+        text-wrap: balance;
+        /* A pixel measure, not ch: the headline size varies with title length,
+           so a ch-based cap tightens exactly when the title is longest and
+           needs the room most. 880px is what the 84px gutters leave, and it is
+           enough for the longest title on the site to land on two lines. */
+        max-width: 880px;
+      }
+
+      /* Centred rather than top-anchored. Titles run from 15 to 52 characters,
+         so a top-anchored block leaves the short two-thirds of the set looking
+         top-heavy with a band of empty paper under them — most visible at the
+         ~400px an unfurl actually renders at. */
+      .lede {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+      }
+
+      .footer {
+        display: flex;
+        align-items: center;
+        gap: 18px;
+        border-top: 2px solid ${tokens['rule-strong']};
+        padding-top: 26px;
+      }
+
+      .footer svg { display: block; border-radius: 12px; }
+
+      .wordmark {
+        font-family: 'Display', sans-serif;
+        font-size: 26px;
+        font-weight: 600;
+        letter-spacing: -0.01em;
+      }
+
+      .url {
+        margin-left: auto;
+        font-family: 'Mono', monospace;
+        font-size: 21px;
+        color: ${tokens['ink-faint']};
+      }
+    </style>
+  </head>
+  <body>
+    <div class="lede">
+      <p class="part">${escapeHtml(part)}</p>
+      <h1>${escapeHtml(title)}</h1>
+    </div>
+    <div class="footer">
+      ${markSvg({ tokens, variant: 'rounded', size: 54 })}
+      <span class="wordmark">${site.name}</span>
+      <span class="url">${homeUrl}</span>
+    </div>
+  </body>
+</html>`;
+}
+
+/**
  * The Open Graph card, as a standalone HTML document for Chromium to shoot.
  *
  * The fonts arrive base64-inlined rather than by URL on purpose: a page loaded

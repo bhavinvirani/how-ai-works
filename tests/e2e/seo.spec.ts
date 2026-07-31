@@ -170,6 +170,32 @@ test.describe('the social card', () => {
     expect(response.headers()['content-type']).toContain('image/png');
   });
 
+  test('a lesson points at its own card, not the shared one', async ({
+    page,
+  }) => {
+    await page.goto(`./units/${UNIT}/`);
+
+    const image = await meta(page, 'meta[property="og:image"]');
+    expect(image).toBe(`${BASE}/og/units/${UNIT}.png`);
+    expect(image, 'lesson fell back to the shared card').not.toBe(
+      `${BASE}/og.png`,
+    );
+
+    const response = await page.request.get((image ?? '').replace(ORIGIN, ''));
+    expect(response.status()).toBe(200);
+    expect(response.headers()['content-type']).toContain('image/png');
+
+    // The alt has to name THIS lesson, or all sixty cards describe themselves
+    // identically to anyone who cannot see them. Compared against the page's
+    // own <h1> rather than a hardcoded string, so editing a title does not
+    // break the test that guards it.
+    const heading = await page.getByRole('heading', { level: 1 }).textContent();
+    const alt = await meta(page, 'meta[property="og:image:alt"]');
+
+    expect(heading).toBeTruthy();
+    expect(alt).toContain(heading ?? '');
+  });
+
   test('declares its dimensions and describes itself', async ({ page }) => {
     await page.goto('./');
     expect(await meta(page, 'meta[property="og:image:width"]')).toBe('1200');

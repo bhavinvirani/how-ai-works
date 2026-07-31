@@ -123,6 +123,27 @@ export const ui = {
   },
 
   /**
+   * Strings that only ever appear outside the page.
+   *
+   * They are here for the same reason the breadcrumb below is: hard rule 10 is
+   * about words a person reads, and where they are rendered is not the test. A
+   * screen reader announces `og:image:alt` when a card is posted into a client
+   * that exposes it, and some clients show it in place of an image that failed
+   * to load.
+   */
+  seo: {
+    /**
+     * Alt text for a lesson's social card.
+     *
+     * The card is mostly the title set large, so the alt says that rather than
+     * inventing a description of a picture — "How AI Actually Works" alone
+     * would describe every one of the sixty identically.
+     */
+    unitCardAlt: (title: string, siteName: string) =>
+      `${title} — a lesson from ${siteName}.`,
+  },
+
+  /**
    * The breadcrumb trail on a lesson, which exists only as structured data.
    *
    * Nothing on the page renders these — they are the `BreadcrumbList` a search

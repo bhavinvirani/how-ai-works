@@ -332,9 +332,12 @@ answer' })`, which was correct while exactly one reveal existed and became a
     request to `gc.zgo.at` into every CI run, and `smoke.spec.ts` fails the
     build on any response ≥ 400, handing a third party a veto over our CI. The
     trade is that a lost `env:` block disables analytics silently. `seo.spec.ts`
-    can only assert the script is _absent_ from a normal build. **After touching
-    `deploy.yml` or `BaseLayout.astro`, check the count at
-    <https://bhavinvirani01.goatcounter.com>.**
+    can only assert the script is _absent_ from a normal build. **Now half
+    closed:** `deploy.yml` greps the published `dist/index.html` for the tag
+    after publishing and fails the deploy if it is gone. What that still cannot
+    see is GoatCounter rejecting the hits — so after touching `deploy.yml` or
+    `BaseLayout.astro`, check the count at
+    <https://bhavinvirani01.goatcounter.com>.
 25. **`JSON.stringify(…, null, 2)` and Prettier disagree about single-element
     arrays.** Prettier collapses `["education"]` onto one line; `JSON.stringify`
     expands it. A generated JSON file containing one therefore passes `pnpm
@@ -469,10 +472,11 @@ Full detail in **`docs/SEO.md`**; the parts a fresh session cannot infer:
   repository that does not exist and answers 404. Per-page `<meta name=robots>`
   is what actually governs indexing. The file becomes real under a custom
   domain.
-- **Everything in `public/` except nothing is generated.** `favicon.svg`,
-  `favicon.ico`, the four PNG icons, `og.png`, `site.webmanifest` and
-  `robots.txt` all come from `pnpm icons`. Hand-editing any of them is undone
-  by the next run. Colours are parsed out of `tokens.css` at generation time, so
+- **Everything in `public/` is generated.** `favicon.svg`, `favicon.ico`, the
+  four PNG icons, `og.png`, the sixty per-lesson cards in `og/units/`,
+  `site.webmanifest` and `robots.txt` all come from `pnpm icons`. Hand-editing
+  any of them is undone by the next run. **Adding a unit means re-running it** —
+  `src/lib/seo/cards.test.ts` is the only thing that catches a missing card. Colours are parsed out of `tokens.css` at generation time, so
   hard rule 1 holds in files ESLint cannot see.
 - **`pnpm icons` uses the Playwright Chromium the e2e suite already installs**
   — no new dependency for rasterising SVG, and no browser needed in CI, which

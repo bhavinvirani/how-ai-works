@@ -1,0 +1,78 @@
+---
+/**
+ * Renders every colour token as a labelled swatch.
+ *
+ * This is the Phase 0 proof that tokens.css actually reaches the browser: if a
+ * token fails to compile or is dropped from the theme, its swatch renders
+ * transparent and the failure is visible rather than silent.
+ *
+ * Group labels are token globs, not prose, so no user-facing English lives in
+ * this component (CLAUDE.md hard rule 10). Swatches are drawn with
+ * `var(--color-*)` rather than utilities so the token names stay legible as
+ * data — and so a raw hex here would be caught by the lint rule.
+ */
+
+interface SwatchGroup {
+  glob: string;
+  tokens: string[];
+}
+
+const groups: SwatchGroup[] = [
+  {
+    glob: '--color-paper-*',
+    tokens: ['--color-paper', '--color-paper-raised', '--color-paper-sunken'],
+  },
+  {
+    glob: '--color-ink-*',
+    tokens: ['--color-ink', '--color-ink-muted', '--color-ink-faint'],
+  },
+  {
+    glob: '--color-rule-*',
+    tokens: ['--color-rule', '--color-rule-strong'],
+  },
+  {
+    glob: '--color-accent-*',
+    tokens: [
+      '--color-accent',
+      '--color-accent-soft',
+      '--color-accent-2',
+      '--color-accent-2-soft',
+    ],
+  },
+  {
+    glob: '--color-state-*',
+    tokens: [
+      '--color-success',
+      '--color-success-soft',
+      '--color-warning',
+      '--color-warning-soft',
+      '--color-danger',
+      '--color-danger-soft',
+    ],
+  },
+];
+---
+
+<div class="flex flex-col gap-6">
+  {
+    groups.map((group) => (
+      <section class="flex flex-col gap-2">
+        <h3 class="font-mono text-2xs tracking-wide text-ink-faint uppercase">
+          {group.glob}
+        </h3>
+        <ul class="grid grid-cols-2 gap-2 sm:grid-cols-3">
+          {group.tokens.map((token) => (
+            <li class="flex items-center gap-2 rounded-md border border-rule bg-paper-raised p-2">
+              <span
+                class="h-8 w-8 shrink-0 rounded-sm border border-rule-strong"
+                style={`background-color: var(${token})`}
+                aria-hidden="true"
+              />
+              <code class="text-2xs break-all text-ink-muted">{token}</code>
+            </li>
+          ))}
+        </ul>
+      </section>
+    ))
+  }
+</div>

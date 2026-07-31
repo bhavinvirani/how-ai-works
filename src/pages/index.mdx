@@ -1,0 +1,64 @@
+---
+layout: ../layouts/BaseLayout.astro
+title: How AI Actually Works
+description: An open-source site that teaches AI and machine learning from first principles — plain English, custom diagrams, and interactives you can poke at.
+---
+
+import PaletteSpecimen from '../components/specimen/PaletteSpecimen.astro';
+import TypeSpecimen from '../components/specimen/TypeSpecimen.astro';
+
+# How AI Actually Works
+
+A site that explains how these systems really work, without assuming you have a
+maths degree or a machine learning job.
+
+Most explanations of AI pick one of two bad options. They either wave their
+hands and tell you it's "like a brain," which explains nothing, or they open
+with a wall of notation that assumes you already know the answer.
+
+This one takes a third route. Every idea starts with a problem you already
+recognise from ordinary life. The name for the idea comes _after_ you already
+understand it. Then you get a diagram, and then you get an instrument you can
+actually adjust and break, because reading about a thing and playing with it are
+not the same kind of knowing.
+
+## Nothing is here yet
+
+This page is scaffolding. The build pipeline, design system, and deployment all
+work — that is genuinely all this page is proving right now.
+
+The lessons come next. Until then, there is nothing here to learn, and it would
+be dishonest to pretend otherwise.
+
+## What a formula looks like here
+
+Formulas appear only when they make an idea clearer than words alone would, and
+every one of them is followed by a plain-English reading.
+
+Here is the measure of how similar two things are, which comes up once we get to
+how models compare pieces of text:
+
+$$
+\text{similarity}(A, B) = \frac{A \cdot B}{\|A\| \, \|B\|}
+$$
+
+In words: point two arrows out from the same spot and ask how closely they aim
+the same way — ignoring entirely how long either arrow happens to be.
+
+That last clause is the whole point of the formula, and it is the part that gets
+lost when people only show you the symbols.
+
+## The palette
+
+Every colour on this site comes from one file. Nothing is allowed to invent its
+own, which is what keeps fifty interactives built over time still looking like a
+single product.
+
+<PaletteSpecimen />
+
+## The type
+
+Three faces, all self-hosted — nothing is fetched from a font CDN, so the site
+works offline and never phones anyone about you.
+
+<TypeSpecimen />

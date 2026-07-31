@@ -1,0 +1,95 @@
+name: Preview deploy
+
+# Half two of the two-workflow preview split.
+#
+# This half never runs in the PR's context. It is triggered by the COMPLETION
+# of "Preview build", which means it executes in the base repository with a
+# write token even when the pull request came from a fork.
+#
+# SECURITY: it must never check out or execute pull request code. It downloads
+# an already-built artifact and publishes it, nothing more — no install, no
+# build, no script from the PR branch. The checkout below is of the base repo's
+# default branch, purely so the deploy action has a git working tree.
+on:
+  workflow_run:
+    workflows: ['Preview build']
+    types: [completed]
+  pull_request_target:
+    types: [closed]
+
+# Shared with deploy.yml. Main deploys and preview deploys both push to
+# gh-pages, and two concurrent writers mean one force-push clobbers the other.
+# Never cancel in progress.
+concurrency:
+  group: gh-pages-write
+  cancel-in-progress: false
+
+permissions:
+  contents: write # push to the gh-pages branch
+  pull-requests: write # post the sticky preview comment
+  actions: read # download the artifact from the triggering run
+
+jobs:
+  deploy:
+    name: Publish preview
+    if: >-
+      github.event_name == 'workflow_run' &&
+      github.event.workflow_run.conclusion == 'success'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Download the built preview
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          name: preview-dist
+          path: preview
+          run-id: ${{ github.event.workflow_run.id }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+      # The PR number travels inside the artifact because `workflow_run` does
+      # not carry it reliably for forked pull requests.
+      - name: Read the PR number
+        id: pr
+        run: |
+          if [ ! -f preview/.pr-number ]; then
+            echo "::error::preview/.pr-number missing from the artifact"
+            exit 1
+          fi
+          number="$(tr -dc '0-9' < preview/.pr-number)"
+          if [ -z "$number" ]; then
+            echo "::error::preview/.pr-number did not contain a PR number"
+            exit 1
+          fi
+          echo "number=$number" >> "$GITHUB_OUTPUT"
+          rm preview/.pr-number
+
+      # `auto` resolves to "do nothing" outside a pull_request event, so the
+      # action has to be told explicitly what to do and which PR it is for.
+      - name: Deploy preview
+        uses: rossjrw/pr-preview-action@ffa7509e91a3ec8dfc2e5536c4d5c1acdf7a6de9 # v1.8.1
+        with:
+          source-dir: preview
+          preview-branch: gh-pages
+          umbrella-dir: pr-preview
+          pr-number: ${{ steps.pr.outputs.number }}
+          action: deploy
+          pages-base-url: bhavinvirani.github.io/how-ai-works
+
+  remove:
+    name: Remove preview
+    if: github.event_name == 'pull_request_target'
+    runs-on: ubuntu-latest
+    steps:
+      # Safe under pull_request_target: this checks out the BASE branch, and
+      # nothing from the pull request is ever executed.
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Remove preview
+        uses: rossjrw/pr-preview-action@ffa7509e91a3ec8dfc2e5536c4d5c1acdf7a6de9 # v1.8.1
+        with:
+          preview-branch: gh-pages
+          umbrella-dir: pr-preview
+          pr-number: ${{ github.event.number }}
+          action: remove
+          pages-base-url: bhavinvirani.github.io/how-ai-works

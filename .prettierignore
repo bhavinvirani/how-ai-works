@@ -1,0 +1,15 @@
+dist/
+.astro/
+node_modules/
+coverage/
+playwright-report/
+test-results/
+pnpm-lock.yaml
+
+# Vendored source artifact — not ours to format.
+reference/
+
+# Authored planning documents. Prettier's markdown rules rewrite emphasis
+# markers and reflow tables, which buries real edits in formatting churn.
+PLAN.md
+CLAUDE.md

@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json.schemastore.org/tsconfig",
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    // `astro check` covers .astro templates and the source they import. It does
+    // not look at build tooling, so this config is the second half of
+    // `pnpm check`: everything that runs in Node rather than in the site.
+    "types": ["node"],
+    "checkJs": true,
+    "moduleResolution": "Bundler",
+    "noEmit": true
+  },
+  "include": [
+    "types/**/*",
+    "scripts/**/*",
+    "eslint-rules/**/*",
+    "eslint.config.js",
+    "astro.config.mjs",
+    "vitest.config.ts",
+    "playwright.config.ts"
+  ]
+}

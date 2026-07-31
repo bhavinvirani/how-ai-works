@@ -1,0 +1,69 @@
+---
+/**
+ * Renders the three self-hosted faces and the full type scale.
+ *
+ * Each row is set in the token it names, so a font that failed to load or a
+ * size token that did not compile is immediately obvious — the row falls back
+ * to a system face or the wrong size instead of failing quietly.
+ *
+ * The sample string is a character set, not prose, so nothing here needs
+ * translating (CLAUDE.md hard rule 10).
+ */
+
+const SAMPLE = 'AaBbGg 0123';
+
+const faces = [
+  { token: '--font-display', className: 'font-display' },
+  { token: '--font-body', className: 'font-body' },
+  { token: '--font-mono', className: 'font-mono' },
+];
+
+const sizes = [
+  { token: '--text-5xl', className: 'text-5xl' },
+  { token: '--text-4xl', className: 'text-4xl' },
+  { token: '--text-3xl', className: 'text-3xl' },
+  { token: '--text-2xl', className: 'text-2xl' },
+  { token: '--text-xl', className: 'text-xl' },
+  { token: '--text-lg', className: 'text-lg' },
+  { token: '--text-base', className: 'text-base' },
+  { token: '--text-sm', className: 'text-sm' },
+  { token: '--text-xs', className: 'text-xs' },
+  { token: '--text-2xs', className: 'text-2xs' },
+];
+---
+
+<div class="flex flex-col gap-8">
+  <section class="flex flex-col gap-3">
+    <h3 class="font-mono text-2xs tracking-wide text-ink-faint uppercase">
+      --font-*
+    </h3>
+    <ul class="flex flex-col gap-3">
+      {
+        faces.map((face) => (
+          <li class="flex flex-col gap-1 border-b border-rule pb-3">
+            <code class="text-2xs text-ink-faint">{face.token}</code>
+            <span class={`text-2xl ${face.className}`}>{SAMPLE}</span>
+          </li>
+        ))
+      }
+    </ul>
+  </section>
+
+  <section class="flex flex-col gap-3">
+    <h3 class="font-mono text-2xs tracking-wide text-ink-faint uppercase">
+      --text-*
+    </h3>
+    <ul class="flex flex-col gap-2">
+      {
+        sizes.map((size) => (
+          <li class="flex flex-wrap items-baseline gap-3">
+            <code class="w-20 shrink-0 text-2xs text-ink-faint">
+              {size.token}
+            </code>
+            <span class={`font-display ${size.className}`}>{SAMPLE}</span>
+          </li>
+        ))
+      }
+    </ul>
+  </section>
+</div>

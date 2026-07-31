@@ -1,0 +1,51 @@
+name: Deploy
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+# Every workflow that writes the gh-pages branch shares this group, and it must
+# NOT cancel in progress. Main deploys and PR-preview deploys push to the same
+# branch; two concurrent runs mean one force-push silently clobbers the other.
+# The keep_files setting below solves a different problem (not wiping the tree)
+# and does nothing to prevent that race.
+concurrency:
+  group: gh-pages-write
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  deploy:
+    name: Build and publish to GitHub Pages
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - uses: pnpm/action-setup@0ebf47130e4866e96fce0953f49152a61190b271 # v6.0.9
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm build
+
+      # Pages serves the gh-pages BRANCH rather than an Actions artifact, on
+      # purpose: artifact-based deploys cannot host /pr-preview/<n>/ alongside
+      # the live site, and the previews are the whole reason for the branch.
+      # Do not "modernise" this to actions/deploy-pages.
+      - name: Publish
+        uses: peaceiris/actions-gh-pages@84c30a85c19949d7eee79c4ff27748b70285e453 # v4.1.0
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./dist
+          publish_branch: gh-pages
+          # Preserve everything already on the branch that we are not
+          # republishing — specifically the pr-preview/ directories.
+          keep_files: true
+          user_name: github-actions[bot]
+          user_email: github-actions[bot]@users.noreply.github.com
+          commit_message: 'deploy: ${{ github.sha }}'

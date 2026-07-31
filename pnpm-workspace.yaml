@@ -1,0 +1,21 @@
+# esbuild ships a platform-specific native binary and needs its install script
+# to run. It arrives as a transitive dependency of Vite, which Astro builds on.
+allowBuilds:
+  esbuild: true
+
+peerDependencyRules:
+  allowedVersions:
+    # eslint-plugin-jsx-a11y 6.10.2 is the latest release and its peer range
+    # stops at ESLint 9, but eslint-plugin-astro 3 requires BOTH jsx-a11y
+    # >=6.10.2 AND eslint >=10 — an unsatisfiable pair on paper. Verified
+    # working on ESLint 10.8. Revisit when jsx-a11y ships ESLint 10 support.
+    eslint-plugin-jsx-a11y>eslint: '10'
+
+# Written by pnpm when a package is newer than the configured minimumReleaseAge.
+# Kept so installs stay reproducible instead of re-prompting.
+minimumReleaseAgeExclude:
+  - '@playwright/test@1.62.1'
+  - '@types/react-dom@19.2.4'
+  - '@types/react@19.2.18'
+  - playwright-core@1.62.1
+  - playwright@1.62.1

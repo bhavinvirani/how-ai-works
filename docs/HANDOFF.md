@@ -15,15 +15,14 @@ true right now.
 
 ## Where things stand
 
-**Last updated:** Phases 0–1 merged and fully set up; Phase 2 ready to start
-(2026-07-31).
+**Last updated:** curriculum signed off; porting unblocked (2026-07-31).
 
-| Phase                    | State                                                           |
-| ------------------------ | --------------------------------------------------------------- |
-| 0 — Foundation           | Merged (#1)                                                     |
-| 1 — Component system     | Merged (#2), **except** `docs/CURRICULUM.md` and the pilot unit |
-| 2 — Curriculum port      | Not started                                                     |
-| 3 — Community launch kit | Not started                                                     |
+| Phase                    | State                                                                |
+| ------------------------ | -------------------------------------------------------------------- |
+| 0 — Foundation           | Merged (#1)                                                          |
+| 1 — Component system     | Merged (#2), **except** the pilot unit                               |
+| 2 — Curriculum port      | `docs/CURRICULUM.md` written and signed off (#6, open); no units yet |
+| 3 — Community launch kit | Not started                                                          |
 
 Built and merged: design tokens, the primitive control set, MDX content blocks,
 the content collection + unit graph, the progress store and `/progress`,
@@ -56,18 +55,44 @@ preview` are deployment steps, and `Remove preview` only runs on close, so
   second collaborator exists — GitHub forbids approving your own PR, so it
   deadlocks a solo maintainer (PLAN §5.5).
 
-**Nothing is blocked. Phase 2 can start.**
+**Nothing is blocked. The curriculum is signed off, so porting can start.**
 
 ### Still true
 
 - `src/pages/units/[...slug].astro` and `ConnectionsFooter` are wired and
   typechecked but **never rendered end to end** — there are still no units. The
-  pilot unit is their first real exercise.
-- The `part` enum in `src/content.config.ts` is a placeholder taken from
-  PLAN §2.1's examples. `CURRICULUM.md` decides the real grouping, and the enum
-  must be reconciled with whatever is signed off.
+  pilot is their first real exercise, and it has to be **two units**: the footer
+  gates its whole body on having at least one link, so a single unit with empty
+  `prerequisites`/`connections` renders no footer markup at all and leaves this
+  bullet exactly as true as it found it.
+- The `part` enum in `src/content.config.ts` is **still the 4-value
+  placeholder**. `CURRICULUM.md` signs off 16 Parts; the `2-enum` PR reconciles
+  it — and `scripts/new-unit.mjs` holds its own hardcoded copy that must move
+  with it, or it silently rejects valid Parts.
 - The build prints `The collection "units" does not exist or is empty`. Expected
   until the first unit lands.
+
+### Signed off in `docs/CURRICULUM.md` (2026-07-31)
+
+Sixteen Parts, the slug scheme, `why-rules-fail` + `model-as-dials` as the pilot
+(one PR, **not** Tokenization), and the rule that **an instrument has to teach
+something the prose and the diagram cannot** — target ~35, not the 56 the
+per-unit analysis proposed. Two placements stay open on purpose and are decided
+when their slice is written: where `embeddings` sits, and whether
+`positional-encoding` comes before or after `multi-head-attention`.
+
+**Two issues it turned up. One is fixed here; one is not.**
+
+1. **Fixed in this PR.** `[...slug].astro` passed the **unfiltered** collection
+   as props while paths came from `visible`, so a published unit connecting to a
+   draft emitted a link to a page `getStaticPaths` never generated — surfacing
+   as a lychee "broken internal link" rather than the Zod reference error it
+   looks like. It now passes `visible`, which is what `resolve.ts`'s
+   drop-anything-missing comment always assumed.
+2. **Open.** `/map` cannot colour nodes by Part. `tokens.css` ships two
+   categorical accents, and hard rule 9 forbids colour-only meaning regardless.
+   Encode Part by label and cluster position. Decide before `2-meta` is built,
+   not after.
 
 ---
 
@@ -226,19 +251,28 @@ component-url renderer-url>`), not a Vite manifest — Astro will not emit one,
 
 **Unblocked — the artifact is in `reference/how-ai-works.html`.**
 
-The order that matters:
+Step 1 is done — `docs/CURRICULUM.md` is written and signed off. The remaining
+order, which is the slice plan in that file:
 
-1. **`docs/CURRICULUM.md` first**, from `reference/how-ai-works.html` — the full
-   unit inventory with proposed Part grouping and order, **for Bhavin's sign-off
-   before any porting**. Reconcile the `part` enum in `src/content.config.ts`
-   with whatever is agreed.
-2. **The pilot unit** (Tokenization suggested) end to end: re-taught prose,
-   upgraded diagram, rebuilt interactive, connections, checkpoint. This is also
-   the first real exercise of the unit route, `ConnectionsFooter`, and the cycle
-   check.
-3. Then Phase 2's slices: one PR per Part, plus `2-nav` (generated sidebar,
-   after the _first_ Part, not the last) and `2-meta` (`/map`, Pagefind,
-   sitemap, 404).
+1. **The route fix** — pass `visible` rather than `units` in
+   `[...slug].astro` (issue 1 above). Its own small PR, before any content,
+   so the failure mode never appears during the port.
+2. **`2-enum`** — the 16-value `part` enum, `PART_LABELS`, and
+   `scripts/new-unit.mjs`. Zero content, so a one-way schema decision cannot get
+   tangled in a pedagogy review.
+3. **The pilot**: `why-rules-fail` + `model-as-dials`, **one PR, two units**.
+   Re-taught prose, upgraded diagrams, rebuilt instruments, a real prerequisite
+   edge, checkpoints. First real exercise of the unit route,
+   `ConnectionsFooter`, the cycle check, and the budgets and axe gates on a
+   real island.
+4. Then the rest of the slices: one PR per Part (splitting where
+   `CURRICULUM.md` says so), plus `2-nav` (generated sidebar, after the _first_
+   Part, not the last) and `2-meta` (`/map`, Pagefind, sitemap, 404).
+
+Each content PR lands with its **forward-pointing connections trimmed** — a
+`reference('units')` to a unit that does not exist yet fails the build, by
+design — and the slice that lands the target adds them back. Say which links
+were trimmed in the PR description, or they get lost.
 
 Two smaller things deferred and worth picking up when they fit:
 

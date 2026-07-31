@@ -1,0 +1,190 @@
+---
+title: How the dials turn themselves
+part: the-learning-loop
+order: 1
+summary: Learning is one small cycle — guess, compare, blame, nudge — run a few million times. No single pass is worth anything; the pile of them is worth everything.
+prerequisites:
+  - model-as-dials
+connections:
+  - to: training-data
+    why: The loop swallows one example per pass and never asks where it came from, so whatever is in that pile is what the dials drift towards.
+  - to: why-rules-fail
+    why: This cycle is the thing that replaced hand-written rules — it is what "learning from examples" turns out to mean, mechanically.
+interactives:
+  - TrainingLoopRunner
+status: published
+updated: 2026-07-31
+---
+
+import Aside from '../../components/blocks/Aside.astro';
+import Checkpoint from '../../components/blocks/Checkpoint.astro';
+import DevAside from '../../components/blocks/DevAside.astro';
+import Figure from '../../components/blocks/Figure.astro';
+import LearningLoop from '../../components/diagrams/LearningLoop.astro';
+import { TrainingLoopRunner } from '../../components/interactives/TrainingLoopRunner';
+
+Somewhere near you there is a patch of grass with a track worn across it. Not a
+path anyone drew — a shortcut cutting the corner the paving forgot.
+
+Watch one person walk it. Nothing happens. The grass bends and springs back up,
+and nothing about that one crossing would let you predict a path.
+
+Ten thousand crossings later there is bare earth, and it runs exactly where
+people actually wanted to go. Nobody surveyed it or approved it. It is made
+entirely of events too small to notice.
+
+That is what happens inside a machine while it learns. Not the walking — the
+arithmetic. One event that visibly does nothing, repeated until it has done
+everything.
+
+## The four steps
+
+Last unit you turned two dials by hand until a machine's guesses about house
+prices stopped being so wrong. You moved one, watched the wrongness, and went
+back the other way when it got worse. You never needed to understand houses —
+only whether you were getting warmer.
+
+Nothing in that procedure needed you. Here it is without you.
+
+The machine picks up one **example** — one house, with the price it really sold
+for attached. Examples always come in that shape: something to look at, and the
+correct answer beside it. Four things then happen.
+
+**Guess.** The floor area goes in, the dials do their multiplying and adding, and
+a number comes out. On a 74 square metre house, £180,000, say.
+
+**Compare.** Look up what that house actually sold for. £219,000. The guess was
+£39,000 too low, and that gap is the only feedback the machine ever gets.
+
+**Blame.** Work out which dials pushed the answer the wrong way, and how hard
+each one pushed. This is not a figure of speech: every dial ends up with a
+number saying how much of this mistake is its doing. The dial holding
+the value of a square metre had its number multiplied by 74 on the way to the
+answer, so on a house this size it did most of the pushing, and it takes most of
+the blame.
+
+**Nudge.** Turn every dial a hair in the direction that would have made this one
+guess less wrong. Not enough to fix it. Deliberately, absurdly, not enough.
+
+Then drop that house, pick up the next one, and go back to step one.
+
+## Why the nudge is deliberately too small
+
+The size of that last step is the part people find hardest to accept, so it is
+worth being blunt about it. If the machine corrected itself fully for each
+house, it would spend its whole life being right about whichever house it saw
+last and wrong about every other one. Each example would undo the one before.
+Tiny nudges let the evidence pile up instead of taking turns.
+
+So one pass through those four steps teaches the machine nothing you could point
+at. The dials move by amounts you need four decimal places to see. It is one
+person walking across the grass.
+
+Running that cycle over and over is what the word **training** means. When you
+read that a model "was trained", this is what happened to it, an extremely large
+number of times.
+
+<Figure
+  title="One pass of the loop"
+  description="Each pass does four cheap, mechanical things to a single example and then throws it away. Nothing inside one pass is clever — the arrow sending it round again is where all the learning actually lives."
+>
+  <LearningLoop />
+</Figure>
+
+## Watch it get boring, then watch it work
+
+Below is the machine from last unit — the same eight houses, the same two dials
+— except this time nobody touches the dials. Pressing the counter runs the loop.
+Start with one pass at a time.
+
+<TrainingLoopRunner client:visible />
+
+Three things worth doing, in order.
+
+Press it once. The wrongness shifts by about £470 and the line does not move at
+all. Press it again. And again. Nothing you do one pass at a time makes a
+visible difference to a machine out by a quarter of a million pounds a house —
+though every one of those presses ran all four steps, correctly.
+
+Now switch to 250 at a time and press twice. The line swings up underneath the
+houses and the wrongness collapses from £245,000 to about £11,000. Nothing
+changed except how many times the same four steps ran.
+
+Then take it out to twenty-five thousand. It settles at roughly £6,800 a house —
+within a couple of hundred pounds of the best setting those two dials have,
+which the instrument found by trying all thirty thousand of them. Watch the
+bottom line as you go: that last pass, on its own, moved the wrongness by about
+five pounds.
+
+No single nudge is worth anything. The pile of them is worth everything.
+
+<Aside title="Two words that will come at you">
+  One complete trip through every example you have is an **epoch**, and models
+  are normally trained for several. The number of examples looked at before
+  anything is nudged is the **batch size** — real systems average the blame over
+  a few dozen or a few hundred rather than nudging after every single one,
+  because it is steadier and much faster on the hardware. Neither word changes
+  the four steps. You do not need to remember them; now they will not stop you.
+</Aside>
+
+## Where you meet this
+
+This is why training is the expensive part and using a model is the cheap part.
+Answering your question runs the machine forwards once. Training ran it forwards
+and backwards over an enormous pile of examples, for weeks, across thousands of
+machines — and that bill was paid before anyone typed anything into it.
+
+It is also why a model cannot simply be told a new fact. There is no slot to put
+a fact in — only dials, and the only tool for moving them is this loop, which
+wants examples and a great many passes. Correcting a model is not editing. It is
+more training.
+
+<DevAside>
+  <Fragment slot="java">
+    ```java
+    for (int epoch = 0; epoch < EPOCHS; epoch++) {
+      for (Example e : examples) {
+        double guess = model.predict(e.input());  // 1. guess
+        double error = guess - e.answer();        // 2. compare
+        Gradient blame = model.blame(e, error);   // 3. blame
+        model.nudge(blame, LEARNING_RATE);        // 4. nudge
+      }
+    }
+    ```
+
+    Two loops and four lines. Every training framework you will ever read is
+    this, with the middle two lines expanded into a great deal of linear algebra
+    and the whole thing moved onto a GPU. `LEARNING_RATE` is the size of the
+    hair, and it is a constant a human picked.
+
+  </Fragment>
+  <Fragment slot="python">
+    ```python
+    for epoch in range(EPOCHS):
+        for x, answer in examples:
+            guess = model(x)              # 1. guess
+            loss = (guess - answer) ** 2  # 2. compare
+            loss.backward()               # 3. blame
+            optimiser.step()              # 4. nudge
+            optimiser.zero_grad()
+    ```
+
+    `backward()` is step three for every parameter at once, and `step()` is
+    step four. Those two calls hide almost all of the difficulty and none of
+    the shape.
+
+  </Fragment>
+</DevAside>
+
+<Checkpoint question="A model has been training for hours and its wrongness has stopped falling. A colleague suspects the most recent pass through the loop went wrong. Why is that the wrong place to look?">
+  Because no single pass was ever doing enough to matter. Each one nudges the
+  dials by a fraction of a fraction, on the evidence of one example; the fall
+  they were watching was thousands of those adding up. If it has stopped,
+  suspect the pile — what is in the examples, or how big the nudges are — never
+  the last pass.
+
+Keep hold of this one. Nothing a learning machine does can be explained by one
+step of anything. Every property it has, impressive or embarrassing, is an
+accumulation.
+
+</Checkpoint>

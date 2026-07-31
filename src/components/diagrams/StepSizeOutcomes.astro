@@ -1,0 +1,121 @@
+---
+/**
+ * The same valley three times, walked with three different step sizes.
+ *
+ * The teaching load is carried by the SHAPE of each trail, not by its colour:
+ * bunched dots that never leave the upper slope, evenly spaced dots that reach
+ * the marked bottom, and arcs that grow with every bounce until one of them
+ * leaves the frame. Each panel also states its outcome in words, so nothing
+ * depends on telling amber from red (hard rule 9).
+ *
+ * The third panel starts closer to the bottom than the other two, and says so.
+ * That is the honest way to draw it: a huge step taken from high on the slope
+ * leaves the hill on its first move, and a diagram where the failure happens
+ * off-screen teaches nothing.
+ *
+ * Decorative by itself, so `aria-hidden`: `Figure` supplies the accessible name
+ * and the description.
+ */
+---
+
+<svg viewBox="0 0 640 246" class="w-full" aria-hidden="true">
+  <g class="fill-none stroke-rule-strong" stroke-width="1.25">
+    <rect x="8" y="30" width="192" height="190" rx="8"></rect>
+    <rect x="224" y="30" width="192" height="190" rx="8"></rect>
+    <rect x="440" y="30" width="192" height="190" rx="8"></rect>
+  </g>
+
+  <g class="fill-ink font-display" font-size="13" font-weight="700">
+    <text x="24" y="52">Step too small</text>
+    <text x="240" y="52">Step about right</text>
+    <text x="456" y="52">Step too big</text>
+  </g>
+
+  <g class="fill-ink-faint font-mono" font-size="8">
+    <text x="24" y="68">starts high, stays high</text>
+    <text x="240" y="68">starts high, arrives</text>
+    <text x="456" y="68">starts halfway down, still gets worse</text>
+  </g>
+
+  <!-- The valley, drawn three times. One quadratic curve is an exact parabola. -->
+  <g class="fill-none stroke-rule" stroke-width="1.5">
+    <path d="M 16 96 Q 104 256 192 96"></path>
+    <path d="M 232 96 Q 320 256 408 96"></path>
+    <path d="M 448 96 Q 536 256 624 96"></path>
+  </g>
+
+  <!-- Where each walk is trying to get to. -->
+  <g class="stroke-rule-strong" stroke-width="1" stroke-dasharray="2 2">
+    <line x1="104" y1="176" x2="104" y2="184"></line>
+    <line x1="320" y1="176" x2="320" y2="184"></line>
+    <line x1="536" y1="176" x2="536" y2="184"></line>
+  </g>
+  <g class="fill-ink-faint font-mono" font-size="7" text-anchor="middle">
+    <text x="104" y="196">the bottom</text>
+    <text x="320" y="196">the bottom</text>
+    <text x="536" y="196">the bottom</text>
+  </g>
+
+  <!-- Panel 1: footprints so tightly bunched they barely descend. -->
+  <polyline
+    points="33.6,124.8 38,131 42.4,136.8 46.8,142.2 51.2,147.2 55.6,151.8"
+    class="fill-none stroke-warning"
+    stroke-width="1.25"></polyline>
+  <g class="fill-warning">
+    <circle cx="33.6" cy="124.8" r="2.4"></circle>
+    <circle cx="38" cy="131" r="2.4"></circle>
+    <circle cx="42.4" cy="136.8" r="2.4"></circle>
+    <circle cx="46.8" cy="142.2" r="2.4"></circle>
+    <circle cx="51.2" cy="147.2" r="2.4"></circle>
+    <circle cx="55.6" cy="151.8" r="2.4"></circle>
+  </g>
+  <g class="fill-ink-faint">
+    <circle cx="60" cy="156" r="1.4"></circle>
+    <circle cx="64.4" cy="159.8" r="1.1"></circle>
+    <circle cx="68.8" cy="163.2" r="0.9"></circle>
+  </g>
+  <g class="fill-ink-faint font-mono" font-size="7.5">
+    <text x="78" y="140">300 steps later,</text>
+    <text x="78" y="150">still on the slope</text>
+  </g>
+
+  <!-- Panel 2: strides that shorten as the ground flattens, ending on the mark. -->
+  <polyline
+    points="249.6,124.8 274.2,154.4 295.4,169.7 309.4,174.8 316.5,175.9 320,176"
+    class="fill-none stroke-accent-2"
+    stroke-width="1.25"></polyline>
+  <g class="fill-accent-2">
+    <circle cx="249.6" cy="124.8" r="2.4"></circle>
+    <circle cx="274.2" cy="154.4" r="2.4"></circle>
+    <circle cx="295.4" cy="169.7" r="2.4"></circle>
+    <circle cx="309.4" cy="174.8" r="2.4"></circle>
+    <circle cx="316.5" cy="175.9" r="2.4"></circle>
+    <circle cx="320" cy="176" r="3.4"></circle>
+  </g>
+
+  <!-- Panel 3: each leap crosses the valley and lands higher than the last. -->
+  <g class="fill-none stroke-danger" stroke-width="1.5">
+    <path d="M 509.6 168.8 Q 542.2 136 574.7 160.5"></path>
+    <path d="M 574.7 160.5 Q 529 118 483.2 147.2"></path>
+    <path d="M 483.2 147.2 Q 543.1 96 602.9 129.8"></path>
+    <path d="M 602.9 129.8 L 632 86" stroke-dasharray="3 3"></path>
+  </g>
+  <g class="fill-danger">
+    <circle cx="509.6" cy="168.8" r="2.4"></circle>
+    <circle cx="574.7" cy="160.5" r="2.4"></circle>
+    <circle cx="483.2" cy="147.2" r="2.4"></circle>
+    <circle cx="602.9" cy="129.8" r="2.4"></circle>
+    <polygon points="637,80 630,92 626,85"></polygon>
+  </g>
+
+  <g
+    class="fill-ink font-display"
+    font-size="10"
+    font-weight="700"
+    text-anchor="middle"
+  >
+    <text x="104" y="211">never reaches the bottom</text>
+    <text x="320" y="211">settles, and stays</text>
+    <text x="536" y="211">thrown off the hill</text>
+  </g>
+</svg>

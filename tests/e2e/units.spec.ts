@@ -3,6 +3,8 @@ import { readdirSync } from 'node:fs';
 import AxeBuilder from '@axe-core/playwright';
 import { expect, test } from '@playwright/test';
 
+import { settle } from './support/settle';
+
 /**
  * Every published unit, checked against the built site.
  *
@@ -43,23 +45,7 @@ for (const slug of unitSlugs) {
         .or(page.locator('text=/checkpoint/i').first()),
     ).toBeVisible();
 
-    // Sweep the page so every `client:visible` island intersects. Jumping
-    // straight to the end leaves islands above the fold unhydrated (HANDOFF
-    // trap 4), so step down instead.
-    const height = await page.evaluate(() => document.body.scrollHeight);
-    for (let y = 0; y < height; y += 400) {
-      await page.evaluate((top) => {
-        window.scrollTo(0, top);
-      }, y);
-    }
-
-    // Islands inside a collapsed <details> never become visible and correctly
-    // never hydrate, so they are excluded rather than waited on (trap 3).
-    await page.waitForFunction(() =>
-      [...document.querySelectorAll('astro-island[ssr]')].every(
-        (island) => island.closest('details:not([open])') !== null,
-      ),
-    );
+    await settle(page);
   });
 
   test(`unit "${slug}" has no detectable accessibility violations`, async ({
@@ -68,17 +54,7 @@ for (const slug of unitSlugs) {
     await page.goto(`./units/${slug}/`);
     await page.evaluate(() => document.fonts.ready);
 
-    const height = await page.evaluate(() => document.body.scrollHeight);
-    for (let y = 0; y < height; y += 400) {
-      await page.evaluate((top) => {
-        window.scrollTo(0, top);
-      }, y);
-    }
-    await page.waitForFunction(() =>
-      [...document.querySelectorAll('astro-island[ssr]')].every(
-        (island) => island.closest('details:not([open])') !== null,
-      ),
-    );
+    await settle(page);
 
     const results = await new AxeBuilder({ page })
       .withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa'])
@@ -94,18 +70,15 @@ test('an instrument is operable, and changes what the page says', async ({
   await page.goto('./units/why-rules-fail/');
   await page.evaluate(() => document.fonts.ready);
 
-  const panel = page.getByRole('region', { name: /write the rules/i });
-  await panel.scrollIntoViewIfNeeded();
-  await expect(panel).toBeVisible();
+  // Never assert hydration with `panel.locator('astro-island[ssr]')`:
+  // `<astro-island>` is the panel's ANCESTOR, so that matches nothing whether
+  // or not React has taken over, passes instantly, and drives the rest of the
+  // test against dead server markup (HANDOFF trap 2). It did exactly that here
+  // the first time. `settle` waits on the right elements.
+  await settle(page);
 
-  // Wait on the island ANCESTOR losing its `ssr` attribute, not on a descendant
-  // of the panel. `<astro-island>` wraps the section, so `panel.locator(
-  // 'astro-island[ssr]')` matches nothing whether or not React has taken over —
-  // it passes instantly and drives the whole test against dead server markup
-  // (HANDOFF trap 2). This assertion failed for exactly that reason first time.
-  await expect(
-    page.locator('astro-island[ssr]:has([role="region"])'),
-  ).toHaveCount(0);
+  const panel = page.getByRole('region', { name: /write the rules/i });
+  await expect(panel).toBeVisible();
 
   const summary = panel.locator('[aria-live="polite"]');
   const before = await summary.textContent();

@@ -65,6 +65,15 @@ export const ui = {
     checkpoint: 'Checkpoint',
   },
 
+  nav: {
+    /** Names the curriculum navigation landmark. */
+    label: 'Curriculum',
+    /** The collapsed label on small screens, where the rail does not fit. */
+    contents: 'All topics',
+    /** Marks the unit currently being read, for screen readers. */
+    current: 'Current topic',
+  },
+
   figure: {
     /** Prefix announced before a figure's plain-English description. */
     describes: 'What this shows',
@@ -88,6 +97,26 @@ export const ui = {
     DialTuner: {
       title: 'Turn the dials by hand',
       lead: 'Two numbers control the whole line. Get the wrongness as low as you can, and notice how you did it.',
+    },
+    LabelPicker: {
+      title: 'Nominate the answer column',
+      lead: 'Change which column counts as the answer, and watch which of the others turn out to matter.',
+    },
+    TrainingLoopRunner: {
+      title: 'Run the loop yourself',
+      lead: 'Nobody touches the dials this time. Press once and watch almost nothing happen — then press in larger jumps.',
+    },
+    ScoringRulePicker: {
+      title: 'Pick what to score',
+      lead: 'Four ways to score the same five answers. Watch a different one win each time — and see what it cost.',
+    },
+    FoggyDescentWalk: {
+      title: 'Walk downhill in the fog',
+      lead: 'Step one at a time and watch it come to rest. Then lift the fog and see where it stopped.',
+    },
+    StepSizeRace: {
+      title: 'Race three strides',
+      lead: 'Three walkers, one hill, one difference: how far each moves. Find the stride that arrives — then the one that never does.',
     },
     // new:interactive inserts above this line — do not remove.
   } as Record<string, { title: string; lead: string }>,

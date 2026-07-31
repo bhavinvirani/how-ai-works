@@ -2,6 +2,8 @@ import AxeBuilder from '@axe-core/playwright';
 import { expect, test } from '@playwright/test';
 import type { Page } from '@playwright/test';
 
+import { settle } from './support/settle';
+
 /**
  * Automated accessibility gate.
  *
@@ -36,18 +38,11 @@ const ROUTES: Route[] = [
   {
     name: 'gallery',
     path: './gallery/',
-    settle: async (page) => {
-      // Scroll past every client:visible island, then wait until none is still
-      // marked `ssr` — Astro removes that attribute once React has taken over.
-      // Scanning before this point audits server markup that has none of the
-      // island's real roles or focus behaviour, and passes for the wrong reason.
-      await page.keyboard.press('End');
-      await page.waitForFunction(() =>
-        [...document.querySelectorAll('astro-island[ssr]')].every(
-          (island) => island.closest('details:not([open])') !== null,
-        ),
-      );
-    },
+    // Pressing `End` used to be enough here and silently stopped being enough
+    // once the gallery grew past a couple of viewports: leaping to the bottom
+    // lets the browser observe one intersection position, so every island in
+    // the middle stays unhydrated. `settle` sweeps with a paint between steps.
+    settle,
   },
 ];
 

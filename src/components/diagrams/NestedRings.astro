@@ -1,0 +1,173 @@
+---
+/**
+ * Four rings, drawn one inside the other: artificial intelligence, machine
+ * learning, deep learning, generative AI.
+ *
+ * The nesting is the argument, so it is carried by geometry rather than by
+ * colour — each ring is physically inside the last, and every band states in
+ * words what it is, one thing it is, and how it fails. Read the right-hand
+ * column top to bottom and you get the unit's whole claim: the further in you
+ * go, the less anyone can say about why an answer came out.
+ *
+ * Colour does no work here (hard rule 9). The alternating fills only separate
+ * the bands; every distinction is also spelled out in text, and the innermost
+ * ring is marked by position and label as much as by tint.
+ *
+ * Decorative on its own, so `aria-hidden`: `Figure` supplies the accessible
+ * name and the description.
+ */
+---
+
+<svg viewBox="0 0 640 520" class="w-full" aria-hidden="true">
+  <!-- Ring 1 — artificial intelligence. The widest and oldest circle. -->
+  <rect
+    x="8"
+    y="8"
+    width="624"
+    height="504"
+    rx="14"
+    class="fill-paper stroke-rule-strong"
+    stroke-width="1.25"></rect>
+
+  <text
+    x="26"
+    y="36"
+    class="fill-ink font-display"
+    font-size="14"
+    font-weight="700">Artificial intelligence</text
+  >
+  <text x="26" y="56" class="fill-ink-muted font-mono" font-size="10"
+    >any machine doing a job that seems to need a person</text
+  >
+  <text x="26" y="74" class="fill-ink-faint font-mono" font-size="10"
+    >e.g. a chess program from 1985, following rules a person wrote</text
+  >
+  <text
+    x="614"
+    y="36"
+    text-anchor="end"
+    class="fill-ink-muted font-mono"
+    font-size="10">fails: stops at the edge of what was written down</text
+  >
+
+  <!-- Ring 2 — machine learning. -->
+  <rect
+    x="44"
+    y="86"
+    width="552"
+    height="402"
+    rx="12"
+    class="fill-paper-sunken stroke-rule-strong"
+    stroke-width="1.5"></rect>
+
+  <text
+    x="62"
+    y="114"
+    class="fill-ink font-display"
+    font-size="14"
+    font-weight="700">Machine learning</text
+  >
+  <text x="62" y="134" class="fill-ink-muted font-mono" font-size="10"
+    >never told the rule &mdash; it settles on one from examples</text
+  >
+  <text x="62" y="152" class="fill-ink-faint font-mono" font-size="10"
+    >e.g. the fraud check that decides your card looks stolen</text
+  >
+  <text
+    x="578"
+    y="114"
+    text-anchor="end"
+    class="fill-ink-muted font-mono"
+    font-size="10">fails: goes wrong quietly on unfamiliar cases</text
+  >
+
+  <!-- Ring 3 — deep learning. -->
+  <rect
+    x="80"
+    y="164"
+    width="480"
+    height="300"
+    rx="10"
+    class="fill-paper stroke-ink-muted"
+    stroke-width="1.75"></rect>
+
+  <text
+    x="98"
+    y="192"
+    class="fill-ink font-display"
+    font-size="14"
+    font-weight="700">Deep learning</text
+  >
+  <text x="98" y="212" class="fill-ink-muted font-mono" font-size="10"
+    >the same dials, stacked in many layers, one feeding the next</text
+  >
+  <text x="98" y="230" class="fill-ink-faint font-mono" font-size="10"
+    >e.g. the app that finds every photo of your dog</text
+  >
+  <text
+    x="542"
+    y="192"
+    text-anchor="end"
+    class="fill-ink-muted font-mono"
+    font-size="10">fails: no traceable reason for any answer</text
+  >
+
+  <!-- Ring 4 — generative AI. The innermost, and where chatbots live. -->
+  <rect
+    x="116"
+    y="242"
+    width="408"
+    height="198"
+    rx="8"
+    class="fill-accent-soft stroke-accent"
+    stroke-width="2"></rect>
+
+  <text
+    x="134"
+    y="270"
+    class="fill-ink font-display"
+    font-size="14"
+    font-weight="700">Generative AI</text
+  >
+  <text x="134" y="290" class="fill-ink-muted font-mono" font-size="10"
+    >produces new material instead of choosing between options</text
+  >
+  <text x="134" y="308" class="fill-ink-faint font-mono" font-size="10"
+    >e.g. the chatbot that wrote your birthday message</text
+  >
+  <text
+    x="506"
+    y="270"
+    text-anchor="end"
+    class="fill-ink-muted font-mono"
+    font-size="10">fails: invents plausible untruths</text
+  >
+
+  <!-- The consequence, stated where the innermost ring has room for it. -->
+  <text
+    x="320"
+    y="370"
+    text-anchor="middle"
+    class="fill-ink font-display"
+    font-size="13"
+    font-weight="700">a chatbot sits in all four rings at once</text
+  >
+  <text
+    x="320"
+    y="392"
+    text-anchor="middle"
+    class="fill-ink-muted font-mono"
+    font-size="9.5"
+    >so every failure listed above is also one of its failures</text
+  >
+
+  <!-- The rule the whole picture depends on. -->
+  <text
+    x="320"
+    y="502"
+    text-anchor="middle"
+    class="fill-ink-faint font-mono"
+    font-size="9"
+    >nothing sits in an inner ring without also sitting in every ring outside it</text
+  >
+</svg>

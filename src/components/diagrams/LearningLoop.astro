@@ -1,0 +1,147 @@
+---
+/**
+ * The four steps in a row, with the return arrow underneath that turns them
+ * from a recipe into learning.
+ *
+ * Drawn as a straight line rather than a ring on purpose. A circle reads as
+ * something smooth and continuous; the point here is that learning is four
+ * discrete, mechanical, unglamorous operations applied to one example at a
+ * time. The teaching load sits on the return arrow and its caption — every box
+ * is cheap, and there are millions of them.
+ *
+ * Order is carried by the "step 1…4" labels and by left-to-right position,
+ * never by colour (hard rule 9). Decorative on its own, so `aria-hidden`:
+ * `Figure` supplies the accessible name and the description.
+ */
+
+const STEPS = [
+  {
+    title: 'Guess',
+    lines: [
+      'take one example from the pile',
+      'push it through the dials',
+      'read off whatever comes out',
+    ],
+  },
+  {
+    title: 'Compare',
+    lines: [
+      'look up the real answer',
+      'how far off was the guess?',
+      'that gap is the only signal',
+    ],
+  },
+  {
+    title: 'Blame',
+    lines: [
+      'which dials pushed the answer',
+      'the wrong way, and how hard?',
+      'one share of the blame each',
+    ],
+  },
+  {
+    title: 'Nudge',
+    lines: [
+      'turn every dial a hair against',
+      'the blame it has just earned',
+      'far too little to fix this one',
+    ],
+  },
+];
+
+const BOX = { width: 165, height: 100, top: 24, gap: 30 };
+
+/** Left edge of the nth box. */
+const left = (index: number) => 10 + index * (BOX.width + BOX.gap);
+const centre = (index: number) => left(index) + BOX.width / 2;
+const middle = BOX.top + BOX.height / 2;
+const bottom = BOX.top + BOX.height;
+
+/** Chevron pointing right, sitting in the gap after the nth box. */
+const forwardHead = (index: number) => {
+  const tip = left(index) + BOX.width + 26;
+  return `M${String(tip - 8)} ${String(middle - 5)} L${String(tip)} ${String(middle)} L${String(tip - 8)} ${String(middle + 5)}`;
+};
+
+/** The long way back: down, left along the bottom, and up into the first box. */
+const returnPath = `M${String(centre(3))} ${String(bottom + 8)} L${String(centre(3))} ${String(bottom + 32)} L${String(centre(0))} ${String(bottom + 32)} L${String(centre(0))} ${String(bottom + 8)}`;
+const returnHead = `M${String(centre(0) - 5)} ${String(bottom + 14)} L${String(centre(0))} ${String(bottom + 6)} L${String(centre(0) + 5)} ${String(bottom + 14)}`;
+---
+
+<svg viewBox="0 0 770 200" class="w-full" aria-hidden="true">
+  {
+    STEPS.map((step, index) => (
+      <g>
+        <rect
+          x={left(index)}
+          y={BOX.top}
+          width={BOX.width}
+          height={BOX.height}
+          rx="8"
+          class="fill-paper stroke-rule-strong"
+          stroke-width="1.25"
+        />
+        <text
+          x={left(index) + 12}
+          y={BOX.top + 20}
+          class="fill-ink-faint font-mono"
+          font-size="8"
+        >
+          step {index + 1} of 4
+        </text>
+        <text
+          x={left(index) + 12}
+          y={BOX.top + 41}
+          class="fill-ink font-display"
+          font-size="16"
+          font-weight="700"
+        >
+          {step.title}
+        </text>
+        {step.lines.map((line, row) => (
+          <text
+            x={left(index) + 12}
+            y={BOX.top + 62 + row * 13}
+            class="fill-ink-muted font-mono"
+            font-size="8.5"
+          >
+            {line}
+          </text>
+        ))}
+      </g>
+    ))
+  }
+
+  <!-- Forward arrows, box to box. -->
+  <g class="stroke-rule-strong" stroke-width="1.75">
+    {
+      [0, 1, 2].map((index) => (
+        <g>
+          <line
+            x1={left(index) + BOX.width + 5}
+            y1={middle}
+            x2={left(index) + BOX.width + 24}
+            y2={middle}
+          />
+          <path d={forwardHead(index)} class="fill-none" />
+        </g>
+      ))
+    }
+  </g>
+
+  <!-- The return. This arrow is the whole difference between a recipe and learning. -->
+  <g class="stroke-accent" stroke-width="2">
+    <path d={returnPath} class="fill-none" stroke-linejoin="round"></path>
+    <path d={returnHead} class="fill-none"></path>
+  </g>
+
+  <text
+    x="385"
+    y="182"
+    text-anchor="middle"
+    class="fill-accent font-display"
+    font-size="13"
+    font-weight="700"
+    >next example, then all four again &mdash; a few million times</text
+  >
+</svg>

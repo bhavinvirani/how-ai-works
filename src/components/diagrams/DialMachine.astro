@@ -1,0 +1,157 @@
+---
+/**
+ * The machine, drawn literally: facts go in the left, a row of dials sits on
+ * the front, a guess comes out the right, and the size of the mistake loops
+ * back to the dials.
+ *
+ * This is the picture the whole site keeps returning to — every later unit adds
+ * detail to it rather than replacing it. The feedback arrow is the part that
+ * matters: it is the only thing on the diagram that says the dials are not set
+ * by a person.
+ *
+ * Decorative on its own, so `aria-hidden`; `Figure` carries the name and the
+ * description.
+ */
+---
+
+<svg viewBox="0 0 640 250" class="w-full" aria-hidden="true">
+  <!-- Inputs -->
+  <g>
+    <text x="16" y="60" class="fill-ink-faint font-mono" font-size="9"
+      >what it is told</text
+    >
+    <rect
+      x="16"
+      y="70"
+      width="104"
+      height="24"
+      rx="4"
+      class="fill-paper stroke-rule"
+      stroke-width="1"></rect>
+    <text x="28" y="86" class="fill-ink font-mono" font-size="10">74 m²</text>
+    <rect
+      x="16"
+      y="100"
+      width="104"
+      height="24"
+      rx="4"
+      class="fill-paper stroke-rule"
+      stroke-width="1"></rect>
+    <text x="28" y="116" class="fill-ink font-mono" font-size="10"
+      >3 bedrooms</text
+    >
+  </g>
+
+  <g class="stroke-rule-strong" stroke-width="1.5">
+    <line x1="124" y1="97" x2="176" y2="97"></line>
+    <path d="M170 92 L178 97 L170 102" class="fill-none"></path>
+  </g>
+
+  <!-- The machine -->
+  <rect
+    x="180"
+    y="40"
+    width="220"
+    height="140"
+    rx="10"
+    class="fill-paper-raised stroke-ink"
+    stroke-width="1.75"></rect>
+  <text
+    x="290"
+    y="64"
+    text-anchor="middle"
+    class="fill-ink font-display"
+    font-size="13"
+    font-weight="700">the machine</text
+  >
+  <text
+    x="290"
+    y="80"
+    text-anchor="middle"
+    class="fill-ink-faint font-mono"
+    font-size="8">a number for every dial, and nothing else</text
+  >
+
+  <!-- Four dials, each at a different angle so the row reads as adjustable. -->
+  <g class="stroke-ink-muted" stroke-width="1.5">
+    <circle cx="222" cy="124" r="17" class="fill-paper"></circle>
+    <line x1="222" y1="124" x2="222" y2="111"></line>
+    <circle cx="267" cy="124" r="17" class="fill-paper"></circle>
+    <line x1="267" y1="124" x2="277" y2="115"></line>
+    <circle cx="312" cy="124" r="17" class="fill-paper"></circle>
+    <line x1="312" y1="124" x2="303" y2="114"></line>
+    <circle cx="357" cy="124" r="17" class="fill-paper"></circle>
+    <line x1="357" y1="124" x2="366" y2="132"></line>
+  </g>
+  <text
+    x="290"
+    y="163"
+    text-anchor="middle"
+    class="fill-ink-faint font-mono"
+    font-size="8">turning these is the only thing that ever changes</text
+  >
+
+  <g class="stroke-rule-strong" stroke-width="1.5">
+    <line x1="404" y1="110" x2="452" y2="110"></line>
+    <path d="M446 105 L454 110 L446 115" class="fill-none"></path>
+  </g>
+
+  <!-- Guess, and the truth it is measured against -->
+  <text x="462" y="60" class="fill-ink-faint font-mono" font-size="9"
+    >what it says</text
+  >
+  <rect
+    x="462"
+    y="70"
+    width="120"
+    height="28"
+    rx="4"
+    class="fill-accent-2-soft stroke-accent-2"
+    stroke-width="1.25"></rect>
+  <text x="474" y="89" class="fill-ink font-mono" font-size="11">£310k</text>
+
+  <text x="462" y="122" class="fill-ink-faint font-mono" font-size="9"
+    >what it actually sold for</text
+  >
+  <rect
+    x="462"
+    y="130"
+    width="120"
+    height="28"
+    rx="4"
+    class="fill-paper stroke-rule"
+    stroke-width="1"></rect>
+  <text x="474" y="149" class="fill-ink font-mono" font-size="11">£340k</text>
+
+  <rect
+    x="462"
+    y="166"
+    width="120"
+    height="24"
+    rx="4"
+    class="fill-danger-soft stroke-danger"
+    stroke-width="1.25"></rect>
+  <text
+    x="522"
+    y="182"
+    text-anchor="middle"
+    class="fill-ink font-mono"
+    font-size="10">off by £30k</text
+  >
+
+  <!-- The loop back. This is the sentence of the diagram. -->
+  <g class="stroke-accent" stroke-width="2">
+    <path d="M462 178 L290 178 L290 212 L290 212" class="fill-none"></path>
+    <path d="M462 178 L290 178 L290 206" class="fill-none"></path>
+    <path d="M285 200 L290 208 L295 200" class="fill-none"></path>
+  </g>
+  <text
+    x="290"
+    y="230"
+    text-anchor="middle"
+    class="fill-accent font-display"
+    font-size="12"
+    font-weight="700"
+    >the size of the mistake decides which way the dials move</text
+  >
+</svg>

@@ -1,0 +1,140 @@
+---
+title: The machine made of dials
+part: why-this-exists
+order: 2
+summary: A model is a box of adjustable numbers; tuning them until the answers stop being wrong is all that learning means — everything after this is scale.
+prerequisites:
+  - why-rules-fail
+connections:
+  - to: why-rules-fail
+    why: This is the answer to the wall that unit runs into — the machine you build when the rule cannot be written.
+interactives:
+  - DialTuner
+status: published
+updated: 2026-07-31
+---
+
+import Aside from '../../components/blocks/Aside.astro';
+import Checkpoint from '../../components/blocks/Checkpoint.astro';
+import DevAside from '../../components/blocks/DevAside.astro';
+import Figure from '../../components/blocks/Figure.astro';
+import DialMachine from '../../components/diagrams/DialMachine.astro';
+import { DialTuner } from '../../components/interactives/DialTuner';
+
+Imagine an old radio. Not a modern one with a screen — the kind with a row of
+knobs along the front. You cannot see inside it, and you would not understand it
+if you could. What you can do is turn the knobs and listen.
+
+Somewhere in that space of knob positions is a setting where the station comes
+through clearly. You find it the way everyone finds it: turn a knob, listen, is
+that better or worse, turn again. You never learn what the knobs are doing
+electrically. You just find the setting that stops the static.
+
+That is a model. That is the entire idea.
+
+## A machine you can be wrong at
+
+Take a job with a real answer. Someone gives you the floor area of a house and
+you have to say what it will sell for.
+
+Build a machine with two knobs. The first says how much each square metre is
+worth. The second says what any house is worth before you have taken size into
+account at all. Give the machine a size, it multiplies and adds, and out comes a
+number.
+
+Now the important part: you can _check_ it. These are houses that already sold,
+so every guess can be compared against what actually happened, and the gap
+between them written down. Guess £310,000 on a house that sold for £340,000 and
+you were wrong by £30,000. Do that across every house and average it, and the
+whole machine's performance collapses into a single number.
+
+<Figure
+  title="The shape of every model on this site"
+  description="Facts go in, a guess comes out, and the guess is compared against what really happened. The size of that mistake is what decides which way the dials move — which is the only reason the machine ever improves."
+>
+  <DialMachine />
+</Figure>
+
+One number for how wrong you are. That is what makes the knobs turnable with any
+purpose, because now "better" means something you can measure rather than
+something you feel.
+
+## Turn them yourself
+
+Below are eight houses that really sold, and the two dials. Get the wrongness as
+low as you can.
+
+<DialTuner client:visible />
+
+Two things are worth noticing, and the second one matters more.
+
+The first: you cannot get to zero. There is no setting of these two dials that
+passes through every point, because houses are not priced by floor area alone —
+someone's kitchen was new, someone's neighbour was awful. The best possible
+setting is still wrong by about ten thousand pounds a house. A machine that fits
+its examples perfectly is usually a machine that has been given too many knobs,
+which is a problem with its own name and its own unit later on.
+
+The second: think about _how_ you turned the dials. You almost certainly nudged
+one, watched the number, and if it went up you went back the other way. You did
+not calculate anything. You did not need to understand houses. You just needed
+to be able to tell whether you were getting warmer.
+
+That procedure is mechanical. It can be automated. That is the next unit, and
+honestly, that is the whole field.
+
+<Aside title="Two knobs, or a trillion">
+  The largest models being built today work exactly like this, with somewhere
+  around a trillion dials instead of two. Nothing in the idea changes — what
+  changes is that nobody turns them by hand, and nobody can look at any
+  individual dial and say what it is for.
+</Aside>
+
+## Why the word "parameter" keeps appearing
+
+The dials have a proper name: **parameters**. When you read that a model has 70
+billion parameters, that is the number of adjustable settings inside it. Nothing
+more exotic than that.
+
+It is also why you cannot ask a model why it said something and get a real
+answer. The reason is distributed across billions of numbers, none of which
+means anything by itself. There is no line to point at. There was never a line.
+
+<DevAside>
+  <Fragment slot="java">
+    ```java
+    record Model(double perSquareMetre, double base) {
+      double predict(double size) {
+        return perSquareMetre * size + base;
+      }
+    }
+    ```
+
+    Two fields. Training does not change this class — it changes the two
+    numbers you construct it with. A 70-billion-parameter model is the same
+    record with 70 billion fields, which is why weights ship as an opaque
+    binary blob rather than as source you could read.
+
+  </Fragment>
+  <Fragment slot="python">
+    ```python
+    def predict(size, per_square_metre, base):
+        return per_square_metre * size + base
+    ```
+
+    The function is fixed and trivial. Everything anyone means by "the model"
+    lives in the two arguments you pass alongside the input.
+
+  </Fragment>
+</DevAside>
+
+<Checkpoint question="Two people train the same model design on the same houses and end up with different numbers in their dials. Has one of them made a mistake?">
+  Not necessarily. There is usually more than one setting that fits the examples
+  about equally well, and where you end up depends on where you started and how
+  you moved. What matters is the wrongness score, not the individual numbers.
+
+This is worth holding onto, because it means the dials are not facts about
+houses. They are just a setting that happens to work — which is why reading
+meaning into any single parameter is a mistake.
+
+</Checkpoint>

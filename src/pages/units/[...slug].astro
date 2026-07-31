@@ -6,6 +6,7 @@ import ConnectionsFooter from '../../components/blocks/ConnectionsFooter.astro';
 import { UnitProgress } from '../../components/blocks/UnitProgress';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { assertAcyclic } from '../../lib/units/graph';
+import { assertInteractivesExist } from '../../lib/units/interactives';
 import {
   resolveConnections,
   resolvePrerequisites,
@@ -29,6 +30,16 @@ export async function getStaticPaths() {
       prerequisites: unit.data.prerequisites.map((reference) => reference.id),
       part: unit.data.part,
       order: unit.data.order,
+    })),
+  );
+
+  // `interactives[]` is a list of plain strings, so Zod cannot tell a real
+  // component from a typo. Checked here rather than post-build so a wrong name
+  // fails `astro build` alongside every other content mistake.
+  assertInteractivesExist(
+    units.map((unit) => ({
+      id: unit.id,
+      interactives: unit.data.interactives,
     })),
   );
 

@@ -81,6 +81,14 @@ export const ui = {
    * `pnpm new:interactive` appends entries immediately above the marker below.
    */
   interactives: {
+    SpamRuleWriter: {
+      title: 'Write the rules yourself',
+      lead: 'Find a set that keeps every real message and blocks every junk one. Then switch to next week.',
+    },
+    DialTuner: {
+      title: 'Turn the dials by hand',
+      lead: 'Two numbers control the whole line. Get the wrongness as low as you can, and notice how you did it.',
+    },
     // new:interactive inserts above this line — do not remove.
   } as Record<string, { title: string; lead: string }>,
 

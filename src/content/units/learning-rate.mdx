@@ -2,7 +2,7 @@
 title: How far to step
 part: the-learning-loop
 order: 4
-summary: Knowing which way is downhill says nothing about how far to walk — and that one distance, chosen by a person before training starts, decides whether the machine settles, crawls, or destroys itself.
+summary: Knowing which way is downhill says nothing about how far to walk, and that one distance, chosen by a person before training starts, decides whether the machine settles, crawls, or destroys itself.
 prerequisites:
   - gradient-descent
 connections:
@@ -86,7 +86,7 @@ the worse it gets.
 
 Between the two there is a band of sizes that work. The band always exists.
 Where it sits is different for every model, every collection of examples, and
-often for different stages of the same training run — which is why nobody can
+often for different stages of the same training run, which is why nobody can
 hand you a number and promise it.
 
 <Figure
@@ -104,7 +104,7 @@ number of steps. The only difference between them is how far each one moves.
 <StepSizeRace client:visible />
 
 Wind your own step size up slowly. Around 0.30 your runner drops to the bottom
-in a few moves and stays there — that is what a healthy training run looks like.
+in a few moves and stays there. That is what a healthy training run looks like.
 Keep going and it starts overshooting, arriving in a wobble rather than a glide,
 which is untidy but still works.
 
@@ -128,7 +128,7 @@ Everything else inside a model gets tuned by training. So why not this?
 
 Because the machine only improves a number when it can feel which way that
 number should move, and there is nothing to feel here. The only honest test of a
-step size is to run the training with it and see what comes out — which costs
+step size is to run the training with it and see what comes out, which costs
 exactly as much as the training. There is no slope to sample.
 
 That splits the vocabulary in two, and you will meet both words everywhere:
@@ -195,7 +195,7 @@ destroy a run in its first minute.
   order of events: the score fell first, so the machine was finding the right
   direction perfectly well. Only the distance was wrong. Once a step overshoots
   the bottom it lands on steeper ground, which makes the next step larger, which
-  overshoots further — and that runs away in a few rounds rather than degrading
+  overshoots further, and that runs away in a few rounds rather than degrading
   gently. Halving the step size is the standard first move.
 
 Keep hold of the shape of this failure. A system that improves for a while and

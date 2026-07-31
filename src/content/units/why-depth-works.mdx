@@ -2,7 +2,7 @@
 title: The good idea that had to wait
 part: inside-the-machine
 order: 6
-summary: Stacking layers deep is a 1980s idea that sat unusable for twenty years until data, graphics cards and a few unglamorous fixes turned up — and what depth buys, once it works, is reuse, because a part built once can be shared by everything above it.
+summary: Stacking layers deep is a 1980s idea that sat unusable for twenty years until data, graphics cards and a few unglamorous fixes turned up, and what depth buys, once it works, is reuse, because a part built once can be shared by everything above it.
 prerequisites:
   - feature-hierarchy
   - backpropagation
@@ -61,7 +61,7 @@ simultaneously because that is what shading a screenful of pixels requires, and
 somebody noticed they would do a network's arithmetic just as happily.
 
 The size of that change is easy to understate. It is not that training got
-faster. It is that an experiment which used to take a month took a day — and a
+faster. It is that an experiment which used to take a month took a day, and a
 field where you can try an idea before lunch behaves nothing like a field where
 you get four attempts a year. What limits progress is how often you can afford
 to be wrong.
@@ -103,7 +103,7 @@ week. Something had merely become possible.
 
 Here is the awkward fact that turns this into a real question. A network with a
 single layer of neurons, if you make that layer wide enough, can approximate any
-sensible pattern you care to name. That is not a hunch — it was proved in the
+sensible pattern you care to name. That is not a hunch. It was proved in the
 late eighties. Depth is not necessary.
 
 Which means the case for depth cannot be that shallow machines are incapable.
@@ -113,7 +113,7 @@ It has to be something else, and it is: depth is about how much it costs.
 
 You have already watched a stack sort itself into a ladder, and met the short
 reason it bothers. This is that fact from the other side. Not "why does a ladder
-turn up", but "what would it cost you not to have one" — and the only way to
+turn up", but "what would it cost you not to have one", and the only way to
 answer that is to put a shallow machine and a deep one on the same job and
 compare the bills.
 
@@ -160,7 +160,7 @@ need a layer of implausible width and a quantity of examples nobody has.
 
 A joiner who makes a hundred different pieces of furniture has not learned a
 hundred unrelated crafts. They have learned to cut a straight edge, cut a
-joint, plane a face true — and every piece after that is those few skills,
+joint, plane a face true, and every piece after that is those few skills,
 arranged differently. Somebody who instead memorised the exact sequence of
 movements for one particular chair would know precisely nothing about the next
 chair and would have to start again from the beginning. Depth is what lets a
@@ -169,11 +169,11 @@ machine take the joiner's route.
 <Aside title="What 'in principle' is hiding">
   The proof that one wide layer can approximate anything is an existence proof.
   It says a setting of the dials exists. It does not say how wide the layer
-  would have to be — the honest answer can grow absurdly fast with the
-  difficulty of the pattern — and it says nothing whatsoever about whether
-  training could ever find that setting from examples. Those two questions are
-  the entire practical problem. Being told the answer is somewhere in the
-  building is not the same as being given the room number.
+  would have to be, the honest answer can grow absurdly fast with the difficulty
+  of the pattern, and it says nothing whatsoever about whether training could
+  ever find that setting from examples. Those two questions are the entire
+  practical problem. Being told the answer is somewhere in the building is not
+  the same as being given the room number.
 </Aside>
 
 ## Who ends up paying for the parts
@@ -233,14 +233,14 @@ several and kept whichever behaved.
   </Fragment>
 </DevAside>
 
-<Checkpoint question="A colleague proposes skipping the stack entirely: one layer of neurons, made as wide as the budget allows, straight from pixels to answer. They point out — correctly — that a wide enough single layer can approximate any pattern at all. Nothing in that claim is false. So what is wrong with the plan, and what exactly would it cost them?">
+<Checkpoint question="A colleague proposes skipping the stack entirely: one layer of neurons, made as wide as the budget allows, straight from pixels to answer. They point out, correctly, that a wide enough single layer can approximate any pattern at all. Nothing in that claim is false. So what is wrong with the plan, and what exactly would it cost them?">
   Nothing is wrong with the maths. Everything is wrong with the bill.
 
 A single layer has no floor to rest shared work on. Every neuron runs from raw
 pixels to a finished verdict, so whatever one of them works out about
 boundaries between light and dark is unavailable to all the others, and each
 new object has to be learned whole and from nothing. The cost turns up twice.
-The layer has to be implausibly wide, and — the part that actually stops you —
+The layer has to be implausibly wide, and, the part that actually stops you,
 every object needs its own full pile of examples, so the hundredth costs
 exactly what the first did.
 

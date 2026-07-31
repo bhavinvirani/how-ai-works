@@ -140,7 +140,7 @@ export const ui = {
      * would describe every one of the sixty identically.
      */
     unitCardAlt: (title: string, siteName: string) =>
-      `${title} — a lesson from ${siteName}.`,
+      `${title}. A lesson from ${siteName}.`,
   },
 
   /**
@@ -201,11 +201,11 @@ export const ui = {
     },
     TrainingLoopRunner: {
       title: 'Run the loop yourself',
-      lead: 'Nobody touches the dials this time. Press once and watch almost nothing happen — then press in larger jumps.',
+      lead: 'Nobody touches the dials this time. Press once and watch almost nothing happen. Then press in larger jumps.',
     },
     ScoringRulePicker: {
       title: 'Pick what to score',
-      lead: 'Four ways to score the same five answers. Watch a different one win each time — and see what it cost.',
+      lead: 'Four ways to score the same five answers. Watch a different one win each time, and see what it cost.',
     },
     FoggyDescentWalk: {
       title: 'Walk downhill in the fog',
@@ -213,7 +213,7 @@ export const ui = {
     },
     StepSizeRace: {
       title: 'Race three strides',
-      lead: 'Three walkers, one hill, one difference: how far each moves. Find the stride that arrives — then the one that never does.',
+      lead: 'Three walkers, one hill, one difference: how far each moves. Find the stride that arrives, then the one that never does.',
     },
     ClusterFinder: {
       title: 'Ask it for a number of groups',
@@ -221,11 +221,11 @@ export const ui = {
     },
     ExploreExploitBandit: {
       title: 'Try, score, adjust',
-      lead: 'Nobody ever tells it the right move. Watch it settle — and notice what it settled for.',
+      lead: 'Nobody ever tells it the right move. Watch it settle, and notice what it settled for.',
     },
     FreeLabelMaker: {
       title: 'Cover a word and guess it back',
-      lead: 'Move the blank along and see which gaps you can fill from grammar alone — and which ones you cannot.',
+      lead: 'Move the blank along and see which gaps you can fill from grammar alone, and which ones you cannot.',
     },
     FlexibilityDial: {
       title: 'Add one dial at a time',
@@ -257,7 +257,7 @@ export const ui = {
     },
     TokenSplitter: {
       title: 'Cut a sentence into the pieces a model reads',
-      lead: 'Type a rare name, a long number, and something that is not English — and watch the piece count rather than the letters.',
+      lead: 'Type a rare name, a long number, and something that is not English. Then watch the piece count rather than the letters.',
     },
     AttentionMap: {
       title: 'Watch one word ask the others',
@@ -277,7 +277,7 @@ export const ui = {
     },
     TemperatureDial: {
       title: 'Turn the wandering up and down',
-      lead: 'Take it to the bottom and run it twice — the same sentence both times. Then push it up until something odd gets through.',
+      lead: 'Take it to the bottom and run it twice: the same sentence both times. Then push it up until something odd gets through.',
     },
     ContextBudget: {
       title: 'Fill a window that does not grow',
@@ -297,7 +297,7 @@ export const ui = {
     },
     SpotTheFabrication: {
       title: 'Find the invented one',
-      lead: 'Four confident answers, one of them made up. Pick it before you reveal — then see what gave it away, and what did not.',
+      lead: 'Four confident answers, one of them made up. Pick it before you reveal, then see what gave it away, and what did not.',
     },
     PromptLeverBoard: {
       title: 'Pull the levers on one request',
@@ -325,7 +325,7 @@ export const ui = {
     },
     PrecisionDial: {
       title: 'Spend fewer digits on each dial',
-      lead: 'Drop the precision and watch the model shrink. Find where it is still the same model — and the step just after that.',
+      lead: 'Drop the precision and watch the model shrink. Find where it is still the same model, and the step just after that.',
     },
     ConceptMap: {
       title: 'The whole site as one picture',
@@ -346,7 +346,7 @@ export const ui = {
 
       privacyHeading: 'This stays on your device',
       privacyBody:
-        'Your progress is stored in this browser and never sent anywhere. There is no account and no server holding it — which also means clearing your browser data clears this, and another device will not know about it unless you move the file yourself.',
+        'Your progress is stored in this browser and never sent anywhere. There is no account and no server holding it, which also means clearing your browser data clears this, and another device will not know about it unless you move the file yourself.',
 
       /**
        * The site does collect one thing, and this says so.
@@ -359,7 +359,7 @@ export const ui = {
        * not to mention it.
        */
       privacyAnalytics:
-        'The site does count visits, so it is possible to see which lessons get read. That count is anonymous: no cookies, no accounts, nothing stored on your device, and no way to tell one reader from another — or to connect a visit to anything you have marked complete here.',
+        'The site does count visits, so it is possible to see which lessons get read. That count is anonymous: no cookies, no accounts, nothing stored on your device, and no way to tell one reader from another, or to connect a visit to anything you have marked complete here.',
 
       empty:
         'Nothing recorded yet. Progress appears here once there are units to finish.',

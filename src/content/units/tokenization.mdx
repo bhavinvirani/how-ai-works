@@ -2,12 +2,12 @@
 title: Nobody asks you to spell Smith
 part: language-problem
 order: 2
-summary: Text is cut into chunks from a fixed list of about a hundred thousand before a model sees any of it — not letters and not words — which is why the bill is counted in chunks, why a machine that writes essays cannot count the letters in a word, and why the same sentence costs several times more in some languages than in English.
+summary: Text is cut into chunks from a fixed list of about a hundred thousand before a model sees any of it, not letters and not words, which is why the bill is counted in chunks, why a machine that writes essays cannot count the letters in a word, and why the same sentence costs several times more in some languages than in English.
 prerequisites:
   - embeddings
 connections:
   - to: recurrent-networks
-    why: The machines on that page read one piece at a time, so what gets cut up here is exactly what they queue through — and the length that overwhelmed their memory was always counted in pieces, never in words.
+    why: The machines on that page read one piece at a time, so what gets cut up here is exactly what they queue through, and the length that overwhelmed their memory was always counted in pieces, never in words.
   - to: context-window
     why: The hard limit on how much a model can hold at once is counted in these pieces, which is why the same paragraph fits comfortably in one language and overflows in another.
 interactives:
@@ -113,7 +113,7 @@ get through a line without them. Some rounds later `th` and `e` are glued, and
 now _the_ is a single piece. Endings like `ing` and `tion` earn their own
 entries, because they turn up on the end of thousands of different words that
 have nothing else in common. By the time the counting stops, a common word is a
-single piece and an uncommon one is still in fragments — and nobody decided
+single piece and an uncommon one is still in fragments, and nobody decided
 which was which. Frequency decided, and frequency is a fact about the text that
 happened to be fed in.
 
@@ -135,7 +135,7 @@ worth knowing before you draw conclusions: with only forty-eight glues, ordinary
 English words come apart more than they would in practice.
 
 Start with the phrase it opens on: _the letter was not for you_. Twenty-six
-characters, six words — and nine pieces.
+characters, six words, and nine pieces.
 
 Now click through to the name. _a letter for Kowalczyk_ is **shorter** than the
 first phrase and has **fewer** words in it, and it costs fourteen pieces. Eight
@@ -194,8 +194,8 @@ in a word they have just read fluently and they slow right down. Same problem,
 same cause.
 
 This is also why a model can be brilliant at spelling in one breath and hopeless
-at it in the next. Spelling that it has read about — spelling written out in the
-text it learned from — it knows. Spelling it would have to work out by
+at it in the next. Spelling that it has read about, spelling written out in the
+text it learned from, it knows. Spelling it would have to work out by
 inspecting its own input, it cannot do, because the input has no letters in it.
 
 ### Why some languages cost several times more
@@ -285,7 +285,7 @@ else in this Part happens on the far side of it.
   </Fragment>
 </DevAside>
 
-<Checkpoint question="A support tool sends the same 200-word message to a model, once in English and once in Hindi. The Hindi version costs four times as much and gets cut off before the end. Nobody changed the message, the model or the code. Where did the difference come from — and why can the team not fix it by writing shorter Hindi?">
+<Checkpoint question="A support tool sends the same 200-word message to a model, once in English and once in Hindi. The Hindi version costs four times as much and gets cut off before the end. Nobody changed the message, the model or the code. Where did the difference come from, and why can the team not fix it by writing shorter Hindi?">
   From the list, which was built long before either message existed. The glueing
   procedure spent its rounds wherever the text it was fed had the most material,
   and that text was mostly English. Hindi got few chunks or none, so its

@@ -2,7 +2,7 @@
 title: Anything it reads can give it orders
 part: does-it-work
 order: 2
-summary: Your instructions and a page the model was asked to read arrive as the same kind of thing in the same sequence, with nothing in the machinery marking which is which — so the only defence that holds is limiting what the system can do, rather than what you ask it to do.
+summary: Your instructions and a page the model was asked to read arrive as the same kind of thing in the same sequence, with nothing in the machinery marking which is which, so the only defence that holds is limiting what the system can do, rather than what you ask it to do.
 prerequisites:
   - tool-use
   - agents
@@ -34,7 +34,7 @@ Halfway down the stack, in the middle of a letter from a supplier, there is a
 paragraph addressed to whoever is opening the post. It tells them to go and do
 something with the company's records.
 
-She does not do it. Obviously she does not do it — and it is worth being slow
+She does not do it. Obviously she does not do it, and it is worth being slow
 about why, because every one of the reasons is about to be taken away.
 
 It is in the middle of somebody else's letter, and a letter is a thing you read
@@ -55,7 +55,7 @@ That is the machine's situation. Exactly, not roughly.
 
 The unit on the context window put the mechanism plainly. A model keeps nothing
 between messages, so everything it can see when it answers has to be sent to it
-again, every time, as one block — and that block is a single sequence of pieces
+again, every time, as one block, and that block is a single sequence of pieces
 in a single order, read in one pass from the start.
 
 Look at what is in that sequence in any system doing real work.
@@ -74,7 +74,7 @@ piece in the tray is made of the same stuff as every other.
 Something does, and the honest answer is more interesting than a flat no.
 
 The format has labels in it. A conversation is not sent as one undifferentiated
-slab — there are special chunks in the sequence meaning _a user is speaking now_,
+slab. There are special chunks in the sequence meaning _a user is speaking now_,
 _this came back from a tool_, _these are the standing instructions_. And labs
 train models to weight them: to take the standing instructions more seriously
 than the conversation, and the conversation more seriously than material that
@@ -114,14 +114,14 @@ customer slipping a note into the stockroom.
 ## Why the old fix does not fit
 
 The shape of this problem is not new. The last time software met it, software
-won outright — and it is worth knowing exactly how, because the way that victory
+won outright, and it is worth knowing exactly how, because the way that victory
 was won is the way it cannot be won here.
 
 In the early web, what you typed into a form was routinely glued straight into
 the command that a database would then run. Type an ordinary name into the name
 box and the command asked about a customer. Type something with the right
 punctuation in it and your text stopped being a name partway through and became
-more command — and the database, which had only ever received one string of
+more command, and the database, which had only ever received one string of
 characters, ran the lot.
 
 The fix was not better inspection. Nobody won that by getting good at spotting
@@ -140,7 +140,7 @@ first.
 
 Think of a vending machine. Coins go in a slot; the commands are buttons on the
 front. There is nothing you can post into that slot which will ever press a
-button — and not because the machine is clever about coins. Because the slot
+button, and not because the machine is clever about coins. Because the slot
 does not reach the buttons.
 
 A language model has one slot.
@@ -188,7 +188,7 @@ rest. If the service on the other end is not yours, neither is the text.
 **Anything in a picture.** A model that reads images reads the writing in them,
 which means a screenshot, a scan or a PDF is a text channel wearing a coat.
 
-Then the part that makes agents different. An agent is a loop — it reads
+Then the part that makes agents different. An agent is a loop. It reads
 something, writes something, and what it wrote is in the window on the next
 pass. So a page read at step three is not finished with at step three. Its
 influence rides along in the model's own notes, through step four and step nine
@@ -230,7 +230,7 @@ sent, a request made, a file written, a message posted, a summary shown to a
 person who will act on it.
 
 Take any one of the three out of a particular feature and this class of failure
-goes with it — not made less likely, but structurally absent. Which is why the
+goes with it, not made less likely, but structurally absent. Which is why the
 useful question about a design is never _how do we stop it obeying_. It is
 _which of the three can this feature do without_.
 
@@ -279,7 +279,7 @@ It narrows what can travel. It is not a wall, and nothing in this section is.
 
 <Figure
   title="Four things it can reach, and the state each of them is in"
-  description="No boundary can sit on the arrow coming in, because inspecting text is not something the model can do reliably — so every wall in a working design is on the other side: a read-only tool has nothing to lose, a record lookup takes its identity from your session rather than from the text, an outbound email waits for a person, and a destructive tool is simply never offered, which is the only state that is a guarantee rather than a tendency."
+  description="No boundary can sit on the arrow coming in, because inspecting text is not something the model can do reliably, so every wall in a working design is on the other side: a read-only tool has nothing to lose, a record lookup takes its identity from your session rather than from the text, an outbound email waits for a person, and a destructive tool is simply never offered, which is the only state that is a guarantee rather than a tendency."
 >
   <WhereTheWallCanGo />
 </Figure>
@@ -371,9 +371,10 @@ something clever.
     ```
 
     Three lines, one mistake. `answer` was produced from text you do not
-    control, which puts it in exactly the same category as `request.form["q"]`
-    — and the habits you already have for that one are the habits this needs.
-    Nothing about the string being fluent English changes where it came from.
+    control, which puts it in exactly the same category as `request.form["q"]`,
+
+and the habits you already have for that one are the habits this needs.
+Nothing about the string being fluent English changes where it came from.
 
     The third line is the quiet one, and it is the one that appears in real
     pipelines. A summary written by one model, pasted into another model's

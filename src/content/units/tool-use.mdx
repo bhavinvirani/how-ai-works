@@ -2,14 +2,14 @@
 title: Nothing it writes ever runs itself
 part: letting-it-act
 order: 1
-summary: A model cannot run anything — it can only produce text asking for a function to be called, and every decision about whether to run it, with what arguments and with whose credentials, is made by the code that receives the request.
+summary: A model cannot run anything. It can only produce text asking for a function to be called, and every decision about whether to run it, with what arguments and with whose credentials, is made by the code that receives the request.
 prerequisites:
   - hallucination
 connections:
   - to: mcp
     why: Every function here has to be described by hand and wired into your own dispatch by hand, which is fine for two of them and unmanageable for forty — the next unit is the agreement that lets a tool be written once and understood by any application, without changing anything about who runs it.
   - to: agents
-    why: Nothing in this unit happens without your code choosing to act on each request, and an agent is what you get when that choice is made automatically, in a loop, with the result of one call deciding the next — which is where the permissions here stop being paperwork and become the only real limit.
+    why: Nothing in this unit happens without your code choosing to act on each request, and an agent is what you get when that choice is made automatically, in a loop, with the result of one call deciding the next, which is where the permissions here stop being paperwork and become the only real limit.
 interactives: []
 status: published
 updated: 2026-07-31
@@ -24,7 +24,7 @@ import AskingIsNotDoing from '../../components/diagrams/AskingIsNotDoing.astro';
 A withdrawal slip goes across the counter with a figure written on it and an
 account number underneath.
 
-Nothing has moved. A slip is not money, and it is not permission either — it is
+Nothing has moved. A slip is not money, and it is not permission either. It is
 a sentence in a box, and it will lie on that counter doing nothing whatsoever
 until somebody on the other side picks it up, decides it is in order, and opens
 the drawer.
@@ -55,8 +55,8 @@ Then the model does the only thing it does. It reads what is in front of it,
 scores every chunk in its vocabulary, writes one, and goes round again. Nothing
 was installed. No new faculty was switched on.
 
-What comes out — when the conversation has arrived somewhere one of those
-descriptions covers — is not an answer. It is a short run of text in a shape
+What comes out, when the conversation has arrived somewhere one of those
+descriptions covers, is not an answer. It is a short run of text in a shape
 your code recognises: a function name, and some arguments. `lookup_order`, order
 number 4471.
 
@@ -66,7 +66,7 @@ It is worth being blunt here, because it is the whole unit. Those characters hav
 precisely as much power to reach your database as the word _hello_ does. They are
 not a command. Nothing anywhere is listening for them. They are the model's next
 few pieces, produced by the arithmetic that produced every other piece, and then
-the model stops — because stopping is what it does at the end of every turn, and
+the model stops, because stopping is what it does at the end of every turn, and
 there is nothing else available to it.
 
 Your code reads them, and decides.
@@ -89,7 +89,7 @@ mechanism cannot do turn out to be three things people want constantly.
 
 **It stopped learning on a date.** The dials were set during training and have
 not moved since. Ask about anything that happened afterwards and there is
-nothing in there to be right with — but the machine will answer anyway, because
+nothing in there to be right with, but the machine will answer anyway, because
 answering is the only thing in the loop.
 
 **It does not calculate.** Multiply two seven-digit numbers and what comes back
@@ -162,7 +162,7 @@ Access to a database is a hostname, a credential, an open socket and a library
 that knows how to speak to it. Now hold each of those next to what a model is: a
 very large table of numbers, and an operation that turns text into scores over
 text. There is no field in it for a password. There is nothing in it that opens a
-connection — not because opening connections is forbidden, but because there is
+connection, not because opening connections is forbidden, but because there is
 no machinery in there for doing it, in the same way there is no machinery in
 there for boiling a kettle.
 
@@ -178,7 +178,7 @@ running as a user you configured.
 None of this is a technicality that lets anybody off. It is the exact opposite,
 and it is why this unit opens a Part rather than closing one. If your handler
 runs whatever it is asked to run, holding a credential that can drop tables, then
-your system can drop tables — and nobody handed that power to a model. You
+your system can drop tables, and nobody handed that power to a model. You
 granted it, in a line you can point at, and can still change tomorrow.
 
 There is a small translation that does most of the work here. Whenever somebody
@@ -269,7 +269,7 @@ routinely the last thing anybody edits.
 
     `session.userId()` is doing the load-bearing work. Whose orders may be read
     comes from your own signed-in session; the model only supplied the order id.
-    Move that argument into the call — `call.arg("userId")` — and whoever can
+    Move that argument into the call, `call.arg("userId")`, and whoever can
     influence the conversation now chooses whose records come back.
 
     The `default` branch looks like tidiness and is not. A model will ask for
@@ -306,7 +306,7 @@ routinely the last thing anybody edits.
   They have built a system that can run any SQL statement, and asked it nicely
   not to. The instruction is text added to text. It genuinely shifts which
   continuations score well, so most of the time the model will ask for a
-  `SELECT` — that is a real effect and it is why testing looked fine. What it is
+  `SELECT`. That is a real effect and it is why testing looked fine. What it is
   not is a restriction, because there is nothing in the model that enforces
   anything. The model was never the thing that ran the query.
 
@@ -316,7 +316,7 @@ and the only thing standing between them and a dropped table is which characters
 happened to score well in one column of numbers.
 
 So the fix belongs on the credential, not in the prompt. Connect as a read-only
-user and a deletion stops being forbidden and starts being impossible — there is
+user and a deletion stops being forbidden and starts being impossible. There is
 no route to it to take. And even then the job is half done: a read-only query can
 still read another customer's rows, so which rows this caller may see has to be
 decided in the handler, from the session, rather than from anything the model

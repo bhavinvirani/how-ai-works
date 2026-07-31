@@ -2,14 +2,14 @@
 title: Answering was never part of the deal
 part: building-an-assistant
 order: 2
-summary: A freshly pretrained model can do exactly one thing — continue whatever text is in front of it — so a question typed at it gets continued rather than answered, and the knowledge it would have needed was in there the whole time.
+summary: A freshly pretrained model can do exactly one thing, continue whatever text is in front of it, so a question typed at it gets continued rather than answered, and the knowledge it would have needed was in there the whole time.
 prerequisites:
   - pretraining
 connections:
   - to: fine-tuning
     why: That is the stage where the missing habit gets installed, by showing the model tens of thousands of worked examples in which the text following a request happens to be a good response to it.
   - to: rlhf
-    why: Getting a model to answer at all is one problem and getting it to answer well is a separate one, because nobody can write down what a good answer is — it has to be collected from people picking between real ones.
+    why: Getting a model to answer at all is one problem and getting it to answer well is a separate one, because nobody can write down what a good answer is. It has to be collected from people picking between real ones.
 interactives: []
 status: published
 updated: 2026-07-31
@@ -29,7 +29,7 @@ _why does dough need to rest before you shape it?_
 Underneath it, the screenshot stops.
 
 Nobody types the answer. What somebody types is _and then four people argued
-about hydration for six pages_ — because that is what happens under a question
+about hydration for six pages_, because that is what happens under a question
 on a forum, and everyone in the chat knows it.
 
 You knew the answer too, near enough. Leave dough alone for half an hour and it
@@ -39,7 +39,7 @@ You did not offer it, because nobody had asked you. What you had been handed was
 a page, and pages have shapes; asked what came next on one, you predicted a
 page.
 
-That reflex — finish the document rather than answer the line — is the whole of
+That reflex, finish the document rather than answer the line, is the whole of
 what a language model can do when it comes out of the stage before this one.
 
 ## Everything it will ever know, and one thing it cannot do
@@ -103,7 +103,7 @@ delivers the first in industrial quantity and the second not at all.
 
 <Figure
   title="The same two prompts, before and after the habit"
-  description="Asked a question, a freshly pretrained model produces the rest of a forum page instead of an answer — but hand the same machine half a sentence and it finishes it correctly, which is how you can tell the fact was already in there and only the habit of answering was missing."
+  description="Asked a question, a freshly pretrained model produces the rest of a forum page instead of an answer, but hand the same machine half a sentence and it finishes it correctly, which is how you can tell the fact was already in there and only the habit of answering was missing."
 >
   <ContinueOrAnswer />
 </Figure>
@@ -118,7 +118,7 @@ Think about where answers actually sit in text. Under a question on a forum:
 more questions, a moderator note, a link, three replies that miss the point.
 Under a question in a textbook: four options labelled (a) to (d), with the
 answer forty pages away at the back. Under a question in a list of search
-results: a title, a date, an advertisement. Answers do follow questions, often —
+results: a title, a date, an advertisement. Answers do follow questions, often,
 but they are one branch among many, and nothing in training ever marked that
 branch as the one that counts.
 
@@ -145,7 +145,7 @@ doing.
 Two consequences fall out of that, and each gets a unit of its own further on.
 The first is that plausible and true are different properties, and only one of
 them was ever trained for. The second is that a habit is a strong tendency
-rather than a wall — which is most of what there is to say about why an
+rather than a wall, which is most of what there is to say about why an
 assistant's good behaviour can sometimes be talked out of it, and why nobody has
 managed to make that airtight.
 
@@ -200,7 +200,7 @@ because every stage after pretraining is another variable in the experiment.
 
     Two lines, and the second half of the first one is the part people forget
     exists. The moment you want a prompt shape your provider does not offer,
-    you end up building that document yourself — and leaving off the marker
+    you end up building that document yourself, and leaving off the marker
     that opens the assistant's turn raises no error at all. The model simply
     continues the wrong turn and writes the user's next message for them.
 
@@ -224,8 +224,8 @@ because every stage after pretraining is another variable in the experiment.
 </DevAside>
 
 <Checkpoint question="A team wires an open model into their support tool. Every reply comes back as a handful of further questions, or as something that reads like the bottom of a web page. One person says the model is too small; another wants to spend a fortnight training it on the company's support history. Both are guesses. What is the one-minute check that settles it, and what would the result tell you?">
-  Stop asking it things. Hand it the opening of a sentence instead — _A parcel
-  marked as delivered that has not arrived is usually_ — and read what comes
+  Stop asking it things. Hand it the opening of a sentence instead, _A parcel
+  marked as delivered that has not arrived is usually_, and read what comes
   back.
 
 If it finishes that fluently and sensibly, the model is fine and so is its
@@ -236,7 +236,7 @@ a different file, not a fortnight.
 
 Worth keeping as a shape. Knowing something and being willing to hand it over on
 request are separate properties, acquired at separate stages and for separate
-reasons — and a surprising number of confusing things a model does get easier to
+reasons, and a surprising number of confusing things a model does get easier to
 place the moment you stop treating them as one property.
 
 </Checkpoint>

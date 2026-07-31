@@ -64,7 +64,7 @@ property of the job rather than of the machine.
 Take the six boxes. Suppose a small model gets the email into the right one
 ninety-one times in a hundred. Multiply its dials by a hundred and the very best
 machine anyone has built gets ninety-three. Two points. Not because the big one
-is not better — it is enormously better — but because it is better at things
+is not better, it is enormously better, but because it is better at things
 this job never asks about. Nothing can be more right than right.
 
 Now take a forty-page contract and the question of which two clauses contradict
@@ -123,7 +123,7 @@ The bill is what sends people looking. It is rarely what keeps them there.
 **The data never leaves.** A hosted model means your text goes over a wire into
 somebody else's building. For plenty of work that is fine. For medical notes,
 legal files, unreleased results, or anything covered by a rule that names which
-countries data may be processed in, it is not a preference — it is the thing
+countries data may be processed in, it is not a preference. It is the thing
 that decides whether the project happens at all. A model running on your own
 machine turns the question off. There is no request to log, no retention policy
 to read, no region to check, and no conversation with your own lawyers about a
@@ -133,15 +133,15 @@ supplier's subprocessors.
 round trip, plus a queue you are sharing with strangers, plus the generation
 itself. A small model on the machine doing the asking has none of the first two.
 The gap is usually the difference between something you wait for and something
-that happens while you type — and that changes what you can build rather than
+that happens while you type, and that changes what you can build rather than
 making the same thing nicer. At a fifth of a second you can put a model inside a
 loop: one call per row of a spreadsheet, one per pause in typing, one per field
 of a form as it is filled in. At two seconds you build a thing with a spinner in
 it, and every decision downstream of that is different.
 
 **It can be tuned for your job, cheaply.** This is the one people do not expect.
-Training a small model a little further on examples of one narrow task —
-**fine-tuning** — costs an amount that would not buy the team lunch, and the
+Training a small model a little further on examples of one narrow task,
+**fine-tuning**, costs an amount that would not buy the team lunch, and the
 examples are usually already sitting in a database. Ten thousand support tickets
 that humans have been routing correctly for three years is a training set
 nobody had to build. What comes out has your product names in it, your
@@ -193,7 +193,7 @@ Send everything to the small model first. Most of it stops there. Then have
 something read what came back and decide whether this particular request needs
 to go on to something larger.
 
-That is a **cascade** — or just routing, which is what most people call it. A
+That is a **cascade**, or just routing, which is what most people call it. A
 great many shipped systems are doing it behind a single address that looks, from
 the outside, like one model answering everything.
 
@@ -217,7 +217,7 @@ that is before anything is said about where the data went.
 
 <Figure
   title="One hundred requests through a cascade"
-  description="Every request runs through the small model first, so the small model is paid on all hundred and not only on the eighty-eight that stop there — fourteen units against a hundred — while the twelve that escalate now wait for both machines and arrive slower than if they had gone straight to the large one, and the ones the gate misjudges come back confident with nothing in the system to say so."
+  description="Every request runs through the small model first, so the small model is paid on all hundred and not only on the eighty-eight that stop there, fourteen units against a hundred, while the twelve that escalate now wait for both machines and arrive slower than if they had gone straight to the large one, and the ones the gate misjudges come back confident with nothing in the system to say so."
 >
   <WhatTheGateSendsOn />
 </Figure>
@@ -242,7 +242,7 @@ make it does not work.
 
 The obvious way is to take the small model's own confidence and escalate
 anything below a threshold. But that number measures how strongly the model
-preferred what it said, given the text in front of it — not whether it was
+preferred what it said, given the text in front of it, not whether it was
 right. A small model can be entirely wrong and entirely confident, and those are
 precisely the cases the gate existed to catch.
 
@@ -303,7 +303,7 @@ to it deliberately.
 The reflex worth breaking is reaching for the largest available model by
 default, on the grounds that it cannot hurt. It can. It costs fifty times as
 much, it answers ten times slower, it takes your data somewhere else, it changes
-under you without notice — and on an easy job it is right about two per cent
+under you without notice, and on an easy job it is right about two per cent
 more often.
 
 <DevAside>
@@ -318,10 +318,11 @@ more often.
     ```
 
     The line that decides whether any of this was a good idea is
-    `gate.beyondIt`, and the tempting implementation of it —
-    `answer.confidence() < 0.8` — is the one that fails silently. That number
-    says how strongly the model preferred what it produced, not whether it was
-    correct, and a small model that is out of its depth is frequently very sure.
+    `gate.beyondIt`, and the tempting implementation of it,
+
+`answer.confidence() < 0.8`, is the one that fails silently. That number
+says how strongly the model preferred what it produced, not whether it was
+correct, and a small model that is out of its depth is frequently very sure.
 
     Build the gate out of things you can assert on instead: whether the answer
     deserialises into the record you demanded, whether a required field came
@@ -350,7 +351,7 @@ more often.
     and it is almost never the round number somebody would have guessed.
 
     Two things this makes visible that intuition does not. The escalation rate
-    at your chosen cut is your bill, directly — it is the `m` in the formula
+    at your chosen cut is your bill, directly. It is the `m` in the formula
     above. And the accuracy at 100% escalation is the ceiling you are comparing
     against, which is the large model's own score and not 100%.
 
@@ -381,7 +382,7 @@ gate that escalates that department rather than a bigger model for all eleven.
 
 Worth carrying beyond this unit. Whenever somebody argues from model size, the
 question that settles it is not how capable each model is. It is how much room
-the job leaves — and that is a property of the work, measurable on data you
+the job leaves, and that is a property of the work, measurable on data you
 already have.
 
 </Checkpoint>

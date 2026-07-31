@@ -2,7 +2,7 @@
 title: The skill is what you leave out
 part: your-own-documents
 order: 4
-summary: The standing instructions, the tool descriptions, the conversation, the fetched passages and the room for the answer are all spending from one fixed window, so the real work is allocation — and a bigger window moves the moment you run out rather than removing it.
+summary: The standing instructions, the tool descriptions, the conversation, the fetched passages and the room for the answer are all spending from one fixed window, so the real work is allocation, and a bigger window moves the moment you run out rather than removing it.
 prerequisites:
   - context-window
   - rag
@@ -38,7 +38,7 @@ this sheet too.
 Notice what the difficulty is not. It is not that you cannot write small enough.
 Hand yourself a second sheet and the same argument restarts one page later,
 because the number of things that could go on the page was never the limit. The
-job — the whole job — is deciding what does not go on it.
+job, the whole job, is deciding what does not go on it.
 
 ## The sheet is shared, and most of it is not yours
 
@@ -122,8 +122,8 @@ measure exactly, which is an uncomfortable trade and still usually the right one
 This is the one that surprises people, because the obvious move is the wrong one.
 
 Retrieval is usually judged on whether the right passage came back at all, and
-that number goes up when you return more passages. So teams raise it — three
-becomes ten — and the measured retrieval quality improves while the answers get
+that number goes up when you return more passages. So teams raise it, three
+becomes ten, and the measured retrieval quality improves while the answers get
 worse.
 
 The reason is that the seven extra passages did not arrive as neutral filler.
@@ -132,8 +132,8 @@ subject, saying something else. Now the model is holding one page that answers
 the question and seven that look like it, with nothing anywhere marking which is
 which, and attention spent on one is attention taken from another.
 
-Fewer and better means putting a second, sharper step after the search — one that
-reorders the candidates and cuts the list — and it costs real work. It is still
+Fewer and better means putting a second, sharper step after the search, one that
+reorders the candidates and cuts the list, and it costs real work. It is still
 the highest-value thing most document systems are missing.
 
 ### Keep the standing instructions short, because you pay for them every time
@@ -144,7 +144,7 @@ the product runs.
 
 So a hundred tokens trimmed from a system prompt is a hundred tokens saved on the
 first message, and on the fortieth, and on the four million after that. There is
-nothing else in one of these systems with that shape of leverage — and the
+nothing else in one of these systems with that shape of leverage, and the
 standing instruction is almost always written once, in a hurry, by whoever set
 the thing up, and never read again.
 
@@ -169,7 +169,7 @@ in is the same as getting it used.
 
 <Figure
   title="The same eight pages in two orders, against how reliably each position gets used"
-  description="A model uses the start and the end of a long window most reliably and the middle least, so the one page that answers the question can be present, paid for and still skated over — and moving it from the middle to the end changes nothing about the cost, the tokens or the pages themselves."
+  description="A model uses the start and the end of a long window most reliably and the middle least, so the one page that answers the question can be present, paid for and still skated over, and moving it from the middle to the end changes nothing about the cost, the tokens or the pages themselves."
 >
   <EndsAndTheMiddle />
 </Figure>
@@ -194,20 +194,20 @@ terms, and nothing in there is marked important. Only the claimants changed.
 
 This window holds two thousand tokens. Two hundred and twenty are gone on the
 standing instruction before anything happens, and five hundred are held back for
-the reply. That leaves one thousand two hundred and eighty — so more than a third
+the reply. That leaves one thousand two hundred and eighty, so more than a third
 of the window is spoken for before a single message or document arrives.
 
 <ContextBudget
   client:visible
   preset="retrieval"
   title="Spend one window on one question"
-  lead="Load the pieces in one at a time. Watch for the moment the fifth fetched page pushes out the one page that answers the question — and then try each of the three rules, and find the one that saves it."
+  lead="Load the pieces in one at a time. Watch for the moment the fifth fetched page pushes out the one page that answers the question, and then try each of the three rules, and find the one that saves it."
 />
 
 It opens at five pieces: two messages of earlier conversation, the question being
 answered now, and the first two pages the search returned. Everything fits, with
-four hundred and forty-five tokens to spare, and the returns policy — the page
-that actually answers the question — is in there.
+four hundred and forty-five tokens to spare, and the returns policy, the page
+that actually answers the question, is in there.
 
 Read the last line of the readout before you touch anything. You have typed
 eighty-five tokens. It has read two thousand nine hundred and fifty-five. Almost
@@ -225,8 +225,8 @@ those two earlier messages into a twenty-four-token stand-in. Three rules, three
 different casualties, and every one of them keeps the page that answers the
 question.
 
-Then step to eight. One more fetched page — a support thread that happens to use
-all the same words — and every rule breaks.
+Then step to eight. One more fetched page, a support thread that happens to use
+all the same words, and every rule breaks.
 
 **The oldest first** reaches past the history and takes the returns policy
 itself, because it arrived before the four pages that followed it.
@@ -235,14 +235,14 @@ itself, because it arrived before the four pages that followed it.
 because the page that answers a question is usually a substantial page. The rule
 that saved you at seven pieces is the rule that costs you at eight.
 
-**Summarising the oldest** crushes four pieces — seven hundred and ninety tokens
-of them — into ninety-nine, the returns policy among them. It survives at an
+**Summarising the oldest** crushes four pieces, seven hundred and ninety tokens
+of them, into ninety-nine, the returns policy among them. It survives at an
 eighth of its length, and whether the clause that mattered made it in is not
 something anybody checked.
 
 Nothing was retrieved wrongly. The right page came back, and it came back first.
-It is the fifth one — a support thread that nobody needed and no rule knew to
-prefer — that pushed it out.
+It is the fifth one, a support thread that nobody needed and no rule knew to
+prefer, that pushed it out.
 
 <Aside title="Worse than an empty window" tone="caution">
   A window with no returns policy in it is not neutral. It is four pages that use
@@ -335,7 +335,7 @@ little.
 
     The concatenation order on the second line is a decision as well, not a
     formatting habit. The question is last on purpose, because the end of the
-    window is where material gets used most reliably — and if one instruction
+    window is where material gets used most reliably, and if one instruction
     absolutely has to hold, it belongs at one of the two ends, not in the middle
     with the passages.
 
@@ -368,7 +368,7 @@ sees on any particular answer.
 Undo the passages first. It is the change that touched the material answers are
 built from, reversing it is free, and the improvement shows up on the next
 request. Then cut the tool list down to what a given step could plausibly need.
-The larger window can stay — it is not doing harm, it is simply not doing the
+The larger window can stay. It is not doing harm, it is simply not doing the
 work they hoped it would.
 
 Worth carrying beyond this unit. When a system gets worse after a release that

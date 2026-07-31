@@ -2,12 +2,12 @@
 title: It has never remembered a word you said
 part: large-models
 order: 4
-summary: A model keeps nothing between messages, so the whole conversation is sent again from the top every turn — and all of it, plus room for the reply, has to fit inside one window whose size never changes.
+summary: A model keeps nothing between messages, so the whole conversation is sent again from the top every turn, and all of it, plus room for the reply, has to fit inside one window whose size never changes.
 prerequisites:
   - attention
 connections:
   - to: context-engineering
-    why: Once the window is understood as fixed, the interesting question stops being how large it is and becomes how it gets shared out — and spending it well turns out to beat having more of it.
+    why: Once the window is understood as fixed, the interesting question stops being how large it is and becomes how it gets shared out, and spending it well turns out to beat having more of it.
   - to: rag
     why: If everything the model knows about your documents has to arrive inside this window, then something has to choose which few passages get in, and that choosing is a whole architecture of its own.
 interactives:
@@ -35,14 +35,14 @@ The person answering you does. They have to. Replies come from whoever is on the
 desk that morning, and the one who picked up your fourth message has never
 spoken to you, was not there for the first three, and will be doing something
 else on Thursday. Their answer makes sense because the whole thread came
-attached to it — not because anybody at that company remembers you.
+attached to it, not because anybody at that company remembers you.
 
 ## The same arrangement, and it is the whole arrangement
 
 A chat model is that desk.
 
 When you send your fifth message, the software wrapped around the model sends
-messages one to four along with it — yours and its own — as one block of text,
+messages one to four along with it, yours and its own, as one block of text,
 from the top. The model reads all of it as though for the first time, because it
 is the first time. It writes a reply. Then it keeps nothing: not your name, not
 the correction you made in message two, not the sentence it has just finished
@@ -127,7 +127,7 @@ your first message has now been read five times over, and in a conversation that
 runs to fifty turns it would be read fifty.
 
 Turn six is where it stops fitting. The conversation wants seven hundred and
-forty tokens and there are six hundred and ten, so something has to go — and the
+forty tokens and there are six hundred and ten, so something has to go, and the
 rule the panel opens on is the one nearly everything uses when nobody has
 decided otherwise. Drop the oldest. Turns one and two leave the window.
 
@@ -154,8 +154,8 @@ What goes instead is the pasted email and two of the model's own answers: the
 substantial things, which are usually the things everything since has been
 about.
 
-**Summarise the oldest** replaces seven turns — one thousand two hundred and
-twenty tokens of them — with a single stand-in costing a hundred and fifty-three.
+**Summarise the oldest** replaces seven turns, one thousand two hundred and
+twenty tokens of them, with a single stand-in costing a hundred and fifty-three.
 A trace of the beginning survives, at an eighth of the price. But a summary
 keeps whatever the summariser thought was worth keeping, and nobody asked you
 which parts those were.
@@ -184,7 +184,7 @@ as having it read.
   This reliably makes answers worse.
 
 The sentence that mattered is still in there. It is in there with forty pages of
-near-misses, and nothing in the machine marks which is which — so the model
+near-misses, and nothing in the machine marks which is which, so the model
 spends its attention across all of it, and attention spent on one thing is
 attention taken from another. On top of that the answer costs more and takes
 longer to arrive.
@@ -208,7 +208,7 @@ first sign is an answer that quietly ignores it.
 
 **A new conversation really is a blank slate.** Starting again is not a polite
 fiction or a soft reset. Nothing carries over, because there was never anything
-to carry — which is also why "start a fresh chat" fixes so many problems that
+to carry, which is also why "start a fresh chat" fixes so many problems that
 look like the model being stubborn.
 
 **"Memory" is ordinary software.** When an assistant greets you by name a week
@@ -247,7 +247,7 @@ for, not one you no longer have to fit.
     these systems. Note where `reserve` is subtracted: before anything else,
     because the reply is written into the same window the prompt arrived in.
     Leave it out and the failure is not a truncated answer, it is an error
-    thrown the first time a real customer's conversation gets long — which is
+    thrown the first time a real customer's conversation gets long, which is
     never in testing. `MODEL_WINDOW` belongs to the model rather than to you, so
     it changes the day somebody swaps the model out.
 
@@ -261,7 +261,7 @@ for, not one you no longer have to fit.
 
     The logging line is the point. Every one of these systems drops messages
     eventually, almost none of them say so, and the resulting bug reports say
-    "it forgot" or "it started ignoring my instructions" — which sends whoever
+    "it forgot" or "it started ignoring my instructions", which sends whoever
     picks them up looking at the model, where there is nothing to find. One
     counter turns a mystery into a number on a dashboard.
 
@@ -278,7 +278,7 @@ for, not one you no longer have to fit.
 
 The contradiction is the same fact from the other side. Forty messages in, the
 conversation no longer fitted, and whatever was said at the start was dropped to
-make room. The assistant did not overrule the customer — it never saw them say
+make room. The assistant did not overrule the customer. It never saw them say
 it. And because nothing in a window indicates that anything is missing, it had
 no reason to sound anything other than certain.
 

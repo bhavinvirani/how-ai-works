@@ -61,7 +61,7 @@ the machinery gets built once, for one shape.
 Sentences give you none of that. They run from two words to two thousand, and
 whatever reads them has to cope with all of it. Words that belong together are
 routinely nowhere near each other. And a word's position is not merely where it
-happens to be — it is part of what the word is saying.
+happens to be. It is part of what the word is saying.
 
 Three things go wrong. The third is the one that stopped everybody.
 
@@ -75,7 +75,7 @@ Three words each, and the same three words. One of those sentences is going to
 annoy somebody.
 
 The simplest way to hand a sentence to a machine is to count which words are in
-it and throw the order away. That has a name — **bag of words** — because a bag
+it and throw the order away. That has a name, **bag of words**, because a bag
 is something you take items out of, not something you read a sequence from.
 
 It is not a strawman. Bag-of-words systems scored reviews and sorted spam in
@@ -107,8 +107,8 @@ it by the bins_ contains no _don't_. The machine does not receive a difficult
 instruction. It receives the opposite instruction, and it receives it with total
 confidence.
 
-You can widen the window, and people did. It costs — a machine looking at
-fifteen words at a time has far more to weigh up than one looking at five — and,
+You can widen the window, and people did. It costs, a machine looking at
+fifteen words at a time has far more to weigh up than one looking at five, and,
 worse, no width is ever safe. English puts no limit on how far apart two words
 that decide each other can sit. A _not_ can be three sentences back. A name
 introduced in the first paragraph of an email can be what the _they_ in the last
@@ -152,7 +152,7 @@ fact about the world, not a fact about English.
   A pair of sentences that differ by one word, where that word flips what a
   pronoun refers to, is called a **Winograd schema**, after the researcher who
   started collecting them in the 1970s. They were designed to be a test that
-  grammar alone cannot pass — you can only answer one by knowing something about
+  grammar alone cannot pass. You can only answer one by knowing something about
   pans and bowls, or tow ropes, or why people win at chess.
 
 For decades they were a quiet embarrassment: easy for any child, close to a coin
@@ -166,7 +166,7 @@ It goes much further than pronouns. _Bank_ means nothing on its own, and the
 word that decides whether it is a river or a building can arrive several words
 later. So can the word that tells you whether _light_ is a weight or a lamp. A
 machine that must fix each word's meaning as it reads, and move on, is wrong
-about all of these forever — not occasionally, but by construction.
+about all of these forever, not occasionally, but by construction.
 
 That is what killed the obvious designs. They read left to right and commit as
 they go. What this problem demands instead is one of two awkward things: wait
@@ -188,8 +188,8 @@ turns out to mean.
 
 One thing has to be said plainly first, because the panel would be worthless if
 it were quietly untrue. **Nothing here is a model's answer.** No machine runs in
-that box. Each reading is written down by hand — what the sentence means to a
-person who reads it — and you can check every one of them yourself, which is
+that box. Each reading is written down by hand, what the sentence means to a
+person who reads it, and you can check every one of them yourself, which is
 exactly why it works as a demonstration. This unit is about the problem. Nothing
 on this page solves it.
 
@@ -199,7 +199,7 @@ Try all three pairs first. In each one exactly one word changes, that word is
 the last word of the sentence, and it lands after the pronoun it rewrites.
 
 Then turn on **Stop reading at the pronoun**, and flip the ending again. Nothing
-on the line moves. Not one word, in any of the three pairs — because everything
+on the line moves. Not one word, in any of the three pairs, because everything
 before the pronoun is identical in both versions, and the only difference lives
 in a word the reader has not reached.
 
@@ -251,7 +251,7 @@ you get when you build a machine out of nothing else.
   </Fragment>
 </DevAside>
 
-<Checkpoint question="A system reads a sentence one word at a time and decides what each word means as it arrives, never going back. Which of this unit's three problems will it handle worst — and why is 'make it more accurate' not a fix for that one?">
+<Checkpoint question="A system reads a sentence one word at a time and decides what each word means as it arrives, never going back. Which of this unit's three problems will it handle worst, and why is 'make it more accurate' not a fix for that one?">
   The third one: a word whose meaning is settled by a word that has not been
   read yet. At the moment the machine has to decide, the evidence in front of it
   is identical to the evidence it would have had if the answer were the other

@@ -2,7 +2,7 @@
 title: Most of those digits were never doing anything
 part: small-fast-cheap
 order: 3
-summary: Storing each of a model's dials in fewer binary digits makes it far smaller and quicker for very little, right up until it doesn't — and what breaks first is never the everyday work anybody would think to check.
+summary: Storing each of a model's dials in fewer binary digits makes it far smaller and quicker for very little, right up until it doesn't, and what breaks first is never the everyday work anybody would think to check.
 prerequisites:
   - small-models
 connections:
@@ -31,7 +31,7 @@ The first one is 3.14159265358979. You get it down. The second is
 Twenty minutes in you notice something about the job. You are not adding these
 numbers up. You are not sorting them or comparing them or doing anything with
 them at all. You are receiving them and copying them out, and each one takes
-about fifteen seconds — because every one of them is fifteen digits long.
+about fifteen seconds, because every one of them is fifteen digits long.
 
 Ask for two decimal places instead and the best part of two hours becomes half
 an hour. Not because 3.14 is easier to think about than 3.14159265358979.
@@ -64,7 +64,7 @@ the question of this unit.
 
 Here is the operation, at the scale of one small handful of dials.
 
-Take a group of them — a few hundred sitting next to each other in the file —
+Take a group of them, a few hundred sitting next to each other in the file,
 and look at the range they cover, from the lowest to the highest. Now lay a
 ladder across that range with a fixed number of rungs on it, and move every
 dial in the group to the nearest rung.
@@ -108,7 +108,7 @@ numbers to turn up.
 
 <Figure
   title="What the machine is actually waiting on"
-  description="Fetching the dials takes far longer than multiplying them, so halving the size of each dial roughly halves the time a word takes — and the sums, which do not get any quicker, eventually become the thing being waited on, which is why the speed-ups stop arriving however far the digits are cut."
+  description="Fetching the dials takes far longer than multiplying them, so halving the size of each dial roughly halves the time a word takes, and the sums, which do not get any quicker, eventually become the thing being waited on, which is why the speed-ups stop arriving however far the digits are cut."
 >
   <WaitingOnTheNumbers />
 </Figure>
@@ -187,7 +187,7 @@ Start at the right-hand end and drag left.
 <PrecisionDial client:visible />
 
 The first thing to notice is how long nothing happens. From sixteen digits down
-to five — eleven of the fourteen steps on that slider — not one of the five
+to five, eleven of the fourteen steps on that slider, not one of the five
 rows drops below 97%, while the file goes from 14 GB to 4.4 GB and there is
 3.2× less to carry. All of that detail really was spare.
 
@@ -208,7 +208,7 @@ per dial in bookkeeping, so the file comes out slightly larger.
 
 Watch what that buys. At four digits, code goes from 83% to 98%. At three, from
 zero to 85%. Half a digit of overhead is buying about one whole binary digit
-back everywhere else — which is why the four-digit builds people actually
+back everywhere else, which is why the four-digit builds people actually
 download are perfectly usable, while a flat four-digit rounding of the same
 model is noticeably not.
 
@@ -304,7 +304,7 @@ you everything is fine.
 
     The part with no library call is the part that matters. Run your real
     tasks through the quantized build and the original, on identical inputs,
-    and compare the outputs you care about — not average similarity, which
+    and compare the outputs you care about, not average similarity, which
     will be reassuringly high whatever has happened underneath.
 
   </Fragment>
@@ -335,7 +335,7 @@ answer if something is being compared.
 
 Worth carrying past this unit. Quantization does not wear a model down evenly.
 It takes bites out of particular things, and the things it bites are exactly
-the ones a casual check is worst at noticing — which means the reassurance you
+the ones a casual check is worst at noticing, which means the reassurance you
 get from trying it out for five minutes is not weak evidence. It is evidence of
 the wrong thing.
 

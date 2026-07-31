@@ -2,7 +2,7 @@
 title: Nobody could write it, but anyone could choose
 part: building-an-assistant
 order: 4
-summary: There is no way to write down what a good answer is, so people are shown two and asked which is better — and a second model trained to predict those picks becomes the number the first model can finally be trained against.
+summary: There is no way to write down what a good answer is, so people are shown two and asked which is better, and a second model trained to predict those picks becomes the number the first model can finally be trained against.
 prerequisites:
   - reinforcement-learning
   - loss-function
@@ -100,7 +100,7 @@ generated a moment ago, at a rate of thousands a minute.
 
 So you train a second model on the comparisons. Its job is not to answer
 anything. Given a question and an answer, it predicts which way people would
-have gone — and to do that it has to produce a number, so that two answers can
+have gone, and to do that it has to produce a number, so that two answers can
 be put in order. That model is the **reward model**, and it is easiest to think
 of as a judge: a stand-in for the taste of everyone who did the picking, fast
 enough to consult a few million times.
@@ -126,18 +126,18 @@ answer into something you would want to ask.
 
 <Aside title="Why the model is kept on a leash" tone="caution">
   Left alone in that loop, a model does not become helpful. It goes hunting for
-  whatever the judge happens to score highly, and judges have blind spots — so
-  it finds some strange, repetitive form of words that scores wonderfully and
-  reads like nothing a person would write. This is reward hacking, exactly as it
-  was in the boat race, and it is entirely predictable here. The standard fix is
-  a leash: alongside the reward, a penalty for drifting too far from the model
-  it started as. Score high, but do not stop sounding like yourself.
+  whatever the judge happens to score highly, and judges have blind spots, so it
+  finds some strange, repetitive form of words that scores wonderfully and reads
+  like nothing a person would write. This is reward hacking, exactly as it was
+  in the boat race, and it is entirely predictable here. The standard fix is a
+  leash: alongside the reward, a penalty for drifting too far from the model it
+  started as. Score high, but do not stop sounding like yourself.
 </Aside>
 
 ## Do the rating yourself
 
 Ten questions, two answers each. Take whichever you would rather have been
-given — there is no right answer, and nothing is reported back until the tenth
+given. There is no right answer, and nothing is reported back until the tenth
 pick, which is exactly as much as a paid rater gets while they work.
 
 <PreferenceRater client:visible />
@@ -155,7 +155,7 @@ The other three rows are where the interest is.
 **Being friendly about it** comes out at −0.71: in six of the seven pairs where
 one answer was friendlier, you took the other one. You were not avoiding
 friendliness. You were taking the short answer, and in this collection the
-friendlier answer is nearly always the longer one — so your scorer cannot pull
+friendlier answer is nearly always the longer one, so your scorer cannot pull
 the two apart. Nor can the real thing. A well-known and thoroughly measured
 result about real preference data is that raters mildly prefer longer answers,
 and the reward model learns _length_ as though it were quality.
@@ -182,8 +182,8 @@ time. Three pairs have no friendlier answer; take either, it changes nothing
 that follows.
 
 **Being friendly about it** pegs at +1.00 and **going along with you** at +0.50,
-which is what you did. **Getting to the point** goes negative — somewhere
-between −0.20 and −0.80 depending on those three free choices — although you
+which is what you did. **Getting to the point** goes negative, somewhere
+between −0.20 and −0.80 depending on those three free choices, although you
 never once chose an answer for being long-winded.
 
 And the eleventh pair turns over. The flattering answer wins on this scorer, and
@@ -198,7 +198,7 @@ disagree about an answer neither of them ever saw.
 ## What is real here, and what is stage scenery
 
 The mechanism is real. Comparisons in, a model fitted to predict them, a number
-out, and that number then scoring answers nobody looked at — that is RLHF, not
+out, and that number then scoring answers nobody looked at. That is RLHF, not
 an impression of it. The instrument also gets one detail right that is easy to
 miss: only the _gap_ between two scores means anything. The scale itself is
 arbitrary, in the toy and in the real thing.
@@ -244,7 +244,7 @@ are the average of a great many small preferences, and they are what got picked.
   Somebody sat and made those comparisons: workers hired for it, usually through
   contractors, often paid per task, working from a written guide that runs to
   tens of pages and says what the company means by helpful, honest and harmless.
-  That guide is the one piece of specification that does exist — and note what
+  That guide is the one piece of specification that does exist, and note what
   it specifies. Not the answer. How to compare two of them.
 
 So a model's manner is the average taste of a particular group of people, in
@@ -295,7 +295,7 @@ at some point, pick?
 
     Read the last line in words: push the score of the answer people took above
     the score of the one they left, and stop pushing once it is comfortably
-    ahead. Only the difference of the two scores appears anywhere in it — which
+    ahead. Only the difference of the two scores appears anywhere in it, which
     is why a reward model's absolute output is meaningless, why you cannot
     compare one team's reward scores with another's, and why the first thing
     anybody does with a new reward model is check how it ranks, never what it
@@ -308,7 +308,7 @@ at some point, pick?
   From the people who did the picking and the guidance they were given. The
   procedure never contained a specification of a good answer, at either company.
   All it contained was a great many small comparisons, and the model's manner is
-  the average of those — so two different groups of raters, or the same raters
+  the average of those, so two different groups of raters, or the same raters
   under a different guide, produce two different averages and therefore two
   different assistants.
 

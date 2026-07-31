@@ -1,7 +1,7 @@
 ---
 layout: ../layouts/BaseLayout.astro
 title: Gallery
-description: Every control and instrument on this site, live, with its knobs — the working style guide.
+description: Every control and instrument on this site, live, with its knobs. The working style guide.
 # A working style guide, not a lesson. Useful to look at, worthless as a search
 # result: it would compete with the lessons for the same words while teaching
 # none of them.
@@ -101,7 +101,7 @@ columns turn out to be useful.
 
 ### Run the loop yourself
 
-Guess, compare, blame, nudge — with nobody touching the dials. One press does
+Guess, compare, blame, nudge, and nobody touches the dials. One press does
 almost nothing; that is the point.
 
 <TrainingLoopRunner client:visible />
@@ -136,7 +136,7 @@ why the score cannot tell you the right number.
 
 ### Try, score, adjust
 
-No right answer, only a score — and the thing it settles on is whatever the
+No right answer, only a score, and the thing it settles on is whatever the
 score rewarded.
 
 <ExploreExploitBandit client:visible />
@@ -210,7 +210,7 @@ less on everything else.
 
 ### Four readings of one sentence
 
-Four heads, one sentence, four different answers — and nobody assigned any of
+Four heads, one sentence, four different answers, and nobody assigned any of
 them a job.
 
 <MultiHeadLanes client:visible />
@@ -225,7 +225,7 @@ scrambled sentence as in a real one.
 ### Write one piece at a time
 
 Each row is computed from the whole of what came before, and nothing is ever
-revised — including the piece it should not have written.
+revised, including the piece it should not have written.
 
 <NextPieceLoop client:visible />
 
@@ -258,7 +258,7 @@ Nobody writes the personality. It is the average of a lot of small preferences.
 
 ### Give it room to think
 
-Tokens are the only currency the machine has for effort — and there are
+Tokens are the only currency the machine has for effort, and there are
 questions where more room buys nothing.
 
 <ThinkingBudget client:visible />
@@ -284,7 +284,7 @@ Three easy examples teach the format. The awkward one teaches the boundary.
 
 ### Cut the document up
 
-There is no correct size — and one passage stays unreachable at every setting,
+There is no correct size, and one passage stays unreachable at every setting,
 because it never says what it is about.
 
 <ChunkCutter client:visible />
@@ -320,7 +320,7 @@ gradually.
 
 The one instrument that is **not** shown here, deliberately. `ConceptMap` is
 built from the content collection, and MDX frontmatter cannot `await
-getCollection` — so an instance on this page would render its empty state,
+getCollection`, so an instance on this page would render its empty state,
 which is worse than an honest absence. It is live, with real data, on{' '}
 
 <a href={withBase('/map')}>the map</a>.
@@ -355,7 +355,7 @@ Drag it, or focus it and use the arrow keys.
 ## Toggle
 
 For something that is either on or off. It reports itself as a switch rather
-than a checkbox — a checkbox says "include this when you submit", a switch says
+than a checkbox. A checkbox says "include this when you submit", a switch says
 "this is on right now".
 
 <ToggleDemo
@@ -398,7 +398,7 @@ the page until you press the button, so searching for it will not spoil it.
 
 ## Tabs
 
-For the same idea shown more than one way — most often the same code in
+For the same idea shown more than one way, most often the same code in
 different languages.
 
 <TabsDemo
@@ -428,7 +428,7 @@ Narrow this window past the breakpoint to see it change.
 
 ## Content blocks
 
-These go straight into a lesson. None of them ships any JavaScript — a page of
+These go straight into a lesson. None of them ships any JavaScript. A page of
 prose should not need React to hide a paragraph.
 
 ### Figure
@@ -473,7 +473,7 @@ changes the edge colour and the title together, never colour on its own.
 
 <Aside tone="caution" title="Easy to get backwards">
   More tokens does not mean more meaning. A long word split into six pieces
-  carries the same idea it always did — it just costs more to process.
+  carries the same idea it always did. It just costs more to process.
 </Aside>
 
 ### Checkpoint
@@ -483,8 +483,8 @@ reader has had a go.
 
 <Checkpoint question="Why would a model split an unfamiliar word into pieces rather than treat it as one new word?">
   Because its vocabulary is fixed and finite. A word it has never seen has no
-  entry to look up — but the pieces do, so it can build a meaning out of parts
-  it already knows.
+  entry to look up, but the pieces do, so it can build a meaning out of parts it
+  already knows.
 </Checkpoint>
 
 ### Connections footer
@@ -513,7 +513,7 @@ reason, because "see also" teaches nothing.
       id: 'gallery-connection-example-2',
       href: '#',
       title: 'Context windows',
-      why: 'A context limit is counted in tokens, not words — which is why the two keep getting confused.',
+      why: 'A context limit is counted in tokens, not words, which is why the two keep getting confused.',
     },
   ]}
 />
@@ -531,7 +531,7 @@ picks it everywhere else on the site too.
     // [1417, 5983, 367]
     ```
 
-    The encoder returns ints, not strings — the model never sees the text again.
+    The encoder returns ints, not strings. The model never sees the text again.
 
   </Fragment>
   <Fragment slot="python">
@@ -548,6 +548,6 @@ picks it everywhere else on the site too.
 ### Unit progress
 
 Sits at the end of every unit. It is the only thing that writes progress, and
-it is deliberately plain — nobody is being graded.
+it is deliberately plain. Nobody is being graded.
 
 <UnitProgress client:visible unitId="gallery-example" />

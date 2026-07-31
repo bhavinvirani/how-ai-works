@@ -2,7 +2,7 @@
 title: When somebody already knows the answer
 part: kinds-of-learning
 order: 1
-summary: When every example arrives with the right answer written beside it, the machine can be corrected exactly — and the number of answers somebody was willing to write down is the ceiling on what you can build.
+summary: When every example arrives with the right answer written beside it, the machine can be corrected exactly, and the number of answers somebody was willing to write down is the ceiling on what you can build.
 prerequisites:
   - training-loop
 connections:
@@ -43,7 +43,7 @@ and said it out loud within a second of your getting it wrong.
 ## The hole in the loop
 
 The training loop has the same shape and the same requirement. Guess, compare,
-blame, nudge — but compare against what?
+blame, nudge, but compare against what?
 
 Every pass round that cycle quietly assumes that somewhere, sitting next to the
 example, is the answer the machine should have given. This unit is about the
@@ -89,7 +89,7 @@ somebody wrote in the answer column.
 
 <Figure
   title="One example, marked"
-  description="Because the right answer sits beside the guess, the correction is exact rather than inferred — and the pile of examples somebody actually marked, not the pile that exists, is what the machine can learn from."
+  description="Because the right answer sits beside the guess, the correction is exact rather than inferred, and the pile of examples somebody actually marked, not the pile that exists, is what the machine can learn from."
 >
   <AnswerKey />
 </Figure>
@@ -128,8 +128,8 @@ amount of faster hardware moves that number by one.
 It is also the precise reason the machines that write English could not have
 been built this way. Their training material runs to something like a trillion
 words, and no committee on earth could sit down and write the correct answer
-beside each one. Getting round that bottleneck — finding answer keys that
-nobody has to write — is most of why the last few years happened, and it is
+beside each one. Getting round that bottleneck, finding answer keys that
+nobody has to write, is most of why the last few years happened, and it is
 where this Part is going.
 
 <Aside title="The answer key is somebody's opinion" tone="caution">
@@ -155,7 +155,7 @@ where this Part is going.
 
     Every supervised training call in every language has this shape: the things
     you can measure, and the answers, lined up row for row. The second array is
-    the entire content of this unit — and it is the one that does not exist yet
+    the entire content of this unit, and it is the one that does not exist yet
     on the day somebody asks you to build the model.
 
   </Fragment>
@@ -175,7 +175,7 @@ where this Part is going.
 <Checkpoint question="You have two million product photographs, and enough budget to have five thousand of them labelled by hand. Which of those two numbers limits what you can build, and why?">
   The five thousand. A photograph with no answer beside it gives the machine
   nothing to compare its guess against, so the other 1,995,000 are invisible to
-  this method — they are not a smaller contribution, they are no contribution.
+  this method. They are not a smaller contribution, they are no contribution.
 
 Worth holding onto, because it explains where the field went next. Faster
 hardware does not touch this limit, and neither does a cleverer model. The only

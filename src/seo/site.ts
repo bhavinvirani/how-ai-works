@@ -50,7 +50,7 @@ export const site = {
    * whole argument is that explanations should be finished.
    */
   description:
-    'Learn how AI and machine learning actually work, from first principles — plain English, custom diagrams, and instruments you can poke at. Free and open source.',
+    'Learn how AI and machine learning actually work, from first principles: plain English, custom diagrams, and instruments you can poke at. Free and open source.',
 
   /** One line, for the Open Graph image and the manifest. */
   tagline: 'AI and machine learning, from first principles.',
@@ -87,7 +87,7 @@ export const site = {
      * that expose it, and shown by some clients when the image fails to load —
      * so it describes the card, rather than repeating the title.
      */
-    alt: 'How AI Actually Works — AI and machine learning from first principles, shown as a network of connected ideas.',
+    alt: 'How AI Actually Works: AI and machine learning from first principles, shown as a network of connected ideas.',
   },
 
   /**

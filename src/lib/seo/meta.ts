@@ -12,12 +12,21 @@
  * Build the contents of `<title>`.
  *
  * Every page is suffixed with the site name except the home page, which IS the
- * site name — "How AI Actually Works — How AI Actually Works" is the classic
- * way this goes wrong.
+ * site name. "How AI Actually Works | How AI Actually Works" is the classic way
+ * this goes wrong.
  *
- * An em dash rather than a pipe: it is what the prose uses, and the separator
- * is visible in every search result and every browser tab.
+ * A pipe rather than an em dash. The site used an em dash here and no longer
+ * uses one anywhere a reader can see: at the density this prose had reached,
+ * one every ~113 words, it had stopped reading as punctuation and started
+ * reading as a machine's tic. A pipe also does a different job from an em dash,
+ * which is the real argument for it here — this is furniture separating two
+ * labels, not a pause inside a sentence.
  */
+const TITLE_SEPARATOR = ' | ';
+
+/** Separators a title may already carry, including the two used historically. */
+const EXISTING_SUFFIX = [TITLE_SEPARATOR, ' — ', ' - '];
+
 export function pageTitle(title: string, siteName: string): string {
   const trimmed = title.trim();
   if (trimmed.length === 0) return siteName;
@@ -25,11 +34,15 @@ export function pageTitle(title: string, siteName: string): string {
 
   // A page that already carries the suffix (an older page, or one written by
   // hand) must not get a second one.
-  if (trimmed.endsWith(`— ${siteName}`) || trimmed.endsWith(`- ${siteName}`)) {
+  if (
+    EXISTING_SUFFIX.some((separator) =>
+      trimmed.endsWith(`${separator}${siteName}`),
+    )
+  ) {
     return trimmed;
   }
 
-  return `${trimmed} — ${siteName}`;
+  return `${trimmed}${TITLE_SEPARATOR}${siteName}`;
 }
 
 /**

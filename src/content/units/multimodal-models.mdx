@@ -2,7 +2,7 @@
 title: Nothing in it ever learned to see
 part: the-transformer
 order: 5
-summary: Cut a picture into squares, turn each square into the same kind of number-list a word piece becomes, and the machine from the last four units reads it unchanged — which is also why it can describe a photograph fluently and still miscount what is in it.
+summary: Cut a picture into squares, turn each square into the same kind of number-list a word piece becomes, and the machine from the last four units reads it unchanged, which is also why it can describe a photograph fluently and still miscount what is in it.
 prerequisites:
   - embeddings
   - transformers
@@ -20,7 +20,7 @@ import Figure from '../../components/blocks/Figure.astro';
 import PictureIntoPositions from '../../components/diagrams/PictureIntoPositions.astro';
 
 The coffee machine at the ferry terminal takes euros. It has taken euros since
-it was bolted to the wall, and it takes nothing else — not a card, not a note,
+it was bolted to the wall, and it takes nothing else, not a card, not a note,
 and not the handful of pound coins in your pocket.
 
 Forty metres away, there is a bureau de change.
@@ -56,8 +56,8 @@ thing somebody did.
 
 ## Sixteen pixels at a time
 
-Start with a photograph. Squash it to a standard size — 224 pixels each way is a
-common one — because the machinery gets built once, for one shape, and every
+Start with a photograph. Squash it to a standard size, 224 pixels each way is a
+common one, because the machinery gets built once, for one shape, and every
 picture after that has to fit it.
 
 Now lay a grid over it and cut. Sixteen pixels across, sixteen down, and no
@@ -95,7 +95,7 @@ unchanged, does what it always did.
 
 <Figure
   title="A photograph and a sentence, arriving as the same kind of row"
-  description="The picture is cut on a fixed grid and unrolled into a line of squares, each squashed into a position — so what reaches the machine is a row of number-lists indistinguishable from the row a sentence produces, and nothing after that point is told which is which."
+  description="The picture is cut on a fixed grid and unrolled into a line of squares, each squashed into a position, so what reaches the machine is a row of number-lists indistinguishable from the row a sentence produces, and nothing after that point is told which is which."
 >
   <PictureIntoPositions />
 </Figure>
@@ -141,7 +141,7 @@ writing. Reading the label on a jar in a language you do not have. Telling
 somebody who cannot see a photograph what is in it.
 
 **Running the conversion the other way.** If a picture can be turned into a row
-of positions, a row of positions can be turned back into a picture — which is
+of positions, a row of positions can be turned back into a picture, which is
 what sits underneath every system that produces an image from a sentence.
 
 ## What it does not buy
@@ -156,7 +156,7 @@ confident tone, and be wrong far more often than anybody expects.
 
 That is not a gap somebody forgot to fill. Think about what counting actually
 requires. You have to hold a running total, find the next chair, add one, and
-keep going until there are no chairs left — which means going round again, an
+keep going until there are no chairs left, which means going round again, an
 unknown number of times, with somewhere to keep the count while you do.
 
 The last unit was blunt about that. There is no counter in the stack and no way
@@ -183,8 +183,8 @@ than the entire thread of writing around it.
 <Aside title="The clean version and the real one">
   The account above is the tidy one, and real systems are messier in a way worth
   knowing about. Many do not push raw patches into the language stack at all:
-  the picture goes through a vision model of its own — itself a transformer
-  reading patches — trained separately on images paired with their captions, and
+  the picture goes through a vision model of its own, itself a transformer
+  reading patches, trained separately on images paired with their captions, and
   a small learned bridge maps its output into the language model's space. Others
   convert each patch into an entry from a fixed visual vocabulary, so a picture
   really does arrive as something very like tokens.

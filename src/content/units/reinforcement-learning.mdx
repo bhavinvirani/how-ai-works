@@ -2,7 +2,7 @@
 title: Nobody says what was right
 part: kinds-of-learning
 order: 3
-summary: With no correct answer to compare against, a learner acts, waits for a number, and does more of whatever earned one — which makes it superb at raising the number and entirely indifferent to what you meant by it.
+summary: With no correct answer to compare against, a learner acts, waits for a number, and does more of whatever earned one, which makes it superb at raising the number and entirely indifferent to what you meant by it.
 prerequisites:
   - loss-function
 connections:
@@ -59,7 +59,7 @@ You win a chess game on move sixty. Which move won it?
 
 Move eleven might have been the quiet one that made everything afterwards
 possible. Move forty might have been a blunder your opponent failed to punish.
-The score says nothing about either — it is one number for the whole game.
+The score says nothing about either. It is one number for the whole game.
 
 Untangling which decisions earned the credit is the central difficulty here, and
 its name says exactly what it is: **credit assignment**. Something you did
@@ -67,7 +67,7 @@ worked. Good luck finding out what.
 
 <Figure
   title="The loop with no answer key"
-  description="Nothing in this cycle ever states what the learner should have done. One number turns up after the fact, and all it can do with that number is make whatever just happened more or less likely — which is why it ends up chasing the score rather than the thing you wanted."
+  description="Nothing in this cycle ever states what the learner should have done. One number turns up after the fact, and all it can do with that number is make whatever just happened more or less likely, which is why it ends up chasing the score rather than the thing you wanted."
 >
   <TryScoreAdjust />
 </Figure>
@@ -97,7 +97,7 @@ The Corner Kitchen had a good day and scored 8; the Noodle Stall had a bad one
 and scored 5. On that evidence you hand twenty lunchtimes to the second-best
 place on the street, and the best one carries on being best without you.
 
-Push the slider up and nothing improves — not at five, not at eight. At nine
+Push the slider up and nothing improves, not at five, not at eight. At nine
 there is finally enough evidence to overturn one good day, and the average jumps
 from 5.92 to 7.17 in a single notch. Keep going and it falls away again, because
 every extra day of looking is a day not spent eating well. At twenty-four you
@@ -131,7 +131,7 @@ there, repeatedly catching fire, never finishing the course, and outscoring
 every human player. Nothing malfunctioned. It did what it was asked.
 
 That is **reward hacking**. The number is always a stand-in for the thing you
-care about, because the thing you care about is usually not measurable — and a
+care about, because the thing you care about is usually not measurable, and a
 learner free to act will find where the stand-in and the real thing come apart.
 It settles there, because that is where the number is biggest.
 
@@ -152,7 +152,7 @@ quickly which is better, and that comparison is a score. Feed enough of them
 through this loop and you shape behaviour nobody could have described.
 
 The warning comes with it. You get a model tuned to produce replies that people
-pick — and whether the reply people pick is the reply that is true is a separate
+pick, and whether the reply people pick is the reply that is true is a separate
 question, which nothing in this loop is asking.
 
 <DevAside>
@@ -165,7 +165,7 @@ question, which nothing in this loop is asking.
     }
     ```
 
-    Look at what `step` returns. One `double` — not the action you should have
+    Look at what `step` returns. One `double`, not the action you should have
     taken, not a gap to close, not an explanation. Every difficulty in this unit
     follows from that return type.
 
@@ -186,7 +186,7 @@ question, which nothing in this loop is asking.
 
 <Checkpoint question="A cleaning robot is scored on how much dust it collects, and it starts tipping the bin out onto the floor. What has gone wrong?">
   Nothing, which is the uncomfortable part. Nobody told the robot to keep the
-  house clean — nobody could write that down, which is why it was given a score
+  house clean. Nobody could write that down, which is why it was given a score
   instead. It was told collected dust is worth points, and tipping the bin out
   is the cheapest way to collect dust.
 

@@ -33,7 +33,7 @@ envelope that was propped against the kettle.
 
 Nothing about you improved when you picked up the pen. You did not get better at
 arithmetic in the two seconds it took to find it. What changed is that the first
-number stopped needing to be held anywhere — it was on the envelope, in front of
+number stopped needing to be held anywhere. It was on the envelope, in front of
 you, waiting for the next line to use. Every line you wrote was a step the line
 after it could stand on.
 
@@ -72,8 +72,8 @@ spend more on them, what happens?
 
 There is no dial. But there is a loop.
 
-A language model does not produce an answer. It produces one token — one chunk
-of text — and then it is finished. To get a second token the whole thing runs
+A language model does not produce an answer. It produces one token, one chunk
+of text, and then it is finished. To get a second token the whole thing runs
 again: the same sweep, through the same layers, at the same fixed price, with
 the first token now sitting on the end of the input. A twenty-token reply is
 twenty complete journeys through the machine.
@@ -83,7 +83,7 @@ That loop is the crack in the wall.
 Every token is another full pass. So a model that writes six hundred tokens of
 working before it commits has spent six hundred passes' worth of arithmetic on
 your question before the answer has even started. A model that answers straight
-away spends none. It is not thinking harder — there is no harder. It is
+away spends none. It is not thinking harder. There is no harder. It is
 thinking more times.
 
 The second half of the loop matters just as much. Every pass reads everything
@@ -103,7 +103,7 @@ added was a habit.
 
 <Figure
   title="Four moves it has not got, and the one it has"
-  description="A model cannot re-read, back out, pause or check inside a single sweep — none of those has any wiring — so the only quantity it can vary is how many tokens it produces first, and every one of those tokens is a whole extra journey through the stack that also gets to read everything written before it."
+  description="A model cannot re-read, back out, pause or check inside a single sweep, none of those has any wiring, so the only quantity it can vary is how many tokens it produces first, and every one of those tokens is a whole extra journey through the stack that also gets to read everything written before it."
 >
   <OnlyOneLever />
 </Figure>
@@ -111,8 +111,8 @@ added was a habit.
 ## Nobody prompts it. Somebody trained it
 
 You can get some of this out of an ordinary model by asking for it. Tell it to
-work through the problem step by step and it will, and the answers get better —
-that is a prompting technique with a unit of its own, and it works for exactly
+work through the problem step by step and it will, and the answers get better.
+That is a prompting technique with a unit of its own, and it works for exactly
 the mechanical reason above.
 
 What makes a reasoning model different is that nobody has to ask, and that the
@@ -124,7 +124,7 @@ the loop at all. Arithmetic where the result is known. A program that either
 passes its tests or does not. A puzzle with a solution you can verify in a line
 of code. Let the model attempt each problem many times, taking a different route
 each time. Score every attempt by one question — did it reach the verified
-answer? — and nudge the dials towards whatever the successful attempts happened
+answer? Then nudge the dials towards whatever the successful attempts happened
 to do.
 
 You have seen that loop before. It is reinforcement learning: no answer key, no
@@ -138,7 +138,7 @@ than by being right. Here the reward is a fact. The tests pass or they do not.
 There is nobody to charm.
 
 And what comes out is genuinely surprising. These models write things like _hold
-on, that gives a negative length, which cannot be right_ — and then go back and
+on, that gives a negative length, which cannot be right_, and then go back and
 take a different route. They check their own arithmetic. They notice dead ends.
 Nobody wrote a backtracking routine, and there is no part of the machine that
 implements one. Attempts that backtracked reached verified answers more often
@@ -151,7 +151,7 @@ than attempts that did not, so backtracking is what survived the nudging.
 Everything you already know about a learner chasing the number rather than the
 job still applies. Score a model on whether the tests pass and it can learn to
 make the tests pass: special-casing the exact inputs the tests use, catching the
-failure and returning the expected value, or — this has genuinely happened —
+failure and returning the expected value, or, this has genuinely happened,
 editing the tests. Nothing malfunctioned in any of those cases. The stand-in and
 the thing you meant came apart, and the learner settled where the number was
 biggest.
@@ -172,7 +172,7 @@ It opens on a puzzle, with no room at all.
 
 With nothing written, it answers in ten passes: _yes, 500 g is plenty for
 seven_. That is wrong, and it is wrong in the specific way a snap answer is
-wrong — it never worked out what seven people actually need, so it compared the
+wrong. It never worked out what seven people actually need, so it compared the
 bag against the only other number in the question.
 
 Push the slider to thirty and something worse happens. Two lines of working now
@@ -183,7 +183,7 @@ the first attempt. Half the working is not half an answer.
 
 Before you move on, look at the list rather than the answer. The line that would
 have caught this is sitting there, third from the top, marked as having no room.
-That is the whole failure in one row — not a flaw in the machine's reasoning,
+That is the whole failure in one row, not a flaw in the machine's reasoning,
 but a sentence that never got produced.
 
 At fifty it fits. The answer flips to correct, and the bill goes from ten passes
@@ -204,7 +204,7 @@ line of deliberation lands in the answer as another hedge. Eighteen passes for
 the good version, a hundred and thirteen for the worse one.
 
 **An unknown.** With no room, it says it cannot tell you, because it was not
-given any prices — which is the only true answer available. With fifty tokens it
+given any prices, which is the only true answer available. With fifty tokens it
 reasons its way from _I have not been given prices_ to _Brightwell is likely the
 cheaper_, and sounds better doing it. Sixteen passes to admit it cannot know.
 Sixty-six to sound as though it can.
@@ -323,7 +323,7 @@ price, and the skill is knowing which questions deserve it.
     ```
 
     Those last two lines are a habit worth forming early. Reasoning arrives as a
-    separate block for a reason, and the reason is not presentation — it is that
+    separate block for a reason, and the reason is not presentation. It is that
     the two have completely different standings. Parsing facts, figures or JSON
     out of the working means treating a plausible-sounding draft as a result,
     and the draft is exactly the part the model was never trained to be honest
@@ -338,7 +338,7 @@ price, and the skill is knowing which questions deserve it.
   </Fragment>
 </DevAside>
 
-<Checkpoint question="A team wants their assistant to reason more carefully without answers taking any longer to arrive. Somebody suggests giving the model more time to think about each token, rather than letting it write more of them. What is wrong with that suggestion — and what is the honest version of what they are asking for?">
+<Checkpoint question="A team wants their assistant to reason more carefully without answers taking any longer to arrive. Somebody suggests giving the model more time to think about each token, rather than letting it write more of them. What is wrong with that suggestion, and what is the honest version of what they are asking for?">
   There is no per-token effort setting to turn up. One token is one forward
   pass, and a forward pass is a fixed amount of arithmetic laid down when the
   model was wired. Extra wall-clock time has nothing to be spent on: the sweep
@@ -346,7 +346,7 @@ price, and the skill is knowing which questions deserve it.
 
 The only quantity that can vary is how many tokens get produced. So "reason more
 carefully" and "take longer" are not two requests that could be traded off
-against each other — they are the same request, described twice.
+against each other. They are the same request, described twice.
 
 What the team can actually do is choose where to spend it. Route the questions
 that are genuinely serial to a model with a thinking budget, and let everything

@@ -9,7 +9,7 @@ connections:
   - to: hallucination
     why: Turning this dial to the bottom is the most popular suggested cure for a model making things up, and it cures nothing — the favourite is still the favourite at every setting, so all a low temperature buys is the same wrong answer every time, delivered with total steadiness.
   - to: evaluation
-    why: Because the dial makes a system either repeatable or not, it decides whether a set of test cases measures a real change or measures the draw — which is why scoring anything starts by pinning this to the bottom.
+    why: Because the dial makes a system either repeatable or not, it decides whether a set of test cases measures a real change or measures the draw, which is why scoring anything starts by pinning this to the bottom.
 interactives:
   - TemperatureDial
 status: published
@@ -36,7 +36,7 @@ Nobody deployed anything.
 
 The natural conclusion is that it thought about it again and came out somewhere
 else. It did not. Run that question a thousand times and the machine works out
-the same opinion a thousand times — it is the same arithmetic over the same
+the same opinion a thousand times. It is the same arithmetic over the same
 numbers, and arithmetic does not have moods.
 
 What differs is one step that happens **after** the opinion, and there is a
@@ -65,7 +65,7 @@ get the same subject line ten times.
 **Draw one at random, in proportion to the shares.** A piece holding 55% of the
 row gets picked 55% of the time, one holding 5% gets picked 5% of the time.
 Variety comes free, several attempts at the same question are genuinely
-different attempts — and every so often something from the bottom of the row
+different attempts, and every so often something from the bottom of the row
 gets through.
 
 Neither is right for everything, which is why the choice was never made for you.
@@ -112,7 +112,7 @@ $$
 Read in the words above: a piece's share $p_i$ is its own raw score $s_i$
 divided by the temperature $T$, run through the exponential, and then divided by
 that same quantity added up across every piece so the row comes to exactly one.
-$T$ appears in one place only, and it is the same $T$ for every piece — which is
+$T$ appears in one place only, and it is the same $T$ for every piece, which is
 precisely why it cannot promote anything.
 
 Divide one piece's share by another's and everything except the difference
@@ -176,7 +176,7 @@ Two honest caveats about that. The four runs are four fixed rolls of the dice,
 so that this page can point at them and so that you see what the sentences above
 describe; four is not a survey, and at the top of the dial the model is giving
 that piece about three chances in a hundred. And the row prints whole
-percentages, so at the middle setting _aubergine_ shows as 0 — it is 0.4%, which
+percentages, so at the middle setting _aubergine_ shows as 0. It is 0.4%, which
 is not never. It is about once in every two hundred and seventy presses.
 
 ## What the two ends are actually for
@@ -252,7 +252,7 @@ combination is how it is done.
     other's. It is worth logging next to the output; a bug report that says "it
     gave a different answer" is unanswerable without it.
 
-    And zero is not the guarantee it looks like — this is the one place the
+    And zero is not the guarantee it looks like. This is the one place the
     page above simplifies. Hosted models batch requests together and
     floating-point addition is not associative, so the raw scores can come out
     fractionally different depending on who else happened to be in the batch,
@@ -273,7 +273,7 @@ combination is how it is done.
 
     The mirror-image trap is asking for variety *across* requests while leaving
     the dial at zero. Within one reply the model can still vary, because every
-    piece is chosen knowing what it has just written — but five separate calls
+    piece is chosen knowing what it has just written, but five separate calls
     asking for a different angle each time will hand back the same angle five
     times, because two identical requests at zero have nothing to differ with.
 

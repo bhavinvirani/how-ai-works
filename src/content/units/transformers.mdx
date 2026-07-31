@@ -2,7 +2,7 @@
 title: The same block, ninety-six times
 part: the-transformer
 order: 4
-summary: Attention on its own will not stack, so the transformer wraps it in a shortcut, a rescale and a step where each word thinks alone — and that one block, repeated a fixed number of times, is what nearly every modern model is built from.
+summary: Attention on its own will not stack, so the transformer wraps it in a shortcut, a rescale and a step where each word thinks alone, and that one block, repeated a fixed number of times, is what nearly every modern model is built from.
 prerequisites:
   - attention
   - positional-encoding
@@ -107,7 +107,7 @@ The second is training. Every nudge in this business comes from a correction
 that starts at the output and travels back down through every stage to reach the
 dials at the bottom. Each stage it passes through multiplies it by something,
 and a chain of ninety-six multiplications does not come out roughly the size it
-went in. It comes out enormous, or — far more often — at nothing. The bottom of
+went in. It comes out enormous, or, far more often, at nothing. The bottom of
 the stack then receives no correction worth the name, so its dials never move,
 so the part doing the most basic work is the part that never learns.
 
@@ -134,7 +134,7 @@ grander than "put back on a standard scale".
 What breaks without it is training, again, and it breaks in a way you have
 already watched happen. The step size is chosen once and applied everywhere. If
 the numbers at block ninety are living on a scale ten times the numbers at block
-three, then a step that is sensible down there overshoots up here — and an
+three, then a step that is sensible down there overshoots up here, and an
 overshoot lands on steeper ground, which makes the next step bigger still.
 
 This is the least interesting idea in the unit. Take it out of a hundred-block
@@ -237,7 +237,7 @@ around rather than removed.
 What does vary is how many words come out. A model produces one word per journey
 through all ninety-six blocks, and each new journey gets to read everything
 written so far, including the words the model itself wrote a second ago. So a
-model can be made to look as though it is deliberating — but the deliberating is
+model can be made to look as though it is deliberating, but the deliberating is
 spread across many passes, in writing, where you can watch it. It is never
 packed into one pass that worked harder, because there is no such pass.
 
@@ -274,8 +274,8 @@ The block is not a language part. Nothing in the drawing knows what a word is;
 it takes a list of things, each carried as a list of numbers, and lets them
 consult each other.
 
-So the same block, essentially unchanged, now reads images — cut into squares
-instead of words — and audio, and sequences of amino acids. That is why this one
+So the same block, essentially unchanged, now reads images, cut into squares
+instead of words, and audio, and sequences of amino acids. That is why this one
 picture is worth the effort of learning properly. Almost everything in the rest
 of this site is a stack of it, trained on something different or wrapped in
 something new.
@@ -295,7 +295,7 @@ something new.
     ```
 
     Three things are worth noticing. `x` is never assigned anything that does
-    not still contain `x` — that is the shortcut, written down; delete the two
+    not still contain `x`. That is the shortcut, written down; delete the two
     `add(x, ...)` wrappers and you have deleted it.
 
     The rescale sits *before* each stage here. The 2017 paper put it after the

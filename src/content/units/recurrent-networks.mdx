@@ -87,12 +87,12 @@ been singular: cabinet, hall, door. A reader working mainly off the last thing i
 saw will write "was", confidently, and be wrong.
 
 The information is not gone. It is in there, thinned out and blended with eleven
-other things — which is a different problem from being gone, and in practice not
+other things, which is a different problem from being gone, and in practice not
 much of an improvement on it.
 
 <Figure
   title="The same memory, holding a short sentence and a long one"
-  description="The box is drawn at exactly the same width in both rows, because a longer sentence buys no extra room — it only cuts the same room into thinner shares, and the width the first word had to itself in a four-word sentence takes the first six words to fill in a fourteen-word one."
+  description="The box is drawn at exactly the same width in both rows, because a longer sentence buys no extra room. It only cuts the same room into thinner shares, and the width the first word had to itself in a four-word sentence takes the first six words to fill in a fourteen-word one."
 >
   <SqueezedMemory />
 </Figure>
@@ -123,7 +123,7 @@ manners.
   sentence, and the blame for it is handed back down the chain, one step at a
   time, to everything that contributed. Each handover multiplies that blame by a
   number. Multiply by something under one, eleven times over, and what reaches
-  the second word is not a correction — it is a rounding error. So a long-range
+  the second word is not a correction. It is a rounding error. So a long-range
   connection is not only hard to use at reading time. It is hard to *learn* in
   the first place, because the lesson never arrives intact.
 </Aside>
@@ -149,7 +149,7 @@ many processors are standing by, the words go through one behind the other.
 
 <Figure
   title="Eight words, taken in order and taken all at once"
-  description="Because each step needs the summary from the step before it, seven boxes sit idle while one works and the sentence costs eight rounds instead of one — so buying more processors shortens nothing, which is the part that made the method too expensive to keep scaling."
+  description="Because each step needs the summary from the step before it, seven boxes sit idle while one works and the sentence costs eight rounds instead of one, so buying more processors shortens nothing, which is the part that made the method too expensive to keep scaling."
 >
   <StuckInLine />
 </Figure>
@@ -164,7 +164,7 @@ does not fall when you buy more hardware.
 
 Sit with what that meant for a field where nearly all the progress was coming
 from making things bigger. Every other part of the work got faster when the chips
-got faster. This part did not — and the long inputs, which were the ones people
+got faster. This part did not, and the long inputs, which were the ones people
 most wanted to handle, were the ones that waited longest.
 
 So the ceiling was never really about accuracy. It was about cost. You could not
@@ -214,7 +214,7 @@ look at word three?
     Three facts are visible in six lines. The array is sized at its declaration
     and nothing about a longer `sentence` enlarges it. `cell` is the same object
     every time round, so a longer sentence buys more passes rather than more
-    machine. And the loop body reads `state` and writes `state` — which is why
+    machine. And the loop body reads `state` and writes `state`, which is why
     there is no version of this that becomes a `parallelStream()`. It is not a
     tuning decision somebody got wrong; there is genuinely nothing to hand to a
     second thread.

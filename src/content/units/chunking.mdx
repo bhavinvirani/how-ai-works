@@ -8,7 +8,7 @@ prerequisites:
   - embeddings
 connections:
   - to: vector-search
-    why: Meaning-search can only put in order the passages it was handed, so the cut decides what is even in the running and the search only decides which of those comes first — which is why a disappointing system is far more often badly cut than badly searched.
+    why: Meaning-search can only put in order the passages it was handed, so the cut decides what is even in the running and the search only decides which of those comes first, which is why a disappointing system is far more often badly cut than badly searched.
 interactives:
   - ChunkCutter
 status: published
@@ -39,7 +39,7 @@ not in it. No hamper. No gift. No supplier. It is a sentence about something
 being suspended, and the something is named three lines earlier, in a heading
 this sentence does not contain.
 
-Nothing was going to find that passage. Not because the search is weak — because
+Nothing was going to find that passage. Not because the search is weak, because
 that run of words, standing by itself, is not about hampers in any way anything
 could detect. It never says so.
 
@@ -51,7 +51,7 @@ and have it answer from that. It left one step unexamined, and everything else
 stands on top of it.
 
 You cannot look up a two-hundred-page manual. Not because it is too long to
-read — because looking something up here means turning text into a position on a
+read, because looking something up here means turning text into a position on a
 map of meaning and asking what sits near it, and a two-hundred-page manual has no
 useful position. It is about hiring, and fire doors, and mileage, and parental
 leave. Average all of that together and you land in the middle of everything,
@@ -128,7 +128,7 @@ pulls its position towards whatever that sentence is about.
 
 A passage holding one rule about spending limits sits squarely on spending
 limits. Add four sentences about expense forms, hospitality codes and client
-names and the rule is still in there, word for word — but it is now one voice in
+names and the rule is still in there, word for word, but it is now one voice in
 five deciding where the passage stands, and somewhere else in the document
 something is standing closer to a question about spending limits than it is.
 
@@ -195,7 +195,7 @@ different gap each time.
 
 That is the honest version of "there is no correct size", and it is worth sitting
 with, because the instinct is always to tune the number. Now turn on the first
-switch — repeating the last line of each passage at the top of the next one — and
+switch, repeating the last line of each passage at the top of the next one, and
 the answer is complete at all eight. Overlap does not choose a better size. It
 makes the size matter less, which is the same thing as making the boundary matter
 less, which is what was actually wrong.
@@ -279,7 +279,7 @@ statement and its qualifier. It is cheap, it is nearly free to implement, and it
 is the standard defence against the one failure that is purely bad luck.
 
 **Cut on structure, not on a word count.** Split at headings, sections and
-paragraph breaks — the places the author already decided were breaks — and fall
+paragraph breaks, the places the author already decided were breaks, and fall
 back on length only inside a section that is too long. A fixed word count is
 cutting a document with your eyes closed.
 
@@ -340,7 +340,7 @@ retrieval system, and it is the thing nobody looks at.
   </Fragment>
 </DevAside>
 
-<Checkpoint question="A team's assistant answers from a four-hundred-page compliance manual. It is right about most things and confidently wrong about a handful, and the failures all have the same shape — it gives the general rule and misses the exception that overrides it. They have tried a stronger model, a much firmer system prompt, and returning eight passages instead of three. None of it moved the needle. Say why, and say what you would look at first.">
+<Checkpoint question="A team's assistant answers from a four-hundred-page compliance manual. It is right about most things and confidently wrong about a handful, and the failures all have the same shape. It gives the general rule and misses the exception that overrides it. They have tried a stronger model, a much firmer system prompt, and returning eight passages instead of three. None of it moved the needle. Say why, and say what you would look at first.">
   Exceptions are written the way exceptions are always written. _This does not
   apply during a tender. The above is suspended in that case. Such items are
   excluded._ They lean backwards onto the rule they modify and almost never
@@ -354,7 +354,7 @@ each time. A stronger model reads what it is given better; it was given the
 general rule. A firmer prompt changes what the model does with the passages; it
 cannot conjure a passage that did not arrive. And eight passages instead of three
 goes further down a ranked list that these passages are at the very bottom of, or
-off entirely — you would have to return most of the manual to reach them, which
+off entirely. You would have to return most of the manual to reach them, which
 is the thing chunking exists to avoid, and you would spend the model's whole
 reading budget doing it.
 

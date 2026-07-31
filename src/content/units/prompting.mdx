@@ -9,7 +9,7 @@ connections:
   - to: few-shot-prompting
     why: Describing the document you want is one way to narrow what could plausibly follow it, and putting two finished ones on the page in front of the model is a far blunter one — same mechanism, applied with a pattern instead of a description of a pattern.
   - to: context-engineering
-    why: A prompt written once is a sentence; a prompt resent on every call, competing with history and fetched documents for one fixed window, is a budgeting problem — and that is what it becomes in any real system.
+    why: A prompt written once is a sentence; a prompt resent on every call, competing with history and fetched documents for one fixed window, is a budgeting problem, and that is what it becomes in any real system.
 interactives:
   - PromptLeverBoard
 status: published
@@ -29,7 +29,7 @@ yellow.
 _You are a world-class expert in_
 
 Put that at the top, they say. The answers get better. They cannot tell you why,
-and they are a little embarrassed to be recommending it — but they left it off
+and they are a little embarrassed to be recommending it, but they left it off
 once, the answer was worse, and they have not left it off since.
 
 This is roughly where people are with lucky socks.
@@ -81,7 +81,7 @@ them, and nothing you typed says which.
 
 So what does a machine do when the opening it has been handed fits a thousand
 documents? Not toss a coin. It does the only thing it has ever done, which is
-produce the most plausible continuation — and the most plausible continuation of
+produce the most plausible continuation, and the most plausible continuation of
 an opening that fits a thousand documents is whatever those documents have in
 common. The middle of the pile. Encyclopedic, addressed to nobody, one paragraph
 long, for no stated purpose.
@@ -118,7 +118,7 @@ with the one sentence worth remembering. An explanation for somebody whose
 fridge has stopped opens with the compressor. Same subject, same reader, barely
 any overlap.
 
-**Be specific** — and this is the one that always gets listed alongside the
+**Be specific**, and this is the one that always gets listed alongside the
 other three as though it were a fourth technique. It is not a technique. It is
 the name for doing the first three at all. _Specific_ means nothing more than:
 an opening that few documents could plausibly follow.
@@ -160,7 +160,7 @@ take the arithmetic as a measurement.
 Nothing is pulled to begin with, and the answer sitting there is worth reading
 properly before you touch anything. It is correct. It is well written. It
 mentions the refrigerant, the condenser coils and the set point. It is also
-addressed to nobody, in a shape nothing asked for, for a purpose nobody stated —
+addressed to nobody, in a shape nothing asked for, for a purpose nobody stated,
 and it is very close to what these tools have been handing you for months.
 
 All twenty-seven endings still fit, so it wrote the middle of them.
@@ -195,7 +195,7 @@ different document.
 One more thing to notice, and it is the honest one. Pull a lever and **two**
 settings on that row are struck out, not one. The board holds a trainee
 engineer, a question-and-answer shape and a fault-finding purpose that no lever
-on it ever selects — they are there so you can see that naming a thing removes
+on it ever selects. They are there so you can see that naming a thing removes
 several alternatives rather than choosing between two. It is also why prompting
 has such steep diminishing returns. The first line you add throws away eighteen
 of the twenty-seven endings. The third is deciding among three.
@@ -203,7 +203,7 @@ of the twenty-seven endings. The third is deciding among three.
 ## Two things it cannot do
 
 Everything above is steering, and it is worth being exact about what steering is
-not — because the most expensive mistakes people make with these tools are made
+not, because the most expensive mistakes people make with these tools are made
 by prompting harder at a problem no prompt can reach.
 
 **It cannot add knowledge.** Narrowing the plausible endings can only ever pick
@@ -230,7 +230,7 @@ checking, and the shape of checking is not checking.
 It cannot make the machine more expert. There is no reserve of expertise being
 unlocked, and nothing whatsoever about the machine changed between one prompt
 and the next. What the line does is narrow towards documents written by
-confident experts — which are, on average, better organised, more specific and
+confident experts, which are, on average, better organised, more specific and
 less padded than documents written by nobody in particular. That is a real gain,
 and it is why the trick has survived years of people rolling their eyes at it.
 
@@ -290,7 +290,7 @@ from a stranger.
     That second message is not something the model said. It is the opening of
     the model's own turn, written by you, and it is the reason this technique
     is usually called prefill. Providers differ on whether they allow it, and
-    the ones that do tend to reject a trailing space — because the whole
+    the ones that do tend to reject a trailing space, because the whole
     conversation is one run of text, and a stray space at the end is a piece
     the model then has to continue from.
 

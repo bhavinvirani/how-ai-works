@@ -1,7 +1,12 @@
 ---
 layout: ../layouts/BaseLayout.astro
-title: Page not found — How AI Actually Works
+title: Page not found
 description: That page does not exist.
+# GitHub Pages serves this with a 200, not a 404 — it is a static file, and
+# static hosting has no way to set the status. Without this, a soft-404 is
+# indexable like any other page.
+seo:
+  noindex: true
 ---
 
 import { withBase } from '../lib/paths';

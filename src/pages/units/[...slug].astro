@@ -5,13 +5,18 @@ import type { CollectionEntry } from 'astro:content';
 import ConnectionsFooter from '../../components/blocks/ConnectionsFooter.astro';
 import { UnitProgress } from '../../components/blocks/UnitProgress';
 import CurriculumNav from '../../components/nav/CurriculumNav.astro';
+import { ui } from '../../copy/en';
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import { withBase } from '../../lib/paths';
+import { canonicalPathname } from '../../lib/seo/meta';
+import { articleSchema, breadcrumbSchema } from '../../lib/seo/schema';
 import { assertAcyclic } from '../../lib/units/graph';
 import { assertInteractivesExist } from '../../lib/units/interactives';
 import {
   resolveConnections,
   resolvePrerequisites,
 } from '../../lib/units/resolve';
+import { site, siteUrl } from '../../seo/site';
 
 /**
  * Every unit page.
@@ -96,13 +101,55 @@ const navUnits = units.map((entry) => ({
   part: entry.data.part,
   order: entry.data.order,
 }));
+
+/**
+ * Structured data for this lesson.
+ *
+ * The URLs are built with the same `canonicalPathname` helper `SeoHead` uses,
+ * rather than assembled by hand here. Structured data that disagrees with the
+ * page's own `<link rel="canonical">` about its address describes a different
+ * document, and nothing in the build would notice.
+ */
+const origin = Astro.site ?? new URL(siteUrl);
+const absolute = (path: string) =>
+  new URL(canonicalPathname(path), origin).href;
+
+const schemaSite = {
+  name: site.name,
+  url: siteUrl,
+  description: site.description,
+  locale: site.locale,
+  author: { name: site.author.name, url: site.author.url },
+};
+
+const jsonLd = [
+  articleSchema({
+    title: unit.data.title,
+    summary: unit.data.summary,
+    url: absolute(Astro.url.pathname),
+    image: new URL(withBase(site.ogImage.path), origin).href,
+    modified: unit.data.updated,
+    license: site.contentLicense,
+    site: schemaSite,
+  }),
+  breadcrumbSchema([
+    { name: ui.breadcrumb.home, url: siteUrl },
+    { name: ui.breadcrumb.lessons, url: absolute(withBase('/map')) },
+    { name: unit.data.title },
+  ]),
+];
 ---
 
 {
   /* `searchable` makes this the only kind of page Pagefind indexes — the
     lessons, not the gallery, the progress page or the map. See BaseLayout. */
 }
-<BaseLayout title={unit.data.title} description={unit.data.summary} searchable>
+<BaseLayout
+  title={unit.data.title}
+  description={unit.data.summary}
+  searchable
+  seo={{ type: 'article', modified: unit.data.updated, jsonLd }}
+>
   <CurriculumNav
     slot="nav"
     variant="rail"

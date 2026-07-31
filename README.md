@@ -96,9 +96,15 @@ Static [Astro](https://astro.build) with MDX content and React islands,
 [Tailwind CSS](https://tailwindcss.com) v4 driven entirely by design tokens,
 deployed to GitHub Pages.
 
-No backend, no database, no accounts, no analytics, no cookies. Fonts and maths
-typesetting are self-hosted, so the site works offline and never reports you to
-anyone. Progress lives in your own browser and never leaves it.
+No backend, no database, no accounts, no cookies. Fonts and maths typesetting
+are self-hosted rather than pulled from a CDN. Progress lives in your own
+browser and never leaves it.
+
+One thing does leave: an anonymous visit count, through
+[GoatCounter](https://www.goatcounter.com). It sets no cookie and stores nothing
+on your device — it records a page path, a referrer, and a coarse browser and
+country, with no way to tell one reader from another or to link a visit to
+anything you have marked complete.
 
 Lesson prose lives in `src/content/units/**/*.mdx` and nowhere else, so writing
 a lesson never means touching React. The sidebar, the connections between units,

@@ -8,6 +8,8 @@ import { defineConfig } from 'astro/config';
 import rehypeKatex from 'rehype-katex';
 import remarkMath from 'remark-math';
 
+import { sitemapOptions } from './scripts/sitemap.mjs';
+
 // The site deploys to https://bhavinvirani.github.io/how-ai-works, so every
 // internal URL is prefixed with `base`. Anything that hardcodes a root-absolute
 // path works in dev and 404s in production — see src/lib/paths.ts.
@@ -31,7 +33,19 @@ export default defineConfig({
   // is skipped on PR previews: a preview would otherwise publish a sitemap
   // claiming its throwaway URLs are canonical, and `gh-pages` serves previews
   // from the same origin as the live site, so a crawler cannot tell them apart.
-  integrations: [react(), mdx(), ...(process.env.BASE_PATH ? [] : [sitemap()])],
+  //
+  // Skipping the sitemap was only ever half of that defence — a crawler that
+  // arrives by following a link never reads one. The other half is the
+  // site-wide `noindex` a preview build emits from `SeoHead.astro`, keyed off
+  // the same BASE_PATH variable.
+  //
+  // `sitemapOptions()` drops the pages that carry `noindex` and gives each
+  // lesson its own `lastmod`; see scripts/sitemap.mjs for why.
+  integrations: [
+    react(),
+    mdx(),
+    ...(process.env.BASE_PATH ? [] : [sitemap(sitemapOptions())]),
+  ],
 
   markdown: {
     // Astro 7 defaults to Sätteri, a Rust markdown engine that does NOT run

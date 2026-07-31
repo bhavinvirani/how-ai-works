@@ -1,0 +1,183 @@
+---
+/**
+ * Everything in `<head>` that is addressed to a machine.
+ *
+ * Split out of `BaseLayout` because it grew from four tags to thirty, and
+ * because almost every one of them is a claim that can be wrong in a way no
+ * gate catches: a canonical that disagrees with the sitemap, a card image that
+ * 404s, an `og:url` pointing at production from a preview build. The decisions
+ * worth testing live in `lib/seo/`; this file is the wiring.
+ *
+ * No English is written here (hard rule 10). Titles and descriptions arrive as
+ * props from MDX frontmatter or unit metadata; the rest comes from
+ * `src/seo/site.ts`.
+ */
+import { withBase } from '../../lib/paths';
+import {
+  canonicalPathname,
+  isHomePath,
+  pageTitle,
+  robotsDirective,
+} from '../../lib/seo/meta';
+import type { SchemaNode, SchemaSite } from '../../lib/seo/schema';
+import { websiteSchema } from '../../lib/seo/schema';
+import { themeColor } from '../../lib/seo/theme-color';
+import { site, siteUrl } from '../../seo/site';
+
+interface Props {
+  title: string;
+  description: string;
+  /** `article` on lesson pages; everything else is a `website`. */
+  type?: 'website' | 'article';
+  /** Keep this page out of search results — utility pages, and the 404. */
+  noindex?: boolean;
+  /** A lesson's `updated` date, for `article:modified_time`. */
+  modified?: Date;
+  /** Page-specific social card, base-relative. Defaults to the shared one. */
+  image?: string;
+  imageAlt?: string;
+  /** Structured data for this page, beyond the site-level node. */
+  jsonLd?: SchemaNode[];
+}
+
+const {
+  title,
+  description,
+  type = 'website',
+  noindex = false,
+  modified,
+  image,
+  imageAlt,
+  jsonLd = [],
+} = Astro.props;
+
+/**
+ * True on a PR-preview build.
+ *
+ * `BASE_PATH` is set only by `preview-build.yml`, and it is the same switch
+ * `astro.config.mjs` uses to skip the sitemap. Previews are published to
+ * `/how-ai-works/pr-preview/<n>/` on the same origin as the live site, so
+ * without this every open pull request is a crawlable duplicate of all
+ * sixty-six pages.
+ */
+const isPreview = Boolean(process.env.BASE_PATH);
+
+const base = new URL(siteUrl);
+const canonical = new URL(
+  canonicalPathname(Astro.url.pathname),
+  Astro.site ?? base,
+);
+const cardImage = new URL(
+  withBase(image ?? site.ogImage.path),
+  Astro.site ?? base,
+);
+
+const schemaSite: SchemaSite = {
+  name: site.name,
+  url: siteUrl,
+  description: site.description,
+  locale: site.locale,
+  author: { name: site.author.name, url: site.author.url },
+};
+
+/**
+ * The `WebSite` node belongs on the home page and only there — it describes the
+ * site, and repeating it on sixty-five lessons says the same thing sixty-five
+ * more times.
+ */
+const structuredData: SchemaNode[] = [
+  ...(isHomePath(Astro.url.pathname, import.meta.env.BASE_URL)
+    ? [websiteSchema(schemaSite)]
+    : []),
+  ...jsonLd,
+];
+---
+
+<title>{pageTitle(title, site.name)}</title>
+<meta name="description" content={description} />
+<meta name="author" content={site.author.name} />
+<meta name="robots" content={robotsDirective({ noindex, isPreview })} />
+<meta name="theme-color" content={themeColor} />
+
+{
+  /* A preview build deliberately ships no canonical. Pointing one at the
+     production URL of a page that may not exist there yet is a claim about
+     another document; `noindex, nofollow` above already says the only true
+     thing about a preview, and Google asks that the two not be combined. */
+}
+{!isPreview && <link rel="canonical" href={canonical.href} />}
+
+{
+  /* Icon order is deliberate and is the one part of this block browsers
+     disagree about. The .ico is declared first with an explicit `sizes` so
+     that older engines take it and stop; anything that understands
+     `image/svg+xml` prefers the scalable one regardless of order. */
+}
+<link rel="icon" href={withBase('/favicon.ico')} sizes="32x32" />
+<link rel="icon" type="image/svg+xml" href={withBase('/favicon.svg')} />
+<link rel="apple-touch-icon" href={withBase('/apple-touch-icon.png')} />
+<link rel="manifest" href={withBase('/site.webmanifest')} />
+
+{
+  /* The sitemap is not generated for preview builds, so pointing at one there
+     would be a link to a 404. */
+}
+{
+  !isPreview && (
+    <link
+      rel="sitemap"
+      type="application/xml"
+      href={withBase('/sitemap-index.xml')}
+    />
+  )
+}
+
+<meta property="og:type" content={type} />
+<meta property="og:site_name" content={site.name} />
+<meta property="og:title" content={pageTitle(title, site.name)} />
+<meta property="og:description" content={description} />
+<meta property="og:url" content={canonical.href} />
+<meta property="og:locale" content={site.locale} />
+<meta property="og:image" content={cardImage.href} />
+<meta property="og:image:type" content="image/png" />
+<meta property="og:image:width" content={String(site.ogImage.width)} />
+<meta property="og:image:height" content={String(site.ogImage.height)} />
+<meta property="og:image:alt" content={imageAlt ?? site.ogImage.alt} />
+
+{
+  modified && (
+    <meta property="article:modified_time" content={modified.toISOString()} />
+  )
+}
+
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content={pageTitle(title, site.name)} />
+<meta name="twitter:description" content={description} />
+<meta name="twitter:image" content={cardImage.href} />
+<meta name="twitter:image:alt" content={imageAlt ?? site.ogImage.alt} />
+{site.xHandle && <meta name="twitter:site" content={site.xHandle} />}
+
+{
+  /* Rendered only once a token exists. A placeholder here would look
+     configured and verify nothing — see docs/SEO.md. */
+}
+{
+  site.verification.google && (
+    <meta name="google-site-verification" content={site.verification.google} />
+  )
+}
+{
+  site.verification.bing && (
+    <meta name="msvalidate.01" content={site.verification.bing} />
+  )
+}
+
+{
+  structuredData.map((node) => (
+    <script
+      type="application/ld+json"
+      is:inline
+      set:html={JSON.stringify(node)}
+    />
+  ))
+}

@@ -89,6 +89,11 @@ export function ProgressPanel({ parts = [] }: ProgressPanelProps) {
           {copy.privacyHeading}
         </h2>
         <p className="mt-1 text-sm text-ink-muted">{copy.privacyBody}</p>
+        {/* A second paragraph rather than a longer first one: the claim above
+            is about the reader's progress, and the one below is about the site
+            counting visits. Running them together would read as hedging on the
+            first, which is the sentence that actually matters here. */}
+        <p className="mt-2 text-sm text-ink-muted">{copy.privacyAnalytics}</p>
       </section>
 
       {totalUnits === 0 ? (

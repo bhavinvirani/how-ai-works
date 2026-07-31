@@ -15,7 +15,8 @@ true right now.
 
 ## Where things stand
 
-**Last updated:** Phase 1 merged, site live, artifact landed (2026-07-31).
+**Last updated:** Phases 0–1 merged and fully set up; Phase 2 ready to start
+(2026-07-31).
 
 | Phase                    | State                                                           |
 | ------------------------ | --------------------------------------------------------------- |
@@ -43,16 +44,19 @@ the content collection + unit graph, the progress store and `/progress`,
 - **PR previews work end to end**, including the sticky comment, verified on
   PR #3.
 
-### Still blocked on Bhavin
+- **`main` requires CI to pass.** Ruleset _"main: require CI to pass"_, active
+  on the default branch, requiring `Lint, types, unit tests`, `Build, budgets,
+E2E + a11y`, and `Link check`. No bypass actors. Verified by attempting a
+  direct push, which GitHub rejected with _"3 of 3 required status checks are
+  expected"_ — so **everything goes through a PR now**, including yours.
 
-1. **`main` has no required status checks.** Settings → Rules → Rulesets → New
-   branch ruleset: target the default branch, enable _Require status checks to
-   pass_, and add exactly `Lint, types, unit tests`, `Build, budgets, E2E +
-a11y`, and `Link check`.
-   Do **not** add `Build preview` / `Publish preview` / `Remove preview` — they
-   are deployment steps, and `Remove preview` only runs on close, so requiring
-   it blocks every merge. Do **not** enable Code Owner review: GitHub forbids
-   approving your own PR, so it deadlocks a solo maintainer.
+  Deliberately _not_ included: `Build preview` / `Publish preview` / `Remove
+preview` are deployment steps, and `Remove preview` only runs on close, so
+  requiring it would block every merge. Code Owner review stays off until a
+  second collaborator exists — GitHub forbids approving your own PR, so it
+  deadlocks a solo maintainer (PLAN §5.5).
+
+**Nothing is blocked. Phase 2 can start.**
 
 ### Still true
 

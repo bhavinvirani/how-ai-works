@@ -3,6 +3,7 @@ import { getCollection, render } from 'astro:content';
 import type { CollectionEntry } from 'astro:content';
 
 import ConnectionsFooter from '../../components/blocks/ConnectionsFooter.astro';
+import { UnitProgress } from '../../components/blocks/UnitProgress';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { assertAcyclic } from '../../lib/units/graph';
 import {
@@ -72,5 +73,6 @@ const connections = resolveConnections(
 <BaseLayout title={unit.data.title} description={unit.data.summary}>
   <h1>{unit.data.title}</h1>
   <Content />
+  <UnitProgress client:visible unitId={unit.id} />
   <ConnectionsFooter prerequisites={prerequisites} connections={connections} />
 </BaseLayout>

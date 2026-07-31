@@ -34,7 +34,11 @@ test('the checkpoint still hides and reveals its answer', async ({ page }) => {
 
   // The summary specifically: "Show answer" is also the RevealButton's label,
   // and that one is an inert island with scripting off.
-  await page.locator('details > summary').click();
+  await page
+    .locator('details')
+    .filter({ hasText: 'its vocabulary is fixed and finite' })
+    .locator('summary')
+    .click();
 
   await expect(answer).toBeVisible();
 });

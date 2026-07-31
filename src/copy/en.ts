@@ -70,6 +70,20 @@ export const ui = {
     describes: 'What this shows',
   },
 
+  /**
+   * Per-interactive chrome: the title and the one-line "what to try".
+   *
+   * It lives here rather than inside each instrument because an interactive has
+   * to work as a bare tag with zero required props (§3.3) — so it needs a
+   * default title, and a default title inlined in a component is exactly what
+   * hard rule 10 forbids.
+   *
+   * `pnpm new:interactive` appends entries immediately above the marker below.
+   */
+  interactives: {
+    // new:interactive inserts above this line — do not remove.
+  } as Record<string, { title: string; lead: string }>,
+
   progress: {
     markComplete: 'Mark as complete',
     markIncomplete: 'Mark as not complete',

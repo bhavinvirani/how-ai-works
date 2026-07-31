@@ -1,0 +1,65 @@
+---
+import { ui } from '../../copy/en';
+import { LANGUAGES } from '../../lib/devaside/languages';
+import { LangTabs } from './LangTabs';
+
+/**
+ * The optional "for developers" detour (§3.5).
+ *
+ * Collapsed by default, because the whole point of this site is that a general
+ * reader never has to open it. Anything a reader *needs* belongs in the lesson.
+ *
+ * Usage — a named slot per language, and no language is mandatory:
+ *
+ *   <DevAside>
+ *     <Fragment slot="java">…</Fragment>
+ *     <Fragment slot="python">…</Fragment>
+ *   </DevAside>
+ *
+ * PLAN.md §3.5 sketches this as `<Lang name="java">`. Astro's own mechanism for
+ * "several named regions of content" is the named slot, and using it means the
+ * language panels stay server-rendered markdown rather than becoming strings
+ * this component has to re-inject. Same authoring shape, one fewer moving part.
+ *
+ * The forwarding below is written out one language at a time because Astro
+ * requires a literal `slot` name — building it from a loop variable fails at
+ * build with "language is not defined". So adding a language is two explicit
+ * lines: an entry in `LANGUAGES`, and a pair here.
+ */
+
+const provided = LANGUAGES.filter((language) => Astro.slots.has(language.id));
+---
+
+{
+  provided.length > 0 && (
+    <details class="group my-6 rounded-lg border border-rule bg-paper-sunken px-4 py-3">
+      <summary class="cursor-pointer list-none text-sm font-medium text-ink-muted hover:text-ink">
+        <span class="font-mono text-2xs tracking-wide uppercase">
+          {ui.devAside.summary}
+        </span>
+      </summary>
+
+      <div class="mt-3">
+        <LangTabs
+          client:visible
+          label={ui.devAside.languages}
+          languages={provided.map((language) => ({
+            id: language.id,
+            label: language.label,
+          }))}
+        >
+          {Astro.slots.has('java') && (
+            <Fragment slot="java">
+              <slot name="java" />
+            </Fragment>
+          )}
+          {Astro.slots.has('python') && (
+            <Fragment slot="python">
+              <slot name="python" />
+            </Fragment>
+          )}
+        </LangTabs>
+      </div>
+    </details>
+  )
+}

@@ -6,8 +6,10 @@ description: Every control and instrument on this site, live, with its knobs —
 
 import Aside from '../components/blocks/Aside.astro';
 import Checkpoint from '../components/blocks/Checkpoint.astro';
+import DevAside from '../components/blocks/DevAside.astro';
 import ConnectionsFooter from '../components/blocks/ConnectionsFooter.astro';
 import Figure from '../components/blocks/Figure.astro';
+import { UnitProgress } from '../components/blocks/UnitProgress';
 import {
   InstrumentPanelDemo,
   RevealButtonDemo,
@@ -217,3 +219,37 @@ reason, because "see also" teaches nothing.
     },
   ]}
 />
+
+### Developer aside
+
+Collapsed by default, because a general reader should never need to open it.
+Tabs appear only for the languages an aside actually provides, and picking one
+picks it everywhere else on the site too.
+
+<DevAside>
+  <Fragment slot="java">
+    ```java
+    var tokens = tokenizer.encode("tokenisation");
+    // [1417, 5983, 367]
+    ```
+
+    The encoder returns ints, not strings — the model never sees the text again.
+
+  </Fragment>
+  <Fragment slot="python">
+    ```python
+    tokens = tokenizer.encode("tokenisation")
+    # [1417, 5983, 367]
+    ```
+
+    Same idea: from here on, the model is working with numbers.
+
+  </Fragment>
+</DevAside>
+
+### Unit progress
+
+Sits at the end of every unit. It is the only thing that writes progress, and
+it is deliberately plain — nobody is being graded.
+
+<UnitProgress client:visible unitId="gallery-example" />

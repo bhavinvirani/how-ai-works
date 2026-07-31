@@ -42,7 +42,11 @@ const ROUTES: Route[] = [
       // Scanning before this point audits server markup that has none of the
       // island's real roles or focus behaviour, and passes for the wrong reason.
       await page.keyboard.press('End');
-      await expect(page.locator('astro-island[ssr]')).toHaveCount(0);
+      await page.waitForFunction(() =>
+        [...document.querySelectorAll('astro-island[ssr]')].every(
+          (island) => island.closest('details:not([open])') !== null,
+        ),
+      );
     },
   },
 ];

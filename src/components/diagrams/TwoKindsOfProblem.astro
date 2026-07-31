@@ -1,0 +1,170 @@
+---
+/**
+ * Two columns: a job whose rules you can finish writing, and a job whose rules
+ * keep sprouting exceptions until you give up.
+ *
+ * The teaching load is carried by the exception list physically fraying — the
+ * text shrinks, the rows narrow, and the arrow to the answer breaks off before
+ * it arrives. Colour is not doing that work, and the labels state the outcome
+ * in words either way (hard rule 9). Decorative by itself, so `aria-hidden`:
+ * `Figure` supplies the accessible name and the description.
+ */
+---
+
+<svg viewBox="0 0 640 260" class="w-full" aria-hidden="true">
+  <g class="fill-none stroke-rule-strong" stroke-width="1.25">
+    <rect x="8" y="8" width="296" height="244" rx="8"></rect>
+    <rect x="336" y="8" width="296" height="244" rx="8"></rect>
+  </g>
+
+  <g class="fill-ink font-display" font-size="14" font-weight="700">
+    <text x="28" y="38">Sorting a list of numbers</text>
+    <text x="356" y="38">Recognising your mother&apos;s face</text>
+  </g>
+
+  <g class="fill-ink-faint font-mono" font-size="9">
+    <text x="28" y="54">rules you can finish writing</text>
+    <text x="356" y="54">rules that keep sprouting exceptions</text>
+  </g>
+
+  <!-- Left: three complete rules, full width, evenly weighted. -->
+  <g>
+    <rect
+      x="28"
+      y="70"
+      width="248"
+      height="22"
+      rx="4"
+      class="fill-paper stroke-rule"
+      stroke-width="1"></rect>
+    <text x="38" y="85" class="fill-ink font-mono" font-size="10"
+      >compare two numbers</text
+    >
+
+    <rect
+      x="28"
+      y="98"
+      width="248"
+      height="22"
+      rx="4"
+      class="fill-paper stroke-rule"
+      stroke-width="1"></rect>
+    <text x="38" y="113" class="fill-ink font-mono" font-size="10"
+      >put the smaller one first</text
+    >
+
+    <rect
+      x="28"
+      y="126"
+      width="248"
+      height="22"
+      rx="4"
+      class="fill-paper stroke-rule"
+      stroke-width="1"></rect>
+    <text x="38" y="141" class="fill-ink font-mono" font-size="10"
+      >repeat until nothing moves</text
+    >
+  </g>
+
+  <!-- Left: an arrow that arrives. -->
+  <g class="stroke-accent-2" stroke-width="2">
+    <line x1="152" y1="158" x2="152" y2="196"></line>
+    <path d="M147 190 L152 198 L157 190" class="fill-none"></path>
+  </g>
+  <rect
+    x="52"
+    y="202"
+    width="200"
+    height="30"
+    rx="6"
+    class="fill-accent-2-soft stroke-accent-2"
+    stroke-width="1.25"></rect>
+  <text
+    x="152"
+    y="221"
+    text-anchor="middle"
+    class="fill-ink font-display"
+    font-size="12"
+    font-weight="700">Done. It always works.</text
+  >
+
+  <!-- Right: rules that shrink and narrow as the exceptions pile up. -->
+  <g>
+    <rect
+      x="356"
+      y="70"
+      width="248"
+      height="22"
+      rx="4"
+      class="fill-paper stroke-rule"
+      stroke-width="1"></rect>
+    <text x="366" y="85" class="fill-ink font-mono" font-size="10"
+      >if the eyes are 6cm apart&hellip;</text
+    >
+
+    <rect
+      x="356"
+      y="98"
+      width="216"
+      height="19"
+      rx="4"
+      class="fill-paper stroke-rule"
+      stroke-width="1"></rect>
+    <text x="366" y="111" class="fill-ink-muted font-mono" font-size="9"
+      >&hellip;unless she is turned sideways</text
+    >
+
+    <rect
+      x="356"
+      y="123"
+      width="184"
+      height="16"
+      rx="4"
+      class="fill-paper stroke-rule"
+      stroke-width="1"></rect>
+    <text x="366" y="134" class="fill-ink-muted font-mono" font-size="8"
+      >&hellip;or it is dark, or she is smiling</text
+    >
+
+    <rect
+      x="356"
+      y="145"
+      width="152"
+      height="13"
+      rx="3"
+      class="fill-paper stroke-rule"
+      stroke-width="1"></rect>
+    <text x="366" y="154" class="fill-ink-faint font-mono" font-size="7"
+      >&hellip;or she is wearing sunglasses</text
+    >
+
+    <rect
+      x="356"
+      y="164"
+      width="120"
+      height="10"
+      rx="3"
+      class="fill-paper stroke-rule"
+      stroke-width="1"></rect>
+    <text x="366" y="172" class="fill-ink-faint font-mono" font-size="6"
+      >&hellip;or twenty years have passed</text
+    >
+
+    <text x="356" y="186" class="fill-ink-faint font-mono" font-size="6"
+      >&hellip;&hellip;&hellip;</text
+    >
+  </g>
+
+  <!-- Right: an arrow that breaks off before it gets anywhere. -->
+  <g class="stroke-rule-strong" stroke-width="2" stroke-dasharray="3 5">
+    <line x1="480" y1="192" x2="480" y2="212"></line>
+  </g>
+  <text
+    x="480"
+    y="230"
+    text-anchor="middle"
+    class="fill-ink-muted font-display"
+    font-size="12"
+    font-weight="700">You never finish.</text
+  >
+</svg>

@@ -1,0 +1,120 @@
+---
+/**
+ * The funnel that only some things get into.
+ *
+ * Left: five qualities anyone might care about. Two of them were chosen to be
+ * counted and reach the score; three were not, and their arrows stop dead at a
+ * wall before they get there. Right: the one number, and the dials that can
+ * chase nothing else.
+ *
+ * The teaching load is carried by the wall and by the words "counted" and
+ * "ignored" printed on every chip — solid versus dashed outlines are a second
+ * cue, and colour a third, so nothing here depends on seeing hue (hard rule 9).
+ *
+ * Decorative on its own, so `aria-hidden`; `Figure` carries the name and the
+ * description.
+ */
+---
+
+<svg viewBox="0 0 640 250" class="w-full" aria-hidden="true">
+  <g class="fill-ink-faint font-mono" font-size="9">
+    <text x="12" y="20">everything you might care about</text>
+  </g>
+
+  <!-- The two qualities that made it into the score. -->
+  <g class="fill-accent-2-soft stroke-accent-2" stroke-width="1.25">
+    <rect x="12" y="30" width="240" height="26" rx="4"></rect>
+    <rect x="12" y="62" width="240" height="26" rx="4"></rect>
+  </g>
+
+  <!-- The three that did not. Dashed, and said so in words. -->
+  <g class="fill-paper stroke-rule" stroke-width="1" stroke-dasharray="3 3">
+    <rect x="12" y="94" width="240" height="26" rx="4"></rect>
+    <rect x="12" y="126" width="240" height="26" rx="4"></rect>
+    <rect x="12" y="158" width="240" height="26" rx="4"></rect>
+  </g>
+
+  <g class="fill-ink font-mono" font-size="10">
+    <text x="22" y="47">was the answer right?</text>
+    <text x="22" y="79">did people like it?</text>
+  </g>
+
+  <g class="fill-ink-muted font-mono" font-size="10">
+    <text x="22" y="111">was it short?</text>
+    <text x="22" y="143">did it admit doubt?</text>
+    <text x="22" y="175">was it cheap to run?</text>
+  </g>
+
+  <g class="fill-ink-muted font-mono" font-size="8" text-anchor="end">
+    <text x="242" y="47">counted</text>
+    <text x="242" y="79">counted</text>
+  </g>
+
+  <g class="fill-ink-faint font-mono" font-size="8" text-anchor="end">
+    <text x="242" y="111">ignored</text>
+    <text x="242" y="143">ignored</text>
+    <text x="242" y="175">ignored</text>
+  </g>
+
+  <!-- Counted qualities merge into one line and reach the score. -->
+  <g class="fill-none stroke-accent-2" stroke-width="2">
+    <path d="M252 43 H310 V124 H348"></path>
+    <path d="M252 75 H310 V124 H348"></path>
+    <path d="M348 119 L356 124 L348 129"></path>
+  </g>
+
+  <!-- Ignored ones stop at a wall. This is the sentence of the diagram. -->
+  <g class="stroke-rule-strong" stroke-width="1.5" stroke-dasharray="3 3">
+    <line x1="252" y1="107" x2="288" y2="107"></line>
+    <line x1="252" y1="139" x2="288" y2="139"></line>
+    <line x1="252" y1="171" x2="288" y2="171"></line>
+    <line x1="294" y1="98" x2="294" y2="182"></line>
+  </g>
+
+  <g class="fill-ink-faint font-mono" font-size="8">
+    <text x="252" y="198">these never reach the score</text>
+  </g>
+
+  <!-- The one number. -->
+  <g class="fill-accent-soft stroke-accent" stroke-width="1.5">
+    <rect x="360" y="88" width="150" height="72" rx="10"></rect>
+  </g>
+
+  <g class="fill-ink-muted font-mono" font-size="9" text-anchor="middle">
+    <text x="435" y="110">the score you chose</text>
+  </g>
+  <g class="fill-ink font-mono" font-size="20" text-anchor="middle">
+    <text x="435" y="136">3.4</text>
+  </g>
+  <g class="fill-ink-faint font-mono" font-size="8" text-anchor="middle">
+    <text x="435" y="152">one number. lower is better.</text>
+  </g>
+
+  <g class="fill-none stroke-accent" stroke-width="2">
+    <line x1="514" y1="124" x2="552" y2="124"></line>
+    <path d="M546 119 L554 124 L546 129"></path>
+  </g>
+  <g class="fill-ink-muted font-mono" font-size="8" text-anchor="middle">
+    <text x="533" y="114">shrink</text>
+  </g>
+
+  <!-- The dials, which can chase nothing else. -->
+  <g class="fill-paper-raised stroke-ink" stroke-width="1.75">
+    <rect x="558" y="88" width="70" height="72" rx="8"></rect>
+  </g>
+  <g class="fill-ink-faint font-mono" font-size="8" text-anchor="middle">
+    <text x="593" y="108">the dials</text>
+  </g>
+  <g class="fill-paper stroke-ink-muted" stroke-width="1.5">
+    <circle cx="573" cy="134" r="8"></circle>
+    <line x1="573" y1="134" x2="573" y2="128"></line>
+    <circle cx="593" cy="134" r="8"></circle>
+    <line x1="593" y1="134" x2="598" y2="130"></line>
+    <circle cx="613" cy="134" r="8"></circle>
+    <line x1="613" y1="134" x2="608" y2="129"></line>
+  </g>
+
+  <g class="fill-accent font-display" font-size="13" font-weight="700">
+    <text x="150" y="228">what is not in the number is free to get worse</text>
+  </g>
+</svg>

@@ -1,0 +1,154 @@
+---
+title: Why rules run out
+part: why-this-exists
+order: 1
+summary: Some jobs have no rule anyone can write down — and that missing rule is the reason machines had to start learning from examples instead.
+prerequisites: []
+connections:
+  - to: model-as-dials
+    why: If you cannot write the rule, you need a machine that finds it for you — and this is the shape of that machine.
+interactives:
+  - SpamRuleWriter
+status: published
+updated: 2026-07-31
+---
+
+import Checkpoint from '../../components/blocks/Checkpoint.astro';
+import DevAside from '../../components/blocks/DevAside.astro';
+import Figure from '../../components/blocks/Figure.astro';
+import TwoKindsOfProblem from '../../components/diagrams/TwoKindsOfProblem.astro';
+import { SpamRuleWriter } from '../../components/interactives/SpamRuleWriter';
+
+It is 1998 and you have been handed a job. Junk email is drowning your company,
+and you have been asked to stop it. You are a good programmer. A computer does
+exactly what you tell it, so you sit down to tell it what junk looks like.
+
+Junk shouts in capitals. That is a rule. Junk is full of exclamation marks —
+another rule. Junk says "free", junk says "urgent", junk wants you to click
+something. Five rules, an afternoon's work, and the flood stops.
+
+For about a week.
+
+Then the senders notice. The capitals become lowercase. "Free" becomes "no
+charge". Meanwhile your colleague misses a real invoice, because it said URGENT
+in the subject line and your rule threw it away. So you add an exception. Then
+an exception to the exception. Six months later you are maintaining four hundred
+rules that argue with each other, and the junk is still arriving.
+
+## The thing you were never able to write down
+
+Try it yourself. Below is a week of email and the five rules you started with.
+Find a set that keeps every real message and blocks every junk one — it is
+genuinely possible. Then switch to next week's inbox, where nothing has changed
+except the wording, and watch your answer come apart.
+
+<SpamRuleWriter client:visible />
+
+The instrument is not being unfair to you. It searches all thirty-two possible
+combinations of those five rules and reports the best score any of them can
+reach. In the second inbox, the answer is that none of them work.
+
+That is the first important idea on this site, so it is worth saying plainly:
+**you were not failing at the task. The task was impossible as stated.**
+
+## A job a child can do and nobody can explain
+
+Junk email is the small version. Here is the large one.
+
+You can recognise your mother's face in about a tenth of a second. In a crowd,
+at an angle, in bad light, twenty years older than the last time you saw her.
+Now write down the rule you just used.
+
+You cannot. Not because you are not clever enough, but because you never had
+access to it. Whatever your brain did, it did without telling you, and no amount
+of introspection produces the instructions. This is true of almost everything
+people are effortlessly good at: recognising a voice on the phone, catching a
+ball, hearing that a sentence sounds wrong, knowing a photo looks like a tumour.
+
+<Figure
+  title="Two kinds of task"
+  description="Some jobs have a rule you can finish writing and then you are done. Others have a rule that keeps sprouting exceptions until you give up — and that second pile is what learning machines were invented for."
+>
+  <TwoKindsOfProblem />
+</Figure>
+
+So there are two piles of problems. One pile you can finish: sorting a list,
+calculating tax, checking a password length. You state the rule, the machine
+follows it, and it works forever.
+
+The other pile has no rule to state. Not a rule that is hard to write — a rule
+that does not exist in any form anyone can get at. And unfortunately this second
+pile contains most of the things we would actually like computers to do.
+
+## The move that got us out
+
+For decades, the second pile was simply where computing stopped. What changed
+was not a better rule. It was giving up on rules.
+
+The idea is this. Instead of describing the job, collect thousands of examples
+of it being done correctly — thousands of messages already marked junk or not,
+thousands of photos already labelled. Then build a machine with a large number
+of adjustable settings, and adjust them, over and over, until the machine's
+answers stop disagreeing with the examples.
+
+Nobody ever writes the rule. The rule ends up buried in the settings, in a form
+no person could read. What you get is a machine that behaves as though it knows
+something you were never able to say.
+
+That trade is the whole subject. Everything else — every layer, every model,
+every chatbot — is a consequence of taking it seriously.
+
+<DevAside>
+  <Fragment slot="java">
+    ```java
+    boolean isJunk(Message m) {
+      if (m.subject().matches(".*\\b[A-Z]{4,}\\b.*")) return true;
+      if (m.subject().contains("free")) return true;
+      if (m.subject().contains("urgent")) return true;
+      // ...and 397 more, each added the week something got through
+      return false;
+    }
+    ```
+
+    You have written this method. Every new rule turns a previously green test
+    red, and every fix for that test lets something else through. The file only
+    grows. No refactor helps, because the problem is not that the code is badly
+    organised — it is that the rule you are trying to express does not exist.
+
+  </Fragment>
+  <Fragment slot="python">
+    ```python
+    JUNK_PATTERNS = [
+        r"\b[A-Z]{4,}\b",
+        r"\bfree\b",
+        r"\burgent\b",
+        # ...and 397 more
+    ]
+
+    def is_junk(message):
+        return any(re.search(p, message.subject) for p in JUNK_PATTERNS)
+    ```
+
+    Same shape, fewer characters. The list is the bug, not the language.
+
+  </Fragment>
+</DevAside>
+
+## Where you will meet this again
+
+Every time a model does something impressive and then something stupid, it is
+worth coming back here. These systems were never given rules. They were shown
+examples and tuned until they agreed with them — so they are excellent at things
+that look like their examples, and unreliable in exactly the places where the
+rule you assumed they had does not exist.
+
+<Checkpoint question="Your five rules score perfectly on this week's mail. Why is that not evidence that the rules are correct?">
+  Because the score only tells you the rules fit the examples in front of you.
+  It says nothing about mail that has not arrived yet — and the senders adjust.
+  A rule that fits this week's inbox perfectly can fail completely next week
+  without a single character of it changing.
+
+Keep hold of this. The gap between "scores well on what I have" and "works on
+what comes next" turns out to be the central difficulty in the whole field.
+
+</Checkpoint>

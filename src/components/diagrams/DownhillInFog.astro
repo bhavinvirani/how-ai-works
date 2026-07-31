@@ -1,0 +1,161 @@
+---
+/**
+ * The same landscape twice: once as nobody ever gets to see it, and once as the
+ * machine actually meets it — a single patch of ground under its feet.
+ *
+ * The teaching load is carried by the arrow on the right pointing the OPPOSITE
+ * way to the hollow marked on the left. Fog is drawn as a hatch rather than as a
+ * tint, so the occlusion survives without colour (hard rule 9), and every claim
+ * is spelled out in words along the bottom of each panel.
+ *
+ * The terrain is the same function the FoggyDescentWalk instrument walks down,
+ * sampled at build time into a path, so the reader meets one shape rather than
+ * two. Decorative on its own, so `aria-hidden`: `Figure` carries the name and
+ * the description.
+ */
+---
+
+<svg viewBox="0 0 640 288" class="w-full" aria-hidden="true">
+  <defs>
+    <pattern
+      id="downhill-fog-hatch"
+      width="7"
+      height="7"
+      patternUnits="userSpaceOnUse"
+      patternTransform="rotate(45)"
+    >
+      <line x1="0" y1="0" x2="0" y2="7" class="stroke-rule" stroke-width="1.5"
+      ></line>
+    </pattern>
+  </defs>
+
+  <g class="fill-none stroke-rule-strong" stroke-width="1.25">
+    <rect x="8" y="8" width="296" height="270" rx="8"></rect>
+    <rect x="336" y="8" width="296" height="270" rx="8"></rect>
+  </g>
+
+  <g class="fill-ink font-display" font-size="14" font-weight="700">
+    <text x="28" y="32">If it could see the whole landscape</text>
+    <text x="356" y="32">What it actually gets</text>
+  </g>
+
+  <g class="fill-ink-faint font-mono" font-size="9">
+    <text x="28" y="48">nothing ever gets this view</text>
+    <text x="356" y="48">the same landscape, hidden</text>
+    <text x="28" y="64">up means more wrong</text>
+    <text x="356" y="64">up means more wrong</text>
+  </g>
+
+  <!-- Left: the terrain, drawn in full. -->
+  <path
+    class="fill-none stroke-rule-strong"
+    stroke-width="1.75"
+    d="M30.0 80.0L34.3 80.5L38.6 81.3L42.9 82.7L47.2 84.7L51.5 87.4L55.8 91.1L60.1 95.7L64.4 101.2L68.7 107.5L73.0 114.3L77.3 121.2L81.6 127.7L85.9 133.2L90.2 137.3L94.5 139.5L98.8 139.6L103.1 137.7L107.4 133.8L111.7 128.5L116.0 122.2L120.3 115.6L124.6 109.1L128.9 103.3L133.2 98.6L137.5 95.2L141.8 93.3L146.1 92.9L150.4 94.1L154.7 96.8L159.0 100.9L163.3 106.3L167.6 113.0L171.9 120.8L176.2 129.6L180.5 139.2L184.8 149.2L189.1 159.6L193.4 169.7L197.7 179.4L202.0 188.1L206.3 195.6L210.6 201.5L214.9 205.4L219.2 207.2L223.5 206.9L227.8 204.3L232.1 199.7L236.4 193.2L240.7 185.1L245.0 175.8L249.3 165.7L253.6 155.2L257.9 144.6L262.2 134.2L266.5 124.4L270.8 115.3L275.1 107.1L279.4 99.8L283.7 93.6L288.0 88.3"
+  ></path>
+
+  <!-- Left: both hollows named, so neither is identified by colour alone. -->
+  <circle
+    cx="97.1"
+    cy="139.8"
+    r="6"
+    class="fill-none stroke-accent-2"
+    stroke-width="1.5"></circle>
+  <text
+    x="97"
+    y="160"
+    text-anchor="middle"
+    class="fill-ink-muted font-mono"
+    font-size="8">a hollow</text
+  >
+
+  <circle
+    cx="220.7"
+    cy="207.3"
+    r="6"
+    class="fill-none stroke-accent-2"
+    stroke-width="1.5"></circle>
+  <text
+    x="220.7"
+    y="228"
+    text-anchor="middle"
+    class="fill-ink font-mono"
+    font-size="8">the lowest point anywhere</text
+  >
+
+  <!-- Left: where the machine happens to be standing. -->
+  <g class="stroke-accent" stroke-width="1.25">
+    <line x1="117.7" y1="119.6" x2="117.7" y2="90"></line>
+  </g>
+  <circle cx="117.7" cy="119.6" r="4.5" class="fill-accent"></circle>
+  <text
+    x="117.7"
+    y="82"
+    text-anchor="middle"
+    class="fill-ink font-mono"
+    font-size="8">it is standing here</text
+  >
+
+  <!-- Right: the fog bank, hatched so the occlusion is not a colour. -->
+  <rect x="358" y="92" width="258" height="134" class="fill-paper-sunken"
+  ></rect>
+  <rect x="358" y="92" width="258" height="134" fill="url(#downhill-fog-hatch)"
+  ></rect>
+  <rect
+    x="358"
+    y="92"
+    width="258"
+    height="134"
+    class="fill-none stroke-rule"
+    stroke-width="1"></rect>
+
+  <!-- Right: the one patch of ground it can feel. -->
+  <ellipse
+    cx="445.7"
+    cy="119.6"
+    rx="20"
+    ry="24"
+    class="fill-paper stroke-rule-strong"
+    stroke-width="1.25"
+    stroke-dasharray="3 3"></ellipse>
+  <path
+    class="fill-none stroke-rule-strong"
+    stroke-width="1.75"
+    d="M435.4 133.8L437.5 131.4L439.5 128.7L441.6 125.8L443.7 122.7L445.7 119.6L447.8 116.4L449.8 113.2L451.9 110.1L454.0 107.2L456.0 104.4"
+  ></path>
+
+  <!-- Right: the only instruction it ever receives. -->
+  <g class="stroke-accent" stroke-width="2">
+    <line x1="452.2" y1="124.3" x2="441.9" y2="138.5"></line>
+    <path d="M448.0 135.5 L441.9 138.5 L442.8 131.7" class="fill-none"></path>
+  </g>
+
+  <g class="stroke-accent" stroke-width="1.25">
+    <line x1="445.7" y1="95.6" x2="445.7" y2="90"></line>
+  </g>
+  <circle cx="445.7" cy="119.6" r="4.5" class="fill-accent"></circle>
+  <text
+    x="445.7"
+    y="82"
+    text-anchor="middle"
+    class="fill-ink font-mono"
+    font-size="8">it is standing here</text
+  >
+
+  <g class="fill-ink-faint font-mono" font-size="9">
+    <text x="156" y="250" text-anchor="middle"
+      >every possible setting of the dials</text
+    >
+    <text x="484" y="250" text-anchor="middle"
+      >every possible setting of the dials</text
+    >
+  </g>
+
+  <g class="fill-ink font-display" font-size="12" font-weight="700">
+    <text x="156" y="268" text-anchor="middle"
+      >You would see which hollow is real.</text
+    >
+    <text x="484" y="268" text-anchor="middle"
+      >Downhill leads to the wrong one.</text
+    >
+  </g>
+</svg>

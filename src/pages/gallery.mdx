@@ -10,6 +10,19 @@ import DevAside from '../components/blocks/DevAside.astro';
 import ConnectionsFooter from '../components/blocks/ConnectionsFooter.astro';
 import Figure from '../components/blocks/Figure.astro';
 import { UnitProgress } from '../components/blocks/UnitProgress';
+import { ClusterFinder } from '../components/interactives/ClusterFinder';
+import { DialTuner } from '../components/interactives/DialTuner';
+import { ExploreExploitBandit } from '../components/interactives/ExploreExploitBandit';
+import { FlexibilityDial } from '../components/interactives/FlexibilityDial';
+import { FreeLabelMaker } from '../components/interactives/FreeLabelMaker';
+import { LeakageSplitter } from '../components/interactives/LeakageSplitter';
+import { ThresholdMatrix } from '../components/interactives/ThresholdMatrix';
+import { FoggyDescentWalk } from '../components/interactives/FoggyDescentWalk';
+import { LabelPicker } from '../components/interactives/LabelPicker';
+import { ScoringRulePicker } from '../components/interactives/ScoringRulePicker';
+import { SpamRuleWriter } from '../components/interactives/SpamRuleWriter';
+import { StepSizeRace } from '../components/interactives/StepSizeRace';
+import { TrainingLoopRunner } from '../components/interactives/TrainingLoopRunner';
 import {
   InstrumentPanelDemo,
   RevealButtonDemo,
@@ -29,6 +42,101 @@ looks like it belongs.
 
 Try it with the keyboard. Everything here works without a mouse, and anything
 that stops working is a bug.
+
+## Instruments
+
+The real ones, exactly as they appear inside a unit. Everything below this
+heading is a control; everything here is a finished teaching instrument built
+out of those controls.
+
+### Write the rules yourself
+
+Find a rule set that scores perfectly on this week's inbox, then switch weeks.
+The instrument searches all thirty-two combinations, so the "no set works" claim
+is computed rather than asserted.
+
+<SpamRuleWriter client:visible />
+
+### Turn the dials by hand
+
+Two parameters, eight real sales, and one number for how wrong the machine is.
+The dashed lines are the errors being minimised.
+
+<DialTuner client:visible />
+
+### Nominate the answer column
+
+Which column counts as the answer is a choice, and it changes which of the other
+columns turn out to be useful.
+
+<LabelPicker client:visible />
+
+### Run the loop yourself
+
+Guess, compare, blame, nudge — with nobody touching the dials. One press does
+almost nothing; that is the point.
+
+<TrainingLoopRunner client:visible />
+
+### Pick what to score
+
+The same five answers under four different scoring rules. A different one
+survives each time.
+
+<ScoringRulePicker client:visible />
+
+### Walk downhill in the fog
+
+The walker only ever knows the slope where it is standing. Lift the fog
+afterwards to see what it could not.
+
+<FoggyDescentWalk client:visible />
+
+### Race three strides
+
+Same hill, same start, three step sizes. One arrives, one crawls, one never
+settles.
+
+<StepSizeRace client:visible />
+
+### Ask it for a number of groups
+
+Grouping with no answer key. More groups always scores better, which is exactly
+why the score cannot tell you the right number.
+
+<ClusterFinder client:visible />
+
+### Try, score, adjust
+
+No right answer, only a score — and the thing it settles on is whatever the
+score rewarded.
+
+<ExploreExploitBandit client:visible />
+
+### Cover a word and guess it back
+
+The hinge of the whole site: the answer key was inside the data all along.
+
+<FreeLabelMaker client:visible />
+
+### Add one dial at a time
+
+Perfect on the sales it studied, ruinous on the ones it has not seen.
+
+<FlexibilityDial client:visible />
+
+### Score it on what it never saw
+
+Repairing a leaky split makes the score worse. That is the score becoming
+honest.
+
+<LeakageSplitter client:visible />
+
+### Turn the bar up and down
+
+A detector that raises no alarms at all scores 99%.
+
+<ThresholdMatrix client:visible />
 
 ## Instrument panel
 

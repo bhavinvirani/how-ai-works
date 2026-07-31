@@ -37,6 +37,13 @@ const { frontmatter, ...direct } = Astro.props;
 const { title, description } = frontmatter ?? (direct as PageMeta);
 
 const canonical = new URL(Astro.url.pathname, Astro.site);
+
+/**
+ * Pages that supply a `nav` slot get a two-column shell; everything else keeps
+ * the single centred column. Checked rather than passed as a prop so a page
+ * cannot claim to have navigation and then not render any.
+ */
+const hasNav = Astro.slots.has('nav');
 ---
 
 <!doctype html>
@@ -51,8 +58,26 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
     <meta name="generator" content={Astro.generator} />
   </head>
   <body class="min-h-dvh">
-    <main class="content mx-auto max-w-3xl px-6 py-16">
-      <slot />
-    </main>
+    {
+      hasNav ? (
+        <div class="mx-auto flex max-w-6xl gap-12 px-6">
+          <div class="w-56 shrink-0 max-lg:hidden">
+            <slot name="nav" />
+          </div>
+          <main class="content max-w-3xl min-w-0 flex-1 py-16">
+            {/* The disclosure copy of the nav rides above the lesson on small
+                screens, where the rail is hidden. */}
+            <div class="lg:hidden">
+              <slot name="nav-compact" />
+            </div>
+            <slot />
+          </main>
+        </div>
+      ) : (
+        <main class="content mx-auto max-w-3xl px-6 py-16">
+          <slot />
+        </main>
+      )
+    }
   </body>
 </html>

@@ -1,0 +1,188 @@
+---
+title: Two ways to be wrong
+part: when-scores-lie
+order: 3
+summary: When the answer you are hunting for is rare, a machine that says no to everybody scores ninety-nine per cent — so the only honest way to judge one is to count its two kinds of mistake separately, and decide by hand which you would rather have.
+prerequisites:
+  - loss-function
+connections:
+  - to: training-data
+    why: How rare the interesting answer is was settled when somebody built the table of examples, and that rarity — not the machine — is what makes a single accuracy number so easy to fool.
+  - to: why-rules-fail
+    why: 'The junk filter had these same two mistakes from its first afternoon: a real invoice thrown away, and a junk message let through. Nobody minded them equally.'
+interactives:
+  - ThresholdMatrix
+status: published
+updated: 2026-07-31
+---
+
+import Aside from '../../components/blocks/Aside.astro';
+import Checkpoint from '../../components/blocks/Checkpoint.astro';
+import DevAside from '../../components/blocks/DevAside.astro';
+import Figure from '../../components/blocks/Figure.astro';
+import TwoKindsOfMistake from '../../components/diagrams/TwoKindsOfMistake.astro';
+import { ThresholdMatrix } from '../../components/interactives/ThresholdMatrix';
+
+A clinic screens a thousand people a month for a cancer that about ten of them
+have. Two detectors are sitting on your desk and you have to pick one. The first
+is right 99 times in a hundred. The second is right about 91. You have a
+spreadsheet and an afternoon, and the decision takes ten seconds.
+
+You have just chosen the wrong one.
+
+The 99 per cent detector has a single instruction inside it. It says "clear" to
+everybody who walks through the door. It never raises an alarm, it never
+frightens anybody, and it is wrong only about the ten people a month the whole
+programme exists to find. The 91 per cent detector finds nine of them.
+
+## Where the 99 per cent came from
+
+Nothing about that score is a trick. Count the answers and the arithmetic holds:
+990 of the thousand people really were healthy, the machine really did say so,
+and 990 out of 1,000 really is 99 per cent.
+
+The trouble is the question the score answers. **Accuracy** — how often the
+machine was right, across everybody — gives every person in the room one vote.
+And 99 per cent of that room is healthy people, so 99 per cent of the score is a
+question nobody needed asking. The ten people the clinic is actually looking for
+contribute one per cent between them.
+
+That is what makes rare answers so dangerous to measure. Whenever the thing you
+are hunting is unusual — fraud in card payments, a crack in a bridge, a tumour
+in a scan — not looking at all is a strategy with an excellent score.
+
+## Two ways to be wrong
+
+So stop asking how often the machine was right, and start asking what it got
+wrong. There are only two ways, and they are not the same thing at all.
+
+It can raise the alarm when there was nothing there. Somebody healthy is called
+back, spends a fortnight frightened, has another test, and turns out to be fine.
+Call that a **false alarm**.
+
+Or it can stay quiet when there was something there. Somebody ill is sent home
+reassured, and nobody looks again until it is much later. Call that a **miss**.
+
+Adding both into one accuracy number quietly claims they cost the same. They
+almost never do. For this screening programme a miss is a funeral and a false
+alarm is a bad fortnight, so you would happily take a great many false alarms to
+avoid one miss. Now run the identical argument for a junk mail filter and it
+flips: a junk message in your inbox is an irritation, and a lost invoice is a
+real problem. Same two mistakes, opposite order of importance, and no way to
+tell them apart from a single score.
+
+<Figure
+  title="The four boxes every detector fills in"
+  description="Every answer a detector gives lands in one of four boxes, and accuracy is only the two marked right added together — so when almost everybody is healthy, one box does nearly all the scoring and the two mistakes can be swapped for each other without the score moving much."
+>
+  <TwoKindsOfMistake />
+</Figure>
+
+## The two questions worth asking
+
+Once the mistakes are separated, two questions do nearly all the work, and
+neither of them needs any jargon.
+
+**When it raises the alarm, how often is something really there?** If the answer
+is one time in twenty, people stop coming back for the follow-up, and the alarm
+has made itself worthless.
+
+**Of all the people who really were ill, how many did it find?** If the answer is
+two out of ten, it does not matter how calm the clinic is.
+
+Both have formal names, which turn up on every model report card you will ever
+read: the first is **precision**, the second is **recall**. Learn the names so
+you can read the card, and ask the plain questions when you are in the room.
+
+## Turn the dial yourself
+
+Here is the part that surprises people. You rarely have to choose between those
+two detectors, because they are usually the same machine.
+
+A detector like this does not answer yes or no. It scores each scan for how
+suspicious it looks, and somebody — separately, by hand — decides how high that
+score must reach before anyone is called back. That bar is a dial, and turning
+it is what turns one machine into the first detector or the second.
+
+Below is one month of screening. Start at the far left, where the bar is so high
+the test never raises an alarm at all, and read the accuracy. Then drag right
+slowly, watching two things: how many of the ten it finds, and what the accuracy
+does while it finds them.
+
+<ThresholdMatrix client:visible />
+
+Three things are worth noticing, and the second is the one that matters.
+
+The setting that scores highest of all — 99.1 per cent, better than the machine
+that does nothing — finds two of the ten ill people. It is the top-scoring
+detector on the whole dial and nobody would let it near a clinic.
+
+Push further and the accuracy _falls_ while the machine becomes genuinely more
+useful. Nothing is faulty. Every extra person called back is a real false alarm,
+and accuracy counts each one against the machine exactly as heavily as it counts
+each illness found in its favour.
+
+And at the setting that finds all ten, accuracy has dropped to 74 per cent. On a
+spreadsheet it is the worst detector on the page.
+
+<Aside title="Training will build the useless machine for you">
+  This is not only a reporting problem. Point a training run at examples where
+  one answer is rare, tell it to make its wrongness score as small as possible,
+  and "always say no" is a genuinely good answer to the question you asked. The
+  search finds it, because it is downhill, and settles there. Nothing has
+  malfunctioned. Teams work around it by scoring the rare answer more heavily,
+  or by holding back most of the common examples — both of which are a person
+  deciding, by hand, what a miss is worth.
+</Aside>
+
+## Where the dial sits is not a technical decision
+
+No formula can place it for you. Moving the dial trades misses for false alarms
+at a rate the machine works out exactly, but the exchange rate — how many
+frightening fortnights one prevented funeral is worth — is nowhere in the data.
+Somebody has to decide, and should be answerable for it.
+
+Which gives you the question to carry into every conversation about how well an
+AI system performs. Not "how good is the score?" but "at what, what does it get
+wrong, and how rare was the thing it was hunting?" That one keeps working right
+through to the end of this guide.
+
+<DevAside>
+  <Fragment slot="java">
+    ```java
+    double accuracy  = (caught + cleared) / (double) screened;
+    double precision = caught / (double) (caught + falseAlarms);
+    double recall    = caught / (double) (caught + missed);
+    ```
+
+    The first line reaches the dashboard; the other two get asked about after
+    the incident review. Note that the second returns a quiet `NaN` when the
+    model has never flagged anything — the useless detector announcing itself,
+    and the only warning you get.
+
+  </Fragment>
+  <Fragment slot="python">
+    ```python
+    accuracy  = (caught + cleared) / screened
+    precision = caught / (caught + false_alarms)   # ZeroDivisionError
+    recall    = caught / (caught + missed)
+    ```
+
+    Here the same case raises instead of returning `NaN`, which is the better
+    outcome: a model that never once raised an alarm crashes the report rather
+    than scoring well in it.
+
+  </Fragment>
+</DevAside>
+
+<Checkpoint question="A fraud model is reported as 99.8% accurate on last year's payments, where roughly one payment in five hundred was fraudulent. What have you actually been told, and what would you ask next?">
+  Almost nothing. Waving every payment through without looking scores 99.8 per
+  cent on that data, so the number you were given is entirely consistent with a
+  model that has never flagged anything in its life.
+
+Two questions get you somewhere. Of the payments that really were fraudulent,
+how many did it catch? And when it does flag one, how often is it right? Then a
+third, which is not about the model at all: who decided where the bar sits, and
+what were they told a missed fraud costs against a blocked customer?
+
+</Checkpoint>

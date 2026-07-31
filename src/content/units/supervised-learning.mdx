@@ -1,0 +1,184 @@
+---
+title: When somebody already knows the answer
+part: kinds-of-learning
+order: 1
+summary: When every example arrives with the right answer written beside it, the machine can be corrected exactly — and the number of answers somebody was willing to write down is the ceiling on what you can build.
+prerequisites:
+  - training-loop
+connections:
+  - to: training-data
+    why: A label is one column of that table promoted to the answer, so the choice made there is what decides what the supervision is actually supervising.
+  - to: loss-function
+    why: Scoring a guess needs two numbers and the label supplies the second one — with no answer beside the example there is nothing to measure, and nothing for the dials to chase.
+interactives: []
+status: published
+updated: 2026-07-31
+---
+
+import Aside from '../../components/blocks/Aside.astro';
+import Checkpoint from '../../components/blocks/Checkpoint.astro';
+import DevAside from '../../components/blocks/DevAside.astro';
+import Figure from '../../components/blocks/Figure.astro';
+import AnswerKey from '../../components/diagrams/AnswerKey.astro';
+
+It is your first shift on the sorting line at a recycling plant. Cardboard to
+the left, plastics to the right, anything contaminated into the bin in front of
+you. Nobody hands you a manual.
+
+Instead a woman called Dee stands at your shoulder. You reach for a pizza box
+and she says "grease, that one is contaminated". You hesitate over a yoghurt
+pot and she says "fine, plastics". Wrong, right, wrong, right, perhaps two
+hundred times before lunch.
+
+By the afternoon she has stopped talking and you are keeping up with the belt.
+Ask you what the rule is and you cannot say it. Something about the sheen on
+the cardboard, the weight of it, the smell. You could not write it down for the
+next person any more than Dee could.
+
+Notice what actually did the teaching, though. Not the belt, and not the
+practice. Every one of those two hundred attempts was worth something because
+somebody standing beside you already knew the right answer for that exact item,
+and said it out loud within a second of your getting it wrong.
+
+## The hole in the loop
+
+The training loop has the same shape and the same requirement. Guess, compare,
+blame, nudge — but compare against what?
+
+Every pass round that cycle quietly assumes that somewhere, sitting next to the
+example, is the answer the machine should have given. This unit is about the
+case where that assumption is simply true, because a person put the answer
+there first.
+
+Ten thousand photographs, and beside each one a word somebody typed: cat, or
+dog. That word is a **label** — the correct answer for one example, recorded in
+advance by someone who already knew it. A pile of examples with their labels
+attached is an answer key, in exactly the sense of the answers at the back of a
+textbook.
+
+Now the loop closes properly. The machine looks at photograph 4,109 and says
+cat. The answer key says dog. That gap is not a matter of opinion, and it is
+not a verdict that arrives next month: it is available immediately, for that
+exact photograph, and it points somewhere — less cat, more dog. Do that ten
+thousand times over, a few million times over, and the dials settle somewhere
+that also works on photographs nobody has ever labelled.
+
+That is **supervised learning**, and for once the name is honest. It is as
+though a supervisor stands over the machine correcting every single attempt,
+the way Dee stood over you.
+
+## Two shapes of being wrong
+
+The answer key can hold two kinds of answer, and which kind it holds changes
+what a mistake even looks like.
+
+Sometimes the answer is a choice from a fixed set: junk or not junk, which of
+the ten digits, benign or malignant. That is **classification**, and being
+wrong means landing in the wrong box. There is no such thing as nearly right —
+you either picked the labelled box or you did not.
+
+Sometimes the answer is a number on a sliding scale: the price a house sold
+for, tomorrow's temperature, how long a delivery took. That is **regression**,
+and being wrong has a size. Guessing £240,000 when the house went for £310,000
+is wrong by seventy thousand pounds, and wrong in a particular direction — too
+low. So each correction says more than a classification correction does: not
+only which way to move, but how far.
+
+Same loop underneath, same arithmetic. The only thing that changed is what
+somebody wrote in the answer column.
+
+<Figure
+  title="One example, marked"
+  description="Because the right answer sits beside the guess, the correction is exact rather than inferred — and the pile of examples somebody actually marked, not the pile that exists, is what the machine can learn from."
+>
+  <AnswerKey />
+</Figure>
+
+## Why almost everything you have met works this way
+
+For most of this field's history, supervised learning was not one kind of
+machine learning. It was the kind that worked. The fraud check on your card,
+the app that gathers up every photograph of your dog, the transcription in your
+voice notes, the model that flags a suspicious chest scan — every one of them
+was trained on examples somebody had answered first.
+
+The reason it dominates is worth stating plainly. This is the only arrangement
+in which the machine is told, on every single example, exactly how wrong it was
+and in which direction. Nothing has to be guessed at, and nothing has to be
+waited for. A great deal of the rest of this site is, one way or another, about
+coping when that luxury is not on offer.
+
+## The bill arrives before the training does
+
+Every one of those answers was produced by a person, one at a time, before any
+training began.
+
+For cats and dogs that is cheap. Anyone can label a photograph, and plenty of
+people will do it for very little. For chest scans it is not cheap at all.
+Somebody has to be a qualified radiologist, they have to be paid, and there are
+only so many of them — the marking costs more than the computing does, and it
+takes far longer. For contracts marked up for legal risk, you are buying
+afternoons of a solicitor's time.
+
+So the ceiling on what you can build is not the size of your dataset. It is the
+size of your answer key. Seventy thousand scans sitting on a hospital server
+with three thousand of them marked is a three-thousand-scan project, and no
+amount of faster hardware moves that number by one.
+
+It is also the precise reason the machines that write English could not have
+been built this way. Their training material runs to something like a trillion
+words, and no committee on earth could sit down and write the correct answer
+beside each one. Getting round that bottleneck — finding answer keys that
+nobody has to write — is most of why the last few years happened, and it is
+where this Part is going.
+
+<Aside title="The answer key is somebody's opinion" tone="caution">
+  The formal name for the answer key is the **ground truth**, which sounds
+  grander than it is: it means whatever the people doing the marking decided was
+  correct. Nothing checks them. When two radiologists disagree about a scan, one
+  of those two judgements ends up in the key as fact, and the machine learns it
+  exactly as confidently as it learns everything else. Where labelling is
+  rushed, or sent to people who were never told what to do with the awkward
+  cases, the damage does not arrive as visible errors. It arrives as a model
+  that is quietly and consistently wrong in the same way its markers were.
+</Aside>
+
+<DevAside>
+  <Fragment slot="java">
+    ```java
+    // Two arrays, same length, same order.
+    double[][] measurements = loadFeatures();   // 10,000 photographs
+    String[]   answers      = loadLabels();     // 10,000 words, typed by hand
+
+    model.fit(measurements, answers);
+    ```
+
+    Every supervised training call in every language has this shape: the things
+    you can measure, and the answers, lined up row for row. The second array is
+    the entire content of this unit — and it is the one that does not exist yet
+    on the day somebody asks you to build the model.
+
+  </Fragment>
+  <Fragment slot="python">
+    ```python
+    model.fit(X, y)   # X: 10,000 photos.  y: 10,000 labels, typed by hand
+    ```
+
+    `y` is the whole subject. Without it none of the rest of the library is any
+    use to you, which is why serious projects spend more engineering effort on
+    labelling tools and on checking labellers against each other than on the
+    model itself.
+
+  </Fragment>
+</DevAside>
+
+<Checkpoint question="You have two million product photographs, and enough budget to have five thousand of them labelled by hand. Which of those two numbers limits what you can build, and why?">
+  The five thousand. A photograph with no answer beside it gives the machine
+  nothing to compare its guess against, so the other 1,995,000 are invisible to
+  this method — they are not a smaller contribution, they are no contribution.
+
+Worth holding onto, because it explains where the field went next. Faster
+hardware does not touch this limit, and neither does a cleverer model. The only
+ways out are to get answers more cheaply, or to find data that answers itself.
+
+</Checkpoint>

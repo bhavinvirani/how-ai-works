@@ -1,0 +1,200 @@
+---
+title: The pile nobody is allowed to look at
+part: when-scores-lie
+order: 2
+summary: A machine can only be judged on examples it has never seen, so a slice of the data is hidden before anything starts — and a third slice exists because you, not the machine, are what spoils the second.
+prerequisites:
+  - training-data
+connections:
+  - to: why-rules-fail
+    why: The five rules that scored perfectly on this week's inbox and fell apart next week were failing exactly this test, and this is the procedure that shows it before anything ships.
+  - to: loss-function
+    why: A wrongness score is always worked out over some particular pile of rows, so which pile it was worked out on decides whether the number is worth reading at all.
+interactives:
+  - LeakageSplitter
+status: published
+updated: 2026-07-31
+---
+
+import Aside from '../../components/blocks/Aside.astro';
+import Checkpoint from '../../components/blocks/Checkpoint.astro';
+import DevAside from '../../components/blocks/DevAside.astro';
+import Figure from '../../components/blocks/Figure.astro';
+import HeldBackData from '../../components/diagrams/HeldBackData.astro';
+import { LeakageSplitter } from '../../components/interactives/LeakageSplitter';
+
+Your nephew has twenty spellings to learn by Friday. He goes through the list
+every evening. On Friday the teacher reads out those same twenty words, and he
+gets all twenty right.
+
+A fortnight later he writes you a thank-you card and spells "necessary" with two
+c's.
+
+Nothing went wrong on Friday. The test was completely honest about what it
+measured, which was whether he could hand back twenty words he had already been
+given. It was never asked to say anything about the twenty-first.
+
+## A score that measures storage
+
+Machines are in the same position, and they are far better at it.
+
+A model with enough adjustable numbers inside can, in effect, keep the examples.
+Ask it about a row it was trained on and it hands the answer straight back,
+because that answer is in there somewhere. Score it on those rows and you get
+something close to perfect whether or not it has learned anything at all.
+
+The number is not a lie. It answers a question — how well does this machine
+reproduce what it was shown — that nobody wanted answered. What anyone cares
+about is the delivery that has not run yet, the email that has not arrived, the
+patient walking in on Tuesday.
+
+So there is exactly one honest test, and it is awkward: examples the machine has
+never seen. You have none — everything you collected, you collected — so you
+make some. Before training starts, before you have even settled what kind of
+machine to build, you take a slice of your rows out of the pile, put it away,
+and do not look at it. That cut is called **splitting** the data, and the part
+you put away is **held-back**.
+
+## Two piles are not enough
+
+You would be finished there if you only ever built one machine. Nobody builds
+one. You build a machine, look at the score, change something — a different
+shape, a smaller step, stop earlier — and build it again. Thirty more times.
+
+Every one of those decisions needs a score on unseen rows, or you are marking
+your own homework again. So the held-back pile gets used once per attempt, and
+something quiet goes wrong: by the thirtieth comparison your choices have been
+bent to suit that particular set of rows, because you kept whichever change
+happened to please them. Nothing leaked into the machine. It leaked into you.
+
+Which is why the data is cut three ways rather than two.
+
+The bulk of it, roughly seven rows in ten, is what the machine studies: the
+**training** set. A slice of what remains, perhaps fifteen rows in a hundred, is
+the **validation** set, looked at after every change so you can tell whether the
+change helped. The last slice is the **test** set, and it carries one rule:
+opened once, at the very end, and whatever it says is the number you report.
+
+Back to your nephew. The weekly list is what he studies. The practice paper you
+keep setting him tells you whether the revision is working — and stops telling
+you much by the fourth attempt, once you have picked the revision that suits
+that paper. The exam in the hall is sat once, on questions nobody in the house
+has seen.
+
+<Figure
+  title="One pile of rows, cut into three"
+  description="The three piles differ far less in size than in who is allowed to learn from them — the machine from the first, you from the second, nobody from the third, which is the only reason the third one's score still means anything."
+>
+  <HeldBackData />
+</Figure>
+
+## Take a depot's data apart
+
+Below are twenty-four rows from a courier depot, each one a round that already
+ran: how far it covered, how many parcels were on it, whether it finished late.
+Fourteen rows were studied; ten were held back before anything began.
+
+The machine is the plainest one there is: to guess about a round, it finds the
+studied round most like it — closest on distance and parcel count — and copies
+what happened to that one. Its bluntness is the point. What a large model does
+where nobody can watch, this one does in the open.
+
+Start on the rounds it studied.
+
+<LeakageSplitter client:visible />
+
+Fourteen out of fourteen, and worth nothing. Asked about a round it studied, the
+most similar studied round is that same row — the machine is reading its own
+notes back. Every model does a version of this. Most are less obvious about it.
+
+Now switch to the rounds that were held back. Still perfect — and now it looks
+like an achievement.
+
+It is not. Four of those twenty rounds were entered twice: once by the office,
+once from the driver's handset, a kilometre between the readings. When the rows
+were dealt out one at a time, a copy of each landed on the studied side and its
+twin on the held-back side. Four of the ten "unseen" rounds had already been
+handed to the machine, in different handwriting.
+
+Now turn on the switch that keeps both copies of a round on the same side, and
+watch seven out of ten come up instead.
+
+That drop is the whole instrument. Nothing about the machine changed; the
+held-back rows simply became genuinely held back — and **the honest number is
+the worse one**. Which is what makes this mistake so hard to catch. Nobody goes
+hunting for the bug that is improving their results.
+
+## The hole in the wall
+
+The name for it is **leakage**: anything on the hidden side of the split that
+the machine has effectively already been handed. The wall is still standing.
+There is a hole in it, and the score comes back beautiful.
+
+It takes three ordinary shapes.
+
+Near-duplicates, which you have just watched. The same event recorded twice by
+two systems, the same customer under two account numbers, the same photograph
+uploaded again at a different size.
+
+A column that quietly contains the answer — the trap from the table unit.
+"Refund issued", on a machine guessing who will cancel, filled in during the
+cancellation call. Real column, genuine data, and it will not exist at the
+moment you need the guess.
+
+Time. Rows carrying dates, shuffled at random, so half of next March goes into
+training and the machine is scored on last March. It has read the future.
+Anything with dates has to be cut by date, not shuffled.
+
+And a habit worth keeping for good: **if a result is surprisingly good, look for
+leakage before you celebrate.** Duplicated rows are common. Breakthroughs are
+not.
+
+<Aside title="The sealed pile does not stay sealed">
+  Open the test set, see a disappointing number, change something and open it
+  again, and you have quietly turned it into a second validation set. Every look
+  spends a little of what the pile was for. Which is also why a public benchmark
+  everybody has been tuning against for five years tells you far less than its
+  scores suggest.
+</Aside>
+
+<DevAside>
+  <Fragment slot="java">
+    ```java
+    Collections.shuffle(rows, new Random(42));
+    int cut = (int) (rows.size() * 0.7);
+    List<Row> train = rows.subList(0, cut);
+    List<Row> test  = rows.subList(cut, rows.size());
+    ```
+
+    Four lines, and the important one is missing. Shuffling *rows* is what puts
+    one round on both sides. Shuffle the distinct round ids instead, then take
+    every row belonging to each id — the cut has to happen at the level of the
+    thing, not the record.
+
+  </Fragment>
+  <Fragment slot="python">
+    ```python
+    train, test = train_test_split(rows, test_size=0.3, random_state=42)
+    ```
+
+    `random_state` makes the split repeatable, which is regularly mistaken for
+    making it correct: it will cut the same round in half every time.
+    `GroupShuffleSplit` and `TimeSeriesSplit` exist for the two cases above, and
+    get reached for less often because the plain one produces nicer numbers.
+
+  </Fragment>
+</DevAside>
+
+<Checkpoint question="A colleague's fraud detector scores 99.4% on the test set — far and away the best thing your team has built. What is the first thing you should check?">
+  Whether anything in the test pile is already sitting in the training pile.
+  Near-duplicate transactions from one account, a column filled in after the
+  case was closed, a random split of records that carry dates on them.
+
+Not because your colleague is careless. Because a very high score is evidence for
+two different things at once — a very good machine, and a hole in the split — and
+the second is far the more common.
+
+The habit worth building is to grow suspicious in proportion to how pleased you
+are.
+
+</Checkpoint>

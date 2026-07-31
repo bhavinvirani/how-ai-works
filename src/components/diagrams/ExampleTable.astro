@@ -1,0 +1,172 @@
+---
+/**
+ * The training table, drawn literally: rows of finished cases, columns of
+ * measurements, and one column singled out as the answer.
+ *
+ * The teaching load is carried by the last row rather than by the grid. Four
+ * rows are complete; the fifth is a customer who joined this morning, and its
+ * answer cell is empty. That hole is the whole argument — the answer column is
+ * the one you will not have when you need it, which is why the machine exists.
+ *
+ * The answer column is marked three ways at once: the word ANSWER in its
+ * header, a heavier outline, and a tint. Colour is never the only signal
+ * (hard rule 9). Decorative on its own, so `aria-hidden`: `Figure` supplies the
+ * accessible name and the description.
+ */
+---
+
+<svg viewBox="0 0 640 290" class="w-full" aria-hidden="true">
+  <!-- What each part of the grid is -->
+  <g class="fill-ink-faint font-mono" font-size="9">
+    <text x="16" y="32">each row is one case</text>
+    <text x="323" y="32" text-anchor="middle">things anyone can measure</text>
+  </g>
+  <text
+    x="624"
+    y="32"
+    text-anchor="end"
+    class="fill-accent font-mono"
+    font-size="9">the answer you chose</text
+  >
+
+  <path
+    d="M150 46 L150 40 L496 40 L496 46"
+    class="fill-none stroke-rule-strong"
+    stroke-width="1.25"></path>
+  <path
+    d="M502 46 L502 40 L624 40 L624 46"
+    class="fill-none stroke-accent"
+    stroke-width="2"></path>
+
+  <!-- The grid -->
+  <rect
+    x="16"
+    y="50"
+    width="608"
+    height="34"
+    class="fill-paper-sunken stroke-rule"
+    stroke-width="1"></rect>
+  <rect
+    x="16"
+    y="84"
+    width="608"
+    height="104"
+    class="fill-paper stroke-rule"
+    stroke-width="1"></rect>
+
+  <!-- The nominated column, tinted and outlined as well as named -->
+  <rect
+    x="500"
+    y="50"
+    width="124"
+    height="138"
+    class="fill-accent-soft stroke-accent"
+    stroke-width="2"></rect>
+
+  <g class="stroke-rule" stroke-width="1">
+    <line x1="16" y1="110" x2="624" y2="110"></line>
+    <line x1="16" y1="136" x2="624" y2="136"></line>
+    <line x1="16" y1="162" x2="624" y2="162"></line>
+    <line x1="150" y1="50" x2="150" y2="188"></line>
+    <line x1="268" y1="50" x2="268" y2="188"></line>
+    <line x1="386" y1="50" x2="386" y2="188"></line>
+  </g>
+
+  <!-- Column headings -->
+  <g class="fill-ink font-mono" font-size="9">
+    <text x="26" y="66">customer</text>
+    <text x="160" y="66">months with us</text>
+    <text x="278" y="66">monthly payment</text>
+    <text x="396" y="66">help-desk calls</text>
+    <text x="510" y="66">did they leave?</text>
+  </g>
+
+  <!-- The role of each column, in words as well as in colour -->
+  <g class="fill-ink-faint font-mono" font-size="7">
+    <text x="160" y="78">CLUE</text>
+    <text x="278" y="78">CLUE</text>
+    <text x="396" y="78">CLUE</text>
+  </g>
+  <text x="510" y="78" class="fill-accent font-mono" font-size="7">ANSWER</text>
+
+  <!-- Four cases that already finished -->
+  <g class="fill-ink font-mono" font-size="10">
+    <text x="26" y="101">Priya</text>
+    <text x="160" y="101">41</text>
+    <text x="278" y="101">&pound;34</text>
+    <text x="396" y="101">0</text>
+    <text x="510" y="101">no</text>
+
+    <text x="26" y="127">Tom</text>
+    <text x="160" y="127">7</text>
+    <text x="278" y="127">&pound;9</text>
+    <text x="396" y="127">5</text>
+    <text x="510" y="127">yes</text>
+
+    <text x="26" y="153">Aisha</text>
+    <text x="160" y="153">29</text>
+    <text x="278" y="153">&pound;28</text>
+    <text x="396" y="153">1</text>
+    <text x="510" y="153">no</text>
+
+    <text x="26" y="179">Mark</text>
+    <text x="160" y="179">4</text>
+    <text x="278" y="179">&pound;11</text>
+    <text x="396" y="179">6</text>
+    <text x="510" y="179">yes</text>
+  </g>
+
+  <!-- The case you actually care about. Its answer cell is the hole. -->
+  <rect
+    x="16"
+    y="202"
+    width="608"
+    height="26"
+    class="fill-paper stroke-rule-strong"
+    stroke-width="1.25"
+    stroke-dasharray="4 3"></rect>
+  <rect
+    x="500"
+    y="202"
+    width="124"
+    height="26"
+    class="fill-accent-soft stroke-accent"
+    stroke-width="1.75"
+    stroke-dasharray="4 3"></rect>
+
+  <g class="stroke-rule" stroke-width="1" stroke-dasharray="4 3">
+    <line x1="150" y1="202" x2="150" y2="228"></line>
+    <line x1="268" y1="202" x2="268" y2="228"></line>
+    <line x1="386" y1="202" x2="386" y2="228"></line>
+  </g>
+
+  <text x="26" y="219" class="fill-ink-muted font-mono" font-size="9"
+    >joined today</text
+  >
+  <g class="fill-ink font-mono" font-size="10">
+    <text x="160" y="219">6</text>
+    <text x="278" y="219">&pound;10</text>
+    <text x="396" y="219">5</text>
+  </g>
+  <text
+    x="562"
+    y="222"
+    text-anchor="middle"
+    class="fill-accent font-display"
+    font-size="14"
+    font-weight="700">?</text
+  >
+
+  <text
+    x="16"
+    y="252"
+    class="fill-ink font-display"
+    font-size="11"
+    font-weight="700"
+    >That empty cell is the whole reason the machine exists.</text
+  >
+  <text x="16" y="268" class="fill-ink-faint font-mono" font-size="9"
+    >filled in for every case that already finished, and blank for the one you
+    care about</text
+  >
+</svg>

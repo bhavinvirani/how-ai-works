@@ -1,0 +1,158 @@
+---
+/**
+ * The same twelve house sales, fitted twice: once by a machine with three
+ * adjustable numbers and once by a machine with twelve.
+ *
+ * The teaching load is carried by the SHAPE of the two lines and by the two
+ * scores written out underneath — a smooth rise that misses every dot slightly,
+ * against a line that touches all twelve exactly and leaves the chart between
+ * them. Neither panel is identified by colour, dots and squares are told apart
+ * by shape as well as by tone, and both scores are stated as numbers rather
+ * than implied (hard rule 9).
+ *
+ * Every coordinate here was sampled from the same fit the FlexibilityDial
+ * instrument runs, at three dials and at twelve, so the reader meets one set of
+ * sales rather than two. The quoted scores are pinned by that instrument's
+ * tests, which fail if the dataset ever drifts away from these numbers.
+ *
+ * Decorative on its own, so `aria-hidden`: `Figure` carries the accessible name
+ * and the description.
+ */
+---
+
+<svg viewBox="0 0 640 336" class="w-full" aria-hidden="true">
+  <defs>
+    <clipPath id="memorise-plot-left">
+      <rect x="30" y="74" width="264" height="136"></rect>
+    </clipPath>
+    <clipPath id="memorise-plot-right">
+      <rect x="358" y="74" width="264" height="136"></rect>
+    </clipPath>
+  </defs>
+
+  <g class="fill-none stroke-rule-strong" stroke-width="1.25">
+    <rect x="8" y="8" width="296" height="288" rx="8"></rect>
+    <rect x="336" y="8" width="296" height="288" rx="8"></rect>
+  </g>
+
+  <g class="fill-ink font-display" font-size="14" font-weight="700">
+    <text x="28" y="34">Learned the pattern</text>
+    <text x="356" y="34">Memorised the examples</text>
+  </g>
+
+  <g class="fill-ink-faint font-mono" font-size="9">
+    <text x="28" y="50">three dials</text>
+    <text x="356" y="50">twelve dials, twelve sales</text>
+    <text x="30" y="68">sold for</text>
+    <text x="358" y="68">sold for</text>
+    <text x="294" y="224" text-anchor="end">floor area</text>
+    <text x="622" y="224" text-anchor="end">floor area</text>
+  </g>
+
+  <g class="stroke-rule" stroke-width="1">
+    <line x1="30" y1="208" x2="294" y2="208"></line>
+    <line x1="30" y1="74" x2="30" y2="208"></line>
+    <line x1="358" y1="208" x2="622" y2="208"></line>
+    <line x1="358" y1="74" x2="358" y2="208"></line>
+  </g>
+
+  <!-- Left: three dials. One gentle bend, near every dot and on none of them. -->
+  <path
+    class="fill-none stroke-accent-2"
+    stroke-width="2"
+    clip-path="url(#memorise-plot-left)"
+    d="M43.9 193.6L49.7 189.6L55.6 185.6L61.4 181.7L67.3 178.0L73.1 174.3L79.0 170.7L84.9 167.2L90.7 163.7L96.6 160.4L102.4 157.2L108.3 154.0L114.1 150.9L120.0 148.0L125.9 145.1L131.7 142.3L137.6 139.6L143.4 137.0L149.3 134.5L155.1 132.0L161.0 129.7L166.9 127.4L172.7 125.3L178.6 123.2L184.4 121.2L190.3 119.3L196.1 117.5L202.0 115.8L207.9 114.2L213.7 112.6L219.6 111.2L225.4 109.8L231.3 108.6L237.1 107.4L243.0 106.3L248.9 105.3L254.7 104.4L260.6 103.6L266.4 102.9L272.3 102.2L278.1 101.7"
+  ></path>
+
+  <!-- Right: twelve dials. Through all twelve dots, and off the chart twice. -->
+  <path
+    class="fill-none stroke-accent-2"
+    stroke-width="2"
+    clip-path="url(#memorise-plot-right)"
+    d="M371.9 196.2L373.1 128.1L374.3 80.8L375.6 50.2L376.8 32.9L378.0 25.9L379.3 26.9L380.5 33.7L381.7 44.6L383.0 58.2L384.2 73.2L385.4 89.0L386.7 104.6L387.9 119.5L389.1 133.4L390.4 146.0L391.6 157.1L392.8 166.6L394.1 174.4L395.3 180.7L396.5 185.5L397.8 188.8L399.0 190.9L400.2 191.8L401.5 191.6L402.7 190.7L403.9 189.0L405.2 186.8L406.4 184.1L407.6 181.1L408.9 178.0L410.1 174.7L411.3 171.5L412.6 168.4L413.8 165.4L415.0 162.6L416.3 160.0L417.5 157.7L418.7 155.7L420.0 154.0L421.2 152.6L422.4 151.4L423.7 150.5L424.9 149.9L426.1 149.5L427.3 149.3L428.6 149.2L429.8 149.3L431.0 149.5L432.3 149.8L433.5 150.1L434.7 150.5L436.0 150.8L437.2 151.1L438.4 151.4L439.7 151.6L440.9 151.7L442.1 151.7L443.4 151.6L444.6 151.4L445.8 151.0L447.1 150.5L448.3 150.0L449.5 149.3L450.8 148.5L452.0 147.6L453.2 146.6L454.5 145.5L455.7 144.4L456.9 143.3L458.2 142.1L459.4 140.9L460.6 139.7L461.9 138.6L463.1 137.4L464.3 136.4L465.6 135.3L466.8 134.4L468.0 133.5L469.3 132.7L470.5 132.0L471.7 131.3L473.0 130.8L474.2 130.4L475.4 130.1L476.7 129.8L477.9 129.7L479.1 129.6L480.4 129.6L481.6 129.7L482.8 129.8L484.1 130.0L485.3 130.2L486.5 130.4L487.8 130.6L489.0 130.8L490.2 131.0L491.5 131.1L492.7 131.2L493.9 131.2L495.2 131.2L496.4 131.1L497.6 130.9L498.9 130.6L500.1 130.3L501.3 129.8L502.6 129.3L503.8 128.6L505.0 127.9L506.3 127.1L507.5 126.2L508.7 125.3L510.0 124.3L511.2 123.2L512.4 122.1L513.7 121.1L514.9 120.0L516.1 119.0L517.4 118.0L518.6 117.0L519.8 116.2L521.1 115.4L522.3 114.8L523.5 114.2L524.8 113.9L526.0 113.6L527.2 113.5L528.5 113.6L529.7 113.9L530.9 114.3L532.2 114.9L533.4 115.7L534.6 116.6L535.9 117.6L537.1 118.7L538.3 120.0L539.6 121.3L540.8 122.6L542.0 123.9L543.3 125.2L544.5 126.5L545.7 127.6L547.0 128.5L548.2 129.3L549.4 129.8L550.7 130.1L551.9 130.0L553.1 129.6L554.3 128.8L555.6 127.6L556.8 126.0L558.0 124.0L559.3 121.5L560.5 118.7L561.7 115.4L563.0 111.8L564.2 107.9L565.4 103.7L566.7 99.4L567.9 95.0L569.1 90.7L570.4 86.6L571.6 82.8L572.8 79.6L574.1 77.0L575.3 75.2L576.5 74.5L577.8 75.1L579.0 77.0L580.2 80.6L581.5 86.0L582.7 93.4L583.9 102.8L585.2 114.4L586.4 128.1L587.6 144.0L588.9 161.8L590.1 181.3L591.3 202.2L592.6 223.9L593.8 245.6L595.0 266.5L596.3 285.3L597.5 300.6L598.7 310.5L600.0 312.8L601.2 305.0L602.4 284.0L603.7 246.0L604.9 186.7L606.1 101.2"
+  ></path>
+
+  <!-- The twelve sales the machine studied. The same twelve in both panels. -->
+  <g class="fill-ink">
+    <circle cx="43.9" cy="196.2" r="4"></circle>
+    <circle cx="66.1" cy="174.4" r="4"></circle>
+    <circle cx="83.3" cy="171.5" r="4"></circle>
+    <circle cx="108.0" cy="150.8" r="4"></circle>
+    <circle cx="125.2" cy="146.6" r="4"></circle>
+    <circle cx="152.4" cy="129.6" r="4"></circle>
+    <circle cx="167.2" cy="131.2" r="4"></circle>
+    <circle cx="194.3" cy="114.8" r="4"></circle>
+    <circle cx="209.1" cy="118.7" r="4"></circle>
+    <circle cx="236.2" cy="107.9" r="4"></circle>
+    <circle cx="255.9" cy="102.8" r="4"></circle>
+    <circle cx="278.1" cy="101.2" r="4"></circle>
+    <circle cx="371.9" cy="196.2" r="4"></circle>
+    <circle cx="394.1" cy="174.4" r="4"></circle>
+    <circle cx="411.3" cy="171.5" r="4"></circle>
+    <circle cx="436.0" cy="150.8" r="4"></circle>
+    <circle cx="453.2" cy="146.6" r="4"></circle>
+    <circle cx="480.4" cy="129.6" r="4"></circle>
+    <circle cx="495.2" cy="131.2" r="4"></circle>
+    <circle cx="522.3" cy="114.8" r="4"></circle>
+    <circle cx="537.1" cy="118.7" r="4"></circle>
+    <circle cx="564.2" cy="107.9" r="4"></circle>
+    <circle cx="583.9" cy="102.8" r="4"></circle>
+    <circle cx="606.1" cy="101.2" r="4"></circle>
+  </g>
+
+  <!-- The eight it never saw. Squares, so shape tells them apart too. -->
+  <g class="fill-paper stroke-accent" stroke-width="1.5">
+    <rect x="49.7" y="184.5" width="8" height="8"></rect>
+    <rect x="71.9" y="171.0" width="8" height="8"></rect>
+    <rect x="94.1" y="152.4" width="8" height="8"></rect>
+    <rect x="116.3" y="139.1" width="8" height="8"></rect>
+    <rect x="136.0" y="138.6" width="8" height="8"></rect>
+    <rect x="175.5" y="117.9" width="8" height="8"></rect>
+    <rect x="217.4" y="104.9" width="8" height="8"></rect>
+    <rect x="261.8" y="99.4" width="8" height="8"></rect>
+    <rect x="377.7" y="184.5" width="8" height="8"></rect>
+    <rect x="399.9" y="171.0" width="8" height="8"></rect>
+    <rect x="422.1" y="152.4" width="8" height="8"></rect>
+    <rect x="444.3" y="139.1" width="8" height="8"></rect>
+    <rect x="464.0" y="138.6" width="8" height="8"></rect>
+    <rect x="503.5" y="117.9" width="8" height="8"></rect>
+    <rect x="545.4" y="104.9" width="8" height="8"></rect>
+    <rect x="589.8" y="99.4" width="8" height="8"></rect>
+  </g>
+
+  <g class="fill-ink-muted font-mono" font-size="10">
+    <text x="28" y="238">On the 12 it studied: £10,000 out</text>
+    <text x="28" y="254">On 8 it never saw: £9,000 out</text>
+    <text x="28" y="270">Close to every dot, exactly on none.</text>
+    <text x="356" y="238">On the 12 it studied: £0 out</text>
+    <text x="356" y="254">On 8 it never saw: £164,000 out</text>
+    <text x="356" y="270">Between the dots it leaves the chart.</text>
+  </g>
+
+  <g class="fill-ink font-display" font-size="12" font-weight="700">
+    <text x="28" y="290">About the same on both.</text>
+    <text x="356" y="290">Flawless, and useless.</text>
+  </g>
+
+  <circle cx="40" cy="318" r="4" class="fill-ink"></circle>
+  <rect
+    x="232"
+    y="314"
+    width="8"
+    height="8"
+    class="fill-paper stroke-accent"
+    stroke-width="1.5"></rect>
+  <line
+    x1="418"
+    y1="318"
+    x2="440"
+    y2="318"
+    class="stroke-accent-2"
+    stroke-width="2"></line>
+
+  <g class="fill-ink-faint font-mono" font-size="9">
+    <text x="52" y="321">a sale it studied</text>
+    <text x="248" y="321">a sale it never saw</text>
+    <text x="448" y="321">what it would guess</text>
+  </g>
+</svg>

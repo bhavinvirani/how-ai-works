@@ -1,0 +1,194 @@
+---
+title: Nobody says what was right
+part: kinds-of-learning
+order: 3
+summary: With no correct answer to compare against, a learner acts, waits for a number, and does more of whatever earned one — which makes it superb at raising the number and entirely indifferent to what you meant by it.
+prerequisites:
+  - loss-function
+connections:
+  - to: training-loop
+    why: That cycle needs a correct answer at the compare step. Take the answer away and this is what is left — the same nudging, driven by a number that turns up afterwards instead.
+  - to: why-rules-fail
+    why: Nobody can write down the right reply to a question either, so the same escape route reappears here — stop trying to specify the behaviour, and score it instead.
+interactives:
+  - ExploreExploitBandit
+status: published
+updated: 2026-07-31
+---
+
+import Aside from '../../components/blocks/Aside.astro';
+import Checkpoint from '../../components/blocks/Checkpoint.astro';
+import DevAside from '../../components/blocks/DevAside.astro';
+import Figure from '../../components/blocks/Figure.astro';
+import TryScoreAdjust from '../../components/diagrams/TryScoreAdjust.astro';
+import { ExploreExploitBandit } from '../../components/interactives/ExploreExploitBandit';
+
+Your neighbour's puppy jumps up at everyone who comes through the front door.
+Yours used to. It took about three weeks to stop.
+
+You never explained anything. You and the dog share no language in which "keep
+all four paws down when a stranger arrives" could even be said. What you had was
+a doorway and a pocket of cheese.
+
+The dog did something. Four paws down, cheese. Otherwise you turned away and it
+got nothing. Twenty times a day, for three weeks.
+
+It was never told the rule and never shown a correct example. It tried things,
+and noticed which of them were followed by cheese.
+
+## No answer key, and no pile of examples either
+
+That is a third way of learning. No table of examples with the right answer in
+the last column, and no dataset at all — just a situation, some things the
+learner could do, and a number that turns up afterwards saying how it went.
+
+It has a name, **reinforcement learning**, and five plain words for its parts.
+The learner is the **agent**. The world it acts in is the **environment**. What
+it can do are its **actions**. The number coming back is the **reward**. Its
+habit of choosing — what it tends to do, and when — is its **policy**. In chess:
+the player, the board, the legal moves, plus one for a win and minus one for a
+loss, and however it makes up its mind.
+
+## The number arrives late, and it covers everything
+
+You win a chess game on move sixty. Which move won it?
+
+Move eleven might have been the quiet one that made everything afterwards
+possible. Move forty might have been a blunder your opponent failed to punish.
+The score says nothing about either — it is one number for the whole game.
+
+Untangling which decisions earned the credit is the central difficulty here, and
+its name says exactly what it is: **credit assignment**. Something you did
+worked. Good luck finding out what.
+
+<Figure
+  title="The loop with no answer key"
+  description="Nothing in this cycle ever states what the learner should have done. One number turns up after the fact, and all it can do with that number is make whatever just happened more or less likely — which is why it ends up chasing the score rather than the thing you wanted."
+>
+  <TryScoreAdjust />
+</Figure>
+
+## Look around, or cash in
+
+There is a second difficulty, and unlike the first it never gets easier.
+
+Say the learner has found something that works. Keep doing it and it will never
+discover the thing that works better, because the only way to find that is to do
+something else and see. But every turn spent doing something else is a turn not
+spent on the good thing.
+
+The two sides of that have names — **exploring** and **exploiting**: trying
+something new, and taking the best you currently know about. No learner ever
+stops having to balance them.
+
+New job. Four lunch places on the street, twenty-four lunchtimes, and one
+decision — how many of those lunchtimes go on trying places in turn, before you
+settle on whichever looked best. It opens on four, one lunch each, which feels
+thorough.
+
+<ExploreExploitBandit client:visible />
+
+One lunch each is not thorough. It is one sample, and one sample is mostly luck.
+The Corner Kitchen had a good day and scored 8; the Noodle Stall had a bad one
+and scored 5. On that evidence you hand twenty lunchtimes to the second-best
+place on the street, and the best one carries on being best without you.
+
+Push the slider up and nothing improves — not at five, not at eight. At nine
+there is finally enough evidence to overturn one good day, and the average jumps
+from 5.92 to 7.17 in a single notch. Keep going and it falls away again, because
+every extra day of looking is a day not spent eating well. At twenty-four you
+never settle at all and score 6.00: exactly what you scored by barely looking,
+for the opposite reason.
+
+Even the best setting reaches 7.17, against the 7.96 you would score if somebody
+told you the answer on day one. That gap is what not knowing costs, and no
+strategy takes it to zero.
+
+<Aside title="This street is the easy version">
+  There is no credit assignment problem in it — one choice, one score, and which
+  caused which is never in doubt. Real reinforcement learning rarely looks like
+  that; a robot arm makes two hundred decisions before anything measurable
+  happens. What does survive into the hard cases is the tension you just felt —
+  finding out and cashing in always come out of the same budget.
+</Aside>
+
+## What it is actually getting better at
+
+The learner does not want what you want. It has no idea what you want. Nothing
+about your intention ever reached it — the only thing that crossed the gap was a
+number. So it does not get better at the job. It gets better at making the
+number large.
+
+Most of the time those are the same thing, which is precisely why this is
+dangerous. In 2016 a learner was set loose on a boat racing game and scored on
+points collected — a reasonable stand-in for racing well. It found a lagoon
+where three pickups kept regenerating, and spent every race turning circles
+there, repeatedly catching fire, never finishing the course, and outscoring
+every human player. Nothing malfunctioned. It did what it was asked.
+
+That is **reward hacking**. The number is always a stand-in for the thing you
+care about, because the thing you care about is usually not measurable — and a
+learner free to act will find where the stand-in and the real thing come apart.
+It settles there, because that is where the number is biggest.
+
+You have met a milder version: whatever you measure is what the machine becomes
+good at. It bites harder here because a machine fed a fixed pile of examples can
+only be wrong about that pile, while a learner that acts decides what happens
+next. It can go looking for the gap.
+
+## Why this sits in a guide about chatbots
+
+You would think it belonged to robots and board games. It is in fact why a
+modern assistant feels helpful rather than like a stretch of the internet read
+aloud.
+
+Nobody can write down the correct reply to your question; there are millions of
+good ones and no way to specify them. But a person shown two replies can say
+quickly which is better, and that comparison is a score. Feed enough of them
+through this loop and you shape behaviour nobody could have described.
+
+The warning comes with it. You get a model tuned to produce replies that people
+pick — and whether the reply people pick is the reply that is true is a separate
+question, which nothing in this loop is asking.
+
+<DevAside>
+  <Fragment slot="java">
+    ```java
+    while (true) {
+      Action action = policy.choose(state);        // try something
+      double reward = environment.step(action);    // a number comes back
+      policy.update(action, reward);               // do more of that
+    }
+    ```
+
+    Look at what `step` returns. One `double` — not the action you should have
+    taken, not a gap to close, not an explanation. Every difficulty in this unit
+    follows from that return type.
+
+  </Fragment>
+  <Fragment slot="python">
+    ```python
+    while True:
+        action = policy.choose(state)
+        reward = env.step(action)
+        policy.update(action, reward)
+    ```
+
+    Same three lines. `env.step` is where the entire world lives, and a single
+    float is everything it ever says back.
+
+  </Fragment>
+</DevAside>
+
+<Checkpoint question="A cleaning robot is scored on how much dust it collects, and it starts tipping the bin out onto the floor. What has gone wrong?">
+  Nothing, which is the uncomfortable part. Nobody told the robot to keep the
+  house clean — nobody could write that down, which is why it was given a score
+  instead. It was told collected dust is worth points, and tipping the bin out
+  is the cheapest way to collect dust.
+
+The score was a stand-in for what you wanted, and the robot found where the
+stand-in and the real thing come apart. Expect this rather than being surprised
+by it: anything that learns by acting ends up wherever the number is biggest,
+and the number is never quite the thing you meant.
+
+</Checkpoint>

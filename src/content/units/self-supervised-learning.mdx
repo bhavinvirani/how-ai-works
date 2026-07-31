@@ -1,0 +1,185 @@
+---
+title: The answers were in the text all along
+part: kinds-of-learning
+order: 4
+summary: Cover up part of something a person already wrote and ask a machine to put it back — the question and its marked answer were both in the text already, which is what made training on everything ever written possible.
+prerequisites:
+  - training-data
+connections:
+  - to: loss-function
+    why: Covering a word hands the score something to compare against, so "how far off was the missing piece" becomes the single number the whole machine is tuned to shrink.
+  - to: training-loop
+    why: The loop stops being limited by how many marked examples exist — every sentence anybody has written is another turn round it, with the comparison step already paid for.
+interactives:
+  - FreeLabelMaker
+status: published
+updated: 2026-07-31
+---
+
+import Aside from '../../components/blocks/Aside.astro';
+import Checkpoint from '../../components/blocks/Checkpoint.astro';
+import DevAside from '../../components/blocks/DevAside.astro';
+import Figure from '../../components/blocks/Figure.astro';
+import HideAndGuess from '../../components/diagrams/HideAndGuess.astro';
+import { FreeLabelMaker } from '../../components/interactives/FreeLabelMaker';
+
+The job advert asked for patience and good eyesight. Six hours a day at a
+screen: a photograph appears, you draw a box round every car in it and type what
+each one is, and then the next photograph arrives. On a good day you get through
+nine hundred.
+
+Somebody has to. A machine that learns from examples cannot begin until the
+examples have their answers written on them, and writing them is hand work: one
+person, one picture, one answer at a time. That is where the money in these
+projects goes.
+
+Now suppose what you want is not cars in photographs but language. Not fifty
+thousand examples — something closer to every sentence anybody has ever written
+down. There is no team, no budget and no year long enough, and for a long while
+that was where the road ended.
+
+## The thumb trick
+
+Take an ordinary sentence. Not one written for a machine; one somebody wrote
+because they had something to say.
+
+_She put the milk back in the fridge._
+
+Cover the last word with your thumb.
+
+You have just written an exam question. You are also holding the marked answer,
+because it is under your thumb. Nobody wrote that answer, nobody was paid for
+it, and nobody had to be asked. The word was there all along. You only hid it.
+
+Move your thumb one word to the left and you have a second question, with its
+answer, out of the same eight words. There are eight questions in that sentence
+— one for every word — and the sentence cost nothing, because it was never
+written for you in the first place.
+
+## Where the answer key came from
+
+Keep counting and the arithmetic stops being a parlour trick. A paragraph is a
+hundred questions. A book is a hundred thousand. Every news report, every
+recipe, every forum reply and every set of assembly instructions ever typed is a
+stack of questions with the answers already attached.
+
+The last unit left you with a table, and a person pointing at one column of it
+and saying: this one is the answer. Here nobody points. Cover whichever word you
+like and that word becomes the answer — and the moment you uncover it again, the
+marking is done.
+
+The move has a name, and it can have it now you have already done it.
+**Self-supervised learning** is training where the correct answer comes out of
+the data rather than out of a person. "Supervision" is this field's word for
+having something to mark a guess against; here the text marks itself.
+
+It is not a gentler kind of training. The machine still guesses, still gets
+scored on how far off it was, still has its dials nudged by the same arithmetic.
+One thing changed: where the answer key came from. That change took the ceiling
+off.
+
+<Figure
+  title="Ordinary text turned into marked examples"
+  description="Covering one word at a time turns writing nobody prepared into a question with its answer attached — and because the answer is never written, only hidden, the supply runs as far as human writing does rather than as far as a labelling budget does."
+>
+  <HideAndGuess />
+</Figure>
+
+## What the guessing game drags in with it
+
+Filling in blanks sounds like a game, and for years it was treated as one. Why
+would a machine that plays hide-the-word end up able to hold a conversation?
+
+Because of what it takes to win. Look again at what you needed in order to put
+"fridge" back: that milk is kept cold, that a kitchen has a cold box in it, that
+"back in" means it had come out of there earlier. The sentence says none of
+that. You supplied it.
+
+Other gaps ask for other things entirely.
+
+- _The pavement is still wet, so it ——— last night._ Cause and effect, run
+  backwards. You never see the rain, only the mark it left.
+- _The first people walked on the ——— in nineteen sixty-nine._ A fact, though
+  nobody ever wrote it down as a fact.
+- _He read the letter twice, folded it, and began to ———._ Something about
+  people, and about what letters do to them.
+
+Nobody set out to teach a machine kitchens, or history, or grief. Each one got
+in through the back door, because each one makes the guessing less wrong — and
+less wrong is the only direction training ever pushes.
+
+## Hide a word yourself
+
+Below are three sentences nobody wrote for a machine. Move the blank along one
+of them, a word at a time, and watch the difficulty change. Some positions you
+can fill from the shape of the sentence alone. Others need something the
+sentence never mentions.
+
+<FreeLabelMaker client:visible />
+
+Both kinds cost the same to make, which is nothing. That is the part worth
+sitting with. The hard gaps — the ones needing a kitchen, or a cause, or a date
+— are no rarer and no dearer than the easy ones, and a machine chasing a lower
+score has to get better at all of them.
+
+## What this looks like in a real system
+
+One detail worth having straight, because it is the version you will actually
+meet. Most systems do not hide a word in the middle. They hide the end: show the
+machine everything up to some point in the text, make it guess what comes next,
+then move along one word and do it again.
+
+Same trick, one position — and it has a convenient side effect. A machine
+trained to guess what comes next can be handed the beginning of something and
+asked to keep going, which is what you are doing every time you type into a chat
+box.
+
+<Aside title="It is not learning without answers">
+  You will sometimes see this filed under learning with no answers at all. It is
+  not. Every gap has one correct word, checked against the text the instant a
+  guess arrives, and marked as strictly as anything a person had written. What
+  is missing is the person, not the answer.
+</Aside>
+
+<DevAside>
+  <Fragment slot="java">
+    ```java
+    String[] words = Files.readString(Path.of("corpus.txt")).split("\\s+");
+
+    for (int i = 1; i < words.length; i++) {
+      String question = String.join(" ", Arrays.copyOfRange(words, 0, i));
+      String answer = words[i];        // the label, and nobody wrote it
+      train(question, answer);
+    }
+    ```
+
+    There is no second file. No `labels.csv`, no annotation tool, no queue of
+    people. That loop is the entire data-labelling pipeline, and it runs at the
+    speed of reading a text file.
+
+  </Fragment>
+  <Fragment slot="python">
+    ```python
+    words = Path("corpus.txt").read_text().split()
+
+    for i in range(1, len(words)):
+        train(question=" ".join(words[:i]), answer=words[i])
+    ```
+
+    Same shape, fewer characters. The most expensive line in a supervised
+    project is the one that obtains `answer`, and here it has become an array
+    index.
+
+  </Fragment>
+</DevAside>
+
+<Checkpoint question="Somebody tells you a large model was trained on 'unlabelled' text. What is misleading about that word?">
+  Nothing about it was unlabelled. There was a correct answer for every word —
+  billions of them — each checked as strictly as a human-written one. What was
+  missing is the person who would have had to write them.
+
+That distinction is the whole reason this worked. Calling the text unlabelled
+hides the trick: the method kept the sharp, checkable feedback you only get from
+having a right answer, and paid none of the cost of producing one.
+
+</Checkpoint>

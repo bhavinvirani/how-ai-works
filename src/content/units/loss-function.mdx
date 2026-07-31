@@ -1,0 +1,179 @@
+---
+title: The number it chases
+part: the-learning-loop
+order: 2
+summary: A machine can only ever improve against one number — so whatever you choose to count is exactly what it becomes good at, and everything else is free to get worse.
+prerequisites:
+  - training-loop
+connections:
+  - to: model-as-dials
+    why: The wrongness readout you shrank by hand there was one particular choice of what to measure, and somebody had to make it.
+  - to: training-data
+    why: Which column you call the right answer decides what can be scored at all, so that choice and this one together fix what the machine ends up good at.
+interactives:
+  - ScoringRulePicker
+status: published
+updated: 2026-07-31
+---
+
+import Aside from '../../components/blocks/Aside.astro';
+import Checkpoint from '../../components/blocks/Checkpoint.astro';
+import DevAside from '../../components/blocks/DevAside.astro';
+import Figure from '../../components/blocks/Figure.astro';
+import OneNumberScore from '../../components/diagrams/OneNumberScore.astro';
+import { ScoringRulePicker } from '../../components/interactives/ScoringRulePicker';
+
+You are running a phone support desk. Forty staff, a few thousand calls a week,
+and no way to listen to more than a handful of them. Some of those calls are
+excellent and some are dreadful, and you would like more of the first kind.
+
+So you pick something you can actually count. Average call length. It goes up on
+a board every Monday morning where everyone can see it.
+
+Within two months it has halved. That is a real result, achieved by real effort,
+and the support desk is now the worst it has ever been. Your staff have become
+extremely good at ending calls — hurrying the caller, promising a callback that
+never comes, closing the ticket while the problem is still there. Nothing on
+those calls got fixed. Nothing had to be. You never asked about that.
+
+Nobody cheated. You asked for shorter calls and you got shorter calls, exactly
+as ordered. What you did not get was all the things you had quietly assumed
+would come along with them.
+
+## Why it has to be one number
+
+A machine trained on examples does the same thing, faster, and without the
+flicker of hesitation.
+
+Go back to the four steps of the training loop: guess, compare, blame, nudge.
+The compare step is where this lives. To compare, the machine has to take
+everything that just happened — every guess it made across thousands of
+examples, each one wrong in its own particular way — and crush all of it down to
+a single number.
+
+It has to be a single number because of what happens next. The machine's entire
+job is to ask whether this setting of the dials is better than that one, a few
+million times over, with nobody watching. "A bit off, but wrong in a promising
+sort of direction" cannot be compared to anything. 3.9 against 4.2 can.
+
+By convention the number counts wrongness, so lower is better and zero would be
+perfect. That number has a name: it is the **loss**. The rule that turns a pile
+of answers into it is the **loss function** — the thing somebody sat down and
+wrote. When people say a model is training, they mean a search is running for
+the dial settings that make the loss as small as it will go.
+
+## Different jobs, different scores
+
+Nobody hands you the rule. Someone picks it, and what they pick depends on what
+the machine is for.
+
+When the machine predicts a number — a house price, tomorrow's demand, a
+temperature — the obvious score is distance: how far the guess landed from the
+truth. Even here there is a choice hiding. Add the misses up as they are, and
+being off by ten once costs exactly the same as being off by one ten times.
+Square each miss before adding them, and one miss of ten counts for a hundred
+while ten misses of one count for ten — the single blunder now costs ten times
+as much as all the small ones put together. A machine scored the second way will
+twist itself into knots to avoid ever being badly wrong, and accept being
+slightly wrong far more often. Same data, same dials, two different machines,
+because somebody chose how to add up.
+
+When the machine picks a category — junk or not junk, cat or dog — you might
+expect the score to count how often it was right. It usually does not, and the
+reason is worth having. These machines never answer "cat"; they answer "87 per
+cent cat". A score that only counted right and wrong would see no difference
+between scraping in at 51 per cent and being certain at 99, so the moment the
+machine was right it would have nowhere left to go. Scoring the confidence gives
+it somewhere: sure and correct scores best, unsure and correct is only mildly
+rewarded, and confidently wrong is punished hard.
+
+And when the machine predicts the next word, the score is how much of that
+confidence went to the word that actually turned up. That is the whole thing.
+Every language model you have ever used was built by making that one number
+smaller, a few trillion words at a time.
+
+<Figure
+  title="What reaches the score, and what does not"
+  description="Only the qualities somebody decided to count ever reach the score, and the score is the only thing the dials can chase — so every quality left outside it can quietly get worse with nothing anywhere to stop it."
+>
+  <OneNumberScore />
+</Figure>
+
+## What the number leaves out
+
+Here is the consequence, and it catches everyone anyway.
+
+Below are five answers to the same question. Choose what to score them on, and
+the instrument keeps whichever one scores best — which is what training does,
+except across billions of dial settings rather than five fixed answers. Work
+through all four rules and watch which answer survives each time.
+
+<ScoringRulePicker client:visible />
+
+Score them on how much people liked the answer, and you keep the one that opens
+with "great question" and is cheerfully wrong. Score them on shortness and you
+keep "I do not know", which is short, honest, and useless. Nothing malfunctioned
+in either case. The machine went exactly where the number pointed, and every
+quality you left out of the number was free to drift wherever it liked.
+
+<Aside title="A measure that becomes a target">
+  This is older than computing and it already has a name. Charles Goodhart,
+  writing about economic policy in 1975, made the point that once a measure
+  becomes a target it stops being a good measure — exam pass rates, hospital
+  waiting times, lines of code written per week. What is new here is the speed.
+  A machine chases its number billions of times, with no colleague to raise an
+  eyebrow, and finds every shortcut a person would be too embarrassed to take.
+</Aside>
+
+## Where you will meet this again
+
+An assistant that flatters you was not built by anyone who wanted flattery. It
+was scored, somewhere in its training, on whether people preferred its answers —
+and people prefer answers that agree with them. A feed that leaves you miserable
+was scored on whether you kept watching. A model that would rather invent a
+plausible citation than admit it does not know was scored on producing an
+answer, never on declining to.
+
+So when one of these systems behaves strangely, the useful question is rarely
+what went wrong inside it. The question is: what number was this thing actually
+asked to make smaller?
+
+<DevAside>
+  <Fragment slot="java">
+    ```java
+    double loss(double guess, double actual) {
+      double miss = guess - actual;
+      return miss * miss;
+    }
+    ```
+
+    Four lines, and the most consequential thing in the repository. Swapping
+    that square for `Math.abs` changes what the trained model does more than
+    swapping the architecture underneath it — but it reviews like a one-line
+    change, and in most projects it is buried in a config file rather than in
+    code anybody reads.
+
+  </Fragment>
+  <Fragment slot="python">
+    ```python
+    def loss(guess, actual):
+        return (guess - actual) ** 2
+    ```
+
+    Same point, fewer characters. Whatever this function rewards is what you
+    will get, so it deserves the review attention people currently spend on
+    choosing a model.
+
+  </Fragment>
+</DevAside>
+
+<Checkpoint question="A team scores its assistant on how many replies users rate five stars. A month later it agrees with users far more often, including when they are plainly wrong. What broke?">
+  Nothing broke. Users rate agreement highly, so agreeing scored well, so
+  agreeing is what the training kept. The machine did the only thing it is able
+  to do — make the number smaller — and the number said that flattery was good.
+
+The fix is never to tell the machine to stop, because there is nobody in there
+to tell. It is to change what the number counts, and then go looking for
+whatever the new number has also failed to mention.
+
+</Checkpoint>

@@ -1,0 +1,183 @@
+---
+title: Four words that fit inside each other
+part: why-this-exists
+order: 4
+summary: Artificial intelligence, machine learning, deep learning and generative AI are four rings drawn one inside the next — and which ring a system sits in tells you how it will go wrong.
+prerequisites:
+  - model-as-dials
+connections:
+  - to: why-rules-fail
+    why: The wall that unit hits is the exact border between the outer ring and the learning ones — a job with no writable rule is what forces a system inwards.
+  - to: training-data
+    why: Every ring inside the first one runs on a table of examples, so what is in that table is what separates the two halves of this picture.
+interactives: []
+status: published
+updated: 2026-07-31
+---
+
+import Aside from '../../components/blocks/Aside.astro';
+import Checkpoint from '../../components/blocks/Checkpoint.astro';
+import DevAside from '../../components/blocks/DevAside.astro';
+import Figure from '../../components/blocks/Figure.astro';
+import NestedRings from '../../components/diagrams/NestedRings.astro';
+
+Three things happened to you last month, and all three were reported as
+artificial intelligence.
+
+Your card was declined at a petrol station, because something at your bank
+decided that purchase did not look like you. Your phone gathered every photo of
+your dog into an album, without being asked. And a chatbot wrote a birthday
+message for your sister that mentioned a nephew you do not have.
+
+One word, three machines. They were built in different decades, out of different
+materials, and they go wrong in completely different ways. The shared name tells
+you none of that — which is a shame, because the third one going wrong was
+entirely predictable.
+
+## Four circles, not four things
+
+Draw a very large circle. Into it goes any machine doing a job that, if a person
+did it, you would call thinking. That is a loose and generous idea, and a chess
+program from 1985 belongs in it. Every move that program considered came from
+strategy a human being had written down by hand, line by line. It beat strong
+players. It never learned a thing in its life.
+
+That outer circle is what **artificial intelligence** means, and what it has
+always meant. Nothing in it promises learning.
+
+Now draw a smaller circle inside. Only one kind of machine gets in: the ones
+nobody could write the rule for, which were shown examples instead and had their
+dials adjusted until they stopped disagreeing. The fraud check at your bank lives
+here. Nobody described a stolen card; somebody showed a machine several million
+transactions and let it settle. **Machine learning** is the name of this inner
+circle. Every machine-learning system is artificial intelligence — and for most
+of the history of the field, almost no artificial intelligence was machine
+learning.
+
+Smaller again. Some learning machines have two dials; the house-price machine you
+turned had exactly two. Others have their dials arranged in layers, where what
+comes out of one layer goes into the next, dozens of layers deep. That is
+**deep learning**, and "deep" means nothing more mysterious than "a lot of
+layers". This is the circle where photo recognition and speech transcription
+abruptly started working, around 2012, after thirty years of not working.
+
+One more, the smallest. Most learning machines choose: fraud or not fraud, dog or
+cat, junk or real. A smaller group produces instead — a sentence, a picture, a
+tune, a paragraph of code, none of which existed a second earlier.
+**Generative AI** is that innermost circle, and it is where every chatbot and
+every image generator sits.
+
+Nothing lands in an inner circle without also being in every circle around it. A
+chatbot is generative AI, and deep learning, and machine learning, and artificial
+intelligence, all at once — the way a terrier is also a dog, a mammal and an
+animal. There is nothing to choose between.
+
+<Figure
+  title="The four rings, and where each one breaks"
+  description="Each ring is a stricter kind of the ring around it, so anything in an inner ring inherits every failure of the rings outside it — which is why a chatbot can be wrong in four different ways at the same time."
+>
+  <NestedRings />
+</Figure>
+
+## The ring predicts the failure
+
+This would all be pedantry if it did not tell you anything. What it tells you is
+how the thing in front of you breaks.
+
+A machine that follows written rules fails at the edge of what was written, and
+nowhere else. Hand it the situation nobody anticipated and it does something
+daft — but the daftness has an address. Some line, in some file, written by
+somebody, can be found and changed. Brittle, and honest about being brittle.
+
+A machine that learned from examples has no such address. It fails when the
+situation stops resembling the examples it was shown — a kind of fraud that did
+not exist last year, a shop it has never seen — and it fails _quietly_. It hands
+back an answer in the same tone as always. There is no error message for "this is
+unfamiliar to me", because nothing inside it is keeping track of what familiar
+means.
+
+Stack those dials into layers and the last of the explanation goes with them.
+Nobody decided what the middle layers should pay attention to; they arrived at it
+while being tuned, and it is not written in any language a person reads. So the
+failures turn strange rather than merely wrong. A change to a photograph that you
+would not notice can flip the answer completely, and there is nothing to open
+afterwards that would tell you why.
+
+The innermost ring adds a failure of its own, and it is the one that catches
+people. A machine that chooses can only be wrong inside a fixed set of options —
+ask a dog-or-cat sorter about a bicycle and it says dog, which is obvious
+nonsense the moment you see it. A machine that produces has no fixed set of
+options and no way to decline. Asked for something it does not have, it does not
+stop, because producing is the only operation it owns. It makes something of the
+right shape instead. That is where your nephew came from. Nothing malfunctioned.
+The machine did the only thing it does.
+
+And because the rings nest, the failures nest too. A chatbot inherits all four at
+once: brittle at the edges of what it was tuned on, quietly wrong on anything
+unfamiliar, unexplainable when it is wrong, and inventive when it should have
+stopped.
+
+## The two questions worth asking
+
+The practical version is short. "AI-powered" is a claim about the outermost ring,
+which is to say barely a claim at all — a spreadsheet with enough conditions in it
+qualifies. Two questions get you somewhere.
+
+Was the behaviour written down, or learned from examples? And does the system
+choose between options, or produce new material?
+
+The first answer tells you whether the failures have an address anyone can find.
+The second tells you whether it can be wrong while sounding entirely certain.
+
+<Aside title="The name keeps moving">
+  As soon as something works reliably, people stop calling it artificial
+  intelligence. Spell-check was AI. So was route-finding on a map, and the junk
+  mail filter, and reading the handwriting on a cheque. None of them get the
+  name now, because the name attaches to whatever is not quite working yet —
+  which makes "is this AI" a question about fashion as much as about mechanism.
+</Aside>
+
+<DevAside>
+  <Fragment slot="java">
+    ```java
+    // Outer ring: the behaviour is in the source.
+    if (amount > 500 && !country.equals(card.homeCountry())) flag(txn);
+
+    // Inner rings: the behaviour is in a file of numbers nobody can read.
+    double risk = model.score(features(txn));   // model = 400 MB of weights
+    ```
+
+    Both lines ship in the same service, and only one of them can be code
+    reviewed. For the second, the nearest thing to `git blame` is the dataset it
+    was fitted on — which is why "what was it trained on" is an engineering
+    question rather than a philosophical one.
+
+  </Fragment>
+  <Fragment slot="python">
+    ```python
+    # Outer ring
+    if amount > 500 and country != card.home_country:
+        flag(txn)
+
+    # Inner rings
+    risk = model.score(features(txn))
+    ```
+
+    Same story, fewer characters. Everything that decides the second line's
+    behaviour lives outside the repository.
+
+  </Fragment>
+</DevAside>
+
+<Checkpoint question="A product page says it is 'powered by AI'. What have you actually been told — and what single question would tell you how it fails?">
+  You have been told it sits in the outermost ring, which almost any software
+  with a decision in it can claim. The question worth asking is whether the
+  behaviour was written down or learned from examples.
+
+If it was written down, the failures have a line number and somebody can change
+that line. If it was learned, there is no line — the behaviour lives in the
+numbers, the failures arrive as confident wrong answers on anything unlike the
+examples, and what it was trained on becomes the only question carrying real
+information.
+
+</Checkpoint>

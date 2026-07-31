@@ -1,0 +1,195 @@
+---
+title: The table underneath everything
+part: why-this-exists
+order: 3
+summary: Everything a machine learns from is a table of examples and measurements — and which column counts as the answer is a decision somebody makes, not a fact about the data.
+prerequisites:
+  - model-as-dials
+connections:
+  - to: model-as-dials
+    why: The wrongness score compares each guess against one column of this table, so choosing that column is choosing what the dials are being tuned to do.
+  - to: why-rules-fail
+    why: Examples were the way out of the rule problem — this is what an example turns out to be once somebody actually writes it down.
+interactives:
+  - LabelPicker
+status: published
+updated: 2026-07-31
+---
+
+import Aside from '../../components/blocks/Aside.astro';
+import Checkpoint from '../../components/blocks/Checkpoint.astro';
+import DevAside from '../../components/blocks/DevAside.astro';
+import Figure from '../../components/blocks/Figure.astro';
+import EverythingBecomesNumbers from '../../components/diagrams/EverythingBecomesNumbers.astro';
+import ExampleTable from '../../components/diagrams/ExampleTable.astro';
+import { LabelPicker } from '../../components/interactives/LabelPicker';
+
+A friend tells you her company has built something that spots which customers
+are about to cancel. You ask to see it, expecting a diagram, or at least a
+screen full of code. She turns her laptop round, and there is a spreadsheet.
+
+Fourteen thousand rows, one per customer. About a dozen columns: months with us,
+what they paid, how many times they rang the help desk. And over on the right, a
+column of yeses and noes — did they leave in the end.
+
+That spreadsheet is not a summary of what the machine learned from. It is not a
+starting point for it. It is the whole of it.
+
+## Rows across, columns down
+
+Read one row across and you get a single case that already finished: a real
+customer, some things that were true of them, and what eventually happened.
+
+Read one column down and you get one thing somebody decided to measure, recorded
+the same way for everybody. Each column is one question asked of every row.
+
+That is the entire structure, and the grid has a name: the **training data**. So
+do the two things inside it — a row is an **example**, a column is a **feature**
+— and neither name adds anything you have not just seen.
+
+What is worth sitting with is what is _not_ in the grid. The machine never meets
+a customer. It never sees a face, hears a complaint, or knows what the product
+does. It gets the numbers, and everything it later appears to understand came
+from there.
+
+## The column you point at
+
+Now look again at that last column, the yeses and noes. Nothing about it is
+different in kind. Somebody recorded whether the customer left in exactly the way
+they recorded what the customer paid.
+
+What makes it the answer is that a person pointed at it and said: this is the
+one I want guessed. The chosen column has a name — the **label** — and the name
+matters far less than the thing underneath it. Nothing in the data told you which
+column to choose. You chose.
+
+Point at a different column and the same fourteen thousand rows become a
+different machine. Nominate monthly payment instead and you have built something
+that estimates what a customer will pay, from how long they stay and how often
+they ring. Same rows. Same measurements. A different product, useful to different
+people.
+
+There is one real constraint on the choice, and it is about timing rather than
+data. **The answer column has to be something you will not have at the moment you
+need the guess.** You can train on "did they leave" precisely because these
+customers' stories are over. For the person who signed up this morning that cell
+is empty — and that emptiness is the only reason anybody built the machine.
+
+<Figure
+  title="A training table, with the answer column marked"
+  description="Rows are cases that already finished and columns are things somebody measured — but the column holding the answer is only the answer because a person nominated it, and on the case you actually care about that cell is blank."
+>
+  <ExampleTable />
+</Figure>
+
+## Nominate a different column
+
+Below are eight second-hand bicycles somebody listed for sale, and five things
+recorded about each one. Choose which column counts as the answer, and watch what
+the rest of the table turns into.
+
+<LabelPicker client:visible />
+
+The instrument ranks the leftover columns by how far each one pulls the answer
+apart. Two results are worth stopping on.
+
+Frame size is a real measurement, taken carefully, in centimetres — and it
+finishes last whichever column you nominate. A column earns its keep by relating
+to the answer, and no amount of care in the measuring creates that relationship.
+
+Then make asking price the answer and look at what wins: whether the bicycle sold
+within a week. Which is true, and useless. On the morning you set a price nothing
+has sold yet. The strongest column in your table is one you will never have in
+time — and that mistake, which gets its own unit later, almost always arrives
+looking exactly like this.
+
+## Everything has to become numbers
+
+A table of customers is easy to picture because the measurements were numbers
+already. Most of what people want from machines is not — though two of the three
+hard cases were never really a problem.
+
+A photograph is already numbers: every dot on the screen is three of them, saying
+how much red, how much green and how much blue. A sound is already numbers too, a
+long list of readings of how hard the air pushed, tens of thousands of times a
+second. You only have to stop thinking of them as pictures and sounds.
+
+Words are the hard one. There is no obvious number for "happy", and no ordering
+that puts it sensibly between two other words. Getting language into a shape a
+machine could do arithmetic on took decades, and it gets its own unit.
+
+<Figure
+  title="What a picture, a sound and a word look like to a machine"
+  description="Cameras and microphones already hand over numbers, so images and audio walked into machine learning almost unchanged — words had no number to give, and that missing conversion is why language took an extra thirty years."
+>
+  <EverythingBecomesNumbers />
+</Figure>
+
+## Why people say the data is the model
+
+A machine learns the patterns that are in its table. All of them — including the
+ones nobody meant to put there.
+
+Suppose the rows are twenty years of loan decisions, and for most of those years
+the decisions quietly went against applicants from one part of the city. The
+machine has no opinion about that and cannot form one. It finds the pattern,
+because finding patterns is all it does, and applies it to every application that
+arrives — faster and more consistently than any person managed.
+
+Which is why "the model is biased" is nearly always a sentence about a
+spreadsheet.
+
+<Aside title="Where the time actually goes">
+  Most of the work on a system that runs is not modelling. It is finding data,
+  cleaning it, working out why one column is empty for everything before March,
+  and arguing about what a column even means. A plain method on a good table
+  beats a clever method on a poor one, almost every time.
+</Aside>
+
+<DevAside>
+  <Fragment slot="java">
+    ```java
+    record Customer(
+        int monthsWithUs,
+        double monthlyPayment,
+        int helpdeskCalls,
+        boolean left) {}
+    ```
+
+    Nothing here says which component is the answer. `left` is a field like any
+    other — same syntax, same accessor, no annotation singling it out. Which one
+    becomes the label is decided elsewhere, in whatever code does the training,
+    and you could reverse it tomorrow without touching this line.
+
+  </Fragment>
+  <Fragment slot="python">
+    ```python
+    row = {
+        "months_with_us": 41,
+        "monthly_payment": 34.0,
+        "helpdesk_calls": 0,
+        "left": False,
+    }
+
+    features = ["months_with_us", "monthly_payment", "helpdesk_calls"]
+    label = "left"
+    ```
+
+    Those last two lines are the whole design decision, and they are just
+    strings. Move `"left"` into `features` and `"monthly_payment"` into `label`,
+    and you have a different product built from identical data.
+
+  </Fragment>
+</DevAside>
+
+<Checkpoint question="Your table has a column, filled in by the support team, called 'refund issued'. You are trying to predict which customers will cancel. Should it be one of the clues?">
+  Only if it is reliably filled in _before_ you need the prediction. If refunds
+  are usually issued during the cancellation call, that column is not a clue
+  about cancelling — it is a piece of the cancellation arriving early. A model
+  trained on it scores beautifully in testing and is worthless on anybody who has
+  not cancelled yet.
+
+The question to ask of every column is therefore not "is this related to the
+answer?" Almost everything is. It is "will I have this in time?"
+
+</Checkpoint>

@@ -4,8 +4,10 @@ import type { CollectionEntry } from 'astro:content';
 
 import ConnectionsFooter from '../../components/blocks/ConnectionsFooter.astro';
 import { UnitProgress } from '../../components/blocks/UnitProgress';
+import CurriculumNav from '../../components/nav/CurriculumNav.astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { assertAcyclic } from '../../lib/units/graph';
+import { assertInteractivesExist } from '../../lib/units/interactives';
 import {
   resolveConnections,
   resolvePrerequisites,
@@ -29,6 +31,16 @@ export async function getStaticPaths() {
       prerequisites: unit.data.prerequisites.map((reference) => reference.id),
       part: unit.data.part,
       order: unit.data.order,
+    })),
+  );
+
+  // `interactives[]` is a list of plain strings, so Zod cannot tell a real
+  // component from a typo. Checked here rather than post-build so a wrong name
+  // fails `astro build` alongside every other content mistake.
+  assertInteractivesExist(
+    units.map((unit) => ({
+      id: unit.id,
+      interactives: unit.data.interactives,
     })),
   );
 
@@ -75,9 +87,31 @@ const connections = resolveConnections(
   (id) => byId.get(id)?.data.title,
   base,
 );
+
+// The sidebar is generated from the same filtered list the routes came from, so
+// it can never offer a link to a page that was not built.
+const navUnits = units.map((entry) => ({
+  id: entry.id,
+  title: entry.data.title,
+  part: entry.data.part,
+  order: entry.data.order,
+}));
 ---
 
 <BaseLayout title={unit.data.title} description={unit.data.summary}>
+  <CurriculumNav
+    slot="nav"
+    variant="rail"
+    units={navUnits}
+    currentId={unit.id}
+  />
+  <CurriculumNav
+    slot="nav-compact"
+    variant="compact"
+    units={navUnits}
+    currentId={unit.id}
+  />
+
   <h1>{unit.data.title}</h1>
   <Content />
   <UnitProgress client:visible unitId={unit.id} />

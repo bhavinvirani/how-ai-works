@@ -1,0 +1,233 @@
+---
+import { getCollection } from 'astro:content';
+
+import { ConceptMap } from '../components/interactives/ConceptMap';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { learningOrder } from '../lib/units/graph';
+import { PART_LABELS, PARTS } from '../lib/units/parts';
+import {
+  resolveConnections,
+  resolvePrerequisites,
+  unitHref,
+} from '../lib/units/resolve';
+
+/**
+ * The concept map.
+ *
+ * An .astro page rather than .mdx because it queries the content collection at
+ * build time, and MDX frontmatter cannot await. Every word a reader sees is in
+ * this file or in unit frontmatter — nothing is written down inside the island
+ * (CLAUDE.md hard rule 10), which is why the panel's title, lead and fallback
+ * caption are handed in as props.
+ *
+ * The page has two halves and they are not redundant. The canvas is the picture:
+ * it shows the *shape* of the curriculum, which no list can. The list below it
+ * is the navigation: server-rendered, keyboard-reachable, readable on a phone,
+ * and working with JavaScript switched off. The canvas is `aria-hidden`
+ * precisely because everything in it is down there in text.
+ */
+
+const all = await getCollection('units');
+
+// Drafts are visible while writing, never in a deployed build — the same rule
+// the unit route follows, so this page can never link to a page that was not
+// generated.
+const visible = all.filter(
+  (unit) => unit.data.status === 'published' || import.meta.env.DEV,
+);
+
+const base = import.meta.env.BASE_URL;
+const byId = new Map(visible.map((unit) => [unit.id, unit]));
+
+const graphNodes = visible.map((unit) => ({
+  id: unit.id,
+  prerequisites: unit.data.prerequisites
+    .map((reference) => reference.id)
+    .filter((id) => byId.has(id)),
+  part: unit.data.part,
+  order: unit.data.order,
+}));
+
+/**
+ * The generated reading order, numbered.
+ *
+ * `learningOrder` runs `assertAcyclic` on the way through, so a prerequisite
+ * loop fails the build here as well as on the unit route — which matters,
+ * because a map of a cyclic graph is a drawing of something impossible.
+ */
+const step = new Map(
+  learningOrder(graphNodes, PARTS).map((id, index) => [id, index + 1]),
+);
+
+const mapUnits = visible.map((unit) => ({
+  id: unit.id,
+  title: unit.data.title,
+  part: unit.data.part,
+  order: unit.data.order,
+  step: step.get(unit.id) ?? 0,
+  href: unitHref(base, unit.id),
+  prerequisites: unit.data.prerequisites
+    .map((reference) => reference.id)
+    .filter((id) => byId.has(id)),
+}));
+
+const mapParts = PARTS.map((part) => ({ id: part, label: PART_LABELS[part] }));
+
+/** The same grouping the map draws, as text: Parts in order, units within. */
+const groups = PARTS.map((part) => ({
+  id: part,
+  label: PART_LABELS[part],
+  units: visible
+    .filter((unit) => unit.data.part === part)
+    .sort((a, b) => a.data.order - b.data.order)
+    .map((unit) => ({
+      id: unit.id,
+      title: unit.data.title,
+      summary: unit.data.summary,
+      href: unitHref(base, unit.id),
+      step: step.get(unit.id) ?? 0,
+      prerequisites: resolvePrerequisites(
+        unit.data.prerequisites,
+        (id) => {
+          const entry = byId.get(id);
+          return (
+            entry && { title: entry.data.title, summary: entry.data.summary }
+          );
+        },
+        base,
+      ),
+      connections: resolveConnections(
+        unit.data.connections,
+        (id) => byId.get(id)?.data.title,
+        base,
+      ),
+    })),
+}))
+  .filter((group) => group.units.length > 0)
+  .map((group, index) => ({ ...group, index: index + 1 }));
+
+const unitCount = visible.length;
+
+const LINK = 'font-medium text-ink underline decoration-rule-strong';
+const SMALL_LINK = 'text-ink-muted underline decoration-rule';
+---
+
+<BaseLayout
+  title="The map — How AI Actually Works"
+  description="Every unit on the site and what has to come before it, drawn as one picture and listed as one index."
+>
+  <h1>The shape of the whole thing</h1>
+
+  <p>
+    {unitCount} topics sounds like {unitCount} things to learn. It is not. Nearly
+    every unit here exists because of the one before it: something breaks, the next
+    idea is the repair, and that repair creates the next problem. This page is that
+    sequence, drawn once and then written out.
+  </p>
+
+  <p>
+    The units are grouped into the Parts of the curriculum. On the map each Part
+    is a box with its name across the top, and the units inside it are what you
+    would read in that stretch — so a Part is a <em>place</em> on the map, not a colour.
+    An arrow runs from a unit to the one that needs it first. It does not mean "these
+    two are related"; it means "read this one before that one".
+  </p>
+
+  <p>
+    The interesting bits are where the single line splits. A box with several
+    arrows leaving it is an idea that more than one later unit is built on, and
+    those are the ones worth slowing down for. The numbers are generated from
+    the arrows: any order that never puts a unit ahead of something it depends
+    on would work, and this is one of them.
+  </p>
+
+  {
+    /* Given room to breathe on a wide screen — sixty boxes in a reading column
+      is a map you can only see through a letterbox. */
+  }
+  <div class="xl:-mx-20">
+    <ConceptMap
+      client:visible
+      units={mapUnits}
+      parts={mapParts}
+      title="The curriculum, drawn"
+      lead="Find the boxes with more than one arrow leaving them — those are the ideas the rest of the site is built on. Drag to move around; pinch or ctrl-scroll to zoom in close enough to read."
+      fallbackCaption="The site is one chain of stages, read top to bottom, with a few branches where two ideas both have to land before a third one makes any sense. Each stage is listed in full below, with every unit in it."
+    />
+  </div>
+
+  <p class="text-sm text-ink-faint">
+    The map is a picture, and nothing on it has to be operated: everything it
+    shows is written out below, where every unit is a link. Drawn with <a
+      href="https://reactflow.dev"
+      class={SMALL_LINK}>React Flow</a
+    >.
+  </p>
+
+  <h2>Every unit, in reading order</h2>
+
+  <p>
+    The same {groups.length} Parts, in the same order, with what each unit is for
+    in one sentence. <strong>Read first</strong> lists the units a topic genuinely
+    depends on — those are the arrows on the map. <strong>Related</strong> lists the
+    ones it talks to without needing them first, which is why they are not drawn.
+  </p>
+
+  {
+    groups.map((group) => (
+      <section class="mt-12">
+        <h3 class="font-display text-xl leading-tight font-semibold text-ink">
+          <span class="font-mono text-sm text-ink-faint tabular-nums">
+            {group.index}
+          </span>{' '}
+          {group.label}
+        </h3>
+
+        <ol class="mt-4 flex flex-col gap-6">
+          {group.units.map((unit) => (
+            <li class="flex gap-3">
+              <span class="mt-0.5 w-6 shrink-0 font-mono text-xs text-ink-faint tabular-nums">
+                {unit.step}
+              </span>
+
+              <div class="min-w-0">
+                <a href={unit.href} class={LINK}>
+                  {unit.title}
+                </a>
+                <p class="mt-1 text-sm text-ink-muted">{unit.summary}</p>
+
+                {unit.prerequisites.length > 0 && (
+                  <p class="mt-1 text-sm text-ink-faint">
+                    Read first:{' '}
+                    {unit.prerequisites.map((prerequisite, index) => (
+                      <span>
+                        {index > 0 && ', '}
+                        <a href={prerequisite.href} class={SMALL_LINK}>
+                          {prerequisite.title}
+                        </a>
+                      </span>
+                    ))}
+                  </p>
+                )}
+
+                {unit.connections.length > 0 && (
+                  <p class="mt-1 text-sm text-ink-faint">
+                    Related:{' '}
+                    {unit.connections.map((connection, index) => (
+                      <span>
+                        {index > 0 && ', '}
+                        <a href={connection.href} class={SMALL_LINK}>
+                          {connection.title}
+                        </a>
+                      </span>
+                    ))}
+                  </p>
+                )}
+              </div>
+            </li>
+          ))}
+        </ol>
+      </section>
+    ))
+  }
+</BaseLayout>

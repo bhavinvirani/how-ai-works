@@ -2,6 +2,7 @@
 import { unified } from '@astrojs/markdown-remark';
 import mdx from '@astrojs/mdx';
 import react from '@astrojs/react';
+import sitemap from '@astrojs/sitemap';
 import tailwindcss from '@tailwindcss/vite';
 import { defineConfig } from 'astro/config';
 import rehypeKatex from 'rehype-katex';
@@ -26,7 +27,11 @@ export default defineConfig({
   site: 'https://bhavinvirani.github.io/how-ai-works',
   base,
 
-  integrations: [react(), mdx()],
+  // `sitemap` reads `site` above, so its URLs already carry the base path. It
+  // is skipped on PR previews: a preview would otherwise publish a sitemap
+  // claiming its throwaway URLs are canonical, and `gh-pages` serves previews
+  // from the same origin as the live site, so a crawler cannot tell them apart.
+  integrations: [react(), mdx(), ...(process.env.BASE_PATH ? [] : [sitemap()])],
 
   markdown: {
     // Astro 7 defaults to Sätteri, a Rust markdown engine that does NOT run

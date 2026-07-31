@@ -6,6 +6,7 @@ description: An open-source site that teaches AI and machine learning from first
 
 import PaletteSpecimen from '../components/specimen/PaletteSpecimen.astro';
 import TypeSpecimen from '../components/specimen/TypeSpecimen.astro';
+import { withBase } from '../lib/paths';
 
 # How AI Actually Works
 
@@ -22,13 +23,37 @@ understand it. Then you get a diagram, and then you get an instrument you can
 actually adjust and break, because reading about a thing and playing with it are
 not the same kind of knowing.
 
-## Nothing is here yet
+## Where to start
 
-This page is scaffolding. The build pipeline, design system, and deployment all
-work — that is genuinely all this page is proving right now.
+Sixty lessons, in sixteen parts, in the order that makes them make sense. Each
+one builds on the last, so the honest answer is: at the beginning.
 
-The lessons come next. Until then, there is nothing here to learn, and it would
-be dishonest to pretend otherwise.
+<ul>
+  <li>
+    <strong>
+      <a href={withBase('/units/why-rules-fail')}>Start at the first lesson</a>
+    </strong>{' '}
+    — why some jobs cannot be done by writing rules, which is the problem
+    everything else exists to solve.
+  </li>
+  <li>
+    <strong>
+      <a href={withBase('/map')}>See the whole map</a>
+    </strong>{' '}
+    — all sixty topics and how they connect, if you would rather get the shape
+    of it first.
+  </li>
+  <li>
+    <strong>
+      <a href={withBase('/search')}>Search the lessons</a>
+    </strong>{' '}
+    — if you came here for one particular thing.
+  </li>
+</ul>
+
+You do not need a maths background, and you do not need to be a programmer.
+Where a lesson has something extra for developers, it is folded away in a box
+you can ignore.
 
 ## What a formula looks like here
 

@@ -2,7 +2,7 @@
 title: The three you broke fixing one
 part: does-it-work
 order: 1
-summary: Nothing about an AI system can be judged from the one case in front of you, so a change is an improvement only if a fixed set of real cases with known-good answers says it is — and almost nobody has one.
+summary: Nothing about an AI system can be judged from the one case in front of you, so a change is an improvement only if a fixed set of real cases with known-good answers says it is, and almost nobody has one.
 prerequisites:
   - train-test-split
   - precision-and-recall
@@ -70,7 +70,7 @@ side of the comparison.
 
 So the reflex stalls at the first case, and almost everybody arrives at the same
 conclusion: this kind of system cannot really be tested, so it has to be judged
-by looking at it. That conclusion is where the trouble starts — not because it
+by looking at it. That conclusion is where the trouble starts, not because it
 is stupid, but because the thing it rules out is not a testing framework. It is
 a list.
 
@@ -106,7 +106,7 @@ has scored anything at all.
 
 <Figure
   title="Three rows out of thirty"
-  description="A case is an input, the answer a good response has to contain, and a note saying how that gets checked — and the third row is a question with no single right answer, sitting in the same file in the same shape, which is the thing most people assume a set cannot hold."
+  description="A case is an input, the answer a good response has to contain, and a note saying how that gets checked, and the third row is a question with no single right answer, sitting in the same file in the same shape, which is the thing most people assume a set cannot hold."
 >
   <ThreeRowsOfAFile />
 </Figure>
@@ -123,8 +123,8 @@ months without anybody thinking about it. This morning a customer complained
 about a mug that arrived smashed. They asked for their money back and were sent
 to the delivery queue.
 
-The panel opens where you would be standing: one message — the one that was
-forwarded to you — and the instruction as it currently stands. Add the obvious
+The panel opens where you would be standing: one message, the one that was
+forwarded to you, and the instruction as it currently stands. Add the obvious
 rule, the one that says damage means refund, and read the score.
 
 <EvalScoreboard client:visible />
@@ -268,7 +268,7 @@ failure that scores as a success, and it will not be rescued next week.
 
 So a case for an agent carries more than an expected answer. The tool that
 should have been called. The number of steps it should have taken. The point at
-which it should have stopped and asked somebody. Coarse, all of it — but each
+which it should have stopped and asked somebody. Coarse, all of it, but each
 one names a step, and naming the step is the whole of the job.
 
 <DevAside>
@@ -285,7 +285,7 @@ one names a step, and naming the step is the whole of the job.
 
     The total is the least interesting thing this produces. Commit `run` as a
     file beside the prompt it was measured on, and the pull request shows a
-    diff — three case ids flipping from `true` to `false` — which is an
+    diff, three case ids flipping from `true` to `false`, which is an
     artefact a reviewer can act on. A total that moved from 41 to 39 tells
     somebody to go and look. A list of which three tells them what happened.
 
@@ -325,7 +325,7 @@ honest about those thirty cases and silent about everything else, which is
 almost all of the traffic.
 
 And six months of keeping whichever change the set preferred has fitted the
-prompt to those thirty cases. Nothing leaked into the model — nothing is being
+prompt to those thirty cases. Nothing leaked into the model. Nothing is being
 trained. It leaked into the team. The set has quietly stopped measuring and
 started being the thing optimised against, which is what happens to any pile of
 examples somebody is allowed to look at over and over.

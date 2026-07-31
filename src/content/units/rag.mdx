@@ -2,14 +2,14 @@
 title: The model is the easy part
 part: your-own-documents
 order: 1
-summary: Look the answer up in your own documents first and hand the passages over with the question, and the model will answer from those — which puts the ceiling on every answer at the quality of the search rather than the quality of the model.
+summary: Look the answer up in your own documents first and hand the passages over with the question, and the model will answer from those, which puts the ceiling on every answer at the quality of the search rather than the quality of the model.
 prerequisites:
   - hallucination
 connections:
   - to: chunking
-    why: The search can only ever hand back a passage that somebody cut in advance, so where the documents get sliced is settled long before anyone asks anything — and it quietly fixes what is findable at all.
+    why: The search can only ever hand back a passage that somebody cut in advance, so where the documents get sliced is settled long before anyone asks anything, and it quietly fixes what is findable at all.
   - to: vector-search
-    why: Finding the nearest passages is the step that sets the ceiling described here, and it works by comparing positions on a map of meaning rather than by matching words — which is why it can find the right passage when the question and the passage share no vocabulary, and why its near-misses are so hard to spot.
+    why: Finding the nearest passages is the step that sets the ceiling described here, and it works by comparing positions on a map of meaning rather than by matching words, which is why it can find the right passage when the question and the passage share no vocabulary, and why its near-misses are so hard to spot.
 interactives: []
 status: published
 updated: 2026-07-31
@@ -93,7 +93,7 @@ The second happens on every single question, and it is five steps:
 
 The model everybody means when they say _the AI_ appears only in the last of those
 steps. Read the list again and notice how much of this architecture is not
-intelligence of any kind — it is cutting, filing, searching and joining strings
+intelligence of any kind. It is cutting, filing, searching and joining strings
 together, with one ordinary call at the end of it.
 
 <Figure
@@ -114,7 +114,7 @@ question.
 Not the main input. The whole of it. A model reads the text in front of it from
 the top and produces a score for every chunk in its vocabulary; those passages
 _are_ the text in front of it. There is no second source it consults, no memory
-of the document it was not given, and — from the previous unit — no step at which
+of the document it was not given, and, from the previous unit, no step at which
 it could register that the passages do not answer the question.
 
 Watch that play out once, in full, because the failure is much quieter than
@@ -122,7 +122,7 @@ people expect.
 
 Ask a support assistant how long the warranty runs on a Kestrel 400. The search
 returns the three passages nearest the question, and all three are about the
-Kestrel 300 — because the two manuals are near-identical, the phrase _warranty
+Kestrel 300, because the two manuals are near-identical, the phrase _warranty
 period_ appears throughout both, and the difference between the products is one
 character in a passage where every other word matches.
 
@@ -253,7 +253,7 @@ dials there is no sentence to change, because the fact was never in one place;
 the repair is another training run.
 
 **It can point at something.** The passage still exists, as a passage, in a
-document with a name. That is what makes a reference possible at all — not the
+document with a name. That is what makes a reference possible at all, not the
 model knowing where anything came from, but there being something on the other
 end of the pointer for a person to open.
 
@@ -287,7 +287,7 @@ that is not intelligence. It is the ability to be corrected.
     is really a question about `best`, and without it recorded you are debugging
     a black box that is not the black box you think it is.
 
-    The two numbers — 40 and 4 — are the most consequential settings in the
+    The two numbers, 40 and 4, are the most consequential settings in the
     system and the ones most often left at whatever a tutorial suggested. Raise
     the first and you widen what the reranker gets to consider; raise the second
     and you spend more of the window per call, on passages the reranker already
@@ -315,7 +315,7 @@ that is not intelligence. It is the ability to be corrected.
     looks. It is the only reason the answer can cite anything: the model cites by
     copying a label it can see in its own input, not by knowing where any
     sentence came from. Drop those labels and you have not made citation harder,
-    you have made it impossible — and the model will still produce something
+    you have made it impossible, and the model will still produce something
     citation-shaped, because that is what the previous unit was about.
 
     The other half of the job is the case your template has to survive, which is
@@ -335,7 +335,7 @@ that is not intelligence. It is the ability to be corrected.
   arrived, and that is where the failure almost certainly happened.
 
 The citation is the tell. If the right page never reached the prompt, the model
-is being asked to write an answer that is not in front of it — and having no step
+is being asked to write an answer that is not in front of it, and having no step
 that checks, it writes one anyway, out of the near-misses that did arrive. A real
 reference to a genuinely supplied but wrong passage is the signature of a
 retrieval miss, not a generation miss. It is what the wrong box looks like from

@@ -12,7 +12,7 @@ const SITE = 'How AI Actually Works';
 describe('pageTitle', () => {
   it('suffixes an ordinary page with the site name', () => {
     expect(pageTitle('Attention', SITE)).toBe(
-      'Attention — How AI Actually Works',
+      'Attention | How AI Actually Works',
     );
   });
 
@@ -24,6 +24,11 @@ describe('pageTitle', () => {
     // Every page on the site wrote its own suffix before the template existed.
     // Missing this case produces "Gallery — Site — Site" on the pages that were
     // never updated, which is exactly the sort of thing nobody notices.
+    expect(pageTitle('Gallery | How AI Actually Works', SITE)).toBe(
+      'Gallery | How AI Actually Works',
+    );
+    // The two separators used before the em dash was retired, so a title
+    // written by hand against an older convention is still not double-suffixed.
     expect(pageTitle('Gallery — How AI Actually Works', SITE)).toBe(
       'Gallery — How AI Actually Works',
     );

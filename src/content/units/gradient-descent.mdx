@@ -2,7 +2,7 @@
 title: Feeling your way downhill
 part: the-learning-loop
 order: 3
-summary: A machine never sees where the good settings are. It feels which way the ground tips under its feet, steps that way, and repeats — which makes training a search rather than a calculation.
+summary: A machine never sees where the good settings are. It feels which way the ground tips under its feet, steps that way, and repeats, which makes training a search rather than a calculation.
 prerequisites:
   - loss-function
 connections:
@@ -31,7 +31,7 @@ getting dark.
 
 You cannot see the valley. You cannot see the path, or the ridge, or the drop
 somewhere off to your left. What you can do is stand still and notice which way
-the ground tips under your boots — and then take one step that way.
+the ground tips under your boots, and then take one step that way.
 
 Stop. Feel again. Step again.
 
@@ -65,7 +65,7 @@ The obvious move is to look at the whole landscape and walk to the bottom.
 Nobody can, and nobody ever will.
 
 Finding the height of one spot means running the machine over the examples and
-scoring it, which costs real time — and the spots are not few. Allow each dial a
+scoring it, which costs real time, and the spots are not few. Allow each dial a
 thousand positions: one dial gives you a thousand places to check, two dials a
 million, three a billion. A model with a billion dials has more possible
 settings than there are atoms in anything you could point at.
@@ -98,7 +98,7 @@ other way.
 
 <Figure
   title="What the machine gets to see"
-  description="Only the patch of ground under its feet is ever available, so it walks towards the nearest low ground — which is not always the lowest ground there is."
+  description="Only the patch of ground under its feet is ever available, so it walks towards the nearest low ground, which is not always the lowest ground there is."
 >
   <DownhillInFog />
 </Figure>
@@ -129,11 +129,11 @@ The second: it came to rest at a wrongness of about 0.59, and there is ground at
 A hollow like that has a name: a **local minimum** — the lowest point in its own
 neighbourhood, and not the lowest point overall. Now set the walk to begin at
 0.44 and let it run, then move that one notch to 0.46 and watch. Same landscape,
-same method, same number of steps — and this time it ends up in the deep valley.
+same method, same number of steps, and this time it ends up in the deep valley.
 Nothing changed except where it started.
 
 <Aside title="Why this matters less than it sounds">
-  With one dial, getting stuck is easy — there are two directions and both have
+  With one dial, getting stuck is easy. There are two directions and both have
   to lead up. With a billion dials, all billion have to lead up before the walk
   is trapped, which is a great many coincidences to ask for. Large models turn
   out to spend their time on long gentle slopes, and on ground that falls away
@@ -144,7 +144,7 @@ Nothing changed except where it started.
 ## What this means in practice
 
 Training is a search, not a calculation. There is no formula anyone can evaluate
-to get the best settings — there is a long walk, and it ends when the ground
+to get the best settings. There is a long walk, and it ends when the ground
 goes flat or the money runs out, whichever comes first.
 
 That has consequences you will keep meeting. Train the same model twice from two
@@ -167,10 +167,11 @@ picks rather than something the machine learns, and it is next.
     }
     ```
 
-    Three lines, one of which is the loop. `slopeAt` is the only expensive call
-    — it is the part that touches the training data. In a real system `setting`
-    is an array of billions of numbers rather than one `double`, and nothing
-    else about the shape changes.
+    Three lines, one of which is the loop. `slopeAt` is the only expensive call.
+
+It is the part that touches the training data. In a real system `setting`
+is an array of billions of numbers rather than one `double`, and nothing
+else about the shape changes.
 
   </Fragment>
   <Fragment slot="python">
@@ -189,7 +190,7 @@ picks rather than something the machine learns, and it is next.
 <Checkpoint question="The walk stops when the ground under it goes flat. Why is that not the same thing as having found the best settings?">
   Flat means every direction it can feel from where it stands leads upwards. It
   says nothing about ground the machine never stood on, and it only ever
-  measures the spot it currently occupies — so the rest of the landscape was
+  measures the spot it currently occupies, so the rest of the landscape was
   never in evidence.
 
 Worth holding onto, because it is the honest version of what "trained" means. A

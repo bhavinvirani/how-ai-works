@@ -7,7 +7,7 @@ prerequisites:
   - tool-use
 connections:
   - to: prompt-injection
-    why: A protocol turns adding somebody else's tool into a line of configuration, and everything that tool hands back lands in the same context as your own instructions with nothing marking which is which — so the thing that makes tools cheap to add makes that hole cheap to add too.
+    why: A protocol turns adding somebody else's tool into a line of configuration, and everything that tool hands back lands in the same context as your own instructions with nothing marking which is which, so the thing that makes tools cheap to add makes that hole cheap to add too.
   - to: agents
     why: A model choosing its own next step can only choose among the things it can reach, so what a protocol changes is not how well it chooses but how much there is to choose from.
 interactives: []
@@ -83,7 +83,7 @@ Six plus nine is fifteen.
 The number is not the interesting part. The shape of it is. In the first
 picture, joining costs one piece of work for every counterpart that already
 exists, so a tenth system arrives owing six of them and a seventh application
-arrives owing nine. In the second, joining costs one piece — and it costs one
+arrives owing nine. In the second, joining costs one piece, and it costs one
 piece whether there are nine counterparts waiting or nine hundred.
 
 Fifteen is not free, and it is worth resisting the version of this argument that
@@ -95,7 +95,7 @@ knows most about it.
 
 <Figure
   title="Fifty-four pieces of work, or fifteen"
-  description="Each line is one piece of plumbing somebody wrote and now maintains. Wiring every application to every system by hand draws fifty-four of them; putting one agreed shape in the middle draws fifteen — and the same tenth system costs six lines in the first picture and one in the second."
+  description="Each line is one piece of plumbing somebody wrote and now maintains. Wiring every application to every system by hand draws fifty-four of them; putting one agreed shape in the middle draws fifteen, and the same tenth system costs six lines in the first picture and one in the second."
 >
   <FiftyFourOrFifteen />
 </Figure>
@@ -145,7 +145,7 @@ is neither of them.
 <Aside title="Easy to plug in, in both directions" tone="caution">
   A standard lowers the cost of connecting things, and it lowers it for
   everything equally. Adding a server somebody else wrote becomes a line in a
-  configuration file — which is excellent when you trust them, and is the entire
+  configuration file, which is excellent when you trust them, and is the entire
   problem when you do not.
 
 The specific hole is worth naming here rather than later. Whatever a server hands
@@ -170,7 +170,7 @@ stopped being theoretical.
     ```
 
     The middle field is the odd one out, and it is the one that decides
-    everything. Your program never inspects it. The model does — it is prose,
+    everything. Your program never inspects it. The model does. It is prose,
     shipped as configuration, and it is what determines whether the tool gets
     called at the right moment or sits there unused.
 
@@ -209,7 +209,7 @@ stopped being theoretical.
 So the question the arithmetic actually asks is not what it costs today. It is
 how many counterparts are plausible. A system that will only ever be reached by
 one application should probably just be reached by it, and saying so is not
-resisting the standard — it is applying the argument the standard is made of.
+resisting the standard. It is applying the argument the standard is made of.
 
 There is also a thumb on the scale that the sum leaves out. Much of the nine has
 already been written by other people. If a server for that system exists, the

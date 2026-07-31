@@ -34,7 +34,7 @@ found _the tenant_, and carried on reading.
 Now notice what you did not do. You did not start the sentence again from the
 top. You did not go rummaging in a summary of everything you had read so far,
 hoping the answer was still somewhere in it. You asked one question — who is
-_she_? — and one word answered it. Everything else in the sentence stayed
+_she_? One word answered it. Everything else in the sentence stayed
 exactly where it was.
 
 A machine that reads one word at a time cannot work like that. It carries a
@@ -86,7 +86,7 @@ contents is what they mean.
 
 Now the arithmetic, which is smaller than you would expect.
 
-Take one word — say _she_ — and its question. Compare that question against the
+Take one word, say _she_, and its question. Compare that question against the
 label of every word in the sentence, its own included. Each comparison produces a
 single number saying how well that question and that label go together.
 
@@ -134,7 +134,7 @@ of the rest. The word has been rebuilt out of the sentence around it.
 
 ## Nine words, and a pronoun with a question
 
-Below is one sentence — _The student carried the box because she was strong_ —
+Below is one sentence, _The student carried the box because she was strong_,
 and one round of attention over it. Choosing a word chooses the word doing the
 asking; the number printed under each of the others is the share it spent there.
 
@@ -146,7 +146,7 @@ reasonable wrong answer rather than a random one — a box is at least the kind 
 thing a pronoun could be standing for. The other seven words get about six per
 cent each, which is this arithmetic's way of saying it found nothing there.
 
-Look at where _student_ sits. Five words earlier, with four words in between —
+Look at where _student_ sits. Five words earlier, with four words in between,
 and one of those in-between words, _because_, is pressed right up against _she_
 and receives exactly the same six per cent as _The_ at the very start of the
 sentence and _strong_ at the very end. Distance contributed nothing at all. It is
@@ -160,7 +160,7 @@ in that process looked up a rule about pronouns.
 
 Now choose **because**. Eleven per cent to every word in the sentence, itself
 included, and the strip reports that it now means the plain average of the whole
-sentence — which is a precise way of saying it learned nothing. That is not the
+sentence, which is a precise way of saying it learned nothing. That is not the
 instrument giving up. _because_ carries none of the meaning these questions are
 asking about, so its question matches every label equally badly, and a row of
 equal scores comes out of softmax as a row of equal shares. Nobody assigned that
@@ -179,7 +179,7 @@ One thing has to be said plainly, and this is the unit that owes it.
 
 The arithmetic in that panel is the real thing. A score for every ordered pair of
 words, divided by the square root of the width, pushed through softmax so each
-row sums to one, then spent on the other words' contents — that is attention as
+row sums to one, then spent on the other words' contents. That is attention as
 it runs inside a production model, not an impression of it. Every number on this
 page came out of it.
 
@@ -221,11 +221,11 @@ the same week. Almost everything about the last few years follows from that.
 <Aside title="What it costs" tone="caution">
   Every word compares itself against every word, so nine words means eighty-one
   comparisons and a thousand words means a million. Double the length of the
-  text and you roughly quadruple the work — and the memory, which is usually
-  what runs out first. That is why a model has a limit on how much it will read
-  at once, why that limit is quoted in the specifications like a headline
-  figure, and why a large slice of current research is people trying to get most
-  of attention's behaviour for less than all of attention's bill.
+  text and you roughly quadruple the work, and the memory, which is usually what
+  runs out first. That is why a model has a limit on how much it will read at
+  once, why that limit is quoted in the specifications like a headline figure,
+  and why a large slice of current research is people trying to get most of
+  attention's behaviour for less than all of attention's bill.
 </Aside>
 
 ## The line everybody quotes
@@ -254,7 +254,7 @@ There is nothing in that line you have not already done by hand.
     ```
 
     The method worth naming carefully is `softmaxRows`, not `softmax`. Attention
-    softmaxes each row on its own — one budget per word — and a helper that
+    softmaxes each row on its own, one budget per word, and a helper that
     normalises the whole grid at once compiles, runs, and produces a model that
     never learns anything. The shapes do not protect you here; both versions are
     the same square of doubles going in and coming out.
@@ -276,7 +276,7 @@ There is nothing in that line you have not already done by hand.
   </Fragment>
 </DevAside>
 
-<Checkpoint question="A model reading a long report attaches the word she to the wrong person. A colleague suggests fixing it by making the model pay more attention to the right person. Setting aside whether that is possible, what does it cost — and where does the cost land?">
+<Checkpoint question="A model reading a long report attaches the word she to the wrong person. A colleague suggests fixing it by making the model pay more attention to the right person. Setting aside whether that is possible, what does it cost, and where does the cost land?">
   It costs attention taken from every other word in that sentence. Each word has
   one unit to spend and no more, so raising the share on the right person
   necessarily lowers the share on everything else, including words the model was
@@ -284,7 +284,7 @@ There is nothing in that line you have not already done by hand.
 
 Worth keeping, because it generalises well beyond this unit. Any time somebody
 says a model should focus more on something, the honest version of that sentence
-has a second half — and less on something else. There is no setting anywhere in
+has a second half, and less on something else. There is no setting anywhere in
 the machine that adds attention.
 
 </Checkpoint>

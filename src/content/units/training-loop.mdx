@@ -9,7 +9,7 @@ connections:
   - to: training-data
     why: The loop swallows one example per pass and never asks where it came from, so whatever is in that pile is what the dials drift towards.
   - to: why-rules-fail
-    why: This cycle is the thing that replaced hand-written rules — it is what "learning from examples" turns out to mean, mechanically.
+    why: This cycle is the thing that replaced hand-written rules. It is what "learning from examples" turns out to mean, mechanically.
 interactives:
   - TrainingLoopRunner
 status: published
@@ -132,7 +132,7 @@ No single nudge is worth anything. The pile of them is worth everything.
 This is why training is the expensive part and using a model is the cheap part.
 Answering your question runs the machine forwards once. Training ran it forwards
 and backwards over an enormous pile of examples, for weeks, across thousands of
-machines — and that bill was paid before anyone typed anything into it.
+machines, and that bill was paid before anyone typed anything into it.
 
 It is also why a model cannot simply be told a new fact. There is no slot to put
 a fact in — only dials, and the only tool for moving them is this loop, which

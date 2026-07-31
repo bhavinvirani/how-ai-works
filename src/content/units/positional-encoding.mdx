@@ -7,7 +7,7 @@ prerequisites:
   - attention
 connections:
   - to: transformers
-    why: Every transformer stamps position into the words once, right at the bottom of the stack, before the first attention layer sees anything — it is one of the small pieces of plumbing that make an attention block usable on real language.
+    why: Every transformer stamps position into the words once, right at the bottom of the stack, before the first attention layer sees anything. It is one of the small pieces of plumbing that make an attention block usable on real language.
   - to: context-window
     why: How far a model can usefully read depends on position stamps still meaning something at lengths it never met in training, which is why extending a window is a harder problem than finding more memory.
 interactives:
@@ -66,14 +66,14 @@ words printed on the two of them are identical.
 This is also not an oversight that slipped past somebody. It is the bill for the
 thing that made attention worth having. The machines before it read strictly
 left to right and got order for nothing, precisely because they could only ever
-be in one place at a time — which is the same reason they were slow and the same
+be in one place at a time, which is the same reason they were slow and the same
 reason they forgot the beginnings of long sentences. Attention looks everywhere
 at once. It bought speed and reach by giving up the one thing that reading in
 order had been carrying for free.
 
 <Figure
   title="Two orders in, and what has to change for two answers to come out"
-  description="Every score is worked out from what two words mean, so both orders hand attention the same heap of comparisons and the same answer falls out of it; adding a fixed set of numbers for slot 4 to whichever word is sitting in slot 4 — before any comparing happens — is what turns the two orders back into two different questions."
+  description="Every score is worked out from what two words mean, so both orders hand attention the same heap of comparisons and the same answer falls out of it; adding a fixed set of numbers for slot 4 to whichever word is sitting in slot 4, before any comparing happens, is what turns the two orders back into two different questions."
 >
   <PositionStampedIn />
 </Figure>
@@ -154,7 +154,7 @@ what two words mean can tell you which of them came first.
 
 Now put the stamp back on and choose _box_. The row snaps into focus. _Box_
 gives ninety-one per cent to _the_, the word immediately in front of it in the
-sentence — and in the shuffle, where _box_ is sitting second, it gives
+sentence, and in the shuffle, where _box_ is sitting second, it gives
 ninety-two per cent to _she_, the word immediately in front of it there. Same
 reading, same word, a different neighbour, because it is now a different
 arrangement.
@@ -225,13 +225,13 @@ nine thousand means anything at all.
     Two lines, and the shapes are the tell: the stamp is built out of the
     sequence length alone and added straight onto the meanings. Delete the second
     line and nothing crashes. Training runs, the loss comes down, and you get
-    fluent sentences that are unreliable about which noun did the verb — which
+    fluent sentences that are unreliable about which noun did the verb, which
     can look like a general quality problem for weeks.
 
   </Fragment>
 </DevAside>
 
-<Checkpoint question="A model that translates well has its position stamps disabled by accident. It carries on training without a single error, and still produces fluent, grammatical-looking output. Why does nothing break — and what kind of mistakes would you expect to start seeing?">
+<Checkpoint question="A model that translates well has its position stamps disabled by accident. It carries on training without a single error, and still produces fluent, grammatical-looking output. Why does nothing break, and what kind of mistakes would you expect to start seeing?">
   Nothing breaks because nothing was ever checking. Attention scores pairs of
   words by what they mean, and that calculation is perfectly well defined
   whatever order the words arrived in. Position was something the model was

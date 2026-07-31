@@ -2,14 +2,14 @@
 title: Two ways to be wrong
 part: when-scores-lie
 order: 3
-summary: When the answer you are hunting for is rare, a machine that says no to everybody scores ninety-nine per cent — so the only honest way to judge one is to count its two kinds of mistake separately, and decide by hand which you would rather have.
+summary: When the answer you are hunting for is rare, a machine that says no to everybody scores ninety-nine per cent, so the only honest way to judge one is to count its two kinds of mistake separately, and decide by hand which you would rather have.
 prerequisites:
   - loss-function
 connections:
   - to: neuron
     why: Where the bar gets set is one number at the very end of the machine, and the next part opens the machine up to show what all the numbers before it are doing.
   - to: training-data
-    why: How rare the interesting answer is was settled when somebody built the table of examples, and that rarity — not the machine — is what makes a single accuracy number so easy to fool.
+    why: How rare the interesting answer is was settled when somebody built the table of examples, and that rarity, not the machine, is what makes a single accuracy number so easy to fool.
   - to: why-rules-fail
     why: 'The junk filter had these same two mistakes from its first afternoon: a real invoice thrown away, and a junk message let through. Nobody minded them equally.'
   - to: evaluation
@@ -77,7 +77,7 @@ tell them apart from a single score.
 
 <Figure
   title="The four boxes every detector fills in"
-  description="Every answer a detector gives lands in one of four boxes, and accuracy is only the two marked right added together — so when almost everybody is healthy, one box does nearly all the scoring and the two mistakes can be swapped for each other without the score moving much."
+  description="Every answer a detector gives lands in one of four boxes, and accuracy is only the two marked right added together, so when almost everybody is healthy, one box does nearly all the scoring and the two mistakes can be swapped for each other without the score moving much."
 >
   <TwoKindsOfMistake />
 </Figure>
@@ -142,8 +142,8 @@ spreadsheet it is the worst detector on the page.
 ## Where the dial sits is not a technical decision
 
 No formula can place it for you. Moving the dial trades misses for false alarms
-at a rate the machine works out exactly, but the exchange rate — how many
-frightening fortnights one prevented funeral is worth — is nowhere in the data.
+at a rate the machine works out exactly, but the exchange rate, how many
+frightening fortnights one prevented funeral is worth, is nowhere in the data.
 Somebody has to decide, and should be answerable for it.
 
 Which gives you the question to carry into every conversation about how well an

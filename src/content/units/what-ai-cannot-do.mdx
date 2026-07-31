@@ -71,7 +71,7 @@ reasoning that starts from a property you can name and ends where you are
 standing.
 
 And you get a prediction. Anything else that leans on the same property will
-fail too, and you can say what before you meet it — which is the difference
+fail too, and you can say what before you meet it, which is the difference
 between knowing how something works and having memorised a list of times it went
 wrong.
 
@@ -92,8 +92,8 @@ _strawberry_, and for a long time the answer came back as two — from a model t
 could, in the next breath, discuss where the word came from.
 
 The cause is the very first thing that happens to your sentence, before any of
-the interesting machinery gets involved. Text is cut into chunks — the vocabulary
-of roughly a hundred thousand pieces that everything the model reads is made of —
+the interesting machinery gets involved. Text is cut into chunks, the vocabulary
+of roughly a hundred thousand pieces that everything the model reads is made of,
 and each chunk arrives as one entry, a number standing for the whole piece.
 _Strawberry_ is not delivered as ten letters. It is delivered as two or three
 items, each of them atomic.
@@ -122,7 +122,7 @@ the word to one nobody has written a blog post about and watch it go again.
 
 ### It states false things in the voice it uses for true ones
 
-You had a whole unit on this one, so the trace is short — and it is two
+You had a whole unit on this one, so the trace is short, and it is two
 properties stacked rather than one, which is why it is so much worse to live with
 than any single item here.
 
@@ -132,8 +132,8 @@ different worlds, at the same cost, in the same tenth of a second.
 
 The second was installed separately, by people aiming at something else. Writing
 on the internet is overwhelmingly confident, so hedging scores badly before
-anybody tunes anything on purpose. Then preference training — people shown two
-answers and asked which is better — rewards the direct answer over the one that
+anybody tunes anything on purpose. Then preference training, people shown two
+answers and asked which is better, rewards the direct answer over the one that
 declines to commit, because direct reads as more helpful and helpful is what was
 being judged.
 
@@ -163,7 +163,7 @@ and it moves the line without removing it: a month later you are in the same
 position, having paid a great deal for the privilege, with no way to point at
 where any particular answer came from. The move that actually holds is the other
 one. Knowledge sits either in the dials, where it is fixed and unciteable, or in
-the window it reads each time, where it is current, swappable and quotable — and
+the window it reads each time, where it is current, swappable and quotable, and
 putting the fact in the window is what retrieval, tools and half of the last few
 Parts of this site have been about.
 
@@ -213,7 +213,7 @@ going.
 </Figure>
 
 Read the two columns as a piece of arithmetic. Eight things go in on the left and
-five come out on the right, and that ratio only gets worse — you could add
+five come out on the right, and that ratio only gets worse. You could add
 another twenty complaints to the left column tomorrow and the right column would
 barely move.
 
@@ -229,7 +229,7 @@ is whether a complaint you were never given has an obvious home. Here are three,
 and not one of them is on it.
 
 _It agreed with me when I pushed back, and I was the one who was wrong._ Property
-B — it scores plausible continuations and nothing consults a fact — plus the same
+B, it scores plausible continuations and nothing consults a fact, plus the same
 preference training that installed the confident register. Your objection is text
 appended to text, and what most plausibly follows a complaint is an apology and a
 revision. Nothing anywhere compared the new answer to the old one, because
@@ -245,7 +245,7 @@ summarise._ This one is not on the drawing at all, and noticing that is the
 useful part. It comes from a sixth property: everything arrives as one sequence
 of pieces with nothing in the machinery marking which of them has authority. Five
 properties explain those eight complaints. A longer list of complaints needs one
-or two more properties, and the ratio still holds — that is the claim, not the
+or two more properties, and the ratio still holds. That is the claim, not the
 number five.
 
 ## Which of these go away
@@ -283,7 +283,7 @@ These are consequences of **this design**: a machine that scores the next chunk
 against dials frozen at the end of training, reading one undifferentiated
 sequence, at a fixed cost per pass. Every row in that left column follows from
 those properties the way the phone call follows from lip-reading. As long as that
-is the thing you are buying, that is the thing you get — which is not a
+is the thing you are buying, that is the thing you get, which is not a
 prediction, it is an inspection.
 
 Something built on a different mechanism would have a different left column. It
@@ -340,7 +340,7 @@ outside the model, where a check can actually exist. Give it the least
 independence the job needs, and earn the rest by measurement.
 
 Systems that disappoint were built as though the shape were not there. Usually by
-someone who saw a very good demo and drew the wrong conclusion from it — not that
+someone who saw a very good demo and drew the wrong conclusion from it, not that
 the machine is capable, which it is, but that it is capable in a different shape
 than the one it has.
 
@@ -367,8 +367,8 @@ than the one it has.
 
     `pricing.total(...)` exists because arithmetic left with the model is
     arithmetic left with a next-piece scorer. What the model is good for in this
-    function is working out which line items the customer meant — the
-    language-shaped half — and everything downstream of that belongs in code
+    function is working out which line items the customer meant, the
+    language-shaped half, and everything downstream of that belongs in code
     that adds up.
 
     Worth stating what remains after both. The draft is still text produced by
@@ -410,12 +410,12 @@ than the one it has.
   The third does nothing structural, and it is worth being exact about why.
   Certainty is not a quantity the machine computes, so there is nothing for the
   instruction to consult. What it does is shift which continuations score well,
-  which is a real effect and a very small one — you will get slightly more
+  which is a real effect and a very small one. You will get slightly more
   hedging, including on prices that were right. No step has been added, because
   there is nowhere in the loop to add one.
 
 The first genuinely changes the dials, which makes it the only proposal that
-touches the property at all — and it still does not fix it. It moves the freeze
+touches the property at all, and it still does not fix it. It moves the freeze
 date rather than removing the freeze, so the problem returns on a monthly cycle.
 It is expensive and slow. And it leaves every answer unciteable: nobody can say
 whether a quoted price came from this month's training or last year's, because a
@@ -423,7 +423,7 @@ dial setting has no provenance.
 
 The second never touches the model, and it is the one to ship. It puts the price
 list in the window, where facts are current, swappable and quotable, and it
-converts the job from recalling a price to reading one — which moves it from the
+converts the job from recalling a price to reading one, which moves it from the
 half of the shape the machine is unreliable at to the half it is excellent at.
 The limit is untouched. The system stopped depending on it.
 

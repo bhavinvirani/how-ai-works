@@ -2,14 +2,14 @@
 title: Every word is final the moment it is written
 part: large-models
 order: 2
-summary: A model writes one piece, glues it onto the end of what it has already written, and reads the whole thing back before writing the next — which is why it never had a plan, and why nothing it has written can be taken back.
+summary: A model writes one piece, glues it onto the end of what it has already written, and reads the whole thing back before writing the next, which is why it never had a plan, and why nothing it has written can be taken back.
 prerequisites:
   - llm
 connections:
   - to: temperature
     why: Each piece here is drawn from a row of percentages, and one setting decides how steep or how flat that row is before the draw — the whole difference between a machine that says the same thing every time and one that surprises you.
   - to: chain-of-thought
-    why: Every piece written is another full pass through the machine and another piece in what it re-reads, so asking a model to work through its reasoning before answering is not a figure of speech — it is buying it more passes and more to read.
+    why: Every piece written is another full pass through the machine and another piece in what it re-reads, so asking a model to work through its reasoning before answering is not a figure of speech. It is buying it more passes and more to read.
 interactives:
   - NextPieceLoop
 status: published
@@ -57,7 +57,7 @@ paragraph, and there is only one thing that does it:
 2. Score every piece in the vocabulary, and turn those scores into percentages
    that add up to one.
 3. Draw a piece, in those proportions.
-4. Glue it onto the end — and go back to step one.
+4. Glue it onto the end, and go back to step one.
 
 It stops when the draw lands on a particular piece that means _done_, which the
 model learned to produce the way it learned everything else.
@@ -67,7 +67,7 @@ uglier than it needs to be. _Auto_ is itself and _regressive_ is reading back
 over: a machine whose input, at every step, is its own output so far.
 
 Notice which seat that puts the model in. It is not the author of the postcard.
-It is every one of the ten people, in turn — because nothing survives from one
+It is every one of the ten people, in turn, because nothing survives from one
 pass to the next except the card. There is no scratchpad it keeps between
 passes, no note of what it was going for, no memory of having written any of it.
 Each pass is a stranger picking up the card and reading it from the top.
@@ -89,8 +89,8 @@ Which raises an obvious objection: models write jokes that land, arguments that
 close, sentences that clearly needed the ending to be planned from the start.
 
 They do, and no ending was planned. What happens instead is that by the time the
-machine reaches the last piece of a joke, the setup is not a memory of a plan —
-it is text, sitting there, being read from the top, narrowing what could
+machine reaches the last piece of a joke, the setup is not a memory of a plan.
+It is text, sitting there, being read from the top, narrowing what could
 plausibly come next until very little else fits. Coherence is not imposed from
 above. It accumulates, because every pass is scored against everything already
 on the card.
@@ -131,14 +131,14 @@ entire subject.
 
 Hand-written: where the raw scores come from. A real model computes them by
 running the whole transformer over everything on the card, and its row is a
-hundred thousand pieces long — you would see the top five and none of the rest.
+hundred thousand pieces long. You would see the top five and none of the rest.
 The scores behind this panel are typed into a small table so that a whole row
 fits on a screen and you can watch it change. Take the loop from it. Do not take
 the vocabulary, and do not read the percentages as measurements of anything.
 
 ## Turn the handle yourself
 
-The opening is fixed — _The weather today is_ — and the counter at the bottom of
+The opening is fixed, _The weather today is_, and the counter at the bottom of
 the panel writes one piece per press. Leave the other control alone for now.
 
 <NextPieceLoop client:visible />
@@ -151,7 +151,7 @@ Press again, and again. It reads five pieces and writes _and_ at 58%. It reads
 six and writes _dry_ at 53%.
 
 Now the fourth press, which is the interesting one. Having read seven pieces,
-the row it produced was headed by _across_ at 51% — and it wrote _again_, which
+the row it produced was headed by _across_ at 51%, and it wrote _again_, which
 held 11% of that row. Nothing chose. A number between 0 and 1 fell inside the
 slice belonging to _again_, and that slice is eleven hundredths of the row wide,
 so it happens about one time in nine. The favourite took only half the row, so
@@ -179,7 +179,7 @@ _in_ 16%. Four perfectly ordinary continuations. Read them again and notice what
 is missing. Not one of them removes anything. There is no piece anywhere in that
 row that shortens the card, or clears it, or starts the sentence over, because
 appending is the only operation this machine has. The vocabulary contains no
-delete key — not as an oversight, but because there is nowhere for it to act.
+delete key, not as an oversight, but because there is nowhere for it to act.
 
 So it writes _coloured_, and then _throughout_, and what comes out is _The
 weather today is aubergine coloured throughout_ — fluent, grammatical, correctly
@@ -221,7 +221,7 @@ text out of the input, and it is why starting over so often beats arguing.
 <Aside title="What the loop costs">
   Every single piece is a complete pass through the machine. A thousand-piece
   answer is a thousand passes, so both the time and the bill grow in direct
-  proportion to how much is written — which is also why answers arrive in
+  proportion to how much is written, which is also why answers arrive in
   bursts rather than all at once. Streaming is not a feature somebody added.
   It is the loop showing through.
 
@@ -234,7 +234,7 @@ There is one shortcut worth knowing about, since it sounds like it contradicts
 all this. The machinery keeps the working from the previous pass rather than
 recomputing it from scratch, which makes each pass much cheaper than a first
 reading of the same text. The answers are identical either way, and nothing
-extra survives between passes — it is a cache, not a memory.
+extra survives between passes. It is a cache, not a memory.
 
 </Aside>
 
@@ -253,7 +253,7 @@ extra survives between passes — it is a cache, not a memory.
 
     Worth noticing what is not in that loop, and is not in any library that
     wraps it: there is no `pieces.remove`. Nothing rolls back a piece, because
-    a piece is not a decision that could be reversed — it is an element of the
+    a piece is not a decision that could be reversed. It is an element of the
     input to everything after it. Changing what has been generated means
     changing the input and running the loop again.
 
@@ -282,8 +282,8 @@ extra survives between passes — it is a cache, not a memory.
 <Checkpoint question="A support bot answers a customer with a wrong first sentence. The customer replies that it is wrong; the bot apologises, then produces almost the same wrong answer. A colleague says the model is being stubborn and suggests wording the correction more firmly. What is actually going on, and what would you do instead?">
   Nothing is being stubborn, and nothing about the wording is the problem. The
   apology did not remove the wrong sentence. It is still in the conversation,
-  and every pass the model makes from that point reads it from the top —
-  alongside the complaint and the apology — before producing the next row of
+  and every pass the model makes from that point reads it from the top,
+alongside the complaint and the apology, before producing the next row of
   percentages. The mistake stopped being something the model did and became
   part of what the model is reading.
 
@@ -294,7 +294,7 @@ of what is needed.
 
 Worth keeping as a shape. Anything already in the conversation is input, not
 history. From the model's side there is no difference between the words you
-wrote and the words it wrote — it reads both the same way, from the beginning,
+wrote and the words it wrote. It reads both the same way, from the beginning,
 every time.
 
 </Checkpoint>

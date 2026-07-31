@@ -2,7 +2,7 @@
 title: Multiply, add, and bend
 part: inside-the-machine
 order: 1
-summary: A neuron multiplies each fact it is handed by its own dial, adds the results up, and bends the total — and without that last small step, a whole stack of them collapses into something one of them could already do.
+summary: A neuron multiplies each fact it is handed by its own dial, adds the results up, and bends the total, and without that last small step, a whole stack of them collapses into something one of them could already do.
 prerequisites:
   - model-as-dials
 connections:
@@ -210,7 +210,7 @@ thousand neurons is a single line, and the bend is one word inside it, usually
 straight past.
 
 The place it becomes visible is when somebody leaves it out. A model built from
-weighted sums with no bend anywhere has a name of its own — a **linear model** —
+weighted sums with no bend anywhere has a name of its own, a **linear model**,
 and it is a respectable, widely used thing for problems where the answer really
 does keep going the same way as each fact rises. House prices against floor area
 is one. What it cannot do is _enough_.
@@ -244,7 +244,7 @@ looks deep. The machine is not.
 
     You will not write either line in practice. You will write something like
     `Dense(128, activation="relu")`, where the whole of the second line is that
-    last argument — and where leaving the argument out is perfectly legal and
+    last argument, and where leaving the argument out is perfectly legal and
     gives you a layer that adds nothing at all.
 
   </Fragment>
@@ -252,7 +252,7 @@ looks deep. The machine is not.
 
 <Checkpoint question="A colleague has stacked six layers of neurons and cannot work out why the model does no better than a single layer did. Nothing errors, training runs, the wrongness score falls. What would you check first, and why would it explain the result exactly rather than approximately?">
   Whether the layers have a bend on them at all. Without one, every layer is a
-  weighted sum, and a weighted sum of weighted sums is a weighted sum — so the
+  weighted sum, and a weighted sum of weighted sums is a weighted sum, so the
   six layers can be multiplied out into one, and the stack can express precisely
   what a single layer can and nothing beyond it. That is why the answer is
   exact rather than approximate. It is not that depth helps less than expected;

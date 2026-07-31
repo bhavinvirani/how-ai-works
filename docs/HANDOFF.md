@@ -81,15 +81,18 @@ per-unit analysis proposed. Two placements stay open on purpose and are decided
 when their slice is written: where `embeddings` sits, and whether
 `positional-encoding` comes before or after `multi-head-attention`.
 
-**Two known issues, recorded there, not yet fixed:**
+**Two issues it turned up. One is fixed here; one is not.**
 
-1. `[...slug].astro` passes the **unfiltered** collection as props while paths
-   come from `visible`, so a published unit connecting to a draft emits a link
-   to a page `getStaticPaths` never generated. Surfaces as a lychee "broken
-   internal link", not a Zod reference error. One-line fix: pass `visible`.
-2. `/map` cannot colour nodes by Part. `tokens.css` ships two categorical
-   accents, and hard rule 9 forbids colour-only meaning regardless. Encode Part
-   by label and cluster position.
+1. **Fixed in this PR.** `[...slug].astro` passed the **unfiltered** collection
+   as props while paths came from `visible`, so a published unit connecting to a
+   draft emitted a link to a page `getStaticPaths` never generated — surfacing
+   as a lychee "broken internal link" rather than the Zod reference error it
+   looks like. It now passes `visible`, which is what `resolve.ts`'s
+   drop-anything-missing comment always assumed.
+2. **Open.** `/map` cannot colour nodes by Part. `tokens.css` ships two
+   categorical accents, and hard rule 9 forbids colour-only meaning regardless.
+   Encode Part by label and cluster position. Decide before `2-meta` is built,
+   not after.
 
 ---
 

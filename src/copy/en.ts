@@ -74,6 +74,38 @@ export const ui = {
     markComplete: 'Mark as complete',
     markIncomplete: 'Mark as not complete',
     complete: 'Complete',
+
+    /** The /progress page. Utility chrome, not lesson prose. */
+    page: {
+      title: 'Your progress',
+      lead: 'What you have finished so far, and how to carry it to another device.',
+
+      privacyHeading: 'This stays on your device',
+      privacyBody:
+        'Your progress is stored in this browser and never sent anywhere. There is no account and no server holding it — which also means clearing your browser data clears this, and another device will not know about it unless you move the file yourself.',
+
+      empty:
+        'Nothing recorded yet. Progress appears here once there are units to finish.',
+
+      exportHeading: 'Move it to another device',
+      exportBody:
+        'Download a file here, then load it on the other device. It merges with whatever is already there rather than replacing it, so neither side loses work.',
+      exportAction: 'Download my progress',
+      importAction: 'Load a progress file',
+
+      clearHeading: 'Start over',
+      clearBody:
+        'Erases everything recorded in this browser. It cannot be undone.',
+      clearAction: 'Erase my progress',
+      clearConfirm:
+        'Erase all progress in this browser? This cannot be undone.',
+
+      importedOne: (count: number) =>
+        `Loaded progress for ${String(count)} unit${count === 1 ? '' : 's'}.`,
+      cleared: 'Progress erased.',
+      unitsComplete: (done: number, total: number) =>
+        `${String(done)} of ${String(total)} finished`,
+    },
   },
 } as const;
 

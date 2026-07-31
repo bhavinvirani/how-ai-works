@@ -1,0 +1,47 @@
+---
+import { getCollection } from 'astro:content';
+
+import { ProgressPanel } from '../components/progress/ProgressPanel';
+import type { PartSummary } from '../components/progress/ProgressPanel';
+import { PART_LABELS, PARTS } from '../content.config';
+import { ui } from '../copy/en';
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+/**
+ * An .astro page rather than .mdx because it needs the content collection at
+ * build time, and MDX frontmatter cannot await a query.
+ *
+ * Its wording lives in src/copy/en.ts with the rest of the UI chrome. This is a
+ * utility page, not a lesson — none of this text teaches anything, so it is not
+ * the prose that hard rule 10 is protecting.
+ */
+const units = await getCollection(
+  'units',
+  ({ data }) => data.status === 'published',
+);
+
+const parts: PartSummary[] = PARTS.map((part) => ({
+  id: part,
+  label: PART_LABELS[part],
+  unitIds: units
+    .filter((unit) => unit.data.part === part)
+    .sort((a, b) => a.data.order - b.data.order)
+    .map((unit) => unit.id),
+})).filter((part) => part.unitIds.length > 0);
+
+const copy = ui.progress.page;
+---
+
+<BaseLayout title={copy.title} description={copy.lead}>
+  <h1>{copy.title}</h1>
+  <p>{copy.lead}</p>
+
+  {
+    /*
+    client:load rather than client:visible: this island IS the page, and it
+    renders nothing meaningful until it has read localStorage. Waiting for an
+    intersection would show an empty shell first.
+  */
+  }
+  <ProgressPanel client:load parts={parts} />
+</BaseLayout>

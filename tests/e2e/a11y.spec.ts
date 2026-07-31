@@ -27,6 +27,13 @@ const ROUTES: Route[] = [
   { name: 'home', path: './' },
   { name: '404', path: './404.html' },
   {
+    name: 'progress',
+    path: './progress/',
+    settle: async (page) => {
+      await expect(page.locator('astro-island[ssr]')).toHaveCount(0);
+    },
+  },
+  {
     name: 'gallery',
     path: './gallery/',
     settle: async (page) => {

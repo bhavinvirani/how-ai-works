@@ -3,12 +3,11 @@
 The unit inventory for the whole site: what gets taught, in what order, grouped
 into which Parts, under which slugs.
 
-**Status: awaiting sign-off. No units are ported until this is agreed** (PLAN
-§2.4). The grouping decided here becomes the `part` enum in
-`src/content.config.ts`, and the slugs decided here become filenames, URLs,
-Pagefind keys, progress-store keys, and the tokens every other unit's
-frontmatter references. The slugs are a one-way door; the Part grouping is not
-(see _What changes when this is signed off_).
+**Status: signed off 2026-07-31.** Porting is unblocked (PLAN §2.4). The
+grouping below becomes the `part` enum in `src/content.config.ts`, and these
+slugs become filenames, URLs, Pagefind keys, progress-store keys, and the tokens
+every other unit's frontmatter references. The slugs are a one-way door; the
+Part grouping is not (see _What changes now this is signed off_).
 
 Source: `reference/how-ai-works.html` — 60 topics in 8 Parts, which is the
 source of truth for **coverage only**. Every line of prose is re-taught from
@@ -16,9 +15,9 @@ scratch (hard rule 4).
 
 ---
 
-## What is being signed off
+## What was signed off
 
-Four decisions, in the order they matter:
+Four decisions, all taken as recommended:
 
 1. **Sixteen Parts instead of the artifact's eight.** Same 60 units, same
    sequence, more chapter breaks. §_The shape_.
@@ -27,10 +26,15 @@ Four decisions, in the order they matter:
    search for. §_Slugs_.
 3. **The pilot is `why-rules-fail` + `model-as-dials`, shipped as one PR** — not
    Tokenization, and not a single unit. §_The pilot_.
-4. **An instrument is earned, not assumed.** The analysis proposes 56 of them.
-   §_Open question 1_ is whether that number stands.
+4. **An instrument is earned, not assumed** — target roughly 35, not the 56 the
+   per-unit analysis proposed. §_The instrument rule_.
 
-Everything else in here is derived, verified, and does not need a decision.
+Two smaller placement questions were left open on purpose and are decided when
+their slice is written, not before: where `embeddings` sits, and whether
+`positional-encoding` comes before or after `multi-head-attention`. Both are in
+§_Still open_.
+
+Everything else in here is derived, verified, and did not need a decision.
 
 ---
 
@@ -68,7 +72,7 @@ Two units move between Parts, and one deliberately does not:
 | ------------------- | --------------------- | ------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `feature-hierarchy` | before `forward-pass` | after `backpropagation`         | Its central claim — that the hierarchy assembles itself because that arrangement makes the wrongness score smallest — cannot be honestly made to a reader who has not yet watched blame travel backwards. |
 | `multimodal-models` | Small, fast, cheap    | closes The idea that cracked it | It is not about being small, fast or cheap. It is the same transformer eating a different kind of piece, which is the point the Part it now closes has just spent four units making.                      |
-| `embeddings`        | closes Part 3         | closes Part 3 — unchanged       | The one placement that was argued both ways and left alone. Flagged as open question 2.                                                                                                                   |
+| `embeddings`        | closes Part 3         | closes Part 3 — unchanged       | The one placement argued both ways and left alone. See _Still open_.                                                                                                                                      |
 
 ---
 
@@ -412,25 +416,39 @@ prose in it and cannot get tangled in a pedagogy review.
 
 ---
 
-## Open questions
+## The instrument rule
 
-**1. Fifty-six instruments is too many. Which ones go?**
+The per-unit analysis proposed an instrument for 56 of 60 units. The artifact
+has 31. Every one of the 56 is individually justified, and the total was not:
+each carries the full contract — composed from primitives, zero required props,
+seedable, keyboard operable, axe-clean, reduced-motion, `logic.ts` with tests,
+budget, `StaticFallback` where drag or hover matters. At a day each that is a
+quarter of work in islands alone, before any prose or diagrams.
 
-The per-unit analysis proposes an instrument for 56 of 60 units — the artifact
-has 31. Every one is individually justified, and the total is not. Each carries
-the full contract: composed from primitives, zero required props, seedable,
-keyboard operable, axe-clean, reduced-motion, `logic.ts` with tests, budget,
-`StaticFallback` where drag or hover matters. At a day each that is a quarter of
-work in islands alone.
+So the **Instrument column in the inventory above is a proposal, not a
+commitment**, and the rule that decides it is:
 
-Recommendation: adopt a stated rule — **an instrument has to teach something the
-prose and the diagram cannot** — and re-run the verdicts against it per slice,
-expecting to land nearer 35. The four units already marked "—"
-(`ai-ml-and-deep-learning`, `supervised-learning`, `llm`, `mcp`) are the model
-for what a good "no" looks like. This does not block sign-off; it blocks the
-first slice.
+> An instrument has to teach something the prose and the diagram cannot.
 
-**2. Does `embeddings` stay in _What the machine is made of_, or move into the
+Re-run the verdicts against that rule per slice, expecting to land nearer 35.
+The four units already marked "—" (`ai-ml-and-deep-learning`,
+`supervised-learning`, `llm`, `mcp`) are the model for what a good "no" looks
+like: each is a distinction or a definition, and a diagram makes the distinction
+better than a control would.
+
+Where an instrument is dropped, the unit still gets a diagram — the _See it_
+step of the skeleton is not optional, and cutting instruments is not licence to
+cut both.
+
+---
+
+## Still open
+
+Two placement questions, deliberately not settled at sign-off. Both are local,
+both are cheap to change while their Part is unwritten, and both are worth
+deciding with the actual prose in front of you rather than in the abstract.
+
+**1. Does `embeddings` stay in _What the machine is made of_, or move into the
 language Part after `tokenization`?**
 
 Staying is what is proposed above. The argument for moving: the reader currently
@@ -451,7 +469,7 @@ the contributor conscientious enough to check the port against the source.
 If it moves, the re-pointed edge needs a **do-not-restore** note in the same
 place this one is recorded.
 
-**3. `attention → multi-head-attention → positional-encoding`, or
+**2. `attention → multi-head-attention → positional-encoding`, or
 `attention → positional-encoding → multi-head-attention`?**
 
 Order-blindness is a flaw in _single-head_ attention, which argues for fixing it
@@ -463,13 +481,13 @@ inheriting.
 
 ---
 
-## What changes when this is signed off
+## What changes now this is signed off
 
 | File                    | Change                                                                                                                                                       |
 | ----------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | `src/content.config.ts` | Replace the placeholder 4-value `PARTS` with these 16, and `PART_LABELS` with the labels above.                                                              |
 | `scripts/new-unit.mjs`  | Holds its **own** hardcoded copy of `PARTS`. It will silently reject valid Parts until updated — the two lists must be reconciled, ideally by importing one. |
-| `docs/HANDOFF.md`       | Mark the `part` enum reconciled; record open questions 1–3 and the two findings below.                                                                       |
+| `docs/HANDOFF.md`       | Mark the `part` enum reconciled; carry the instrument rule, the two still-open placements, and the two findings below.                                       |
 
 ---
 

@@ -1,0 +1,9 @@
+<!-- allow-raw-color: a standalone favicon cannot reference CSS custom
+     properties, so the bench-notes palette is inlined here by necessity.
+     These values must be kept in sync with src/styles/tokens.css. -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" role="img" aria-label="How AI Actually Works">
+  <rect width="32" height="32" rx="7" fill="#15233b" />
+  <circle cx="11" cy="11" r="3.5" fill="#e9ede4" />
+  <circle cx="21" cy="21" r="3.5" fill="#a81b5d" />
+  <path d="M11 14.5 v3 a3.5 3.5 0 0 0 3.5 3.5 h3" stroke="#0b6560" stroke-width="2.2" fill="none" stroke-linecap="round" />
+</svg>

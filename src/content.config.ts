@@ -4,6 +4,11 @@ import { glob } from 'astro/loaders';
 // instance now comes from 'astro/zod' (Zod 4 under the hood).
 import { z } from 'astro/zod';
 
+// The Parts live in their own module rather than here, so that
+// `scripts/new-unit.mjs` can import the same list without pulling in
+// `astro:content`. See the comment there.
+import { PARTS } from './lib/units/parts';
+
 /**
  * The typed knowledge base.
  *
@@ -12,31 +17,6 @@ import { z } from 'astro/zod';
  * is what turns "connect the dots" from a maintenance chore into data — and it
  * is why a broken reference has to fail the build rather than ship a dead link.
  */
-
-/**
- * Parts, in the order a learner meets them.
- *
- * Provisional: the real grouping is signed off in `docs/CURRICULUM.md`, which
- * is derived from the reference artifact. Treat this as a placeholder that will
- * be revised once that lands — changing it is a one-line edit plus whatever
- * frontmatter follows.
- */
-export const PARTS = [
-  'foundations',
-  'how-models-learn',
-  'language-models',
-  'using-models',
-] as const;
-
-export type Part = (typeof PARTS)[number];
-
-/** Human-facing Part names live here rather than in a component (hard rule 10). */
-export const PART_LABELS: Record<Part, string> = {
-  foundations: 'Foundations',
-  'how-models-learn': 'How models learn',
-  'language-models': 'Language models',
-  'using-models': 'Using models',
-};
 
 const units = defineCollection({
   loader: glob({ pattern: '**/*.mdx', base: './src/content/units' }),

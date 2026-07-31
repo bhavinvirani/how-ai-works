@@ -111,7 +111,7 @@ describe('assertAcyclic', () => {
 });
 
 describe('learningOrder', () => {
-  const PARTS = ['foundations', 'language-models'];
+  const PARTS = ['why-this-exists', 'language-problem'];
 
   it('never places a unit before its prerequisite', () => {
     const nodes = [
@@ -132,9 +132,9 @@ describe('learningOrder', () => {
 
   it('orders independent units by Part, then order', () => {
     const nodes = [
-      unit('c', [], { part: 'language-models', order: 1 }),
-      unit('b', [], { part: 'foundations', order: 2 }),
-      unit('a', [], { part: 'foundations', order: 1 }),
+      unit('c', [], { part: 'language-problem', order: 1 }),
+      unit('b', [], { part: 'why-this-exists', order: 2 }),
+      unit('a', [], { part: 'why-this-exists', order: 1 }),
     ];
 
     expect(learningOrder(nodes, PARTS)).toEqual(['a', 'b', 'c']);
@@ -142,9 +142,9 @@ describe('learningOrder', () => {
 
   it('is stable regardless of the order units are discovered in', () => {
     const nodes = [
-      unit('a', [], { part: 'foundations', order: 1 }),
-      unit('b', [], { part: 'foundations', order: 2 }),
-      unit('c', [], { part: 'language-models', order: 1 }),
+      unit('a', [], { part: 'why-this-exists', order: 1 }),
+      unit('b', [], { part: 'why-this-exists', order: 2 }),
+      unit('c', [], { part: 'language-problem', order: 1 }),
     ];
 
     // Filesystem enumeration order must not change the published reading order.
@@ -156,7 +156,7 @@ describe('learningOrder', () => {
   it('sorts unknown Parts last rather than dropping them', () => {
     const nodes = [
       unit('mystery', [], { part: 'not-a-part', order: 1 }),
-      unit('known', [], { part: 'foundations', order: 1 }),
+      unit('known', [], { part: 'why-this-exists', order: 1 }),
     ];
 
     expect(learningOrder(nodes, PARTS)).toEqual(['known', 'mystery']);

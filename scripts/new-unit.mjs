@@ -13,14 +13,14 @@ import { mkdir, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { argv, exit } from 'node:process';
 
-const ID_PATTERN = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
+// Imported, never copied. This file used to keep its own hardcoded list, which
+// meant the generator and the schema could disagree — and the failure mode was
+// the generator rejecting a Part that `astro build` would happily accept.
+// Node strips the types on the way in (>=24.16 is already required by
+// `engines`, and stripping is unflagged there), so a .ts import costs nothing.
+import { PARTS } from '../src/lib/units/parts.ts';
 
-const PARTS = [
-  'foundations',
-  'how-models-learn',
-  'language-models',
-  'using-models',
-];
+const ID_PATTERN = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 
 /** @param {string} message */
 const fail = (message) => {

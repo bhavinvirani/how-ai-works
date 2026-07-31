@@ -65,10 +65,12 @@ preview` are deployment steps, and `Remove preview` only runs on close, so
   gates its whole body on having at least one link, so a single unit with empty
   `prerequisites`/`connections` renders no footer markup at all and leaves this
   bullet exactly as true as it found it.
-- The `part` enum in `src/content.config.ts` is **still the 4-value
-  placeholder**. `CURRICULUM.md` signs off 16 Parts; the `2-enum` PR reconciles
-  it — and `scripts/new-unit.mjs` holds its own hardcoded copy that must move
-  with it, or it silently rejects valid Parts.
+- **The Parts live in `src/lib/units/parts.ts`, not in `content.config.ts`**, and
+  that is deliberate: `scripts/new-unit.mjs` used to keep its own hardcoded copy,
+  so changing the schema alone would have left the generator rejecting every
+  valid Part. It now imports the same list — Node strips the types on a `.ts`
+  import, which `engines: >=24.16.0` already guarantees. Never reintroduce a
+  second copy.
 - The build prints `The collection "units" does not exist or is empty`. Expected
   until the first unit lands.
 
@@ -210,6 +212,14 @@ document.fonts.ready)`.
     for exactly this reason.
 12. **lychee needs `--root-dir` with an absolute path**, not `--base`, to
     resolve root-relative links in local files.
+13. **`pnpm check` is two commands, and the first one's output looks like the
+    verdict.** It runs `astro check && tsc --noEmit -p tsconfig.node.json`.
+    `astro check` prints a friendly `0 errors / 0 warnings / 0 hints` summary
+    and `tsc` prints nothing at all when it passes — so reading the tail of the
+    output, or grepping it for errors, shows a reassuring green block while
+    `tsc` has already failed underneath it. `tsc` is the half that covers
+    `scripts/`, which `astro check` does not look at. **Check the exit code, not
+    the output.** This shipped a red PR once already.
 
 ---
 

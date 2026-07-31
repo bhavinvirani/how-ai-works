@@ -118,6 +118,30 @@ export const ui = {
       title: 'Race three strides',
       lead: 'Three walkers, one hill, one difference: how far each moves. Find the stride that arrives — then the one that never does.',
     },
+    ClusterFinder: {
+      title: 'Ask it for a number of groups',
+      lead: 'Start at three, then ask for four: the score improves while nothing is learned. Then change only where the search began.',
+    },
+    ExploreExploitBandit: {
+      title: 'Try, score, adjust',
+      lead: 'Nobody ever tells it the right move. Watch it settle — and notice what it settled for.',
+    },
+    FreeLabelMaker: {
+      title: 'Cover a word and guess it back',
+      lead: 'Move the blank along and see which gaps you can fill from grammar alone — and which ones you cannot.',
+    },
+    FlexibilityDial: {
+      title: 'Add one dial at a time',
+      lead: 'Push right until it stops making mistakes on the sales it studied. Then reveal the eight it has never seen.',
+    },
+    LeakageSplitter: {
+      title: 'Score it on what it never saw',
+      lead: 'Read the studied pile, then the held-back one. Then stop a round appearing on both sides, and watch the score get worse.',
+    },
+    ThresholdMatrix: {
+      title: 'Turn the bar up and down',
+      lead: 'Start at the far left, where it raises no alarms at all, and read the accuracy. Then drag right.',
+    },
     // new:interactive inserts above this line — do not remove.
   } as Record<string, { title: string; lead: string }>,
 

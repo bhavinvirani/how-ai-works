@@ -1,0 +1,251 @@
+---
+/**
+ * What an answer key buys, and what it costs.
+ *
+ * Two lanes carry the mechanism: the machine's guess and the recorded answer
+ * sit side by side, so the correction is exact rather than inferred. The lanes
+ * differ on purpose — a category answer tells you only which way to nudge, a
+ * numeric one also tells you how far, which is the classification/regression
+ * distinction shown rather than asserted.
+ *
+ * The band underneath is the part the prose cannot draw: the marked pile and
+ * the unmarked pile at their real relative sizes (3,000 against 70,000). That
+ * ratio is the unit's central claim about the ceiling, and seeing it beats
+ * being told it.
+ *
+ * The answer key is marked three ways at once — the words ANSWER KEY in the
+ * column heading, a heavier outline, and a tint — so colour is never the only
+ * signal (hard rule 9). Decorative on its own, so `aria-hidden`: `Figure`
+ * supplies the accessible name and the description.
+ */
+---
+
+<svg viewBox="0 0 640 356" class="w-full" aria-hidden="true">
+  <text x="16" y="22" class="fill-ink-faint font-mono" font-size="9"
+    >one example, and what having the answer beside it buys you</text
+  >
+
+  <!-- What each column is. The answer key names itself in words. -->
+  <g class="fill-ink-faint font-mono" font-size="8">
+    <text x="16" y="36">the example</text>
+    <text x="136" y="36">the machine</text>
+    <text x="244" y="36">what it said</text>
+    <text x="484" y="36">how wrong it was</text>
+  </g>
+  <text x="356" y="36" class="fill-accent font-mono" font-size="8"
+    >ANSWER KEY</text
+  >
+
+  <!-- Lane A: the answer is a category. -->
+  <rect
+    x="16"
+    y="44"
+    width="104"
+    height="40"
+    rx="6"
+    class="fill-paper stroke-rule"
+    stroke-width="1"></rect>
+  <rect
+    x="136"
+    y="44"
+    width="92"
+    height="40"
+    rx="6"
+    class="fill-paper-sunken stroke-rule-strong"
+    stroke-width="1.25"></rect>
+  <rect
+    x="244"
+    y="44"
+    width="96"
+    height="40"
+    rx="6"
+    class="fill-paper stroke-rule-strong"
+    stroke-width="1.25"></rect>
+  <rect
+    x="356"
+    y="44"
+    width="112"
+    height="40"
+    rx="6"
+    class="fill-accent-soft stroke-accent"
+    stroke-width="2"></rect>
+  <rect
+    x="484"
+    y="44"
+    width="140"
+    height="40"
+    rx="6"
+    class="fill-paper stroke-rule"
+    stroke-width="1"></rect>
+
+  <!-- Lane B: the answer is a number. Same row, different answer column. -->
+  <rect
+    x="16"
+    y="132"
+    width="104"
+    height="40"
+    rx="6"
+    class="fill-paper stroke-rule"
+    stroke-width="1"></rect>
+  <rect
+    x="136"
+    y="132"
+    width="92"
+    height="40"
+    rx="6"
+    class="fill-paper-sunken stroke-rule-strong"
+    stroke-width="1.25"></rect>
+  <rect
+    x="244"
+    y="132"
+    width="96"
+    height="40"
+    rx="6"
+    class="fill-paper stroke-rule-strong"
+    stroke-width="1.25"></rect>
+  <rect
+    x="356"
+    y="132"
+    width="112"
+    height="40"
+    rx="6"
+    class="fill-accent-soft stroke-accent"
+    stroke-width="2"></rect>
+  <rect
+    x="484"
+    y="132"
+    width="140"
+    height="40"
+    rx="6"
+    class="fill-paper stroke-rule"
+    stroke-width="1"></rect>
+
+  <!-- Flow between the cards. -->
+  <g class="fill-none stroke-rule-strong" stroke-width="1.5">
+    <path d="M122 64 H132"></path>
+    <path d="M128 60 L133 64 L128 68"></path>
+    <path d="M230 64 H240"></path>
+    <path d="M236 60 L241 64 L236 68"></path>
+    <path d="M470 64 H480"></path>
+    <path d="M476 60 L481 64 L476 68"></path>
+    <path d="M122 152 H132"></path>
+    <path d="M128 148 L133 152 L128 156"></path>
+    <path d="M230 152 H240"></path>
+    <path d="M236 148 L241 152 L236 156"></path>
+    <path d="M470 152 H480"></path>
+    <path d="M476 148 L481 152 L476 156"></path>
+  </g>
+
+  <!-- Card contents. -->
+  <g class="fill-ink font-mono" font-size="10" text-anchor="middle">
+    <text x="68" y="62">photo #4109</text>
+    <text x="182" y="62">the dials</text>
+    <text x="554" y="62">picked the wrong box</text>
+    <text x="68" y="150">3-bed, Leeds</text>
+    <text x="182" y="150">the dials</text>
+    <text x="554" y="150">out by &pound;70,000</text>
+  </g>
+
+  <g class="fill-ink font-mono" font-size="12" text-anchor="middle">
+    <text x="292" y="64">cat</text>
+    <text x="412" y="64">dog</text>
+    <text x="292" y="152">&pound;240,000</text>
+    <text x="412" y="152">&pound;310,000</text>
+  </g>
+
+  <g class="fill-ink-faint font-mono" font-size="8" text-anchor="middle">
+    <text x="68" y="76">one of 10,000</text>
+    <text x="182" y="76">as they stand</text>
+    <text x="292" y="76">its guess</text>
+    <text x="554" y="76">the right one was known</text>
+    <text x="68" y="164">sold last month</text>
+    <text x="182" y="164">as they stand</text>
+    <text x="292" y="164">its guess</text>
+    <text x="554" y="164">and low, not high</text>
+  </g>
+
+  <g class="fill-accent font-mono" font-size="8" text-anchor="middle">
+    <text x="412" y="76">what a person wrote</text>
+    <text x="412" y="164">what it sold for</text>
+  </g>
+
+  <g class="fill-ink-faint font-mono" font-size="9" text-anchor="middle">
+    <text x="348" y="68">vs</text>
+    <text x="348" y="156">vs</text>
+  </g>
+
+  <!-- The correction going back in, and what each lane's answer tells it. -->
+  <g class="fill-none stroke-accent-2" stroke-width="2">
+    <path d="M554 84 V98 H182 V90"></path>
+    <path d="M177 95 L182 87 L187 95"></path>
+    <path d="M554 172 V186 H182 V178"></path>
+    <path d="M177 183 L182 175 L187 183"></path>
+  </g>
+
+  <g class="fill-accent-2 font-mono" font-size="8">
+    <text x="196" y="94">back into the dials</text>
+    <text x="196" y="182">back into the dials</text>
+  </g>
+
+  <g class="fill-ink-muted font-mono" font-size="9" text-anchor="middle">
+    <text x="370" y="114">the nudge has a direction: raise dog, lower cat</text>
+    <text x="370" y="202">the nudge has a size as well as a direction</text>
+  </g>
+
+  <line x1="16" y1="218" x2="624" y2="218" class="stroke-rule" stroke-width="1"
+  ></line>
+
+  <!-- Where the keys come from. The two piles are at their true ratio. -->
+  <text x="16" y="240" class="fill-ink-faint font-mono" font-size="9"
+    >and where answer keys come from, drawn to scale</text
+  >
+
+  <rect
+    x="41"
+    y="250"
+    width="583"
+    height="30"
+    class="fill-paper-sunken stroke-rule"
+    stroke-width="1"></rect>
+  <rect
+    x="16"
+    y="250"
+    width="25"
+    height="30"
+    class="fill-accent-soft stroke-accent"
+    stroke-width="2"></rect>
+
+  <path d="M28 280 V294" class="fill-none stroke-accent" stroke-width="1.5"
+  ></path>
+
+  <text x="16" y="308" class="fill-accent font-mono" font-size="9"
+    >3,000 scans marked by a radiologist</text
+  >
+  <text x="16" y="320" class="fill-ink-muted font-mono" font-size="9"
+    >the only part this method can learn from</text
+  >
+
+  <text
+    x="624"
+    y="308"
+    text-anchor="end"
+    class="fill-ink-muted font-mono"
+    font-size="9">70,000 scans nobody has marked</text
+  >
+  <text
+    x="624"
+    y="320"
+    text-anchor="end"
+    class="fill-ink-faint font-mono"
+    font-size="9">no answer beside them, so no way to be corrected</text
+  >
+
+  <text
+    x="16"
+    y="344"
+    class="fill-ink font-display"
+    font-size="11"
+    font-weight="700"
+    >The size of the answer key, not the size of the pile, is the ceiling.</text
+  >
+</svg>

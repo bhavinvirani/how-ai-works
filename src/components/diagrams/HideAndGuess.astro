@@ -1,0 +1,236 @@
+---
+/**
+ * Ordinary text on the left, ready-made training examples on the right.
+ *
+ * The teaching load is carried by two things, neither of which is colour. The
+ * first is that the sentence on the right is the SAME sentence three times with
+ * a different word covered — so the reader can see that nothing was written,
+ * only hidden. The second is the pair of supply bars at the bottom, which
+ * differ by length and are labelled in words, so the comparison survives
+ * greyscale (hard rule 9). The answer column is marked three ways at once:
+ * the word ANSWER, a heavier outline, and a tint.
+ *
+ * Decorative on its own, so `aria-hidden`: `Figure` supplies the accessible
+ * name and the description.
+ */
+---
+
+<svg viewBox="0 0 640 300" class="w-full" aria-hidden="true">
+  <!-- Left: the raw material -->
+  <text
+    x="16"
+    y="26"
+    class="fill-ink font-display"
+    font-size="13"
+    font-weight="700">Ordinary text</text
+  >
+  <text x="16" y="40" class="fill-ink-faint font-mono" font-size="9"
+    >written by a person, for their own reasons</text
+  >
+
+  <rect
+    x="16"
+    y="50"
+    width="284"
+    height="108"
+    rx="6"
+    class="fill-paper stroke-rule"
+    stroke-width="1"></rect>
+
+  <g class="fill-ink font-mono" font-size="9">
+    <text x="28" y="70">She put the milk back in the fridge.</text>
+    <text x="28" y="86">The kettle had already boiled twice.</text>
+  </g>
+
+  <g class="fill-paper-sunken">
+    <rect x="28" y="96" width="240" height="6" rx="3"></rect>
+    <rect x="28" y="108" width="258" height="6" rx="3"></rect>
+    <rect x="28" y="120" width="196" height="6" rx="3"></rect>
+    <rect x="28" y="132" width="228" height="6" rx="3"></rect>
+  </g>
+
+  <text x="16" y="176" class="fill-ink-faint font-mono" font-size="8"
+    >there is no answer key anywhere in it</text
+  >
+
+  <!-- The move itself -->
+  <g class="stroke-accent-2" stroke-width="2">
+    <line x1="308" y1="104" x2="342" y2="104"></line>
+    <path d="M336 99 L344 104 L336 109" class="fill-none"></path>
+  </g>
+  <text
+    x="325"
+    y="94"
+    text-anchor="middle"
+    class="fill-accent-2 font-mono"
+    font-size="8">cover</text
+  >
+  <text
+    x="325"
+    y="122"
+    text-anchor="middle"
+    class="fill-accent-2 font-mono"
+    font-size="8">one word</text
+  >
+
+  <!-- Right: what comes out -->
+  <text
+    x="356"
+    y="26"
+    class="fill-ink font-display"
+    font-size="13"
+    font-weight="700">Questions, with answers attached</text
+  >
+  <text x="356" y="40" class="fill-ink-faint font-mono" font-size="9"
+    >the answer is never written &mdash; only hidden</text
+  >
+
+  <text x="366" y="58" class="fill-ink-faint font-mono" font-size="7"
+    >QUESTION</text
+  >
+  <text
+    x="590"
+    y="58"
+    text-anchor="middle"
+    class="fill-accent font-mono"
+    font-size="7">ANSWER</text
+  >
+
+  <!-- Same sentence, three different words covered -->
+  <g>
+    <rect
+      x="356"
+      y="64"
+      width="276"
+      height="26"
+      rx="4"
+      class="fill-paper stroke-rule"
+      stroke-width="1"></rect>
+    <text x="366" y="81" class="fill-ink font-mono" font-size="8"
+      >She put the ____ back in the fridge.</text
+    >
+    <rect
+      x="548"
+      y="64"
+      width="84"
+      height="26"
+      rx="4"
+      class="fill-accent-soft stroke-accent"
+      stroke-width="1.25"></rect>
+    <text
+      x="590"
+      y="81"
+      text-anchor="middle"
+      class="fill-accent font-mono"
+      font-size="9">milk</text
+    >
+
+    <rect
+      x="356"
+      y="94"
+      width="276"
+      height="26"
+      rx="4"
+      class="fill-paper stroke-rule"
+      stroke-width="1"></rect>
+    <text x="366" y="111" class="fill-ink font-mono" font-size="8"
+      >She put the milk back in the ______.</text
+    >
+    <rect
+      x="548"
+      y="94"
+      width="84"
+      height="26"
+      rx="4"
+      class="fill-accent-soft stroke-accent"
+      stroke-width="1.25"></rect>
+    <text
+      x="590"
+      y="111"
+      text-anchor="middle"
+      class="fill-accent font-mono"
+      font-size="9">fridge</text
+    >
+
+    <rect
+      x="356"
+      y="124"
+      width="276"
+      height="26"
+      rx="4"
+      class="fill-paper stroke-rule"
+      stroke-width="1"></rect>
+    <text x="366" y="141" class="fill-ink font-mono" font-size="8"
+      >She ___ the milk back in the fridge.</text
+    >
+    <rect
+      x="548"
+      y="124"
+      width="84"
+      height="26"
+      rx="4"
+      class="fill-accent-soft stroke-accent"
+      stroke-width="1.25"></rect>
+    <text
+      x="590"
+      y="141"
+      text-anchor="middle"
+      class="fill-accent font-mono"
+      font-size="9">put</text
+    >
+  </g>
+
+  <text x="356" y="176" class="fill-ink-faint font-mono" font-size="8"
+    >&hellip;and one more for every other word on the page</text
+  >
+
+  <!-- How much of each kind of answer there is to be had -->
+  <line x1="16" y1="192" x2="624" y2="192" class="stroke-rule" stroke-width="1"
+  ></line>
+
+  <text
+    x="16"
+    y="214"
+    class="fill-ink font-display"
+    font-size="12"
+    font-weight="700">How many answers each way can produce</text
+  >
+
+  <text x="16" y="238" class="fill-ink font-mono" font-size="9"
+    >written by people</text
+  >
+  <rect
+    x="180"
+    y="229"
+    width="56"
+    height="12"
+    rx="3"
+    class="fill-paper-sunken stroke-rule-strong"
+    stroke-width="1.25"></rect>
+  <text x="248" y="238" class="fill-ink-muted font-mono" font-size="8"
+    >somebody has to sit down and write every one</text
+  >
+
+  <text x="16" y="270" class="fill-ink font-mono" font-size="9"
+    >already in the text</text
+  >
+  <rect
+    x="180"
+    y="261"
+    width="392"
+    height="12"
+    rx="3"
+    class="fill-accent-2-soft stroke-accent-2"
+    stroke-width="1.25"></rect>
+  <line
+    x1="578"
+    y1="267"
+    x2="628"
+    y2="267"
+    class="stroke-accent-2"
+    stroke-width="2"
+    stroke-dasharray="4 4"></line>
+  <text x="180" y="290" class="fill-ink-muted font-mono" font-size="8"
+    >one for every word anybody has ever written down, and it keeps going</text
+  >
+</svg>

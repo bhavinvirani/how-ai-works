@@ -1,0 +1,165 @@
+---
+/**
+ * One pile of rows cut into three, drawn so that the *sizes* are the least
+ * interesting thing about it.
+ *
+ * The teaching load is carried by the two lines under each name — who learns
+ * from that pile, and how often anybody is allowed to look at it. That is the
+ * only way the third pile stops looking like a redundant copy of the second:
+ * the machine fits the first, the person fits the second, and nothing has been
+ * fitted to the third. The footer says it in one sentence so the point cannot
+ * be missed by a reader who skims the boxes.
+ *
+ * The sealed pile is marked four ways — a dashed outline, a tint, the word
+ * "sealed", and "nobody learns from these" — so colour is never carrying it
+ * (hard rule 9). Decorative on its own, so `aria-hidden`: `Figure` supplies the
+ * accessible name and the description.
+ */
+---
+
+<svg viewBox="0 0 640 320" class="w-full" aria-hidden="true">
+  <!-- Everything you have, before anything is done to it -->
+  <text x="16" y="22" class="fill-ink-faint font-mono" font-size="9"
+    >all the rows you have</text
+  >
+  <rect
+    x="16"
+    y="30"
+    width="300"
+    height="26"
+    rx="4"
+    class="fill-paper-sunken stroke-rule-strong"
+    stroke-width="1.25"></rect>
+  <text
+    x="166"
+    y="47"
+    text-anchor="middle"
+    class="fill-ink font-mono"
+    font-size="10">every delivery that already ran</text
+  >
+
+  <!-- The cut happens once, and it happens first. -->
+  <g class="stroke-accent" stroke-width="1.75">
+    <line x1="30" y1="60" x2="30" y2="82"></line>
+    <path d="M26 74 L30 82 L34 74" class="fill-none"></path>
+  </g>
+  <text x="44" y="79" class="fill-ink-muted font-mono" font-size="9"
+    >cut once, before any training starts</text
+  >
+
+  <!-- Pile one: the machine's -->
+  <rect
+    x="16"
+    y="90"
+    width="210"
+    height="26"
+    rx="4"
+    class="fill-paper-sunken stroke-rule-strong"
+    stroke-width="1.25"></rect>
+  <text
+    x="121"
+    y="107"
+    text-anchor="middle"
+    class="fill-ink font-mono"
+    font-size="10">70%</text
+  >
+  <text
+    x="240"
+    y="101"
+    class="fill-ink font-display"
+    font-size="13"
+    font-weight="700">Training</text
+  >
+  <text x="240" y="115" class="fill-ink-muted font-mono" font-size="9"
+    >the machine learns from these</text
+  >
+  <text x="240" y="128" class="fill-ink-faint font-mono" font-size="9"
+    >seen thousands of times</text
+  >
+
+  <!-- Pile two: yours -->
+  <rect
+    x="16"
+    y="138"
+    width="45"
+    height="26"
+    rx="4"
+    class="fill-paper stroke-rule-strong"
+    stroke-width="1.25"></rect>
+  <text
+    x="38"
+    y="155"
+    text-anchor="middle"
+    class="fill-ink font-mono"
+    font-size="9">15%</text
+  >
+  <text
+    x="240"
+    y="149"
+    class="fill-ink font-display"
+    font-size="13"
+    font-weight="700">Validation</text
+  >
+  <text x="240" y="163" class="fill-ink-muted font-mono" font-size="9"
+    >you learn from these</text
+  >
+  <text x="240" y="176" class="fill-ink-faint font-mono" font-size="9"
+    >checked after every change you make</text
+  >
+
+  <!-- Pile three: nobody's -->
+  <rect
+    x="16"
+    y="186"
+    width="45"
+    height="26"
+    rx="4"
+    class="fill-accent-2-soft stroke-accent-2"
+    stroke-width="1.5"
+    stroke-dasharray="4 3"></rect>
+  <text
+    x="38"
+    y="203"
+    text-anchor="middle"
+    class="fill-ink font-mono"
+    font-size="9">15%</text
+  >
+  <text x="70" y="203" class="fill-accent-2 font-mono" font-size="9"
+    >sealed</text
+  >
+  <text
+    x="240"
+    y="197"
+    class="fill-ink font-display"
+    font-size="13"
+    font-weight="700">Test</text
+  >
+  <text x="240" y="211" class="fill-ink-muted font-mono" font-size="9"
+    >nobody learns from these</text
+  >
+  <text x="240" y="224" class="fill-ink-faint font-mono" font-size="9"
+    >opened once, at the very end</text
+  >
+
+  <!-- The reason there are three and not two -->
+  <rect
+    x="16"
+    y="244"
+    width="608"
+    height="60"
+    rx="6"
+    class="fill-paper stroke-rule"
+    stroke-width="1"></rect>
+  <text
+    x="32"
+    y="271"
+    class="fill-ink font-display"
+    font-size="12"
+    font-weight="700"
+    >The machine fits itself to the first pile. You fit yourself to the second.</text
+  >
+  <text x="32" y="291" class="fill-ink-muted font-mono" font-size="9"
+    >Nobody has been allowed to fit anything to the third. That is the whole
+    reason it exists.</text
+  >
+</svg>

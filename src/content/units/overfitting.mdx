@@ -1,0 +1,192 @@
+---
+title: The perfect score that proves nothing
+part: when-scores-lie
+order: 1
+summary: A machine with enough freedom will memorise its examples instead of learning from them — scoring perfectly on everything it studied, and falling apart on the first case it has not already seen.
+prerequisites:
+  - training-loop
+connections:
+  - to: model-as-dials
+    why: How many dials a machine has is how much freedom it has to bend, and that freedom is the whole difference between finding the pattern and swallowing the accidents around it.
+  - to: loss-function
+    why: Nothing goes wrong here — the machine makes its one number smaller exactly as instructed, and bending towards a meaningless wobble is one of the ways to do that.
+interactives:
+  - FlexibilityDial
+status: published
+updated: 2026-07-31
+---
+
+import Aside from '../../components/blocks/Aside.astro';
+import Checkpoint from '../../components/blocks/Checkpoint.astro';
+import DevAside from '../../components/blocks/DevAside.astro';
+import Figure from '../../components/blocks/Figure.astro';
+import MemoriseVsUnderstand from '../../components/diagrams/MemoriseVsUnderstand.astro';
+import { FlexibilityDial } from '../../components/interactives/FlexibilityDial';
+
+Two people sat the same practice paper last night, and both came out with full
+marks.
+
+One had spent a month on the subject. The other found last year's paper online,
+noticed the questions had not changed, and spent an evening learning which
+letters went in which boxes.
+
+The paper cannot tell them apart, because the paper gave them the same mark. The
+only evidence anyone in that room has about who understands the subject points
+at both of them equally. Tomorrow's paper will separate them in about ninety
+seconds. Until then, nothing will.
+
+Machines can do the second thing. Given the room, they will. And the score you
+were watching does not so much as flicker.
+
+## Half of what you measure will never happen again
+
+Here is a small pile of the kind of data machines are actually handed. Twelve
+houses on one street: how big each one was, and what it sold for.
+
+Underneath those numbers is something real. Bigger houses cost more, and the
+rate tapers off, so the fifth bedroom adds less than the second one did. That is
+a pattern, and it holds for the next house too.
+
+Sitting on top of it is everything else. The flat that went cheap because the
+kitchen was thirty years old. The one that went high because two buyers wanted
+it in the same fortnight. Both are real reasons, and neither will apply to the
+next house.
+
+That second layer has a name worth carrying: **noise** — the part of any
+measurement that comes from something which will not happen again. Every table
+of real examples is a pattern with noise sitting on top, and nothing in the
+table marks which number is which.
+
+The machine cannot tell them apart either. Some of the prices it is shown sit on
+the pattern and some were shoved off it by a kitchen nobody recorded, and to the
+machine every one of them is just a number that currently makes its score worse.
+
+## Freedom is what you hand over
+
+When you turned the dials by hand, the machine had two: one for how steep the
+line was, one for how high it started. Two dials buy a straight line and nothing
+else. A straight line cannot lean towards one particular house, however much
+that would improve its score, because it cannot lean at all.
+
+A third dial lets the line bow once. A fourth lets it bend twice. Every dial
+after that buys another wiggle.
+
+Now count. Twelve sales, twelve dials — one adjustable number for every example
+in the pile. A curve with that much freedom can be made to pass exactly through
+all twelve dots. Not near them. Through them. Its wrongness score on those
+twelve sales is then zero: not small, not respectable, zero, with nothing left
+anywhere to improve.
+
+That machine has not learned the street. It has written twelve house sales down
+in a very roundabout way. Ask it about a house it has not seen and it answers
+instantly, confidently, and wrong by more than the house is worth.
+
+<Figure
+  title="The same twelve sales, fitted twice"
+  description="The line that misses every dot slightly is the one that is right about houses it has never met; the line that hits all twelve exactly is out by more than a house costs — so touching every dot is the symptom, not the achievement."
+>
+  <MemoriseVsUnderstand />
+</Figure>
+
+## Turn the dial yourself
+
+Below is that street. The slider hands the machine one more adjustable number at
+a time. Start at the straight line and push right, watching the only score it
+has: how far out it is on the twelve sales it studied. That score improves the
+whole way across and never once gets worse.
+
+Then switch on the eight sales that were held back — same street, same month,
+never shown to the machine — and run the slider again.
+
+<FlexibilityDial client:visible />
+
+The second score does not slope. It sags in the middle.
+
+At two dials the machine is £21,000 out on what it studied and £24,000 out on
+the new sales. It memorised nothing; it never had the freedom to. It simply
+could not follow the rise, so it is wrong everywhere at once. That failure has a
+name too: **underfitting**.
+
+Three dials is as good as this street gets — around £10,000 out on the twelve,
+around £9,000 out on the eight. Roughly the same on both piles, which is what a
+machine that has actually learned something looks like.
+
+Push further and the two scores come apart. By seven dials the studied score has
+improved again, to £9,000, while the score that matters has drifted out to
+£13,000. By twelve the studied score is nothing at all and the machine is
+£164,000 out, on average, on houses it has never seen. That is **overfitting**:
+the machine fitted the noise along with the pattern, because fitting the noise
+also made its number smaller, and nobody ever gave it a way to tell one from the
+other.
+
+The alarming part is the middle. Nothing announces the moment it starts going
+wrong. From inside — from the only score the machine can see — every one of
+those settings is an improvement on the one before it.
+
+## What people actually do about it
+
+The first defence is the one you just used. Keep examples back before training
+starts, never let the machine learn from them, and score it on those. It is the
+only score in this business that means anything, and every serious team has one.
+
+Once you can see the damage, three things reduce it.
+
+**More examples.** Twelve sales can be memorised. Ten million cannot — there are
+not enough dials to hold them, so the only route left to a smaller score is to
+find something true of all of them. The most reliable fix by a wide margin.
+
+**Stopping early.** Watch the held-back score while training runs. It falls for a
+while, then turns and climbs while the studied score is still improving. That
+turn is the moment memorising took over. Stop there.
+
+**Handicapping the machine.** Switch off random parts of it on each pass, or add
+a penalty for extreme dial settings. Both make memorising harder without making
+the pattern harder, so what survives the disruption tends to be the part that
+was really there.
+
+<Aside title="More dials than examples">
+  This picture holds beautifully at twelve sales and gets stranger at the top
+  end. A large language model has far more dials than its training pile has
+  examples — by everything above it should memorise the lot and generalise
+  nothing. It does not, and precisely why is still argued about in public. Take
+  the sagging middle with you, and treat its far end as less settled than it
+  looks.
+</Aside>
+
+<DevAside>
+  <Fragment slot="java">
+    ```java
+    double onWhatItStudied = score(model, training);
+    double onWhatItHasNotSeen = score(model, heldOut);
+    ```
+
+    The second line is this entire unit, and it is the one that gets deleted
+    when a deadline arrives, because it is the one that says no. A report
+    quoting only the first number is not wrong, exactly. It is just not evidence
+    of anything.
+
+  </Fragment>
+  <Fragment slot="python">
+    ```python
+    on_what_it_studied = score(model, training)
+    on_what_it_has_not_seen = score(model, held_out)
+    ```
+
+    Same two lines. Inherit a model with no held-out pile and its quality is
+    not unknown — it has never been measured.
+
+  </Fragment>
+</DevAside>
+
+<Checkpoint question="A colleague reports that their model is 99% accurate on the data it was trained on, and wants to ship it. What do you need before you can agree — and why is the 99% not it?">
+  You need its score on examples it was never trained on. The 99% cannot tell a
+  machine that found the pattern apart from one that memorised the answers,
+  because both of them produce it — which is the one thing that number is
+  structurally incapable of telling you.
+
+Worth keeping, because the failure is quiet. A memorising machine does not
+stumble or hesitate on a case it has never met. It answers in exactly the tone
+it used for everything else, and it is the confidence that gets people, not the
+error.
+
+</Checkpoint>

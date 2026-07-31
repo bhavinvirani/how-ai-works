@@ -10,7 +10,13 @@ import DevAside from '../components/blocks/DevAside.astro';
 import ConnectionsFooter from '../components/blocks/ConnectionsFooter.astro';
 import Figure from '../components/blocks/Figure.astro';
 import { UnitProgress } from '../components/blocks/UnitProgress';
+import { ClusterFinder } from '../components/interactives/ClusterFinder';
 import { DialTuner } from '../components/interactives/DialTuner';
+import { ExploreExploitBandit } from '../components/interactives/ExploreExploitBandit';
+import { FlexibilityDial } from '../components/interactives/FlexibilityDial';
+import { FreeLabelMaker } from '../components/interactives/FreeLabelMaker';
+import { LeakageSplitter } from '../components/interactives/LeakageSplitter';
+import { ThresholdMatrix } from '../components/interactives/ThresholdMatrix';
 import { FoggyDescentWalk } from '../components/interactives/FoggyDescentWalk';
 import { LabelPicker } from '../components/interactives/LabelPicker';
 import { ScoringRulePicker } from '../components/interactives/ScoringRulePicker';
@@ -92,6 +98,45 @@ Same hill, same start, three step sizes. One arrives, one crawls, one never
 settles.
 
 <StepSizeRace client:visible />
+
+### Ask it for a number of groups
+
+Grouping with no answer key. More groups always scores better, which is exactly
+why the score cannot tell you the right number.
+
+<ClusterFinder client:visible />
+
+### Try, score, adjust
+
+No right answer, only a score — and the thing it settles on is whatever the
+score rewarded.
+
+<ExploreExploitBandit client:visible />
+
+### Cover a word and guess it back
+
+The hinge of the whole site: the answer key was inside the data all along.
+
+<FreeLabelMaker client:visible />
+
+### Add one dial at a time
+
+Perfect on the sales it studied, ruinous on the ones it has not seen.
+
+<FlexibilityDial client:visible />
+
+### Score it on what it never saw
+
+Repairing a leaky split makes the score worse. That is the score becoming
+honest.
+
+<LeakageSplitter client:visible />
+
+### Turn the bar up and down
+
+A detector that raises no alarms at all scores 99%.
+
+<ThresholdMatrix client:visible />
 
 ## Instrument panel
 

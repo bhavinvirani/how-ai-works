@@ -1,0 +1,179 @@
+---
+title: The groups it invents
+part: kinds-of-learning
+order: 2
+summary: Take the answer column away and a machine can still find structure — it gathers together the rows that resemble each other. But the groups are its own invention, and deciding what they mean is left to you.
+prerequisites:
+  - training-data
+connections:
+  - to: loss-function
+    why: A machine can only improve against a single number, so when there is no answer column to compare with, something else has to be scored — here it is how tightly the machine's own groups hold together.
+  - to: model-as-dials
+    why: The middles of the groups are the adjustable numbers in this method, shuffled about until moving them stops helping, which is the same manoeuvre wearing different clothes.
+interactives:
+  - ClusterFinder
+status: published
+updated: 2026-07-31
+---
+
+import Aside from '../../components/blocks/Aside.astro';
+import Checkpoint from '../../components/blocks/Checkpoint.astro';
+import DevAside from '../../components/blocks/DevAside.astro';
+import Figure from '../../components/blocks/Figure.astro';
+import GroupsNobodyNamed from '../../components/diagrams/GroupsNobodyNamed.astro';
+import { ClusterFinder } from '../../components/interactives/ClusterFinder';
+
+A supermarket chain sends you a file and one line of email: what kinds of
+shopper do we have?
+
+The file is a year of till receipts boiled down to two numbers per customer —
+how often they came in, and what they spent on a typical visit. Forty thousand
+rows, and not one of them says what kind of shopper it is.
+
+Read the question again, because the trouble is inside it. There is no column
+marked _kind_. Nobody has been down the rows deciding who belongs where, and
+nobody could have: what the kinds are is the thing being asked for, not the
+thing being handed over.
+
+Every machine so far has quietly assumed otherwise. A column of yeses and noes,
+a price that should have been guessed — something to be wrong about. Take that
+away and there is nothing left to be wrong about, which means nothing to improve
+against.
+
+And yet the file is not empty of information. You already suspect what is in
+there. Somebody calling in every other day for milk is not the same kind of
+shopper as somebody who arrives once a week and fills the boot.
+
+## Alike is the only thing it can measure
+
+What a machine can do with a file like this is narrower than it sounds. It
+cannot tell you what a shopper _is_. It can work out how alike any two of them
+are — near each other on the chart, or far apart — and that is the whole of its
+equipment.
+
+Which turns out to be enough for one specific job. Put every shopper on a chart,
+visits along the bottom and spend up the side. Pick a few spots to act as
+middles. Give each shopper to whichever middle is nearest, then move each middle
+to the average of whoever it caught, then do it again. After a handful of rounds
+nothing moves any more, and you have piles.
+
+Learning from examples that carry no answers is called **unsupervised
+learning**, and the supervision it does without is exactly what it sounds like: a
+person going through beforehand, marking the right answer on every row.
+Gathering like with like has its own name too — **clustering** — and it is the
+most common thing anybody does with it.
+
+Now notice what did not happen. Nobody told the machine how many piles there
+ought to be; that number was handed to it. And nobody told it what a pile means.
+_Group two_ means group two, and nothing else. That group two is the weekly big
+shop is a sentence you supply afterwards, by looking at where it sits and
+deciding what to call it.
+
+Two related jobs run off the same measurement. The first is **odd ones out**:
+learn the shape of ordinary, then flag whatever sits far from all of it. That is
+how a bank catches a kind of fraud nobody has seen before — it never needed an
+example of the fraud, only a great many examples of normal.
+
+The second is **simplification**: squash rows carrying two hundred measurements
+into two or three that keep most of what mattered. That sounds like
+housekeeping, and it is not. Reducing something complicated to a short list of
+numbers that preserves its character is how machines end up holding the meaning
+of words, and it returns later as one of the largest ideas here.
+
+There is a price for working without answers, and it is worth being blunt about.
+With an answer key you can count how often you were right. Here there is nothing
+to count against. Ask for four groups and you get four, whether or not four kinds
+of shopper exist. The machine does keep a score of its own — how tightly its
+piles hold together — and that score has a habit that is easier to watch than to
+describe.
+
+<Figure
+  title="From an unlabelled pile to named groups"
+  description="A machine can gather rows that resemble each other, but it stops at numbered piles: every name, every meaning and every decision about whether the piles are worth anything is added afterwards, by a person, from outside the data."
+>
+  <GroupsNobodyNamed />
+</Figure>
+
+## Ask it for a different number
+
+Below are forty-two of those shoppers, each one a position on the chart: how
+often they came, what they spent. Start with three groups. Then ask for four,
+and watch the score rather than the picture.
+
+<ClusterFinder client:visible />
+
+At three it finds roughly what you would have found by eye. Fourteen frequent
+shoppers, in about twenty times a month for around £9 a go. Twelve who come
+about once a week and spend nearly £60. Sixteen somewhere in the middle.
+
+Now ask for four. The spread score drops from 11.3 to 9.8, which by the
+machine's own reckoning is an improvement. Look at what the improvement bought.
+No fourth kind of shopper has appeared — it has sawn the frequent shoppers in
+half at twenty visits a month and called the halves two groups. Ask for
+six and the score falls again. It always falls. Hand it forty-two groups and
+every shopper would sit alone in the middle of their own, spread score nought:
+perfect, and worth nothing. **The machine's own number can never tell you how
+many groups there are.**
+
+Then leave the number alone and change only where the search started. At three
+groups the second starting guess reaches an identical answer and the third moves
+two shoppers — that structure is solid enough to survive being approached from
+somewhere else. At four, ten of the forty-two change hands, and the second guess
+does not even cut the same group in two; it splits the middling shoppers
+instead. Same data, same instruction, two equally confident and quite different
+answers.
+
+<Aside title="Alike, in what units?">
+  Before a machine can say which two shoppers are more alike, somebody has to
+  decide what one visit is worth in pounds. Here both measurements were squashed
+  onto the same nought-to-one scale, which quietly declares that the full range
+  of visiting habits counts for exactly as much as the full range of spending.
+  Change that exchange rate and the groups change with it. It is another human
+  judgement wearing a technical hat.
+</Aside>
+
+<DevAside>
+  <Fragment slot="java">
+    ```java
+    // Nothing in here is the answer, because there is no answer.
+    record Shopper(int visits, double spend) {}
+
+    List<List<Shopper>> groups = cluster(shoppers, 4);
+    ```
+
+    The `4` is the whole argument of this unit, sitting there as an ordinary
+    parameter with no sensible default. Nothing in the types, and nothing in the
+    data, will tell you it should have been 3. Whatever you pass, you get back
+    that many lists — each one unnamed, because there is nothing to name it
+    after.
+
+  </Fragment>
+  <Fragment slot="python">
+    ```python
+    from sklearn.cluster import KMeans
+
+    labels = KMeans(n_clusters=4).fit_predict(rows)
+    # array([2, 0, 3, 1, 2, 0, ...])
+    ```
+
+    Note what comes back: one integer per row. No names, no confidence, and no
+    complaint if `n_clusters` was wrong. The variable name is doing a lot of
+    quiet work — these are not labels in the sense the earlier units meant.
+    Nobody wrote them down. The machine invented them a moment ago.
+
+  </Fragment>
+</DevAside>
+
+<Checkpoint question="A tool splits your customers into five groups, and the slide names them Bargain Hunters, Loyalists, Big Spenders, Browsers and At-Risk. Which part of that came out of the machine?">
+  The five piles, and nothing else. The machine produced group 1 to group 5 and
+  stopped there. Somebody looked at where each pile sat, recognised a story, and
+  wrote the names on top — and _five_ was asked for rather than discovered, so
+  there would have been six equally confident piles, with a better score, had
+  somebody typed six.
+
+Which gives you the question worth asking before anyone builds a campaign on it:
+do the same five survive a different starting point, and a different half of the
+customers? The machine hands back five either way, and it will never once
+mention that it was not sure.
+
+</Checkpoint>

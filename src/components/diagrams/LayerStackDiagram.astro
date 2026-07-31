@@ -1,0 +1,174 @@
+---
+/**
+ * A stack of layers, drawn once and reused.
+ *
+ * Four units in _What the machine is made of_ need to draw the same network:
+ * `layers` counts its connections, `forward-pass` lights the path through it,
+ * `backpropagation` sends blame back along the same edges, and
+ * `feature-hierarchy` labels what each level ends up detecting. Built once,
+ * they are visibly the same machine seen four ways — which is most of the
+ * teaching. Built four times they are four unrelated pictures, and the Part
+ * becomes the most expensive on the site for no gain.
+ *
+ * A network graph is exactly the thing an engineer reaches for `@xyflow/react`
+ * to draw. It is allowlisted for the `/map` island ONLY, so this is hand-authored
+ * SVG (CLAUDE.md rule 2).
+ *
+ * Decorative by itself: `aria-hidden`, with `Figure` carrying the name and the
+ * plain-English description.
+ */
+
+export interface LayerSpec {
+  /** How many nodes in this layer. */
+  size: number;
+  /** Shown under the layer. Optional — omit for an unlabelled stack. */
+  label?: string;
+}
+
+interface Props {
+  layers: LayerSpec[];
+  /**
+   * Which edges to emphasise, as `[fromLayer, fromNode, toNode]` triples with
+   * zero-based indices. Used for the lit path and the blame path; the emphasis
+   * is a thicker, solid stroke, never colour alone.
+   */
+  highlight?: [number, number, number][];
+  /** Reverses the arrowheads, for the backward pass. */
+  direction?: 'forward' | 'backward';
+  /** Caption strip along the bottom, e.g. "step 2 of 4". */
+  footnote?: string;
+}
+
+const { layers, highlight = [], direction = 'forward', footnote } = Astro.props;
+
+const WIDTH = 620;
+const HEIGHT = 260;
+const PAD_X = 60;
+const PAD_TOP = 30;
+const PAD_BOTTOM = 60;
+const RADIUS = 9;
+
+const columnX = (index: number) =>
+  layers.length === 1
+    ? WIDTH / 2
+    : PAD_X + (index / (layers.length - 1)) * (WIDTH - PAD_X * 2);
+
+const nodeY = (layerIndex: number, nodeIndex: number) => {
+  const count = layers[layerIndex].size;
+  const usable = HEIGHT - PAD_TOP - PAD_BOTTOM;
+  return count === 1
+    ? PAD_TOP + usable / 2
+    : PAD_TOP + (nodeIndex / (count - 1)) * usable;
+};
+
+const isHighlighted = (from: number, a: number, b: number) =>
+  highlight.some(([l, i, j]) => l === from && i === a && j === b);
+
+/** Every edge, flattened so the template stays a single map. */
+const edges = layers.slice(0, -1).flatMap((layer, layerIndex) =>
+  Array.from({ length: layer.size }, (_, a) =>
+    Array.from({ length: layers[layerIndex + 1].size }, (_, b) => ({
+      key: `${String(layerIndex)}-${String(a)}-${String(b)}`,
+      x1: columnX(layerIndex),
+      y1: nodeY(layerIndex, a),
+      x2: columnX(layerIndex + 1),
+      y2: nodeY(layerIndex + 1, b),
+      lit: isHighlighted(layerIndex, a, b),
+    })),
+  ).flat(),
+);
+---
+
+<svg
+  viewBox={`0 0 ${String(WIDTH)} ${String(HEIGHT)}`}
+  class="w-full"
+  aria-hidden="true"
+>
+  <defs>
+    <marker
+      id="layerstack-arrow"
+      viewBox="0 0 10 10"
+      refX="9"
+      refY="5"
+      markerWidth="5"
+      markerHeight="5"
+      orient={direction === 'forward' ? 'auto' : 'auto-start-reverse'}
+    >
+      <path d="M0,0 L10,5 L0,10 z" class="fill-accent"></path>
+    </marker>
+  </defs>
+
+  {/* Dim edges first, so lit ones draw on top. */}
+  {
+    edges
+      .filter((edge) => !edge.lit)
+      .map((edge) => (
+        <line
+          x1={edge.x1}
+          y1={edge.y1}
+          x2={edge.x2}
+          y2={edge.y2}
+          class="stroke-rule"
+          stroke-width="0.75"
+        />
+      ))
+  }
+
+  {
+    edges
+      .filter((edge) => edge.lit)
+      .map((edge) => (
+        <line
+          x1={edge.x1}
+          y1={edge.y1}
+          x2={edge.x2}
+          y2={edge.y2}
+          class="stroke-accent"
+          stroke-width="2.25"
+          marker-end="url(#layerstack-arrow)"
+        />
+      ))
+  }
+
+  {
+    layers.map((layer, layerIndex) => (
+      <>
+        {Array.from({ length: layer.size }, (_, nodeIndex) => (
+          <circle
+            cx={columnX(layerIndex)}
+            cy={nodeY(layerIndex, nodeIndex)}
+            r={RADIUS}
+            class="fill-paper-raised stroke-ink-muted"
+            stroke-width="1.25"
+          />
+        ))}
+
+        {layer.label && (
+          <text
+            x={columnX(layerIndex)}
+            y={HEIGHT - PAD_BOTTOM + 34}
+            text-anchor="middle"
+            class="fill-ink-muted font-mono"
+            font-size="9"
+          >
+            {layer.label}
+          </text>
+        )}
+      </>
+    ))
+  }
+
+  {
+    footnote && (
+      <text
+        x={WIDTH / 2}
+        y={HEIGHT - 8}
+        text-anchor="middle"
+        class="fill-ink-faint font-mono"
+        font-size="9"
+      >
+        {footnote}
+      </text>
+    )
+  }
+</svg>

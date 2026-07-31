@@ -46,8 +46,10 @@ jobs:
 
   # Runs against the BUILT site with the base path applied — the only setup
   # where base-path bugs and missing self-hosted assets actually surface.
+  # Budgets share this job because they need the same dist/ and building twice
+  # buys nothing.
   e2e:
-    name: E2E smoke + a11y
+    name: Build, budgets, E2E + a11y
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -66,9 +68,18 @@ jobs:
       - name: Install Playwright chromium
         run: pnpm exec playwright install --with-deps --only-shell chromium
 
-      # `pnpm test:e2e` builds first, then serves dist/ via astro preview.
+      # Built once here, then reused by both the budget check and Playwright's
+      # preview server, rather than letting `pnpm test:e2e` build again.
+      - name: Build
+        run: pnpm build
+
+      # Runs before Playwright so a bloated island is still reported when a
+      # test elsewhere is failing.
+      - name: Island budgets
+        run: node scripts/check-budgets.mjs
+
       - name: Run Playwright
-        run: pnpm test:e2e
+        run: pnpm exec playwright test
 
       - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         if: ${{ !cancelled() }}

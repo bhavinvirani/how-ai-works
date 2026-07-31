@@ -1,0 +1,126 @@
+---
+layout: ../layouts/BaseLayout.astro
+title: Gallery — How AI Actually Works
+description: Every control and instrument on this site, live, with its knobs — the working style guide.
+---
+
+import {
+  InstrumentPanelDemo,
+  RevealButtonDemo,
+  SegmentedControlDemo,
+  SliderDemo,
+  StaticFallbackDemo,
+  StepperDemo,
+  TabsDemo,
+  ToggleDemo,
+} from '../components/gallery/demos';
+
+# Gallery
+
+Every control on this site, live and operable. This page is the style guide, the
+review surface for changes, and the place to check that a new instrument still
+looks like it belongs.
+
+Try it with the keyboard. Everything here works without a mouse, and anything
+that stops working is a bug.
+
+## Instrument panel
+
+The standard shell around every interactive: a title, one line telling you what
+to try, and a way back to the starting state.
+
+<InstrumentPanelDemo
+  client:visible
+  title="Sampling"
+  lead="Turn the temperature up and watch how much the model wanders."
+  sliderLabel="Temperature"
+  toggleLabel="Show alternatives"
+  stepperLabel="Candidates"
+/>
+
+## Slider
+
+For a quantity that varies smoothly. The value is always visible, because
+watching a number change while something else changes is the entire lesson.
+
+Drag it, or focus it and use the arrow keys.
+
+<SliderDemo
+  client:visible
+  label="Temperature"
+  description="Higher values make the model wander further from the obvious next word."
+/>
+
+## Toggle
+
+For something that is either on or off. It reports itself as a switch rather
+than a checkbox — a checkbox says "include this when you submit", a switch says
+"this is on right now".
+
+<ToggleDemo
+  client:visible
+  label="Show attention weights"
+  description="Draws a line from each word to the words the model leaned on."
+/>
+
+## Segmented control
+
+For picking one of a few named options, when seeing all the choices at once
+matters more than saving space.
+
+<SegmentedControlDemo
+  client:visible
+  label="Tokenizer"
+  options={[
+    { value: 'char', label: 'Characters' },
+    { value: 'word', label: 'Words' },
+    { value: 'bpe', label: 'Subwords' },
+  ]}
+/>
+
+## Stepper
+
+For a small countable quantity. Pressing a button once to land on "4" beats
+dragging a track until you hit it.
+
+<StepperDemo client:visible label="Layers" />
+
+## Reveal
+
+Hides an answer until you have had a go at it yourself. The content is not in
+the page until you press the button, so searching for it will not spoil it.
+
+<RevealButtonDemo
+  client:visible
+  body="Because the model has never seen the word before, so it has to build it out of smaller pieces it does know."
+/>
+
+## Tabs
+
+For the same idea shown more than one way — most often the same code in
+different languages.
+
+<TabsDemo
+  client:visible
+  label="Language"
+  tabs={[
+    { id: 'java', label: 'Java', body: 'var tokens = tokenizer.encode(text);' },
+    { id: 'python', label: 'Python', body: 'tokens = tokenizer.encode(text)' },
+  ]}
+/>
+
+## Static fallback
+
+Some instruments need a pointer to be worth using. Below the medium breakpoint
+those swap to a captioned still, which has to teach the same thing rather than
+apologise for itself.
+
+Narrow this window past the breakpoint to see it change.
+
+<StaticFallbackDemo
+  client:visible
+  title="Attention map"
+  lead="Hover a word to see what the model looked at."
+  caption="Each word is scored against every other word; the brightest cells are the pairs the model leaned on most."
+  interactiveLabel="Layer"
+/>

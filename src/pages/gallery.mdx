@@ -13,7 +13,16 @@ import { UnitProgress } from '../components/blocks/UnitProgress';
 import { AttentionMap } from '../components/interactives/AttentionMap';
 import { BlameFlow } from '../components/interactives/BlameFlow';
 import { ClusterFinder } from '../components/interactives/ClusterFinder';
+import { ContextBudget } from '../components/interactives/ContextBudget';
 import { DialTuner } from '../components/interactives/DialTuner';
+import { ExampleSetBuilder } from '../components/interactives/ExampleSetBuilder';
+import { FineTuneOrPromptSorter } from '../components/interactives/FineTuneOrPromptSorter';
+import { NextPieceLoop } from '../components/interactives/NextPieceLoop';
+import { PreferenceRater } from '../components/interactives/PreferenceRater';
+import { PromptLeverBoard } from '../components/interactives/PromptLeverBoard';
+import { SpotTheFabrication } from '../components/interactives/SpotTheFabrication';
+import { TemperatureDial } from '../components/interactives/TemperatureDial';
+import { ThinkingBudget } from '../components/interactives/ThinkingBudget';
 import { MeaningMap } from '../components/interactives/MeaningMap';
 import { MultiHeadLanes } from '../components/interactives/MultiHeadLanes';
 import { OrderBlindness } from '../components/interactives/OrderBlindness';
@@ -201,6 +210,66 @@ With no sense of position, every word computes exactly the same meaning in a
 scrambled sentence as in a real one.
 
 <OrderBlindness client:visible />
+
+### Write one piece at a time
+
+Each row is computed from the whole of what came before, and nothing is ever
+revised — including the piece it should not have written.
+
+<NextPieceLoop client:visible />
+
+### Turn the wandering up and down
+
+The dial never invents, removes or reorders a candidate. It only changes the
+gaps between percentages the model had already produced.
+
+<TemperatureDial client:visible />
+
+### Fill a window that does not grow
+
+Nothing persists between messages. The whole conversation is resent every turn,
+and all of it has to fit.
+
+<ContextBudget client:visible />
+
+### Sort the jobs into two piles
+
+Fine-tuning is a good way to install behaviour and a poor, expensive way to
+install facts.
+
+<FineTuneOrPromptSorter client:visible />
+
+### Pick the better of two
+
+Nobody writes the personality. It is the average of a lot of small preferences.
+
+<PreferenceRater client:visible />
+
+### Give it room to think
+
+Tokens are the only currency the machine has for effort — and there are
+questions where more room buys nothing.
+
+<ThinkingBudget client:visible />
+
+### Find the invented one
+
+Four confident answers, one made up, and the writing is not what gives it away.
+
+<SpotTheFabrication client:visible />
+
+### Pull the levers on one request
+
+The question never moves. Everything that steers the answer works by narrowing
+what a plausible continuation looks like.
+
+<PromptLeverBoard client:visible />
+
+### Build the example set
+
+Three easy examples teach the format. The awkward one teaches the boundary.
+
+<ExampleSetBuilder client:visible />
 
 ## Instrument panel
 

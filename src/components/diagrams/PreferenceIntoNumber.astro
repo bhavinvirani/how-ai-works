@@ -1,0 +1,232 @@
+---
+/**
+ * How a score gets built out of judgements when nobody can write one.
+ *
+ * Four stages down the page, numbered so the order is readable without
+ * following an arrow: the number nobody can specify, the comparison anybody can
+ * make, the second model that turns a pile of comparisons back into a number,
+ * and the loop that number then drives.
+ *
+ * Stacked rather than laid out left to right so it survives a phone: at 480
+ * across, `w-full` on a narrow screen still leaves every label above four
+ * pixels, which a 640-wide flow of the same content would not.
+ *
+ * The teaching load is carried by the numbers, the labels and the shapes. The
+ * one thing a reader must not miss — which answer of each pair was taken — is
+ * marked three ways: a tick, the word "picked", and a tinted tile (hard rule
+ * 9). The dashed outline on the missing score is the second cue that it is the
+ * thing that does not exist.
+ *
+ * Decorative on its own, so `aria-hidden`: `Figure` carries the accessible name
+ * and the plain-English description.
+ */
+
+/** The three sample pairs, and which side of each was taken. */
+const PICKS = [
+  { y: 130, picked: 'left' },
+  { y: 162, picked: 'right' },
+  { y: 194, picked: 'left' },
+] as const;
+
+const TILE = { left: 12, right: 170, width: 148, height: 26 };
+---
+
+<svg viewBox="0 0 480 496" class="w-full" aria-hidden="true">
+  <!-- 1 · the score that cannot be written -->
+  <g class="fill-ink-faint font-mono" font-size="9">
+    <text x="12" y="16">1 · the score nobody can write</text>
+  </g>
+
+  <g class="fill-paper stroke-rule" stroke-width="1.25">
+    <rect x="12" y="26" width="190" height="48" rx="6"></rect>
+  </g>
+  <g class="fill-ink font-mono" font-size="10">
+    <text x="24" y="46">a good, helpful, honest</text>
+    <text x="24" y="62">answer to any question</text>
+  </g>
+
+  <g class="fill-none stroke-ink-muted" stroke-width="1.5">
+    <line x1="206" y1="50" x2="250" y2="50"></line>
+    <path d="M244 45 L252 50 L244 55"></path>
+  </g>
+
+  <g
+    class="fill-paper-sunken stroke-rule-strong"
+    stroke-width="1.5"
+    stroke-dasharray="4 3"
+  >
+    <rect x="260" y="22" width="208" height="56" rx="6"></rect>
+  </g>
+  <g class="fill-ink font-mono" font-size="15" text-anchor="middle">
+    <text x="364" y="48">loss = ?</text>
+  </g>
+  <g class="fill-ink-faint font-mono" font-size="8" text-anchor="middle">
+    <text x="364" y="66">the one number training needs</text>
+  </g>
+  <g class="fill-ink-muted font-mono" font-size="9">
+    <text x="260" y="94">nobody has ever written this rule</text>
+  </g>
+
+  <!-- 2 · the comparison anybody can make -->
+  <g class="fill-ink-faint font-mono" font-size="9">
+    <text x="12" y="120">2 · what a person can do instead</text>
+  </g>
+
+  {
+    PICKS.map((row) => (
+      <>
+        <rect
+          x={TILE.left}
+          y={row.y}
+          width={TILE.width}
+          height={TILE.height}
+          rx="4"
+          class={
+            row.picked === 'left'
+              ? 'fill-accent-2-soft stroke-accent-2'
+              : 'fill-paper stroke-rule'
+          }
+          stroke-width="1.25"
+        />
+        <rect
+          x={TILE.right}
+          y={row.y}
+          width={TILE.width}
+          height={TILE.height}
+          rx="4"
+          class={
+            row.picked === 'right'
+              ? 'fill-accent-2-soft stroke-accent-2'
+              : 'fill-paper stroke-rule'
+          }
+          stroke-width="1.25"
+        />
+
+        <text
+          x={TILE.left + 10}
+          y={row.y + 17}
+          class="fill-ink font-mono"
+          font-size="9"
+        >
+          answer A
+        </text>
+        <text
+          x={TILE.right + 10}
+          y={row.y + 17}
+          class="fill-ink font-mono"
+          font-size="9"
+        >
+          answer B
+        </text>
+
+        <path
+          d={`M${String((row.picked === 'left' ? TILE.left : TILE.right) + 92)} ${String(row.y + 13)} l4 5 l8 -11`}
+          class="fill-none stroke-accent-2"
+          stroke-width="2"
+        />
+        <text
+          x={(row.picked === 'left' ? TILE.left : TILE.right) + TILE.width - 8}
+          y={row.y + 17}
+          text-anchor="end"
+          class="fill-ink-muted font-mono"
+          font-size="8"
+        >
+          picked
+        </text>
+      </>
+    ))
+  }
+
+  <g class="fill-none stroke-rule-strong" stroke-width="1.25">
+    <path d="M332 130 H340 V220 H332"></path>
+  </g>
+  <g class="fill-ink-muted font-mono" font-size="8">
+    <text x="348" y="170">and again,</text>
+    <text x="348" y="182">ten thousand</text>
+    <text x="348" y="194">times over</text>
+  </g>
+
+  <g class="fill-ink-faint font-mono" font-size="8">
+    <text x="12" y="236"
+      >nobody writes a rule down — they point at the better one</text
+    >
+  </g>
+
+  <!-- 3 · the second model -->
+  <g class="fill-ink-faint font-mono" font-size="9">
+    <text x="12" y="262">3 · a second model learns to predict the picks</text>
+  </g>
+
+  <g class="fill-accent-soft stroke-accent" stroke-width="1.5">
+    <rect x="150" y="276" width="180" height="52" rx="8"></rect>
+  </g>
+  <g
+    class="fill-ink font-display"
+    font-size="12"
+    font-weight="700"
+    text-anchor="middle"
+  >
+    <text x="240" y="299">the judge</text>
+  </g>
+  <g class="fill-ink-muted font-mono" font-size="8" text-anchor="middle">
+    <text x="240" y="315">predicts what people picked</text>
+  </g>
+
+  <g class="fill-ink-muted font-mono" font-size="9">
+    <text x="12" y="298">any answer</text>
+    <text x="12" y="310">at all</text>
+  </g>
+  <g class="fill-none stroke-ink-muted" stroke-width="1.5">
+    <line x1="86" y1="302" x2="144" y2="302"></line>
+    <path d="M138 297 L146 302 L138 307"></path>
+    <line x1="330" y1="302" x2="388" y2="302"></line>
+    <path d="M382 297 L390 302 L382 307"></path>
+  </g>
+  <g class="fill-ink font-mono" font-size="14">
+    <text x="398" y="299">8.3</text>
+  </g>
+  <g class="fill-ink-faint font-mono" font-size="8">
+    <text x="398" y="313">one number</text>
+  </g>
+
+  <g class="fill-ink-faint font-mono" font-size="8">
+    <text x="12" y="344">including answers no person has ever seen</text>
+  </g>
+
+  <!-- 4 · the loop that number drives -->
+  <g class="fill-ink-faint font-mono" font-size="9">
+    <text x="12" y="370">4 · and the loop from before runs</text>
+  </g>
+
+  <g class="fill-paper stroke-rule" stroke-width="1.25">
+    <rect x="12" y="382" width="140" height="34" rx="6"></rect>
+    <rect x="168" y="382" width="140" height="34" rx="6"></rect>
+    <rect x="324" y="382" width="144" height="34" rx="6"></rect>
+  </g>
+  <g class="fill-ink font-mono" font-size="9" text-anchor="middle">
+    <text x="82" y="403">model writes</text>
+    <text x="238" y="403">judge scores</text>
+    <text x="396" y="403">dials move</text>
+  </g>
+
+  <g class="fill-none stroke-ink-muted" stroke-width="1.5">
+    <line x1="152" y1="399" x2="164" y2="399"></line>
+    <path d="M158 394 L166 399 L158 404"></path>
+    <line x1="308" y1="399" x2="320" y2="399"></line>
+    <path d="M314 394 L322 399 L314 404"></path>
+    <path d="M396 418 V440 H82 V424"></path>
+    <path d="M77 429 L82 420 L87 429"></path>
+  </g>
+  <g class="fill-ink-faint font-mono" font-size="8" text-anchor="middle">
+    <text x="240" y="454">round again, a few million times</text>
+  </g>
+
+  <g
+    class="fill-accent font-display"
+    font-size="13"
+    font-weight="700"
+    text-anchor="middle"
+  >
+    <text x="240" y="482">the score was assembled out of judgements</text>
+  </g>
+</svg>

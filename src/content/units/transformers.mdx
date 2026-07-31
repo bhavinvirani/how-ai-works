@@ -6,7 +6,9 @@ summary: Attention on its own will not stack, so the transformer wraps it in a s
 prerequisites:
   - attention
   - positional-encoding
-connections: []
+connections:
+  - to: llm
+    why: Build this block very large, stack it dozens deep, and train it on most of the written internet — the result is the thing everybody means by a large language model, and there is nothing else in the box.
 interactives: []
 status: published
 updated: 2026-07-31

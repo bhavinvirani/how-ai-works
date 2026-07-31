@@ -1,0 +1,261 @@
+---
+/**
+ * The funnel: what a crawler brings back, and the sliver that is left after the
+ * filtering — then the fact that even the sliver is not served up in the
+ * proportions it arrived in.
+ *
+ * The teaching load is carried by width, not colour. Each bar is drawn to scale
+ * against the one above it and the taper lines make the narrowing continuous,
+ * so the shape says "most of this went in the bin" before any label is read.
+ * Every bar is also labelled in words on the left, given its surviving share in
+ * figures on the right, and told what was thrown away underneath — three
+ * independent carriers of the same meaning (hard rule 9).
+ *
+ * The mixture bar underneath is a second beat rather than a repeat: the funnel
+ * says how much survived, the mixture says that surviving is not the end of it,
+ * because a source can be shown to the model more than once. The up-weighted
+ * slice is marked by a bracket and a sentence, not by its fill.
+ *
+ * The numbers are honest about being illustrative, and the SVG says so in its
+ * last line. Roughly nine parts in ten of open-web text being discarded is the
+ * documented behaviour of the public filtering pipelines; no lab publishes its
+ * final mixture, which is the point the bottom line makes rather than hides.
+ *
+ * Every run of text is interpolated from a constant so that no `<text>` element
+ * has to wrap across lines of markup — SVG strips newlines inside text content
+ * rather than collapsing them to spaces.
+ *
+ * Decorative on its own, so `aria-hidden`: `Figure` carries the accessible name
+ * and the plain-English description.
+ */
+
+interface Stage {
+  readonly label: string;
+  readonly note: string;
+  readonly percent: number;
+  readonly y: number;
+  readonly box: string;
+}
+
+const CX = 276;
+const BAR_H = 24;
+const MAX_W = 200;
+
+const barWidth = (percent: number): number => (percent / 100) * MAX_W;
+const barX = (percent: number): number => CX - barWidth(percent) / 2;
+
+const STAGES: readonly Stage[] = [
+  {
+    label: 'everything collected',
+    note: 'web pages, books, code, papers',
+    percent: 100,
+    y: 44,
+    box: 'fill-paper-sunken stroke-rule-strong',
+  },
+  {
+    label: 'junk and boilerplate out',
+    note: 'menus, adverts, spam, template filler',
+    percent: 35,
+    y: 96,
+    box: 'fill-paper-raised stroke-rule-strong',
+  },
+  {
+    label: 'repeats removed',
+    note: 'the same text in a thousand places',
+    percent: 15,
+    y: 148,
+    box: 'fill-paper-raised stroke-rule-strong',
+  },
+  {
+    label: 'graded, most dropped',
+    note: 'what is left was worth writing',
+    percent: 10,
+    y: 200,
+    box: 'fill-accent-2-soft stroke-accent-2',
+  },
+];
+
+/** The sloping walls that turn four bars into one funnel. */
+const TAPERS = STAGES.slice(0, -1).map((stage, index) => {
+  const next = STAGES[index + 1];
+
+  return {
+    top: stage.y + BAR_H,
+    bottom: next.y,
+    leftFrom: barX(stage.percent),
+    leftTo: barX(next.percent),
+    rightFrom: barX(stage.percent) + barWidth(stage.percent),
+    rightTo: barX(next.percent) + barWidth(next.percent),
+  };
+});
+
+const MIX_X = 16;
+const MIX_W = 416;
+const MIX_Y = 290;
+const MIX_H = 22;
+
+/** Which slice gets shown to the model more than once. */
+const WEIGHTED = 2;
+
+let cursor = MIX_X;
+
+const SLICES = [
+  { label: 'filtered web pages', percent: 45 },
+  { label: 'code', percent: 18 },
+  { label: 'books, papers', percent: 22 },
+  { label: 'the rest', percent: 15 },
+].map((slice) => {
+  const width = (slice.percent / 100) * MIX_W;
+  const placed = { ...slice, x: cursor, width };
+  cursor += width;
+  return placed;
+});
+
+const BRACKET = SLICES[WEIGHTED];
+
+const SAYS = {
+  heading: 'What a crawler brings back, and what is left of it.',
+  scale: 'share of what was collected',
+  mixHeading: 'What survives is not fed in the proportions it arrived in.',
+  mixNote: 'Some of it is simply shown to the model more than once.',
+  weighted: 'shown more than once',
+  honesty:
+    'Illustrative. No lab publishes its mixture — which is itself the point.',
+} as const;
+---
+
+<svg viewBox="0 0 448 352" class="w-full" aria-hidden="true">
+  <g class="fill-ink" font-size="9.5" font-weight="700">
+    <text x="16" y="26">{SAYS.heading}</text>
+  </g>
+
+  <g class="fill-ink-faint" font-size="8" text-anchor="end">
+    <text x="440" y="36">{SAYS.scale}</text>
+  </g>
+
+  <!-- The walls of the funnel -->
+  <g class="stroke-rule" stroke-width="1">
+    {
+      TAPERS.map((taper) => (
+        <>
+          <line
+            x1={taper.leftFrom}
+            y1={taper.top}
+            x2={taper.leftTo}
+            y2={taper.bottom}
+          />
+          <line
+            x1={taper.rightFrom}
+            y1={taper.top}
+            x2={taper.rightTo}
+            y2={taper.bottom}
+          />
+        </>
+      ))
+    }
+  </g>
+
+  <!-- Each bar drawn to scale against the one above it -->
+  {
+    STAGES.map((stage) => (
+      <rect
+        x={barX(stage.percent)}
+        y={stage.y}
+        width={barWidth(stage.percent)}
+        height={BAR_H}
+        rx="4"
+        class={stage.box}
+        stroke-width="1.25"
+      />
+    ))
+  }
+
+  <g class="fill-ink" font-size="9.5">
+    {
+      STAGES.map((stage) => (
+        <text x="16" y={stage.y + 11}>
+          {stage.label}
+        </text>
+      ))
+    }
+  </g>
+
+  <g class="fill-ink-faint" font-size="8">
+    {
+      STAGES.map((stage) => (
+        <text x="16" y={stage.y + 22}>
+          {stage.note}
+        </text>
+      ))
+    }
+  </g>
+
+  <g class="fill-ink" font-size="10" text-anchor="end">
+    {
+      STAGES.map((stage) => (
+        <text x="440" y={stage.y + 16}>
+          {stage.percent}%
+        </text>
+      ))
+    }
+  </g>
+
+  <line x1="16" y1="250" x2="432" y2="250" class="stroke-rule" stroke-width="1"
+  ></line>
+
+  <g class="fill-ink" font-size="9.5" font-weight="700">
+    <text x="16" y="270">{SAYS.mixHeading}</text>
+  </g>
+
+  <g class="fill-ink-faint" font-size="8">
+    <text x="16" y="282">{SAYS.mixNote}</text>
+  </g>
+
+  <!-- The surviving text, by where it came from -->
+  {
+    SLICES.map((slice, index) => (
+      <rect
+        x={slice.x}
+        y={MIX_Y}
+        width={slice.width}
+        height={MIX_H}
+        class={
+          index === WEIGHTED
+            ? 'fill-accent-2-soft stroke-accent-2'
+            : 'fill-paper-raised stroke-rule-strong'
+        }
+        stroke-width="1.25"
+      />
+    ))
+  }
+
+  <g class="fill-ink" font-size="8" text-anchor="middle">
+    {
+      SLICES.map((slice) => (
+        <text x={slice.x + slice.width / 2} y={MIX_Y + 14}>
+          {slice.label}
+        </text>
+      ))
+    }
+  </g>
+
+  <!-- The up-weighted slice, marked by shape and words rather than fill -->
+  <g class="stroke-accent-2" stroke-width="1.5">
+    <line x1={BRACKET.x} y1="318" x2={BRACKET.x + BRACKET.width} y2="318"
+    ></line>
+    <line x1={BRACKET.x} y1="318" x2={BRACKET.x} y2="314"></line>
+    <line
+      x1={BRACKET.x + BRACKET.width}
+      y1="318"
+      x2={BRACKET.x + BRACKET.width}
+      y2="314"></line>
+  </g>
+
+  <g class="fill-ink" font-size="8" text-anchor="middle">
+    <text x={BRACKET.x + BRACKET.width / 2} y="330">{SAYS.weighted}</text>
+  </g>
+
+  <g class="fill-ink-faint" font-size="8">
+    <text x="16" y="346">{SAYS.honesty}</text>
+  </g>
+</svg>

@@ -1,0 +1,126 @@
+---
+/**
+ * Four cheap models, measured — and the same line extended with a ruler to a
+ * size nobody had built yet.
+ *
+ * The teaching load is carried by the horizontal axis, whose ticks MULTIPLY
+ * rather than add, and by the split between solid and dashed. Everything left
+ * of the fourth dot is evidence; everything right of it is arithmetic. That
+ * distinction is the whole reason the money moved, so it is drawn three ways
+ * over — solid line against dashed line, filled circle against hollow diamond,
+ * and a label on each half — rather than by colour (hard rule 9).
+ *
+ * The floor is drawn because the honest curve does not head for zero. Some of
+ * what comes next in a document is genuinely unguessable, and the unit says so
+ * in the paragraph beside this figure.
+ *
+ * Decorative on its own, so `aria-hidden`: `Figure` supplies the accessible
+ * name and the description.
+ */
+---
+
+<svg viewBox="0 0 640 316" class="w-full" aria-hidden="true">
+  <rect
+    x="8"
+    y="8"
+    width="624"
+    height="300"
+    rx="8"
+    class="fill-none stroke-rule-strong"
+    stroke-width="1.25"></rect>
+
+  <text
+    x="24"
+    y="32"
+    class="fill-ink font-display"
+    font-size="14"
+    font-weight="700">Four small models, and a line read forwards</text
+  >
+  <text x="24" y="48" class="fill-ink-faint font-mono" font-size="9"
+    >every step along the bottom is ten times the size, the text and the
+    computing of the one before</text
+  >
+
+  <!-- Axes. The bottom one multiplies; that is the point of the whole figure. -->
+  <text x="64" y="62" class="fill-ink-faint font-mono" font-size="9"
+    >how wrong it is — higher is worse</text
+  >
+  <g class="stroke-rule" stroke-width="1">
+    <line x1="64" y1="66" x2="64" y2="240"></line>
+    <line x1="64" y1="240" x2="616" y2="240"></line>
+  </g>
+
+  <!-- Measured: four models that were actually built. -->
+  <polyline
+    points="80,78 184,98 288,118 392,138"
+    class="fill-none stroke-accent-2"
+    stroke-width="2"></polyline>
+
+  <!-- Predicted: the same line, extended over ground nobody had walked on. -->
+  <polyline
+    points="392,138 600,178"
+    class="fill-none stroke-accent-2"
+    stroke-width="2"
+    stroke-dasharray="6 4"></polyline>
+
+  <g class="fill-ink">
+    <circle cx="80" cy="78" r="4"></circle>
+    <circle cx="184" cy="98" r="4"></circle>
+    <circle cx="288" cy="118" r="4"></circle>
+    <circle cx="392" cy="138" r="4"></circle>
+  </g>
+
+  <!-- The forecast, and the machine that later landed inside it. -->
+  <polygon
+    points="600,168 610,178 600,188 590,178"
+    class="fill-paper stroke-accent"
+    stroke-width="1.5"></polygon>
+  <circle cx="600" cy="178" r="3" class="fill-ink"></circle>
+
+  <g class="fill-ink-muted font-mono" font-size="8.5">
+    <text x="92" y="150">four small models, actually built</text>
+    <text x="92" y="162">and measured — the cheap part</text>
+    <text x="404" y="112">nothing had ever been built out here</text>
+    <text x="404" y="124">so this half of the line was a prediction</text>
+    <text x="616" y="200" text-anchor="end"
+      >predicted from the four dots on the left</text
+    >
+    <text x="616" y="212" text-anchor="end">then built, and it landed here</text
+    >
+  </g>
+
+  <!-- The curve is heading somewhere, and that somewhere is not zero. -->
+  <line
+    x1="64"
+    y1="222"
+    x2="616"
+    y2="222"
+    class="stroke-rule-strong"
+    stroke-width="1"
+    stroke-dasharray="3 3"></line>
+  <text x="72" y="234" class="fill-ink-faint font-mono" font-size="8"
+    >the floor — some of what comes next is genuinely unguessable</text
+  >
+
+  <g class="fill-ink-muted font-mono" font-size="9" text-anchor="middle">
+    <text x="80" y="254">×1</text>
+    <text x="184" y="254">×10</text>
+    <text x="288" y="254">×100</text>
+    <text x="392" y="254">×1,000</text>
+    <text x="496" y="254">×10,000</text>
+    <text x="600" y="254">×100,000</text>
+  </g>
+  <text x="64" y="270" class="fill-ink-faint font-mono" font-size="9"
+    >how big — model, text and computing, all multiplied together</text
+  >
+
+  <text
+    x="24"
+    y="294"
+    class="fill-ink font-display"
+    font-size="12"
+    font-weight="700"
+    >Adding to it bought almost nothing. Multiplying it bought the same drop,
+    every time.</text
+  >
+</svg>

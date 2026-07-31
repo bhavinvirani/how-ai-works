@@ -10,6 +10,8 @@ connections:
     why: The wrongness readout you shrank by hand there was one particular choice of what to measure, and somebody had to make it.
   - to: training-data
     why: Which column you call the right answer decides what can be scored at all, so that choice and this one together fix what the machine ends up good at.
+  - to: rlhf
+    why: Some things worth having cannot be written down as a number by anyone — a helpful reply, an honest one — and the way round it is to stop writing the score and learn it instead, from people picking between two answers.
 interactives:
   - ScoringRulePicker
 status: published

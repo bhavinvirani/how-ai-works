@@ -174,6 +174,42 @@ export const ui = {
       title: 'Shuffle the words and see what survives',
       lead: 'Scramble the sentence and compare the two readouts closely. Then stamp positions in and scramble it again.',
     },
+    NextPieceLoop: {
+      title: 'Write one piece at a time',
+      lead: 'Press once and read the row it chose from. Then let it run, and find the moment it could not take something back.',
+    },
+    TemperatureDial: {
+      title: 'Turn the wandering up and down',
+      lead: 'Take it to the bottom and run it twice — the same sentence both times. Then push it up until something odd gets through.',
+    },
+    ContextBudget: {
+      title: 'Fill a window that does not grow',
+      lead: 'Keep adding to the conversation until something has to go. Then choose what you would drop, and see what that costs you.',
+    },
+    FineTuneOrPromptSorter: {
+      title: 'Sort the jobs into two piles',
+      lead: 'Decide which of these belong in the dials and which belong in the prompt. Three of them are not what they look like.',
+    },
+    PreferenceRater: {
+      title: 'Pick the better of two',
+      lead: 'You never write an answer. Pick a winner ten times and watch a personality nobody described come out the other end.',
+    },
+    ThinkingBudget: {
+      title: 'Give it room to think',
+      lead: 'Same question, more room to write before answering. Then find the question where the extra room changes nothing at all.',
+    },
+    SpotTheFabrication: {
+      title: 'Find the invented one',
+      lead: 'Four confident answers, one of them made up. Pick it before you reveal — then see what gave it away, and what did not.',
+    },
+    PromptLeverBoard: {
+      title: 'Pull the levers on one request',
+      lead: 'The question never changes. Change what you tell it about who it is and what this is for, and watch the answers narrow.',
+    },
+    ExampleSetBuilder: {
+      title: 'Build the example set',
+      lead: 'Add examples one at a time and watch the format lock. Then add the awkward one, and see what it rescues.',
+    },
     // new:interactive inserts above this line — do not remove.
   } as Record<string, { title: string; lead: string }>,
 

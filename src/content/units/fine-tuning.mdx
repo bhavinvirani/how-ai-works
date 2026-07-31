@@ -1,0 +1,299 @@
+---
+title: Train the habit, hand over the fact
+part: building-an-assistant
+order: 3
+summary: A second short training run over a few thousand hand-picked examples is the right way to change how a model behaves and a poor, expensive way to install what it needs to know — because training moves dials, and moving a dial files nothing anywhere you can look up, correct or quote.
+prerequisites:
+  - base-models
+connections:
+  - to: rlhf
+    why: Fine-tuning can only install a habit that somebody managed to write down as an example, and the qualities that matter most in an answer are precisely the ones nobody can write down — which is what the next stage exists to reach, by asking people to compare rather than to compose.
+interactives:
+  - FineTuneOrPromptSorter
+status: published
+updated: 2026-07-31
+---
+
+import Aside from '../../components/blocks/Aside.astro';
+import Checkpoint from '../../components/blocks/Checkpoint.astro';
+import DevAside from '../../components/blocks/DevAside.astro';
+import Figure from '../../components/blocks/Figure.astro';
+import DialsOrPrompt from '../../components/diagrams/DialsOrPrompt.astro';
+import { FineTuneOrPromptSorter } from '../../components/interactives/FineTuneOrPromptSorter';
+
+The new receptionist at the veterinary practice has been there five days. By
+Friday she answers the phone the way the practice answers the phone — the
+caller's name early, never a flat no, the next free slot offered before anyone
+has to ask for it. Nobody handed her a document about any of that. She heard it
+done thirty times and it stuck.
+
+She also knows that Thursday is Priya's day off. She knows it because it is
+printed on a sheet pinned above the desk, which somebody reprints every Monday.
+
+Two kinds of knowing, and nobody in that room has ever confused them. The manner
+took a week of repetition and will outlast the job. The rota took four seconds to
+read and will be wrong by next Wednesday.
+
+A model has both kinds too. The technique this unit is about can only put one of
+them in, and almost every team's first project tries to put in the other.
+
+## A second run, over a very different pile
+
+The unit before this one left you holding a base model — everything it knows and
+no idea it is being asked anything. Put a question to it and it is at least as
+likely to produce two more questions in the same style as it is to answer the
+first one, because more questions is a perfectly good continuation of a question.
+
+Closing that gap does not need a new idea. It needs the old one again, smaller.
+
+Take the finished model and run the training loop over it a second time: a
+guess, a score for how wrong the guess was, a nudge to every dial in the
+direction that would have made it less wrong. Exactly the machinery from the
+first Part of this site, nothing added. What changes is the reading matter and
+the length — not a large slice of the internet read once, but a few thousand
+examples somebody chose on purpose, read a handful of times, with the nudges kept
+deliberately gentle.
+
+That second, short, pointed training run is **fine-tuning**.
+
+Its first and most important use is the one that produced every assistant you
+have ever typed at. You assemble tens of thousands of pairs — an instruction, and
+a good response to that instruction — and you train on those. No English is
+taught in that run; the model has English. What it comes out believing is that a
+question is a thing you answer, that an instruction is a thing you carry out, and
+that the text following someone's message is meant to be a reply rather than more
+of the same. The name for that particular run is **instruction tuning**.
+
+It is a strange thing to have to teach something that has read more than any
+human ever will. It is also, precisely, the gap the previous unit left open.
+
+## Nobody moves every dial
+
+Moving every dial in a large model is an industrial operation, and almost nobody
+outside a handful of laboratories does it. The version that actually gets used in
+the world is a shortcut, and it is worth understanding, because it changes what
+fine-tuning _is_ in practice.
+
+Leave the original model untouched, every dial exactly where pretraining left
+it, and bolt on a handful of new ones whose only job is to lean on what the
+original produces. Train those and nothing else. The technique has a name you
+will meet everywhere, a **low-rank adapter**, usually shortened to LoRA, and the
+whole of the idea is that sentence.
+
+Three things follow, and between them they are why this is the version that won.
+
+What you end up with is not a model. It is a few megabytes of numbers.
+
+One copy of the model can therefore serve many behaviours. Swap which set is
+loaded and the same machine becomes a different assistant — a support voice, a
+legal voice, a summariser — with nothing duplicated.
+
+And nothing the model could already do is put at risk, because none of the dials
+holding those abilities ever moved. The worst outcome of a bad run is a bad few
+megabytes, and those get deleted.
+
+Which is why fine-tuning is something a two-person team can do overnight on
+hardware they rent by the hour, rather than something you need a building for.
+
+## The four thousand pages
+
+Here is the reasonable thought that follows, and everybody has it.
+
+You have four thousand pages of internal material — how each product is
+configured, how a refund gets approved, the returns policy, the escalation
+ladder. You want an assistant that knows all of it. You have just been told that
+a few thousand well-chosen examples can teach a model something new. The two
+facts fit together beautifully.
+
+So you do it. And what comes back sounds exactly like your documentation, and
+gets the contents of it wrong.
+
+### Nothing is filed anywhere
+
+Go back to what a training run actually does, one step at a time, because the
+answer is entirely inside it.
+
+The model produces some text. A score says how far that text was from the text in
+the example. Every dial is nudged a hair in the direction that would have made
+the example's text slightly likelier. Repeat.
+
+Read that again with the weight on _likelier_, because that is the whole of the
+operation. A training run does not put anything anywhere. There is no shelf, no
+row, no record. Afterwards, "we accept returns within fourteen days" has not been
+stored — it has been converted into a hair's movement on several million dials,
+mixed in with the movement every other sentence in your pile asked for, on top of
+the movements every sentence on the internet had already asked for.
+
+Three consequences, and none of them is a matter of doing it better.
+
+**It goes stale, and there is no line to edit.** The policy changes on the first
+of the month. In a document you change one number. In a set of dials there is no
+number to change, because the fourteen was never in one place to begin with. The
+repair is another training run.
+
+**Nobody can be shown where it came from.** Ask the model why it said fourteen.
+A page has a source; a dial does not. This is not evasiveness — there is
+genuinely nothing attached to a dial recording why it sits where it sits,
+because every sentence the model has ever read contributed to its position.
+
+**It arrives into a crowd.** Your policy did not land in an empty room. The model
+already held the refund terms of ten thousand other companies, and most of those
+say thirty days. A few hundred examples of yours are one nudge against all of
+that, and what comes out lands somewhere in between — delivered in your house
+voice, in your formatting, and confidently wrong about the one number that
+mattered.
+
+That last one is the cruel part. Fine-tuning on your own documents is extremely
+good at making a model _sound_ like it knows your company, which is exactly what
+makes its wrong answers hard to catch.
+
+### What a prompt has instead
+
+A prompt is just text put in front of the model at the moment of asking. It has
+none of the dignity of a training run and all of the properties you actually
+wanted.
+
+Change it and the next answer is different — not next quarter, next second. It is
+sitting right there, so an answer can quote it and a person can check the quote
+against the original. And it blended with nothing, because it is not a tendency
+the model acquired last March; it is the text in front of it now.
+
+Choosing which of four thousand pages goes into the prompt for a given question
+is a real problem with real machinery behind it, and it gets its own unit later
+on. What matters here is which pile a job belongs in, long before any of that
+starts.
+
+Which is what the sheet above the reception desk was always for. Nobody trained
+the rota into anybody. They printed it, put it where it could be read, and
+reprinted it when it changed.
+
+**Dials for how it acts. Prompt for what it has to get right.**
+
+<Figure
+  title="The same sentence, taken in two ways"
+  description="Pushed through a training run, a fact stops being a sentence and becomes a hair's movement on every dial — so there is nothing left to correct, nothing to quote, and what comes back is blended with every similar sentence the model ever read; handed over with the question, the same fact leaves every dial where it was, can be rewritten between one question and the next, and gives the answer something to point at."
+>
+  <DialsOrPrompt />
+</Figure>
+
+<Aside title="Two honest complications" tone="note">
+  The rule is a good rule. It is not a law, and two edges of it are worth having.
+
+Behaviour can often be prompted. Paste your style guide at the top of every
+message and the model will mostly follow it. Fine-tuning wins when you want that
+behaviour to hold across millions of calls without paying for the instructions
+every single time, and to survive a long conversation that has drifted a long way
+from them.
+
+And knowledge is not entirely absent from a training run. A fact repeated ten
+thousand times across a pile does become likelier to come out — that is how a
+model knows anything about the solar system at all. The trouble is that "repeated
+ten thousand times" is not something your internal documentation is, and
+"likelier to come out" is not something you can audit, correct or cite. Facts are
+not impossible to train in. They go in as a tendency rather than as a record, and
+a tendency is the wrong shape for anything you would be embarrassed to get wrong.
+
+</Aside>
+
+## Sort eight of them yourself
+
+Below are eight jobs a team might genuinely bring to a model. Put each one in a
+pile before you read the verdict — the verdict is worth very little if you have
+not committed first, because the whole difficulty here is that the wrong answer
+feels obvious right up until it is explained.
+
+Three of the eight are not what they look like.
+
+<FineTuneOrPromptSorter client:visible />
+
+Answer all eight the way they first read and you will get six of them right,
+which is the interesting number. Six out of eight is entirely compatible with not
+having the idea at all: two of the three tricky jobs you would get wrong, and the
+third you would get right for the wrong reason. There is no lazy strategy hiding
+in there either — put all eight in the dials and you score four, put all eight in
+the prompt and you score five.
+
+The **returns policy** is the one nearly everybody gets wrong, and it is the four
+thousand pages again in miniature. It feels like something the assistant ought to
+_know_. But knowing it means being right about a particular clause on the
+particular day somebody asks, and that is a fact.
+
+The **handoff rule** is its mirror image, and the sharper of the two. It reads
+like a policy — it probably _is_ in the policy document, one page further on. But
+nothing about it is a fact to be looked up. It is something the model has to do,
+every time, including on the fourth message from someone who has become annoyed.
+An instruction in a prompt is a request, and a request can be argued with; a
+trained habit is much harder to shift.
+
+Put those two side by side and the whole rule is in one comparison. The contents
+of a policy are facts. The conduct a policy demands is behaviour. They come out
+of the same document, and they go into opposite piles.
+
+The **fixed output format** is in the set because it is the honest case, where
+both piles work. A few worked examples in the prompt pin a format nearly as well
+as training does, and rewriting them takes as long as saving a file. Training
+wins only at volume — when the same format is produced millions of times a day
+and those examples have started to cost real money.
+
+<DevAside>
+  <Fragment slot="java">
+    ```java
+    FineTuneConfig.builder()
+        .epochs(3)           // how many times the pile is read through. Not 30.
+        .learningRate(1e-5)  // not 1e-3
+        .build();
+    ```
+
+    Both numbers are far smaller than they would be for training a model from
+    scratch, and for the same reason: you are nudging something finished, not
+    building something. Push either one up and you get the failure from the unit
+    on overfitting, arriving sooner than you expect — the model reproduces your
+    six hundred examples beautifully and gets quietly worse at everything else.
+    A hundred good examples eased in gently beats ten thousand scraped ones
+    hammered in hard, and that is not a rule of thumb, it is the same arithmetic.
+
+  </Fragment>
+  <Fragment slot="python">
+    ```python
+    {"messages": [
+      {"role": "user", "content": "the customer is angry about a late delivery"},
+      {"role": "assistant", "content": "…the reply, written the way your team writes it"}
+    ]}
+    ```
+
+    One line like that per example, a few hundred to a few thousand of them.
+    Before you spend anything, read ten of your own lines out loud. If they are
+    answers to questions about your products, you are about to buy a training run
+    to install facts — and the run will succeed, which is the problem. Nothing in
+    the pipeline anywhere will warn you. The loss will come down, the job will go
+    green, and the model will be confidently wrong in your own house style.
+
+  </Fragment>
+</DevAside>
+
+<Checkpoint question="A bank fine-tunes a model on three years of its own customer emails and the replies its agents sent. What comes back writes exactly like the bank — and quotes an interest rate that was withdrawn last spring, in a message nobody can trace to a source. One training run, two results. Why did the same run do both?">
+  Because the two things it was asked to absorb are different in kind, and only
+  one of them is the kind a dial can hold.
+
+The manner was in almost every one of those thousands of emails — the length, the
+politeness, the order the information arrives in. A nudge repeated across the
+whole pile is exactly what shifts a dial, so the way of writing went in properly
+and will stay.
+
+The interest rate was a number, appearing in a handful of the emails. Training
+cannot hold a number anywhere findable; all it can do is make that number
+slightly likelier to come out. Slightly likelier is more than enough to produce
+it in a reply, and nowhere near enough to be right about it. The untraceability
+is the same fact seen from the other side: nothing was filed, so there is nothing
+to point at.
+
+The fix is not a better training run. Keep the fine-tune, which did its job — and
+put the current rate in the prompt, read from wherever the bank actually keeps
+rates. The manner is trained; the number is handed over.
+
+Worth carrying past this unit as a question you can ask about any proposal
+involving a model. Does this need the machine to _do_ something, or to be _right_
+about something? The first is what dials are for. The second has to arrive with
+the question.
+
+</Checkpoint>

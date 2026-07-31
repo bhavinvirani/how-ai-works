@@ -1,0 +1,143 @@
+---
+/**
+ * Two machines, two prompts, four outputs — the whole argument of the unit in
+ * one picture.
+ *
+ * Row one is the surprise: the same question typed into a base model and into
+ * an assistant. One produces the rest of a forum page, the other produces an
+ * answer. Row two is the control that turns the surprise into evidence — hand
+ * both machines half a sentence instead of a question and both finish it
+ * correctly, which is the only way to show that the *knowledge* was never what
+ * separated them.
+ *
+ * Nothing is carried by colour (hard rule 9). A continuation is drawn as a
+ * dashed arrow into a dashed, open box with a trailing ellipsis; a reply is a
+ * solid arrow into a closed box. Every arrow is labelled in words — "continues"
+ * or "replies" — and in row two both labels read "continues", which is the
+ * quietest and most important detail here. Each verdict is written out in plain
+ * text underneath as well.
+ *
+ * The wording tracks the prose in `base-models.mdx`, shortened where a box is
+ * narrower than a sentence, so the reader meets one experiment rather than two.
+ *
+ * Decorative on its own, so `aria-hidden`: `Figure` carries the accessible name
+ * and the description.
+ */
+---
+
+<svg viewBox="0 0 640 460" class="w-full" aria-hidden="true">
+  <g class="fill-none stroke-rule-strong" stroke-width="1.25">
+    <rect x="8" y="8" width="296" height="396" rx="8"></rect>
+    <rect x="336" y="8" width="296" height="396" rx="8"></rect>
+  </g>
+
+  <g class="fill-ink font-display" font-size="13" font-weight="700">
+    <text x="28" y="32">Straight out of pretraining</text>
+    <text x="356" y="32">After the habit is trained in</text>
+  </g>
+
+  <!-- Prompt wells. The same text on both sides, twice. -->
+  <g class="fill-paper-sunken stroke-rule-strong">
+    <rect x="28" y="76" width="248" height="24" rx="4"></rect>
+    <rect x="356" y="76" width="248" height="24" rx="4"></rect>
+    <rect x="28" y="288" width="248" height="24" rx="4"></rect>
+    <rect x="356" y="288" width="248" height="24" rx="4"></rect>
+  </g>
+
+  <g class="fill-ink font-mono" font-size="11">
+    <text x="38" y="92">why does dough need to rest?</text>
+    <text x="366" y="92">why does dough need to rest?</text>
+    <text x="38" y="304">Dough is rested because</text>
+    <text x="366" y="304">Dough is rested because</text>
+  </g>
+
+  <!-- Row one, left: a dashed arrow into something with no ending. -->
+  <g class="stroke-rule-strong" stroke-width="2">
+    <line x1="152" y1="106" x2="152" y2="126" stroke-dasharray="3 4"></line>
+    <path d="M147 120 L152 128 L157 120" class="fill-none"></path>
+  </g>
+
+  <!-- Row one, right: a solid arrow into something that closes. -->
+  <g class="stroke-accent-2" stroke-width="2">
+    <line x1="480" y1="106" x2="480" y2="126"></line>
+    <path d="M475 120 L480 128 L485 120" class="fill-none"></path>
+  </g>
+
+  <!-- Row two: both arrows dashed, because both machines are continuing. -->
+  <g class="stroke-rule-strong" stroke-width="2">
+    <line x1="152" y1="318" x2="152" y2="338" stroke-dasharray="3 4"></line>
+    <path d="M147 332 L152 340 L157 332" class="fill-none"></path>
+    <line x1="480" y1="318" x2="480" y2="338" stroke-dasharray="3 4"></line>
+    <path d="M475 332 L480 340 L485 332" class="fill-none"></path>
+  </g>
+
+  <!-- Dashed box = a continuation, which could run on forever. -->
+  <g class="fill-paper stroke-rule-strong" stroke-dasharray="4 3">
+    <rect x="28" y="136" width="248" height="76" rx="4"></rect>
+    <rect x="28" y="348" width="248" height="44" rx="4"></rect>
+    <rect x="356" y="348" width="248" height="44" rx="4"></rect>
+  </g>
+
+  <!-- Solid box = a reply, which is a thing that ends. -->
+  <g class="fill-paper stroke-accent-2" stroke-width="1.5">
+    <rect x="356" y="136" width="248" height="76" rx="4"></rect>
+  </g>
+
+  <g class="fill-ink font-mono" font-size="10">
+    <text x="38" y="152">what flour is best for sourdough?</text>
+    <text x="38" y="168">how do i stop it sticking?</text>
+    <text x="38" y="184">Posted 3 years ago · 14 replies</text>
+    <text x="366" y="152">Resting lets the gluten relax,</text>
+    <text x="366" y="168">so the dough stops springing</text>
+    <text x="366" y="184">back when you shape it.</text>
+    <text x="38" y="366">the gluten relaxes, so it</text>
+    <text x="38" y="382">stops springing back.</text>
+    <text x="366" y="366">the gluten relaxes and the</text>
+    <text x="366" y="382">dough stops fighting you.</text>
+  </g>
+
+  <g class="fill-ink font-display" font-size="12" font-weight="700">
+    <text x="28" y="234">It continued the page.</text>
+    <text x="356" y="234">It answered you.</text>
+  </g>
+
+  <g class="fill-ink-faint font-mono" font-size="10">
+    <text x="28" y="48">trained to continue text, nothing else</text>
+    <text x="356" y="48">same knowledge, one habit added</text>
+    <text x="28" y="68">you type</text>
+    <text x="356" y="68">you type</text>
+    <text x="162" y="122">continues</text>
+    <text x="490" y="122">replies</text>
+    <text x="38" y="202">&hellip;</text>
+    <text x="28" y="280">now type this instead</text>
+    <text x="356" y="280">now type this instead</text>
+    <text x="162" y="334">continues</text>
+    <text x="490" y="334">continues</text>
+  </g>
+
+  <g class="fill-ink-muted font-mono" font-size="10">
+    <text x="28" y="252">Questions are followed by questions.</text>
+    <text x="356" y="252">Same question, one stage later.</text>
+  </g>
+
+  <g class="stroke-rule">
+    <line x1="28" y1="270" x2="276" y2="270"></line>
+    <line x1="356" y1="270" x2="604" y2="270"></line>
+  </g>
+
+  <rect
+    x="8"
+    y="412"
+    width="624"
+    height="40"
+    rx="8"
+    class="fill-paper-sunken stroke-rule"></rect>
+
+  <g class="fill-ink font-display" font-size="12" font-weight="700">
+    <text x="28" y="431">Both machines finish it correctly.</text>
+  </g>
+
+  <g class="fill-ink-muted font-mono" font-size="10">
+    <text x="28" y="446">The knowledge was there. The habit was not.</text>
+  </g>
+</svg>

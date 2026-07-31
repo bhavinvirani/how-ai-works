@@ -1,0 +1,148 @@
+---
+/**
+ * The first four turns of one conversation, drawn as what is actually sent each
+ * time rather than as what the reader typed.
+ *
+ * The teaching load sits on the rows getting longer while only one block in
+ * each is new. Everything to the left of the last block in a row was sent
+ * before, and is being read again — not recalled, not summarised, read, at full
+ * price, from the top. The right-hand figure is what that costs on that turn,
+ * and the closing line is the total against the length of the conversation
+ * itself.
+ *
+ * The four token counts, the 460 and the 1,365 are the `ContextBudget` chat
+ * preset's first four turns, and its lesson test pins all six — so a change to
+ * those message sizes fails the build rather than leaving this diagram quietly
+ * quoting numbers the instrument no longer produces.
+ *
+ * Nothing is carried by colour: the new block is always the last one in its
+ * row, the standing instructions are always the first, and both facts are
+ * written out underneath. Decorative on its own, so `aria-hidden` — `Figure`
+ * supplies the accessible name and description.
+ */
+
+/** Tokens of standing instructions, resent ahead of every turn. */
+const INSTRUCTIONS = 90;
+
+/** The first four messages, alternating between the reader and the model. */
+const MESSAGES = [55, 170, 40, 195];
+
+/** Pixels per token. Chosen so the longest row leaves room for its figure. */
+const PPT = 0.83;
+
+const STRIP = 62;
+const ROW_TOP = 28;
+const ROW_STEP = 36;
+const ROW_HEIGHT = 24;
+
+type Kind = 'instructions' | 'again' | 'new';
+
+const FILL: Record<Kind, string> = {
+  instructions: 'fill-accent-2-soft stroke-accent-2',
+  again: 'fill-paper-sunken stroke-rule',
+  new: 'fill-accent-soft stroke-accent',
+};
+
+const STROKE: Record<Kind, string> = {
+  instructions: '1',
+  again: '1',
+  new: '1.75',
+};
+
+const INK: Record<Kind, string> = {
+  instructions: 'fill-ink-muted',
+  again: 'fill-ink-faint',
+  new: 'fill-ink',
+};
+
+const rows = MESSAGES.map((_, rowIndex) => {
+  const parts: { tokens: number; kind: Kind }[] = [
+    { tokens: INSTRUCTIONS, kind: 'instructions' },
+    ...MESSAGES.slice(0, rowIndex + 1).map((tokens, index) => ({
+      tokens,
+      kind: (index === rowIndex ? 'new' : 'again') as Kind,
+    })),
+  ];
+
+  let x = STRIP;
+
+  const blocks = parts.map((part) => {
+    const block = { x, width: part.tokens * PPT - 1, ...part };
+    x += part.tokens * PPT;
+    return block;
+  });
+
+  return {
+    label: `turn ${String(rowIndex + 1)}`,
+    top: ROW_TOP + rowIndex * ROW_STEP,
+    blocks,
+    read: parts.reduce((total, part) => total + part.tokens, 0),
+    endX: x,
+  };
+});
+---
+
+<svg viewBox="0 0 640 200" class="w-full" aria-hidden="true">
+  <text x="8" y="14" class="fill-ink-muted font-mono" font-size="9"
+    >each row is one send — the last block is the new message, and everything
+    before it is being read again</text
+  >
+
+  {
+    rows.map((row) => (
+      <g>
+        <text
+          x="8"
+          y={row.top + 16}
+          class="fill-ink font-display"
+          font-size="10"
+          font-weight="700"
+        >
+          {row.label}
+        </text>
+
+        {row.blocks.map((block) => (
+          <g>
+            <rect
+              x={block.x}
+              y={row.top}
+              width={block.width}
+              height={ROW_HEIGHT}
+              rx="3"
+              class={FILL[block.kind]}
+              stroke-width={STROKE[block.kind]}
+            />
+            <text
+              x={block.x + block.width / 2}
+              y={row.top + 16}
+              text-anchor="middle"
+              class={`${INK[block.kind]} font-mono`}
+              font-size="9"
+            >
+              {block.tokens}
+            </text>
+          </g>
+        ))}
+
+        <text
+          x={row.endX + 8}
+          y={row.top + 16}
+          class="fill-ink font-mono"
+          font-size="9"
+        >
+          {row.read} read
+        </text>
+      </g>
+    ))
+  }
+
+  <text x="8" y="178" class="fill-ink-muted font-mono" font-size="9"
+    >The first block in every row is the app&rsquo;s standing instructions, sent
+    again with each turn like everything else.</text
+  >
+
+  <text x="8" y="192" class="fill-ink font-mono" font-size="9"
+    >Four turns. The conversation is 460 tokens long, and it has read 1,365 of
+    them.</text
+  >
+</svg>

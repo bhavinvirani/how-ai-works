@@ -1,0 +1,285 @@
+---
+title: It has never remembered a word you said
+part: large-models
+order: 4
+summary: A model keeps nothing between messages, so the whole conversation is sent again from the top every turn — and all of it, plus room for the reply, has to fit inside one window whose size never changes.
+prerequisites:
+  - attention
+connections: []
+interactives:
+  - ContextBudget
+status: published
+updated: 2026-07-31
+---
+
+import Aside from '../../components/blocks/Aside.astro';
+import Checkpoint from '../../components/blocks/Checkpoint.astro';
+import DevAside from '../../components/blocks/DevAside.astro';
+import Figure from '../../components/blocks/Figure.astro';
+import ResendingTheThread from '../../components/diagrams/ResendingTheThread.astro';
+import { ContextBudget } from '../../components/interactives/ContextBudget';
+
+You write to a company about a parcel that has not arrived. Someone replies. You
+write back, they reply again, and by the fourth exchange the message on your
+screen is four lines of answer sitting on top of a wall of quoted text —
+everything either of you has said, oldest at the bottom, each layer indented one
+step deeper than the last.
+
+You have never read that wall. Nobody reads that wall.
+
+The person answering you does. They have to. Replies come from whoever is on the
+desk that morning, and the one who picked up your fourth message has never
+spoken to you, was not there for the first three, and will be doing something
+else on Thursday. Their answer makes sense because the whole thread came
+attached to it — not because anybody at that company remembers you.
+
+## The same arrangement, and it is the whole arrangement
+
+A chat model is that desk.
+
+When you send your fifth message, the software wrapped around the model sends
+messages one to four along with it — yours and its own — as one block of text,
+from the top. The model reads all of it as though for the first time, because it
+is the first time. It writes a reply. Then it keeps nothing: not your name, not
+the correction you made in message two, not the sentence it has just finished
+writing.
+
+Nothing carries over. Between one message and the next there is no notebook, no
+file, no trace, nowhere for a trace to be kept. What looks like remembering is
+re-reading.
+
+That block of text has a name. Everything the model can see at the moment it
+answers — the standing instructions the application sends ahead of you, the
+whole conversation so far, anything else that has been pasted in on your behalf
+— is its **context window**. Its size was decided when the model was built, and
+it does not grow.
+
+## What is in there that you did not put there
+
+Something is usually in the window before your first word. Applications send a
+standing instruction every time: who the model is meant to be here, what it may
+and may not say, how to lay an answer out. You never see it, and you cannot make
+it shorter. In a serious product it runs to hundreds or thousands of tokens, and
+you are paying for it on every single turn.
+
+More things arrive later without your involvement — the results of a search the
+assistant ran, a page it fetched, a file you attached four messages ago and have
+long since stopped thinking about. All of it lands in the same window and
+competes for the same room as your sentences. To a window, a document somebody
+pasted and a question you typed are the same kind of object, and neither one is
+given priority over the other.
+
+## Counted in pieces, not words
+
+The size of a window is quoted in **tokens** — the chunks text is cut into
+before a model sees any of it, about four characters of ordinary English apiece,
+so a little under a word. Not words, and not characters.
+
+That distinction does more work than it looks like it should. Whether something
+fits is settled by how the cutting happens to fall, not by how long the text
+looks on a page: code, a table of figures, or a run of unusual names all cost
+several times what a page of prose costs. So does a language the vocabulary was
+not built around. The window is the same size for everyone. How much of your
+writing it holds is not.
+
+## The answer has to fit too
+
+Here is the part that catches almost everyone out. The window is not a budget
+for what you may send. It is all the room there is, and the model's reply is
+written into that same room.
+
+Which puts the two in competition. A long conversation leaves less space for a
+long answer, and asking for a long answer at the end of a long conversation asks
+the window for something it does not have. This is why every serious system sets
+a slice of the window aside for the reply before it lets any of your text in at
+all.
+
+<Figure
+  title="Four turns of one conversation, drawn as what actually gets sent"
+  description="Each turn sends the entire conversation again — the standing instructions, every message either side has written, and only then the new one — so four turns into a conversation that is 460 tokens long, the model has read 1,365 tokens; the growth is not in what you type but in how many times what you typed gets read."
+>
+  <ResendingTheThread />
+</Figure>
+
+## A thousand tokens, and a conversation that will not stop
+
+The panel below is one window and one conversation, both drawn small enough to
+watch. The window holds a thousand tokens, which is roughly a page and a half.
+Ninety of them are gone before you type anything, on the standing instructions.
+Three hundred more are held back for the reply. That leaves six hundred and ten
+for the conversation itself.
+
+<ContextBudget client:visible />
+
+Step it forward and for a while nothing much happens. At turn five, four hundred
+and ninety tokens of conversation are sitting inside six hundred and ten,
+everything either side has said is still in there, and there is room to spare.
+
+Read the last line of the readout anyway. You have typed a hundred and
+twenty-five tokens. It has read one thousand nine hundred and forty-five.
+
+That is the resend, priced. Nothing was remembered, so nothing was read once:
+your first message has now been read five times over, and in a conversation that
+runs to fifty turns it would be read fifty.
+
+Turn six is where it stops fitting. The conversation wants seven hundred and
+forty tokens and there are six hundred and ten, so something has to go — and the
+rule the panel opens on is the one nearly everything uses when nobody has
+decided otherwise. Drop the oldest. Turns one and two leave the window.
+
+Turn one is where you said the trip had to come in under nine hundred pounds.
+
+Nothing announces that. The answer to turn six will be perfectly fluent. Carry
+on to turn nine, ask whether the boat trip is still affordable, and it will
+answer — confidently, out of nothing, with no sign anywhere in that window that
+a number is missing. It has not forgotten and it is not lying. It was never
+shown.
+
+Turn seven is worth watching on its own. It is a confirmation email pasted in
+whole: four hundred and eighty tokens in one message, into six hundred and ten
+tokens of room. Dropping the oldest, it becomes the only turn left standing. One
+paste, and the conversation around it is gone.
+
+## Then choose what goes instead
+
+Now change the rule at the bottom of the panel, which is what it is really for.
+
+**The biggest first** frees far more room per message thrown away, so six of the
+nine turns survive to the end — turn one and its nine hundred pounds among them.
+What goes instead is the pasted email and two of the model's own answers: the
+substantial things, which are usually the things everything since has been
+about.
+
+**Summarise the oldest** replaces seven turns — one thousand two hundred and
+twenty tokens of them — with a single stand-in costing a hundred and fifty-three.
+A trace of the beginning survives, at an eighth of the price. But a summary
+keeps whatever the summariser thought was worth keeping, and nobody asked you
+which parts those were.
+
+Three rules, three different holes. That is the honest shape of the problem: the
+choice was never whether to lose something. It is only ever what.
+
+## Why not simply make the window enormous
+
+Two reasons, and neither is going anywhere.
+
+The first is the bill. Attention compares every piece of the text against every
+other piece, so the work does not double when the text doubles — it roughly
+quadruples, and so does the memory, which is usually what runs out first. A
+window ten times bigger is not ten times dearer to run. It is nearer a hundred.
+
+The second is quieter and worse. Even inside a window that fits, a model does
+not use all of it equally well. Material at the very start and at the very end
+is picked up most reliably; material buried in the middle of a long context is
+the easiest thing to skate over. Putting something in the window is not the same
+as having it read.
+
+<Aside title="More context is not better context" tone="caution">
+  The instinct, once you know about the window, is to fill it: paste in the
+  whole handbook, attach every file, leave the conversation running for weeks.
+  This reliably makes answers worse.
+
+The sentence that mattered is still in there. It is in there with forty pages of
+near-misses, and nothing in the machine marks which is which — so the model
+spends its attention across all of it, and attention spent on one thing is
+attention taken from another. On top of that the answer costs more and takes
+longer to arrive.
+
+Deciding what to leave out turns out to be a real skill with a real name, and it
+is a topic of its own later on. The one-line version: a window is a stage, not a
+warehouse.
+
+</Aside>
+
+## Four things this explains
+
+**A long conversation gets slower and dearer with every turn.** You are not
+sending a message, you are sending the transcript. Turn forty costs what forty
+turns of text cost to read, however short your fortieth message happened to be.
+
+**Things fall out, and nothing tells you.** No warning appears, no gap is
+visible, and the model does not report that it once knew something it now does
+not. The constraint you set in your first sentence stops being enforced, and the
+first sign is an answer that quietly ignores it.
+
+**A new conversation really is a blank slate.** Starting again is not a polite
+fiction or a soft reset. Nothing carries over, because there was never anything
+to carry — which is also why "start a fresh chat" fixes so many problems that
+look like the model being stubborn.
+
+**"Memory" is ordinary software.** When an assistant greets you by name a week
+later, no part of the model remembered you. Something wrote a note in a database
+and pasted it into the window ahead of your first message. That is a genuinely
+useful feature, and it is worth being precise about what it is: a filing cabinet
+standing next to the machine, not a memory inside it. It occupies window room
+like everything else, which is why switching memory on can make every message
+more expensive without a single one of your messages changing.
+
+<Aside title="Cheaper than resending sounds, and still resending" tone="note">
+  Providers noticed that the front of a conversation is identical from one turn
+  to the next, and most will now cache that unchanged prefix: send it again and
+  the part that has not moved is billed at a fraction of the usual rate. It is a
+  real saving and worth turning on.
+
+It changes nothing else on this page. A cache is a receipt, not a memory. Those
+tokens are still read, they still occupy the window, and they still fall out of
+it when the conversation outgrows the space. A cached token is one you paid less
+for, not one you no longer have to fit.
+
+</Aside>
+
+<DevAside>
+  <Fragment slot="java">
+    ```java
+    int reserve = 1024;                                    // room the reply needs
+    int budget  = MODEL_WINDOW - reserve - count(instructions);
+
+    while (count(conversation) > budget) {
+        conversation.remove(0);                            // you, choosing what it forgets
+    }
+    ```
+
+    Four lines, and they are the whole of what people call memory management on
+    these systems. Note where `reserve` is subtracted: before anything else,
+    because the reply is written into the same window the prompt arrived in.
+    Leave it out and the failure is not a truncated answer, it is an error
+    thrown the first time a real customer's conversation gets long — which is
+    never in testing. `MODEL_WINDOW` belongs to the model rather than to you, so
+    it changes the day somebody swaps the model out.
+
+  </Fragment>
+  <Fragment slot="python">
+    ```python
+    kept = trim(messages, budget)          # whatever rule you chose
+    if dropped := len(messages) - len(kept):
+        log.info("dropped %d messages to fit", dropped)
+    ```
+
+    The logging line is the point. Every one of these systems drops messages
+    eventually, almost none of them say so, and the resulting bug reports say
+    "it forgot" or "it started ignoring my instructions" — which sends whoever
+    picks them up looking at the model, where there is nothing to find. One
+    counter turns a mystery into a number on a dashboard.
+
+  </Fragment>
+</DevAside>
+
+<Checkpoint question="A team adds a memory feature to their assistant: it now recalls your name and your preferences across separate conversations. Two things follow. Their cost per message rises even in brand-new chats, and one customer reports that inside a single long conversation the assistant contradicted something they had said forty messages earlier. Nobody changed the model. Explain both.">
+  Neither has anything to do with the model remembering, because it still
+  remembers nothing. The memory feature is ordinary storage: something writes
+  notes to a database and pastes them into the window ahead of the first
+  message. Those notes are tokens like any others, so every message in every
+  conversation now carries them and a brand-new chat starts part-full. That is
+  the bill.
+
+The contradiction is the same fact from the other side. Forty messages in, the
+conversation no longer fitted, and whatever was said at the start was dropped to
+make room. The assistant did not overrule the customer — it never saw them say
+it. And because nothing in a window indicates that anything is missing, it had
+no reason to sound anything other than certain.
+
+Worth carrying beyond this unit. Whenever a system appears to remember, ask
+where the text is being kept and who is pasting it back in. The answer is always
+ordinary software, and ordinary software has a size limit that somebody chose.
+
+</Checkpoint>

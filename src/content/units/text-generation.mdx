@@ -1,0 +1,300 @@
+---
+title: Every word is final the moment it is written
+part: large-models
+order: 2
+summary: A model writes one piece, glues it onto the end of what it has already written, and reads the whole thing back before writing the next — which is why it never had a plan, and why nothing it has written can be taken back.
+prerequisites:
+  - llm
+connections:
+  - to: temperature
+    why: Each piece here is drawn from a row of percentages, and one setting decides how steep or how flat that row is before the draw — the whole difference between a machine that says the same thing every time and one that surprises you.
+  - to: chain-of-thought
+    why: Every piece written is another full pass through the machine and another piece in what it re-reads, so asking a model to work through its reasoning before answering is not a figure of speech — it is buying it more passes and more to read.
+interactives:
+  - NextPieceLoop
+status: published
+updated: 2026-07-31
+---
+
+import Aside from '../../components/blocks/Aside.astro';
+import Checkpoint from '../../components/blocks/Checkpoint.astro';
+import DevAside from '../../components/blocks/DevAside.astro';
+import Figure from '../../components/blocks/Figure.astro';
+import ReadItAllAgain from '../../components/diagrams/ReadItAllAgain.astro';
+import { NextPieceLoop } from '../../components/interactives/NextPieceLoop';
+
+Ten people round a table, one postcard, and a rule.
+
+The card reaches you with a few words already on it. You read the whole card
+from the top — not the last word, the whole card — add exactly one word to the
+end, and pass it on. You do not get told what the sentence is about. You do not
+get to cross anything out. Neither does anyone after you.
+
+By the third lap something is happening on that card. It has a subject and a
+tone and it holds together well enough to read aloud. Nobody wrote it. Nobody
+could have said at the start what it would end up saying, least of all the
+person who put down the first word.
+
+Then somebody, having read a perfectly sensible card, writes _aubergine_.
+
+The next person does not get to rub it out. They get one word, on the end, after
+the aubergine.
+
+That game is not an illustration of how a language model writes. It is, almost
+exactly, the thing itself.
+
+## Four steps, and then the same four again
+
+A trained model does not hand back a sentence. Ask it anything and what comes
+out of it is one row of numbers: a score for every piece in its vocabulary —
+every chunk it knows, around a hundred thousand of them — saying how well each
+one would sit next.
+
+A row of scores is not an answer. So something has to turn one row into a
+paragraph, and there is only one thing that does it:
+
+1. Read everything written so far, from the very first piece.
+2. Score every piece in the vocabulary, and turn those scores into percentages
+   that add up to one.
+3. Draw a piece, in those proportions.
+4. Glue it onto the end — and go back to step one.
+
+It stops when the draw lands on a particular piece that means _done_, which the
+model learned to produce the way it learned everything else.
+
+The name for a machine that works this way is **autoregressive**, which is
+uglier than it needs to be. _Auto_ is itself and _regressive_ is reading back
+over: a machine whose input, at every step, is its own output so far.
+
+Notice which seat that puts the model in. It is not the author of the postcard.
+It is every one of the ten people, in turn — because nothing survives from one
+pass to the next except the card. There is no scratchpad it keeps between
+passes, no note of what it was going for, no memory of having written any of it.
+Each pass is a stranger picking up the card and reading it from the top.
+
+<Figure
+  title="Four passes over the same postcard"
+  description="Every pass reads one piece more than the pass before it and adds exactly one to the end, so the left edge of all four rows is identical — the machine never re-opens an earlier piece, never skips one, and has nowhere to keep a plan between passes."
+>
+  <ReadItAllAgain />
+</Figure>
+
+## Nothing was decided in advance
+
+When a model writes the first piece of a paragraph, the paragraph does not
+exist. Not in draft, not in outline, not as an intention. There is one piece,
+and then a fresh reading of a card one piece longer.
+
+Which raises an obvious objection: models write jokes that land, arguments that
+close, sentences that clearly needed the ending to be planned from the start.
+
+They do, and no ending was planned. What happens instead is that by the time the
+machine reaches the last piece of a joke, the setup is not a memory of a plan —
+it is text, sitting there, being read from the top, narrowing what could
+plausibly come next until very little else fits. Coherence is not imposed from
+above. It accumulates, because every pass is scored against everything already
+on the card.
+
+<Aside title="But surely it is thinking ahead?">
+  Something has to be said carefully here, because the honest answer is not a
+  flat no.
+
+One pass is an enormous amount of arithmetic, and there is good evidence that
+some of it concerns where the sentence is going rather than only the next piece
+— a model writing a line of verse appears to settle on a rhyme several words
+before it needs one.
+
+What is certain is what survives. Whatever a pass works out, it works out from
+the card and throws away when the pass ends. The next pass begins from the text
+alone. So "it has no plan" is exactly true in the sense that matters here: there
+is no draft anywhere in the machine, nothing written down but the output itself,
+and nothing that carries an intention forward except words you can read.
+
+</Aside>
+
+## What is real here, and what is hand-written
+
+The panel below runs a real version of steps two, three and four, and it is
+worth knowing exactly which parts of it are the real thing before you draw
+conclusions from it.
+
+Real: the raw scores are divided by a setting called the temperature, then
+squashed by **softmax** — the step that takes any row of numbers and hands back
+a row of shares, all positive, the largest still the largest, adding to exactly
+one. It is the same operation that gave every word its single unit of attention
+to spend. Then a number between 0 and 1 is drawn, and whichever piece's slice
+of the row it lands in is the piece that gets written. Every one of those steps,
+in that order, is what actually happens inside a production model. Here the
+temperature is fixed at one, and dividing by one changes nothing, so what you
+see is the model's own row untouched. Turning that dial is the next unit's
+entire subject.
+
+Hand-written: where the raw scores come from. A real model computes them by
+running the whole transformer over everything on the card, and its row is a
+hundred thousand pieces long — you would see the top five and none of the rest.
+The scores behind this panel are typed into a small table so that a whole row
+fits on a screen and you can watch it change. Take the loop from it. Do not take
+the vocabulary, and do not read the percentages as measurements of anything.
+
+## Turn the handle yourself
+
+The opening is fixed — _The weather today is_ — and the counter at the bottom of
+the panel writes one piece per press. Leave the other control alone for now.
+
+<NextPieceLoop client:visible />
+
+Press it once. The model has read the four pieces it was given and produced a
+row: _mild_ at 55%, _cold_ at 27%, _unsettled_ at 12%, _glorious_ at 5%, and
+_aubergine_ at what prints as 0. It drew _mild_.
+
+Press again, and again. It reads five pieces and writes _and_ at 58%. It reads
+six and writes _dry_ at 53%.
+
+Now the fourth press, which is the interesting one. Having read seven pieces,
+the row it produced was headed by _across_ at 51% — and it wrote _again_, which
+held 11% of that row. Nothing chose. A number between 0 and 1 fell inside the
+slice belonging to _again_, and that slice is eleven hundredths of the row wide,
+so it happens about one time in nine. The favourite took only half the row, so
+roughly half of all draws from it land somewhere else entirely.
+
+Now read the four lines of the trail in order and watch one number only: it read
+**4** pieces, then **5**, then **6**, then **7**. The amount of reading went up
+by exactly one every pass and never by anything else, because the only thing
+that ever changed was that one more piece had been glued on the end. That is the
+first claim of this unit, and it is the one thing on the page you can check by
+counting.
+
+## It cannot take anything back
+
+Now switch the panel to _After one bad piece_.
+
+This picks the run up one press later, after the draw has landed on _aubergine_
+— the piece at the bottom of the opening row, worth 0.4%, which prints as 0 only
+because the bars round to whole numbers. It is not zero. It is about one run in
+270, and one run in 270 is not rare at all if you are doing this a few million
+times a day.
+
+Look at the row the model then produces: _coloured_ 36%, _which_ 26%, _and_ 22%,
+_in_ 16%. Four perfectly ordinary continuations. Read them again and notice what
+is missing. Not one of them removes anything. There is no piece anywhere in that
+row that shortens the card, or clears it, or starts the sentence over, because
+appending is the only operation this machine has. The vocabulary contains no
+delete key — not as an oversight, but because there is nowhere for it to act.
+
+So it writes _coloured_, and then _throughout_, and what comes out is _The
+weather today is aubergine coloured throughout_ — fluent, grammatical, correctly
+punctuated, and about the colour of a vegetable.
+
+The last thing to notice is the numbers themselves. The top of that row holds
+36%, which is an unremarkable figure for an unremarkable row. Nothing anywhere
+in the panel dips, or flags, or reads differently. From the inside there is
+nothing to notice, because "this sentence has gone wrong" is not a quantity the
+machine computes.
+
+You can wind the counter back. The model cannot.
+
+## Why an apology is not a correction
+
+The mechanism is worth stating flatly, because a great deal follows from it. A
+piece that has been written is part of the input to every pass after it. Not a
+record of a decision the model made — the text itself, read from the top, every
+single time.
+
+Which brings us to the objection everyone has, because everyone has seen a model
+say _sorry, that was wrong_. It does, and that is not taking anything back. An
+apology is a few more pieces glued onto the end. The wrong words are still
+there, still being read from the start on every pass that follows, still pulling
+on every percentage in every row. The model has not removed a mistake. It has
+written a correction underneath one it can still see.
+
+This is the explanation for something you have almost certainly experienced. A
+model that opens an answer badly tends to keep going badly, and it is not being
+stubborn — the bad opening is now part of the question. Telling it _no, try
+again_ appends your complaint to a card that still has the wrong answer sitting
+on it, in full view, being re-read on every pass.
+
+Hence the least satisfying advice about these tools, which is also the most
+reliable. When an answer starts wrong, throw the whole thing away and ask again
+from an empty conversation. That is the only move that actually takes the wrong
+text out of the input, and it is why starting over so often beats arguing.
+
+<Aside title="What the loop costs">
+  Every single piece is a complete pass through the machine. A thousand-piece
+  answer is a thousand passes, so both the time and the bill grow in direct
+  proportion to how much is written — which is also why answers arrive in
+  bursts rather than all at once. Streaming is not a feature somebody added.
+  It is the loop showing through.
+
+It is why the price lists quote two different rates, too. Everything you send
+can be read in one pass, all of it at the same time; everything that comes back
+has to be produced one piece at a time, one pass each. Output is the expensive
+half because output is the sequential half.
+
+There is one shortcut worth knowing about, since it sounds like it contradicts
+all this. The machinery keeps the working from the previous pass rather than
+recomputing it from scratch, which makes each pass much cheaper than a first
+reading of the same text. The answers are identical either way, and nothing
+extra survives between passes — it is a cache, not a memory.
+
+</Aside>
+
+<DevAside>
+  <Fragment slot="java">
+    ```java
+    List<Integer> pieces = tokenizer.encode(prompt);
+
+    while (pieces.size() < maxPieces) {
+      float[] row = model.next(pieces);   // one full pass over all of it
+      int drawn = sample(row);            // a draw, not a maximum
+      if (drawn == END) break;
+      pieces.add(drawn);                  // the only mutation in generation
+    }
+    ```
+
+    Worth noticing what is not in that loop, and is not in any library that
+    wraps it: there is no `pieces.remove`. Nothing rolls back a piece, because
+    a piece is not a decision that could be reversed — it is an element of the
+    input to everything after it. Changing what has been generated means
+    changing the input and running the loop again.
+
+  </Fragment>
+  <Fragment slot="python">
+    ```python
+    pieces = tokenizer.encode(prompt)
+
+    while len(pieces) < max_pieces:
+        row = model(pieces)[-1].softmax(-1)        # one full pass over all of it
+        drawn = torch.multinomial(row, 1).item()   # a draw, not a maximum
+        if drawn == END:
+            break
+        pieces.append(drawn)
+    ```
+
+    Two details do a lot of work here. `multinomial` rather than `argmax` is
+    what makes the same prompt give different answers, and swapping one for the
+    other is the whole of the next unit. And `[-1]`: the model scores every
+    position in the sequence on every pass, and generation throws all of that
+    away except the last row.
+
+  </Fragment>
+</DevAside>
+
+<Checkpoint question="A support bot answers a customer with a wrong first sentence. The customer replies that it is wrong; the bot apologises, then produces almost the same wrong answer. A colleague says the model is being stubborn and suggests wording the correction more firmly. What is actually going on, and what would you do instead?">
+  Nothing is being stubborn, and nothing about the wording is the problem. The
+  apology did not remove the wrong sentence. It is still in the conversation,
+  and every pass the model makes from that point reads it from the top —
+  alongside the complaint and the apology — before producing the next row of
+  percentages. The mistake stopped being something the model did and became
+  part of what the model is reading.
+
+The fix is to take the wrong text out of the input, and the only way to do that
+is to start again: same question, empty conversation. A firmer correction adds
+more text to a card that still has the wrong answer on it, which is the opposite
+of what is needed.
+
+Worth keeping as a shape. Anything already in the conversation is input, not
+history. From the model's side there is no difference between the words you
+wrote and the words it wrote — it reads both the same way, from the beginning,
+every time.
+
+</Checkpoint>

@@ -1,0 +1,207 @@
+---
+/**
+ * One row of raw scores, read at three settings of the dial.
+ *
+ * The teaching load is carried by the fact that the five pieces sit in the same
+ * order in all three columns, and by the odds line under each one: the same gap
+ * of 0.7 between the top two raw scores is worth 4.1 times at the low setting,
+ * 2.0 times in the middle and 1.4 times at the high one. Order is numbered
+ * 1 to 5 rather than implied, every share is printed as well as drawn,
+ * and no column is identified by colour (hard rule 9) — so the one thing a
+ * reader could take away by mistake, that temperature changes the model's mind
+ * about what is likelier, is impossible to take away from this picture.
+ *
+ * Every number here was sampled from the same arithmetic `TemperatureDial`
+ * runs, at 0.5, 1 and 2. Its lesson test pins all fifteen shares and all three
+ * odds, so a change to the shared scoring fails the build rather than leaving
+ * this diagram quietly wrong.
+ *
+ * Decorative on its own, so `aria-hidden`: `Figure` carries the accessible name
+ * and the description.
+ */
+
+const PIECES = ['mild', 'cold', 'unsettled', 'glorious', 'aubergine'] as const;
+const SCORES = ['3.1', '2.4', '1.6', '0.7', '−1.9'] as const;
+
+interface Column {
+  /** Left edge of the panel. */
+  readonly x: number;
+  readonly heading: string;
+  readonly what: string;
+  /** Percentages, for the length of the bars. */
+  readonly shares: readonly number[];
+  /** The same percentages as the panel prints them. */
+  readonly printed: readonly string[];
+  readonly odds: string;
+}
+
+const COLUMNS: readonly Column[] = [
+  {
+    x: 16,
+    heading: '÷ 0.5',
+    what: 'gaps stretched',
+    shares: [76.648, 18.901, 3.816, 0.631, 0.003],
+    printed: ['77%', '19%', '4%', '0.6%', '0.003%'],
+    odds: '4.1× the runner-up',
+  },
+  {
+    x: 224,
+    heading: '÷ 1',
+    what: 'left as scored',
+    shares: [55.031, 27.327, 12.279, 4.992, 0.371],
+    printed: ['55%', '27%', '12%', '5%', '0.4%'],
+    odds: '2.0× the runner-up',
+  },
+  {
+    x: 432,
+    heading: '÷ 2',
+    what: 'gaps squashed',
+    shares: [39.057, 27.523, 18.449, 11.764, 3.206],
+    printed: ['39%', '28%', '18%', '12%', '3%'],
+    odds: '1.4× the runner-up',
+  },
+];
+
+const PANEL = 192;
+const BAR = 88;
+const ROW_TOP = 134;
+const ROW_STEP = 22;
+
+const CHIP = 115;
+const CHIP_STEP = 123;
+---
+
+<svg viewBox="0 0 640 292" class="w-full" aria-hidden="true">
+  <!-- ============ what the model produced ============ -->
+  <text
+    x="16"
+    y="16"
+    class="fill-ink font-display"
+    font-size="12"
+    font-weight="700">what the model produced, once</text
+  >
+
+  {
+    PIECES.map((piece, index) => (
+      <g>
+        <rect
+          x={16 + index * CHIP_STEP}
+          y="24"
+          width={CHIP}
+          height="36"
+          rx="4"
+          class="fill-paper-raised stroke-rule-strong"
+          stroke-width="1"
+        />
+        <text
+          x={16 + index * CHIP_STEP + CHIP / 2}
+          y="38"
+          text-anchor="middle"
+          class="fill-ink font-mono"
+          font-size="10"
+        >
+          {piece}
+        </text>
+        <text
+          x={16 + index * CHIP_STEP + CHIP / 2}
+          y="53"
+          text-anchor="middle"
+          class="fill-ink font-mono"
+          font-size="12"
+        >
+          {SCORES[index]}
+        </text>
+      </g>
+    ))
+  }
+
+  <text x="16" y="76" class="fill-ink-muted font-mono" font-size="9"
+    >raw scores. Nothing below this line changes one of them, adds a sixth or
+    drops one.</text
+  >
+
+  <line x1="16" y1="86" x2="624" y2="86" class="stroke-rule" stroke-width="1"
+  ></line>
+
+  <!-- ============ the same five, at three settings ============ -->
+  {
+    COLUMNS.map((column) => (
+      <g>
+        <text
+          x={column.x}
+          y="110"
+          class="fill-ink font-display"
+          font-size="13"
+          font-weight="700"
+        >
+          {column.heading}
+        </text>
+        <text
+          x={column.x}
+          y="124"
+          class="fill-ink-muted font-mono"
+          font-size="9"
+        >
+          {column.what}
+        </text>
+
+        {PIECES.map((piece, index) => (
+          <g>
+            <text
+              x={column.x}
+              y={ROW_TOP + index * ROW_STEP + 8}
+              class="fill-ink-faint font-mono"
+              font-size="8"
+            >
+              {index + 1}
+            </text>
+            <text
+              x={column.x + 10}
+              y={ROW_TOP + index * ROW_STEP + 8}
+              class="fill-ink font-mono"
+              font-size="9"
+            >
+              {piece}
+            </text>
+            <rect
+              x={column.x + 64}
+              y={ROW_TOP + index * ROW_STEP}
+              width={BAR}
+              height="9"
+              rx="2"
+              class="fill-paper-sunken"
+            />
+            <rect
+              x={column.x + 64}
+              y={ROW_TOP + index * ROW_STEP}
+              width={(column.shares[index] / 100) * BAR}
+              height="9"
+              rx="2"
+              class="fill-accent-2"
+            />
+            <text
+              x={column.x + PANEL}
+              y={ROW_TOP + index * ROW_STEP + 8}
+              text-anchor="end"
+              class="fill-ink-muted font-mono"
+              font-size="9"
+            >
+              {column.printed[index]}
+            </text>
+          </g>
+        ))}
+
+        <text x={column.x} y="252" class="fill-ink font-mono" font-size="9">
+          {column.odds}
+        </text>
+      </g>
+    ))
+  }
+
+  <text x="16" y="272" class="fill-ink-muted font-mono" font-size="9"
+    >Same five pieces, same order, three sets of gaps.</text
+  >
+  <text x="16" y="284" class="fill-ink-muted font-mono" font-size="9"
+    >Percentages are rounded, so a column can print a little either side of 100.</text
+  >
+</svg>

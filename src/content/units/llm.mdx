@@ -1,0 +1,278 @@
+---
+title: The only question it ever gets asked
+part: large-models
+order: 1
+summary: A large language model is the transformer from the last Part built very large and tuned on a vast amount of text, and the only thing it does is put a number on every entry in its vocabulary saying how well that entry would come next.
+prerequisites:
+  - transformers
+connections:
+  - to: text-generation
+    why: Scoring the vocabulary produces a table and then stops, so something outside the model has to take one entry, glue it on and run the whole machine again — which is where sentences actually come from.
+  - to: hallucination
+    why: Nothing in a next-piece score has anywhere to record whether the piece is true, so a well-scored invention and a well-scored fact come out of identical arithmetic and arrive looking the same.
+interactives: []
+status: published
+updated: 2026-07-31
+---
+
+import Aside from '../../components/blocks/Aside.astro';
+import Checkpoint from '../../components/blocks/Checkpoint.astro';
+import DevAside from '../../components/blocks/DevAside.astro';
+import Figure from '../../components/blocks/Figure.astro';
+import OneOperationVeryLarge from '../../components/diagrams/OneOperationVeryLarge.astro';
+
+A sentence with the last word taken off it:
+
+_The kettle had boiled but nobody had made the —_
+
+You finished it before you decided to.
+
+Now notice the part you did not notice. You did not only produce _tea_. Offer
+you alternatives and you would rank them without pausing. _Coffee_, easily.
+_Bed_ — wrong here, but people do make beds, so not nothing. _Effort_, oddly,
+also fine. _Although_, never; not wrong so much as impossible.
+
+You held a view on every one of those, and you held it before anybody asked for
+it.
+
+That ranking is the machine this Part is about. Not the tea. The ranking.
+
+One difference, and it is the whole difference. You stopped at four alternatives
+because four were offered. The machine does not stop. Every time it produces
+anything at all, it puts a number on **every** entry in its vocabulary — the
+hundred thousand or so chunks you watched text being cut into — including the
+overwhelming majority that are obvious nonsense. It has no way of skipping them,
+because it has no way of noticing that they are nonsense.
+
+That is a **large language model**. The rest of this unit argues that the
+paragraph you have just read is the whole definition, and that there is nothing
+else in the box.
+
+## Three words, read backwards
+
+The acronym turns up several times a day and is almost never taken apart. It is
+worth doing once, because the three words are not equally honest.
+
+**Model** is the oldest of them and the only one that describes the mechanism.
+You met it in the first Part: a pile of adjustable numbers in a fixed
+arrangement, set by being shown examples and corrected, over and over. It is a
+model in the sense of the house-price machine you turned two dials on. It is not
+a model in the sense of a scale model of a building — nothing inside it is a
+small copy of the world.
+
+**Language** describes the material, not a talent. Nobody installed grammar and
+nobody wrote down what a pronoun is. The machine was fed text, so text is what
+it became good at scoring, and everything it appears to know about the world
+arrived as a side effect of that one pursuit.
+
+**Large** describes a count, and nobody has ever fixed the threshold at which it
+starts applying. What the count actually is comes two sections down, and it is
+worth reading slowly, because it is the only part of this unit that is difficult
+to believe.
+
+## One number for every entry, and then nothing
+
+Here is the operation, stated once, with nothing held back.
+
+Give the model some text. It produces one number for every entry in its
+vocabulary, saying how well that entry would follow.
+
+That is the end of the sentence. There is no second half.
+
+Three things about it are easy to misread, and all three matter later.
+
+**Entry, not word.** The list is the chunk list from the last Part — some whole
+words, mostly fragments — so a long or unusual word is not one entry but the
+first piece of several. Nothing about the operation changes. The column is
+simply a column of chunks.
+
+**Scores, not shares.** The numbers come out on no particular scale; a raw score
+can be any size, positive or negative, and on its own it says nothing. The row
+is then put through a step you have already met. Softmax turns any row of
+numbers into a row of shares — all positive, the largest still the largest,
+adding to exactly one.
+
+Which makes this the same shape of arithmetic as attention, one level up. There,
+a single word had one unit of attention to spread across a sentence. Here, the
+whole machine has one unit of confidence to spread across its entire vocabulary.
+Raising _tea_ lowers everything else, as a matter of arithmetic, exactly as
+before.
+
+**A table, not a choice.** And then it stops. The model does not pick anything.
+It has produced a column of a hundred thousand numbers, and that column is what
+leaves it. Some very ordinary code outside the model reads the column and takes
+one entry — that is the next unit, not this one. Hold the seam between them,
+because everything famous about these machines happens on the scoring side of
+it, and everything that feels like a decision happens on the other.
+
+Writing a limerick, translating a lease, finding the bug in a stack trace,
+summarising forty pages, declining to help with something: every one of those is
+that operation, run once, and then run again on the same text with its own
+output added to the end.
+
+There is nowhere in the machine for translation to live. Not "it is hard to
+find" — there is no place of that kind. You have already been shown the complete
+inventory: a lookup table that turns chunks into numbers, then the same block
+stacked a fixed number of times, then the scoring. Nobody is holding anything
+back from you.
+
+## The size, written out
+
+Now the other half, and the numbers are best read as digits rather than as
+words.
+
+GPT-3 has 175,000,000,000 adjustable numbers. It was tuned on roughly
+300,000,000,000 pieces of text. Producing one piece — one chunk, not one
+sentence — costs somewhere around two arithmetic steps per adjustable number, so
+about 350,000,000,000 multiplications and additions, every time, for every piece
+of every answer.
+
+And that is the small end now. Recent models are tuned on more than ten trillion
+pieces. Reading at a steady two hundred and fifty words a minute, day and night,
+never sleeping and never stopping, a person would need something like eighty
+thousand years to get through that much text.
+
+So both of these are true at once, and the drawing below is there to hold them
+together. The operation is one sentence long. The machine performing it is the
+largest artefact anyone has ever built.
+
+<Figure
+  title="What it does, and what it takes to do it"
+  description="The output of a large language model is not a word but a column with an entry for every chunk in its vocabulary, absurd candidates included and still carrying numbers — and the hundreds of billions of adjustable numbers on the other side of the rule are not a second ability, they are all spent producing that one column."
+>
+  <OneOperationVeryLarge />
+</Figure>
+
+## Why the deflation is worth carrying
+
+None of this is pedantry about a definition. It is the difference between
+expecting the right things from the machine and expecting the wrong ones, and
+almost every widely-held wrong expectation about these systems is the same
+mistake made three times over: assuming a part exists that does not.
+
+People expect a part that checks. There is no step anywhere in that column where
+a candidate is held up against anything except how well it follows the text.
+"True" is not one of the inputs to the score.
+
+People expect effort to track difficulty. It cannot. You met that claim on a
+small machine reading handwriting, and again on a stack of ninety-six blocks,
+and it survives being made this large without a scratch. The baffling question
+and the trivial one run the identical arithmetic and cost the identical money.
+
+People expect it to know what happened last week. Its adjustable numbers stopped
+moving when training ended, and nothing in the operation reaches outside itself.
+Anything it says about last week either arrived in the text it was tuned on or
+was put in front of it by something else.
+
+So when one of these machines does something that seems inexplicable, there is a
+question that explains most of it, and it is never "why did it think that". It
+is: given everything written before this point, and everything this machine was
+tuned on, which entry scored highest?
+
+<Aside title="Two of the three words have already slipped">
+  Nobody defines "large". A model with three billion adjustable numbers and one
+  with five hundred billion both get called large language models, and the word
+  tracks the mood of the field about as closely as it tracks the count.
+
+"Language" is in worse shape. The same stack, essentially unchanged, now reads
+images and audio, and most of the products people call LLMs stopped being
+text-only some time ago. The name is a fossil from the years when it was
+accurate.
+
+Model is the one word in the acronym still doing honest work.
+
+</Aside>
+
+## The part nobody ordered
+
+Deflation can be its own kind of dishonesty, so here is what the deflation does
+not explain.
+
+The reasonable expectation, held by most of the people who worked on this, was
+that scoring the next piece extremely well would produce an extremely good
+autocomplete. Useful. Not interesting.
+
+What happened instead, past a certain size, is that machines tuned on nothing
+but that began translating between language pairs nobody aimed them at, writing
+code that runs, working through arithmetic they had not been shown, and holding
+the thread of an argument across pages. Nothing in the training asked for any of
+it.
+
+Why remains genuinely open. The best account available is a sketch rather than
+an explanation: an enormous quantity of human writing will not fit inside a
+fixed set of dials, so it cannot be stored, and the only way left to score the
+next piece well is to build machinery that generalises — machinery that
+represents how things relate, not merely which words tend to sit together.
+Something like that is probably happening. Which parts of it, and why the
+behaviour appears where it does, is an active argument and not a settled one.
+
+Notice what that does and does not disturb. It does not add a second operation.
+The machine still produces one number per entry and nothing else. The surprise
+is not about what the machine does. It is about what doing that one thing well
+enough turned out to require.
+
+<DevAside>
+  <Fragment slot="java">
+    ```java
+    // Ask for the scores, not just the text.
+    var res = client.chat(req.logprobs(true).topLogprobs(5));
+
+    for (var alt : res.logprobs().content().get(0).topLogprobs()) {
+      System.out.printf("%-12s %.5f%n", alt.token(), Math.exp(alt.logprob()));
+    }
+    ```
+
+    The `Math.exp` is not decoration. What comes back is the *logarithm* of each
+    share, so every value is negative and the scale is nothing like the one you
+    expect: `-0.02` is a shade under 98%, and `-9.1` is about one in ten
+    thousand. Ordering survives untouched, which is exactly what makes this an
+    expensive bug — sort by `logprob()` and you get the right ranking, then
+    threshold on it as though it were a percentage and you have built a
+    confidence check that fires on almost everything.
+
+  </Fragment>
+  <Fragment slot="python">
+    ```python
+    res = client.chat.completions.create(
+        model=MODEL, messages=msgs, logprobs=True, top_logprobs=5
+    )
+    for alt in res.choices[0].logprobs.content[0].top_logprobs:
+        print(alt.token, math.exp(alt.logprob))
+    ```
+
+    Read `top_logprobs` literally: five rows, out of a hundred thousand. The
+    other ninety-nine thousand were computed in full and thrown away before the
+    response was serialised, and not for reasons of secrecy — the whole column
+    is a hundred thousand floating-point numbers *per piece produced*, which
+    would dwarf the text it is attached to by several orders of magnitude.
+
+    It is the cheapest way to see this unit's claim with your own eyes. Every
+    piece of every answer you have ever received came with one of these columns
+    attached, and it was discarded on the way out.
+
+  </Fragment>
+</DevAside>
+
+<Checkpoint question="A support assistant answers three sentences of company policy correctly and then, in exactly the same tone, invents a refund window that does not exist. The team lead proposes making the model check its answer before it commits to it. Using only what a large language model does, say what is wrong with that sentence — and where a check could genuinely go.">
+  There is no moment inside the machine when an answer exists to be checked. It
+  produces one piece at a time, so at the instant it is scoring whatever follows
+  _returns are accepted within_, there is no claim about refunds anywhere in the
+  machine to hold up against anything — there is a column of chunks with numbers
+  beside them, and that is the entire contents of the box. "Check" is not an
+  operation the model has, and there is no step to insert it into.
+
+The deeper problem is what the score is a score of. Every number in that column
+says how well a chunk would follow the text, given what this machine was tuned
+on. Whether the resulting sentence is true is not an input to that arithmetic
+and has nowhere to be recorded. Which is why the three correct sentences and the
+invented one came out of identical arithmetic at identical cost and arrived
+sounding identical — from inside, nothing distinguished them.
+
+A check has to sit outside the model, on finished text. Look the policy up in
+the actual system of record and compare. Or hand the finished answer back to the
+same machine as fresh input, which now genuinely can be scored against, because
+this time the claim exists as text. That second one helps and is not a
+guarantee: you have asked a next-piece scorer to score pieces about its own
+output, and it is still not consulting anything true.
+
+</Checkpoint>

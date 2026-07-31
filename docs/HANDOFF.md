@@ -210,6 +210,14 @@ document.fonts.ready)`.
     for exactly this reason.
 12. **lychee needs `--root-dir` with an absolute path**, not `--base`, to
     resolve root-relative links in local files.
+13. **`pnpm check` is two commands, and the first one's output looks like the
+    verdict.** It runs `astro check && tsc --noEmit -p tsconfig.node.json`.
+    `astro check` prints a friendly `0 errors / 0 warnings / 0 hints` summary
+    and `tsc` prints nothing at all when it passes — so reading the tail of the
+    output, or grepping it for errors, shows a reassuring green block while
+    `tsc` has already failed underneath it. `tsc` is the half that covers
+    `scripts/`, which `astro check` does not look at. **Check the exit code, not
+    the output.** This shipped a red PR once already.
 
 ---
 
